@@ -1,0 +1,281 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.GLMFit module &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.GLMFit.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.GLMFit">
+<span id="neurotools-glmfit-module"></span><h1>neurotools.GLMFit module<a class="headerlink" href="#module-neurotools.GLMFit" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.GLMFit.glmfit">
+<code class="descclassname">neurotools.GLMFit.</code><code class="descname">glmfit</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/GLMFit.html#glmfit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.GLMFit.glmfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>THIS IS NOT A CLONE OF THE MATLAB GLMFIT. IT IS FOR POISSON PROCESS
+GLMS ONLY. IT DOES IMPLEMENT NEWTON-RAPHSON THOUGH.</p>
+<p>STATSMODELS HAS IMPLEMENTED ITERATIVELY REWEIGHTED LEAST SQUARES FOR US
+SO LETS TAKE ADVANTAGE OF THAT</p>
+<p>This method will automatically add a constant colum to the feature
+matrix Y</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like</span></dt>
+<dd>A nobs x k array where <cite>nobs</cite> is the number of observations and <cite>k</cite>
+is the number of regressors. An intercept is not included by default
+and should be added by the user (models specified using a formula
+include an intercept by default). See <cite>statsmodels.tools.add_constant</cite>.</dd>
+<dt>Y <span class="classifier-delimiter">:</span> <span class="classifier">array-like</span></dt>
+<dd>1d array of poisson counts.  This array can be 1d or 2d.</dd>
+</dl>
+<p>The statsmodels GLM code is listed as</p>
+<p># Load modules and data
+import statsmodels.api as sm
+data = sm.datasets.scotland.load()
+data.exog = sm.add_constant(data.exog)</p>
+<p># Instantiate a gamma family model with the default link function.
+gamma_model = sm.GLM(data.endog, data.exog, family=sm.families.Gamma())
+gamma_results = gamma_model.fit()</p>
+<p>The docstring for statsmodels.api.GLM may be relevant. This is just a
+thin wrapper for that function.</p>
+<blockquote>
+<div>Generalized Linear Models class</div></blockquote>
+<p>GLM inherits from statsmodels.base.model.LikelihoodModel</p>
+<dl class="docutils">
+<dt>endog <span class="classifier-delimiter">:</span> <span class="classifier">array-like</span></dt>
+<dd>1d array of endogenous response variable.  This array can be 1d or 2d.
+Binomial family models accept a 2d array with two columns. If
+supplied, each observation is expected to be [success, failure].</dd>
+<dt>exog <span class="classifier-delimiter">:</span> <span class="classifier">array-like</span></dt>
+<dd>A nobs x k array where <cite>nobs</cite> is the number of observations and <cite>k</cite>
+is the number of regressors. An intercept is not included by default
+and should be added by the user (models specified using a formula
+include an intercept by default). See <cite>statsmodels.tools.add_constant</cite>.</dd>
+<dt>family <span class="classifier-delimiter">:</span> <span class="classifier">family class instance</span></dt>
+<dd>The default is Gaussian.  To specify the binomial distribution
+family = sm.family.Binomial()
+Each family can take a link instance as an argument.  See
+statsmodels.family.family for more information.</dd>
+<dt>missing <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Available options are &#8216;none&#8217;, &#8216;drop&#8217;, and &#8216;raise&#8217;. If &#8216;none&#8217;, no nan
+checking is done. If &#8216;drop&#8217;, any observations with nans are dropped.
+If &#8216;raise&#8217;, an error is raised. Default is &#8216;none.&#8217;</dd>
+</dl>
+<dl class="docutils">
+<dt>df_model <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><cite>p</cite> - 1, where <cite>p</cite> is the number of regressors including the intercept.</dd>
+<dt>df_resid <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The number of observation <cite>n</cite> minus the number of regressors <cite>p</cite>.</dd>
+<dt>endog <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>See Parameters.</dd>
+<dt>exog <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>See Parameters.</dd>
+<dt>family <span class="classifier-delimiter">:</span> <span class="classifier">family class instance</span></dt>
+<dd>A pointer to the distribution family of the model.</dd>
+<dt>mu <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>The estimated mean response of the transformed variable.</dd>
+<dt>normalized_cov_params <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><cite>p</cite> x <cite>p</cite> normalized covariance of the design / exogenous data.</dd>
+<dt>pinv_wexog <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>For GLM this is just the pseudo inverse of the original design.</dd>
+<dt>scale <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The estimate of the scale / dispersion.  Available after fit is called.</dd>
+<dt>scaletype <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The scaling used for fitting the model.  Available after fit is called.</dd>
+<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>The value of the weights after the last iteration of fit.</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">scotland</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">exog</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Instantiate a gamma family model with the default link function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">GLM</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">,</span>
+<span class="gp">... </span>                     <span class="n">family</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">Gamma</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_results</span> <span class="o">=</span> <span class="n">gamma_model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_results</span><span class="o">.</span><span class="n">params</span>
+<span class="go">array([-0.01776527,  0.00004962,  0.00203442, -0.00007181,  0.00011185,</span>
+<span class="go">       -0.00000015, -0.00051868, -0.00000243])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_results</span><span class="o">.</span><span class="n">scale</span>
+<span class="go">0.0035842831734919055</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_results</span><span class="o">.</span><span class="n">deviance</span>
+<span class="go">0.087388516416999198</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_results</span><span class="o">.</span><span class="n">pearson_chi2</span>
+<span class="go">0.086022796163805704</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma_results</span><span class="o">.</span><span class="n">llf</span>
+<span class="go">-83.017202161073527</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal"><span class="pre">statsmodels.genmod.families.family()</span></code>, <span class="xref std std-ref">families</span>, <span class="xref std std-ref">links</span></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Only the following combinations make sense for family and link</p>
+<div class="highlight-python"><div class="highlight"><pre>             + ident log logit probit cloglog pow opow nbinom loglog logc
+Gaussian     |   x    x                        x
+inv Gaussian |   x    x                        x
+binomial     |   x    x    x     x       x     x    x           x      x
+Poission     |   x    x                        x
+neg binomial |   x    x                        x          x
+gamma        |   x    x                        x
+</pre></div>
+</div>
+<p>Not all of these link functions are currently available.</p>
+<p>Endog and exog are references so that if the data they refer to are already
+arrays and these arrays are changed, endog and exog will change.</p>
+<p><strong>Attributes</strong></p>
+<dl class="docutils">
+<dt>df_model <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Model degrees of freedom is equal to p - 1, where p is the number
+of regressors.  Note that the intercept is not reported as a
+degree of freedom.</dd>
+<dt>df_resid <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Residual degrees of freedom is equal to the number of observation n
+minus the number of regressors p.</dd>
+<dt>endog <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>See above.  Note that endog is a reference to the data so that if
+data is already an array and it is changed, then <cite>endog</cite> changes
+as well.</dd>
+<dt>exposure <span class="classifier-delimiter">:</span> <span class="classifier">array-like</span></dt>
+<dd>Include ln(exposure) in model with coefficient constrained to 1. Can
+only be used if the link is the logarithm function.</dd>
+<dt>exog <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>See above.  Note that endog is a reference to the data so that if
+data is already an array and it is changed, then <cite>endog</cite> changes
+as well.</dd>
+<dt>iteration <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The number of iterations that fit has run.  Initialized at 0.</dd>
+<dt>family <span class="classifier-delimiter">:</span> <span class="classifier">family class instance</span></dt>
+<dd>The distribution family of the model. Can be any family in
+statsmodels.families.  Default is Gaussian.</dd>
+<dt>mu <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>The mean response of the transformed variable.  <cite>mu</cite> is the value of
+the inverse of the link function at lin_pred, where lin_pred is the linear
+predicted value of the WLS fit of the transformed variable.  <cite>mu</cite> is
+only available after fit is called.  See
+statsmodels.families.family.fitted of the distribution family for more
+information.</dd>
+<dt>normalized_cov_params <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>The p x p normalized covariance of the design / exogenous data.
+This is approximately equal to (X.T X)^(-1)</dd>
+<dt>offset <span class="classifier-delimiter">:</span> <span class="classifier">array-like</span></dt>
+<dd>Include offset in model with coefficient constrained to 1.</dd>
+<dt>pinv_wexog <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>The pseudoinverse of the design / exogenous data array.  Note that
+GLM has no whiten method, so this is just the pseudo inverse of the
+design.
+The pseudoinverse is approximately equal to (X.T X)^(-1)X.T</dd>
+<dt>scale <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The estimate of the scale / dispersion of the model fit.  Only
+available after fit is called.  See GLM.fit and GLM.estimate_scale
+for more information.</dd>
+<dt>scaletype <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The scaling used for fitting the model.  This is only available after
+fit is called.  The default is None.  See GLM.fit for more information.</dd>
+<dt>weights <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd>The value of the weights after the last iteration of fit.  Only
+available after fit is called.  See statsmodels.families.family for
+the specific distribution weighting functions.</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

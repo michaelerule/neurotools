@@ -1,0 +1,258 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.parallel &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.parallel</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Parallel tools</span>
+<span class="sd">==============</span>
+
+<span class="sd">Notes on why &quot;parmap&quot; and related functions are awkward in Python: </span>
+
+<span class="sd">Python multiprocessing will raise &quot;cannot pickle&quot;</span>
+<span class="sd">errors if you try to pass general functions as arguments to parallel</span>
+<span class="sd">map. This flaw arises because python multiprocessing is achieved by</span>
+<span class="sd">forking subprocesses that contain a full copy of the interpreter state,</span>
+<span class="sd">mapped in memory with copy-on-write. (incidentally this is also why</span>
+<span class="sd">you don&#39;t want to load large datasets in worker processes, since each</span>
+<span class="sd">process will load the dataset separately, consuming a large amount of </span>
+<span class="sd">memory). Because functions defined after worker-pool initiation depend</span>
+<span class="sd">on the interpreter state of the process in which they were defined, they</span>
+<span class="sd">cannot be sent over to worker processes as we cannot guarantee in </span>
+<span class="sd">general that the context they reference will exist in the worker process.</span>
+<span class="sd">Consequentially, the only way to use a function with the &quot;parmap&quot; </span>
+<span class="sd">function is to define it BEFORE the worker pool is initialized (or to</span>
+<span class="sd">re-initialize the pool once it is defined). The function must be at</span>
+<span class="sd">global scope. </span>
+
+<span class="sd">Furthermore, the work-stealing pool model can only send back the return</span>
+<span class="sd">values of function evaluations from the work queue -- and it does so in</span>
+<span class="sd">no particular order. Therefore, if we want to know which job corresponds</span>
+<span class="sd">to which return value, we must return identifying information. In this</span>
+<span class="sd">case wer return the job number. </span>
+
+<span class="sd">The reason we cannot make a generic function that masks this &quot;return the</span>
+<span class="sd">job ID&quot; issue is that we cannot pass an arbitrary function over to </span>
+<span class="sd">the worker pool processes due to the aforementioned interpreter context</span>
+<span class="sd">issue.</span>
+
+<span class="sd">A more laborous workaround, which we might consider later, would be to </span>
+<span class="sd">re-implement the work-stealing queue so that job IDs are automatically</span>
+<span class="sd">preserved and communicated through inter-process communication. </span>
+
+<span class="sd">This will not solve the problem of needing to define all functions used</span>
+<span class="sd">with &quot;parmap&quot; before the working pool is initailized and at global scope,</span>
+<span class="sd">but it will save us from having to manually track and return the job</span>
+<span class="sd">number, which will lead to more readable and more reusable code.</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">cpu_count</span><span class="p">,</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span><span class="p">,</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">__N_CPU__</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Issue with terminate failing. Could be linux python issue. These </span>
+<span class="sd">stackoverflow lines may be handy later</span>
+
+<span class="sd">process=Process(target=foo,args=(&#39;bar&#39;,))</span>
+<span class="sd">pid=process.pid</span>
+<span class="sd">process.terminate() # works on Windows only</span>
+
+<span class="sd">...</span>
+
+<span class="sd">os.sytem(&#39;kill -9 {}&#39;.format(pid))</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c"># TODO: modify to operate over ND arrays?</span>
+<div class="viewcode-block" id="parmap"><a class="viewcode-back" href="../../neurotools.parallel.html#neurotools.parallel.parmap">[docs]</a><span class="k">def</span> <span class="nf">parmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fakeit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">mypool</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    f must return an index as the first element in a tuple for this to work</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">fakeit</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">job</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">done </span><span class="si">%0.1f%%</span><span class="s"> &#39;</span><span class="o">%</span><span class="p">((</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">num_tasks</span><span class="p">)))</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;NO POOL FOUND. RESTARTING.&#39;</span>
+            <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">parmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># execute jobs in parallel</span>
+            <span class="n">results</span>   <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">problems</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+            <span class="n">num_tasks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;STARTING PARALLEL&#39;</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mypool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)):</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">done </span><span class="si">%0.1f%%</span><span class="s"> &#39;</span><span class="o">%</span><span class="p">((</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">num_tasks</span><span class="p">)))</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;FINISHED PARALLEL&#39;</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">            </span><span class="se">\r</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">()))]</span>
+    </div>
+<div class="viewcode-block" id="parmap_dict"><a class="viewcode-back" href="../../neurotools.parallel.html#neurotools.parallel.parmap_dict">[docs]</a><span class="k">def</span> <span class="nf">parmap_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fakeit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">mypool</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    f must return an index as the first element in a tuple for this to work</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">fakeit</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">job</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">done </span><span class="si">%0.1f%%</span><span class="s"> &#39;</span><span class="o">%</span><span class="p">((</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">num_tasks</span><span class="p">)))</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;NO POOL FOUND. RESTARTING.&#39;</span>
+            <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">parmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># execute jobs in parallel</span>
+            <span class="n">results</span>   <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">problems</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+            <span class="n">num_tasks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;STARTING PARALLEL&#39;</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mypool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)):</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">done </span><span class="si">%0.1f%%</span><span class="s"> &#39;</span><span class="o">%</span><span class="p">((</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">num_tasks</span><span class="p">)))</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;FINISHED PARALLEL&#39;</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">            </span><span class="se">\r</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+</div>
+<div class="viewcode-block" id="reset_pool"><a class="viewcode-back" href="../../neurotools.parallel.html#neurotools.parallel.reset_pool">[docs]</a><span class="k">def</span> <span class="nf">reset_pool</span><span class="p">(</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">mypool</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;NO POOL FOUND. STARTING&#39;</span>
+        <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;POOL FOUND. RESTARTING&#39;</span>
+        <span class="k">print</span> <span class="s">&#39;Attempting to terminate pool, may become unresponsive&#39;</span>
+        <span class="n">mypool</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="n">mypool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">mypool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">mypool</span>
+        <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="parmap_enum"><a class="viewcode-back" href="../../neurotools.parallel.html#neurotools.parallel.parmap_enum">[docs]</a><span class="k">def</span> <span class="nf">parmap_enum</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    f must return an index as the first element in a tuple for this to work</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">())</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mypool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="si">%d</span><span class="s"> done&#39;</span><span class="o">%</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">print</span> <span class="s">&#39;Attempting to terminate pool, may become unresponsive&#39;</span>
+    <span class="n">mypool</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+    <span class="n">mypool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="n">mypool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">del</span> <span class="n">mypool</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">()))]</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,393 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.dct &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.dct</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Discrete cosine transform methods. </span>
+
+<span class="sd">Primarily used with fftzeros code for finding critical points in phase</span>
+<span class="sd">gradient maps.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">expanduser</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.parallel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.conv</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.getfftw</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib.mlab</span> <span class="kn">import</span> <span class="n">find</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">def get_grid(data,spacing=0.4):</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    I do not remember what this function did, and it doesn&#39;t seem to be</span>
+<span class="sd">    in use by any other functions, so I&#39;m commenting it out.</span>
+<span class="sd">    &gt;&gt;&gt; M,N = 10,10</span>
+<span class="sd">    &gt;&gt;&gt; data = randn(M,N)+1j*randn(M,N)</span>
+<span class="sd">    &gt;&gt;&gt; gg = getGrid(data)</span>
+<span class="sd">    &gt;&gt;&gt; dd = abs(gg)</span>
+<span class="sd">    &gt;&gt;&gt; a  = 4.5/(2*pi)</span>
+<span class="sd">    &gt;&gt;&gt; kern = sinc(a*dd)*a</span>
+<span class="sd">    &gt;&gt;&gt; imshow(kern)</span>
+<span class="sd">    &gt;&gt;&gt; result = ifft2(kern)</span>
+<span class="sd">    &gt;&gt;&gt; imshow(real(result),interpolation=&#39;nearest&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; bone()</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    h,w = shape(data)[:2]</span>
+<span class="sd">    x1 = list(arange(w+1)*spacing)</span>
+<span class="sd">    x2 = list(arange(h+1)*spacing)</span>
+<span class="sd">    x1 = x1+list(reversed(x1[1:-1]))</span>
+<span class="sd">    x2 = x2+list(reversed(x2[1:-1]))</span>
+<span class="sd">    x1 = array((x1,)*(h*2))</span>
+<span class="sd">    x2 = array((x2,)*(w*2)).T</span>
+<span class="sd">    return x1+1j*x2</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="get_mask_antialiased"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.get_mask_antialiased">[docs]</a><span class="k">def</span> <span class="nf">get_mask_antialiased</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">),</span><span class="n">aa</span><span class="p">,</span><span class="n">spacing</span><span class="p">,</span><span class="n">cutoff</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes a frequency space mask for (h,w) shaped domain with cutoff</span>
+<span class="sd">    frequency and some anti-aliasing factor as specified by aa. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h : int</span>
+<span class="sd">        height</span>
+<span class="sd">    w : int</span>
+<span class="sd">        width</span>
+<span class="sd">    aa : int    </span>
+<span class="sd">        antialiasing upsampling factor</span>
+<span class="sd">    spacing : numeric</span>
+<span class="sd">        array spacing in mm</span>
+<span class="sd">    cutoff : numeric</span>
+<span class="sd">        cutoff scale in mm</span>
+<span class="sd">    </span>
+<span class="sd">    Retruns:</span>
+<span class="sd">        h*2 x w*2 symmetric mask to be used with DCT for smoothing</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">aa</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">f1</span>     <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">aa</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="n">f2</span>     <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">aa</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="n">ff</span>     <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">outer_complex</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">))</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">cutoff</span>
+    <span class="n">up</span>     <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">ff</span><span class="o">&lt;=</span><span class="n">radius</span><span class="p">)</span>
+    <span class="n">up</span>     <span class="o">=</span> <span class="n">roll</span><span class="p">(</span><span class="n">up</span><span class="p">,</span><span class="n">aa</span><span class="o">*</span><span class="n">h</span><span class="o">+</span><span class="n">aa</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">up</span>     <span class="o">=</span> <span class="n">roll</span><span class="p">(</span><span class="n">up</span><span class="p">,</span><span class="n">aa</span><span class="o">*</span><span class="n">w</span><span class="o">+</span><span class="n">aa</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mask</span>   <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">mean</span><span class="p">(</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">*</span><span class="n">aa</span><span class="p">:(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">aa</span><span class="p">,</span><span class="n">i</span><span class="o">*</span><span class="n">aa</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">aa</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="mi">2</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="mi">2</span><span class="p">)])</span>
+    <span class="n">mask</span>   <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span>
+    </div>
+<div class="viewcode-block" id="get_mask"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.get_mask">[docs]</a><span class="k">def</span> <span class="nf">get_mask</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">),</span><span class="n">spacing</span><span class="p">,</span><span class="n">cutoff</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        height: height of array</span>
+<span class="sd">        width: width of array</span>
+<span class="sd">        spacing: array spacing in mm</span>
+<span class="sd">        cutoff: scale in mm</span>
+<span class="sd">    return: h*2 x w*2 symmetric mask to be used with DCT for smoothing</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">f1</span>     <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="n">f2</span>     <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="n">ff</span>     <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">outerComplex</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">))</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">cutoff</span>
+    <span class="n">up</span>     <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">ff</span><span class="o">&lt;=</span><span class="n">radius</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">up</span>
+</div>
+<div class="viewcode-block" id="dct_cut"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.dct_cut">[docs]</a><span class="k">def</span> <span class="nf">dct_cut</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">cutoff</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Low-pass filters image data by discarding high frequency Fourier </span>
+<span class="sd">    components. </span>
+<span class="sd">    Image data is reflected before being processes (i.e.) mirrored boundary</span>
+<span class="sd">    conditions. </span>
+<span class="sd">    TODO: I think there is some way to compute the mirrored conditions</span>
+<span class="sd">    directly without copying the image data.</span>
+<span class="sd">    </span>
+<span class="sd">    This function has been superseded by dct_cut_antialias, which is more </span>
+<span class="sd">    accurate.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;WARNING DEPRICATED USE dct_cut_antialias&#39;</span>
+    <span class="n">h</span><span class="p">,</span><span class="n">w</span>    <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">mask</span>   <span class="o">=</span> <span class="n">getMask</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">),</span><span class="n">spacing</span><span class="p">,</span><span class="n">cutoff</span><span class="p">)</span>
+    <span class="n">mirror</span> <span class="o">=</span> <span class="n">reflect2D</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ff2</span>    <span class="o">=</span> <span class="n">fft2</span><span class="p">(</span><span class="n">mirror</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">cut</span>    <span class="o">=</span> <span class="p">(</span><span class="n">ff2</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">mask</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="c"># weird shape broadcasting constraints</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">cut</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:</span><span class="n">h</span><span class="p">,:</span><span class="n">w</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="outer_complex"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.outer_complex">[docs]</a><span class="k">def</span> <span class="nf">outer_complex</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Not quite outer product, intead of a_i * b_k its </span>
+<span class="sd">    a_i + 1j * b_k</span>
+<span class="sd">    which I guess is like</span>
+<span class="sd">    log(outer(exp(a_i),exp(1j*b)))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="bp">None</span><span class="p">]</span><span class="o">+</span><span class="mi">1j</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="dct_cut_antialias"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.dct_cut_antialias">[docs]</a><span class="k">def</span> <span class="nf">dct_cut_antialias</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">cutoff</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses brute-force upsampling to anti-alias the frequency space sinc</span>
+<span class="sd">    function, skirting numerical issues that derives either from </span>
+<span class="sd">    attempting to evaulate the radial sinc function on a small 2D domain,</span>
+<span class="sd">    or select a constant frequency cutoff in the frequency space. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    # Sinc experiment</span>
+<span class="sd">    </span>
+<span class="sd">    M,N    = 60,80</span>
+<span class="sd">    data   = randn(M,N)+1j*randn(M,N)</span>
+<span class="sd">    h,w    = shape(data)[:2]</span>
+<span class="sd">    </span>
+<span class="sd">    aa     = 7</span>
+<span class="sd">    assert(aa%2==1)</span>
+<span class="sd">    f1     = fftfreq(h*2*aa,spacing)</span>
+<span class="sd">    f2     = fftfreq(w*2*aa,spacing)</span>
+<span class="sd">    ff     = abs(outerComplex(f1,f2))</span>
+<span class="sd">    radius = spacing/cutoff</span>
+<span class="sd">    up     = int32(ff&lt;=radius)</span>
+<span class="sd">    #up    = fftshift(up)</span>
+<span class="sd">    up     = roll(up,aa*h+aa/2,0)</span>
+<span class="sd">    up     = roll(up,aa*w+aa/2,1)</span>
+<span class="sd">    mask   = array([[mean(up[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])</span>
+<span class="sd">    mask   = fftshift(mask)</span>
+<span class="sd">    </span>
+<span class="sd">    f1B    = fftfreq(h*2,spacing)</span>
+<span class="sd">    f2B    = fftfreq(w*2,spacing)</span>
+<span class="sd">    ffB    = abs(outerComplex(f1B,f2B))</span>
+<span class="sd">    maskB  = int32(ffB&lt;=radius)</span>
+<span class="sd">    </span>
+<span class="sd">    mirror = reflect2D(data)</span>
+<span class="sd">    ff2    = fft2(mirror,axes=(0,1))</span>
+<span class="sd">    cut    = (ff2.T*mask.T).T # weird shape broadcasting constraints</span>
+<span class="sd">    result = ifft2(cut,axes=(0,1))[:h,:w,...]</span>
+<span class="sd">    </span>
+<span class="sd">    subplot(231)</span>
+<span class="sd">    imshow(real(up),interpolation=&#39;nearest&#39;)</span>
+<span class="sd">    subplot(232)</span>
+<span class="sd">    kern   = fft2(mask,axes=(0,1))</span>
+<span class="sd">    imshow(fftshift(real(kern)),interpolation=&#39;nearest&#39;)</span>
+<span class="sd">    subplot(233)</span>
+<span class="sd">    imshow(fftshift(mask),interpolation=&#39;nearest&#39;)</span>
+<span class="sd">    subplot(234)</span>
+<span class="sd">    imshow(real(result),interpolation=&#39;nearest&#39;)</span>
+<span class="sd">    subplot(235)</span>
+<span class="sd">    imshow(fftshift(real(maskB)),interpolation=&#39;nearest&#39;)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">h</span><span class="p">,</span><span class="n">w</span>    <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">mask</span>   <span class="o">=</span> <span class="n">get_mask_antialiased</span><span class="p">((</span><span class="n">h</span><span class="p">,</span><span class="n">w</span><span class="p">),</span><span class="mi">7</span><span class="p">,</span><span class="n">spacing</span><span class="p">,</span><span class="n">cutoff</span><span class="p">)</span>
+    <span class="n">mirror</span> <span class="o">=</span> <span class="n">reflect2D</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ff2</span>    <span class="o">=</span> <span class="n">fft2</span><span class="p">(</span><span class="n">mirror</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">cut</span>    <span class="o">=</span> <span class="p">(</span><span class="n">ff2</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">mask</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="c"># weird shape broadcasting constraints</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">cut</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:</span><span class="n">h</span><span class="p">,:</span><span class="n">w</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="dct_cut_downsampled"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.dct_cut_downsampled">[docs]</a><span class="k">def</span> <span class="nf">dct_cut_downsampled</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">cutoff</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    like dctCut but also lowers the sampling rate, creating a compact </span>
+<span class="sd">    representation from which the whole downsampled data could be </span>
+<span class="sd">    recovered</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">h</span><span class="p">,</span><span class="n">w</span>    <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">f1</span>     <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="n">f2</span>     <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span>
+    <span class="n">wl</span>     <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">reshape</span><span class="p">(</span><span class="n">f1</span><span class="p">,(</span><span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">+</span><span class="mi">1j</span><span class="o">*</span><span class="n">reshape</span><span class="p">(</span><span class="n">f2</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="p">)))</span>
+    <span class="n">mask</span>   <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">wl</span><span class="o">&gt;=</span><span class="n">cutoff</span><span class="p">)</span>
+    <span class="n">mirror</span> <span class="o">=</span> <span class="n">reflect2D</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ff</span>     <span class="o">=</span> <span class="n">fft2</span><span class="p">(</span><span class="n">mirror</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">cut</span>    <span class="o">=</span> <span class="p">(</span><span class="n">ff</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">mask</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="c"># weird shape broadcasting constraints</span>
+    <span class="n">empty_cols</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">mask</span><span class="o">==</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">empty_rows</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">mask</span><span class="o">==</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">delete_col</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">empty_cols</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="c">#idiv important here</span>
+    <span class="n">delete_row</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">empty_rows</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="c">#idiv important here</span>
+    <span class="n">keep_cols</span>  <span class="o">=</span> <span class="n">w</span><span class="o">-</span><span class="n">delete_col</span>
+    <span class="n">keep_rows</span>  <span class="o">=</span> <span class="n">h</span><span class="o">-</span><span class="n">delete_row</span>
+    <span class="n">col_mask</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">col_mask</span><span class="p">[:</span><span class="n">keep_cols</span><span class="p">]</span> <span class="o">=</span><span class="mi">1</span>
+    <span class="n">col_mask</span><span class="p">[</span><span class="o">-</span><span class="n">keep_cols</span><span class="p">:]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">col_mask</span> <span class="o">=</span> <span class="n">col_mask</span><span class="o">==</span><span class="mi">1</span>
+    <span class="n">row_mask</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">row_mask</span><span class="p">[:</span><span class="n">keep_rows</span><span class="p">]</span> <span class="o">=</span><span class="mi">1</span>
+    <span class="n">row_mask</span><span class="p">[</span><span class="o">-</span><span class="n">keep_rows</span><span class="p">:]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">row_mask</span> <span class="o">=</span> <span class="n">row_mask</span><span class="o">==</span><span class="mi">1</span>
+    <span class="n">cut</span> <span class="o">=</span> <span class="n">cut</span><span class="p">[</span><span class="n">row_mask</span><span class="p">,</span><span class="o">...</span><span class="p">][:,</span><span class="n">col_mask</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">keep_cols</span><span class="p">,</span><span class="n">keep_rows</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">cut</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:</span><span class="n">h</span><span class="p">,:</span><span class="n">w</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="dct_upsample"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.dct_upsample">[docs]</a><span class="k">def</span> <span class="nf">dct_upsample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses the DCT to upsample array data. Nice for visualization. Uses a</span>
+<span class="sd">    discrete cosine transform to smoothly upsample image data. Boundary</span>
+<span class="sd">    conditions are handeled as reflected. </span>
+<span class="sd">    </span>
+<span class="sd">    Data is made symmetric, fourier transformed, then inserted into the </span>
+<span class="sd">    low-frequency components of a larger array, which is then inverse </span>
+<span class="sd">    transformed. </span>
+<span class="sd">    </span>
+<span class="sd">    This could probably be optimized with a customized array implimentation</span>
+<span class="sd">    to avoid the copying.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (ndarray): frist two dimensions should be height and width. </span>
+<span class="sd">            data may contain aribtrary number of additional dimensions</span>
+<span class="sd">        factor (int): upsampling factor.</span>
+<span class="sd">    </span>
+<span class="sd">    Test code    </span>
+<span class="sd">    grid = arange(10)&amp;1</span>
+<span class="sd">    grid = grid[None,:]^grid[:,None]</span>
+<span class="sd">    amp  = dct_upsample(grid,UPSAMPLE).real </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">h</span><span class="p">,</span><span class="n">w</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">mirrored</span> <span class="o">=</span> <span class="n">reflect2D_1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ff</span> <span class="o">=</span> <span class="n">fft2</span><span class="p">(</span><span class="n">mirrored</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">h2</span><span class="p">,</span><span class="n">w2</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">mirrored</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">newshape</span> <span class="o">=</span> <span class="p">(</span><span class="n">h2</span><span class="o">*</span><span class="n">factor</span><span class="p">,</span><span class="n">w2</span><span class="o">*</span><span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">newshape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">ff</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="c">#have to add one more on the left to grab the nyqist term</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">w</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">result</span><span class="p">[:</span><span class="n">H</span> <span class="p">,:</span><span class="n">W</span> <span class="p">,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[:</span><span class="n">H</span> <span class="p">,</span> <span class="p">:</span><span class="n">W</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,:</span><span class="n">W</span> <span class="p">,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,</span> <span class="p">:</span><span class="n">W</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[:</span><span class="n">H</span> <span class="p">,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[:</span><span class="n">H</span> <span class="p">,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[:</span><span class="n">h</span><span class="o">*</span><span class="n">factor</span><span class="o">-</span><span class="n">factor</span><span class="o">+</span><span class="mi">1</span><span class="p">,:</span><span class="n">w</span><span class="o">*</span><span class="n">factor</span><span class="o">-</span><span class="n">factor</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">*</span><span class="p">(</span><span class="n">factor</span><span class="o">*</span><span class="n">factor</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="iterated_upsample"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.iterated_upsample">[docs]</a><span class="k">def</span> <span class="nf">iterated_upsample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">niter</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">niter</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">dct_upsample</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+</div>
+<div class="viewcode-block" id="dct_upsample_notrim"><a class="viewcode-back" href="../../neurotools.dct.html#neurotools.dct.dct_upsample_notrim">[docs]</a><span class="k">def</span> <span class="nf">dct_upsample_notrim</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses the DCT to upsample array data. Nice for visualization. Uses a</span>
+<span class="sd">    discrete cosine transform to smoothly upsample image data. Boundary</span>
+<span class="sd">    conditions are handeled as reflected. </span>
+<span class="sd">    </span>
+<span class="sd">    Data is made symmetric, fourier transformed, then inserted into the </span>
+<span class="sd">    low-frequency components of a larger array, which is then inverse </span>
+<span class="sd">    transformed. </span>
+<span class="sd">    </span>
+<span class="sd">    This could probably be optimized with a customized array implimentation</span>
+<span class="sd">    to avoid the copying.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (ndarray): frist two dimensions should be height and width. </span>
+<span class="sd">            data may contain aribtrary number of additional dimensions</span>
+<span class="sd">        factor (int): upsampling factor.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;ALIGNMENT BUG DO NOT USE YET&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+    <span class="n">h</span><span class="p">,</span><span class="n">w</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">mirrored</span> <span class="o">=</span> <span class="n">reflect2D_1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">ff</span> <span class="o">=</span> <span class="n">fft2</span><span class="p">(</span><span class="n">mirrored</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">h2</span><span class="p">,</span><span class="n">w2</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">mirrored</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">newshape</span> <span class="o">=</span> <span class="p">(</span><span class="n">h2</span><span class="o">*</span><span class="n">factor</span><span class="p">,</span><span class="n">w2</span><span class="o">*</span><span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">newshape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">ff</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="c">#have to add one more on the left to grab the nyqist term</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">w</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">result</span><span class="p">[:</span><span class="n">H</span> <span class="p">,:</span><span class="n">W</span> <span class="p">,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[:</span><span class="n">H</span> <span class="p">,</span> <span class="p">:</span><span class="n">W</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,:</span><span class="n">W</span> <span class="p">,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,</span> <span class="p">:</span><span class="n">W</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[:</span><span class="n">H</span> <span class="p">,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[:</span><span class="n">H</span> <span class="p">,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">:,</span><span class="o">-</span><span class="n">w</span><span class="p">:,</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">h</span><span class="o">*</span><span class="n">factor</span><span class="o">+</span><span class="n">factor</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="n">w</span><span class="o">*</span><span class="n">factor</span><span class="o">+</span><span class="n">factor</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">*</span><span class="p">(</span><span class="n">factor</span><span class="o">*</span><span class="n">factor</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

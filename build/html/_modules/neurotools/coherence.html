@@ -1,0 +1,244 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.coherence &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.coherence</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">morlet</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c">#execfile(expanduser(&#39;~/Dropbox/bin/morlet.py&#39;))</span>
+<span class="c">#</span>
+<span class="c"># sudo easy_install spectrum</span>
+<span class="kn">from</span> <span class="nn">spectrum.mtm</span> <span class="kn">import</span> <span class="n">dpss</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">expanduser</span>
+
+
+<span class="c">############################################################################</span>
+<span class="c"># Configure the beta band complex morlet transform</span>
+
+<span class="k">def</span> <span class="nf">population_coherence_spectrum</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="population_coherence_spectrum"><a class="viewcode-back" href="../../neurotools.coherence.html#neurotools.coherence.population_coherence_spectrum">[docs]</a><span class="sd">    First dimension is nchannels, second is time.</span>
+<span class="sd">    Use morlet wavelets ( essentially bandpass filter bank ) to compute</span>
+<span class="sd">    short-timescale coherence.</span>
+<span class="sd">    for each band: take morlet spectrum over time. </span>
+<span class="sd">    take kuromoto or synchrony measure over complex vectors attained</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+    <span class="c"># this measures synchrony not coherence. </span>
+    <span class="c"># disabling it until we understand coherence better</span>
+    <span class="n">freqs</span><span class="p">,</span> <span class="n">transformed</span> <span class="o">=</span> <span class="n">fft_cwt</span><span class="p">(</span><span class="n">lfp</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">resolution</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span>
+    <span class="n">coherence</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">transformed</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">coherence</span>
+    
+<span class="k">def</span> <span class="nf">population_eigencoherence</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span></div>
+<div class="viewcode-block" id="population_eigencoherence"><a class="viewcode-back" href="../../neurotools.coherence.html#neurotools.coherence.population_eigencoherence">[docs]</a><span class="sd">    Uses the eigenvalue spectrum of the pairwise coherence matrix. </span>
+<span class="sd">    In the case of wavelets, each time-frequency point has one </span>
+<span class="sd">    complex value.</span>
+<span class="sd">    </span>
+<span class="sd">    The matrix we build will be I think |z_i z_j|</span>
+<span class="sd">    </span>
+<span class="sd">    ... this will involve a lot of computation. </span>
+<span class="sd">    ... let&#39;s not do it.</span>
+<span class="sd">    </span>
+<span class="sd">    See ramirez et al</span>
+<span class="sd">    A GENERALIZATION OF THE MAGNITUDE SQUARED COHERENCE SPECTRUM FOR</span>
+<span class="sd">    MORE THAN TWO SIGNALS: DEFINITION, PROPERTIES AND ESTIMATION</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+
+<span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">dpss_memo</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">NW</span><span class="p">):</span></div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ftapers is K x N</span>
+<span class="sd">    K = NW*2</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">tapers</span><span class="p">,</span><span class="n">eigen</span> <span class="o">=</span> <span class="n">dpss</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">NW</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tapers</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">eigen</span>
+
+<span class="k">def</span> <span class="nf">population_coherence_matrix</span><span class="p">(</span><span class="n">lfp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="population_coherence_matrix"><a class="viewcode-back" href="../../neurotools.coherence.html#neurotools.coherence.population_coherence_matrix">[docs]</a><span class="sd">    lfp is a Nch x Ntimes matrix of data channels.</span>
+<span class="sd">    ntapers is a positive integer.</span>
+<span class="sd">    </span>
+<span class="sd">    For each pair of channels compute multitaper coherence.</span>
+<span class="sd">    take the product of each taper with each channel and take the FT</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">NCH</span><span class="p">,</span><span class="n">N</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
+    <span class="n">tapers</span><span class="p">,</span><span class="n">eigen</span> <span class="o">=</span> <span class="n">dpss_memo</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">eigen</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">eigen</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c"># adjusted sample size</span>
+    <span class="n">tapered</span> <span class="o">=</span> <span class="n">arr</span><span class="p">([</span><span class="n">fft</span><span class="p">(</span><span class="n">lfp</span><span class="o">*</span><span class="n">taper</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">taper</span> <span class="ow">in</span> <span class="n">tapers</span><span class="p">])</span>
+    <span class="n">NT</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigen</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">magsq</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">conj</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    <span class="n">psd</span> <span class="o">=</span> <span class="n">arr</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">magsq</span><span class="p">(</span><span class="n">tapered</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">i</span><span class="p">,:])</span><span class="o">*</span><span class="n">eigen</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NT</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">eigen</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NCH</span><span class="p">)])</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NCH</span><span class="p">,</span><span class="n">NCH</span><span class="p">,</span><span class="n">N</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NCH</span><span class="p">):</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">tapered</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">tapered</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span>
+            <span class="n">nn</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">a</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">conj</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">*</span><span class="n">eigen</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NT</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">eigen</span><span class="p">)</span>
+            <span class="n">coherence</span> <span class="o">=</span> <span class="n">magsq</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">psd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">psd</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">sqrc</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">coherence</span><span class="p">)</span>
+            <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span><span class="o">*</span><span class="n">sqrc</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,:]</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">,:]</span><span class="o">=</span><span class="n">unbiased</span>
+    <span class="n">factored</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NCH</span><span class="p">,</span><span class="n">NCH</span><span class="p">,</span><span class="n">N</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">spectra</span>  <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NCH</span><span class="p">,</span><span class="n">N</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="n">results</span><span class="p">[:,:,</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">v</span><span class="p">[:,</span><span class="n">w</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span><span class="o">*=-</span><span class="mi">1</span>
+        <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span><span class="o">*=-</span><span class="mi">1</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">argsort</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">spectra</span> <span class="p">[:,</span><span class="n">i</span><span class="p">]</span>   <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">factored</span><span class="p">[:,:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span><span class="n">order</span><span class="p">]</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">results</span><span class="p">,</span><span class="n">spectra</span><span class="p">,</span><span class="n">factored</span>
+    
+    <span class="c">#@memoize</span>
+<span class="k">def</span> <span class="nf">dpss_memo</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">NW</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span></div>
+<div class="viewcode-block" id="dpss_memo"><a class="viewcode-back" href="../../neurotools.coherence.html#neurotools.coherence.dpss_memo">[docs]</a><span class="sd">    ftapers is K x N</span>
+<span class="sd">    K = NW*2</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">tapers</span><span class="p">,</span><span class="n">eigen</span> <span class="o">=</span> <span class="n">dpss</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">NW</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tapers</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">eigen</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">execfile(expanduser(&#39;~/Dropbox/bin/cgid/cgidsetup.py&#39;))</span></div>
+<span class="sd">okwarn()</span>
+<span class="sd">session = &#39;RUS120518&#39;</span>
+<span class="sd">area = &#39;M1&#39;</span>
+<span class="sd">trial = get_good_trials(session,area)[0]</span>
+
+<span class="sd">csd = []</span>
+<span class="sd">for i in range(0,7000-100,5): </span>
+<span class="sd">    print i</span>
+<span class="sd">    lfp = get_all_lfp(session,area,trial,(6,-1000+i,-1000+i+100))</span>
+<span class="sd">    s = population_coherence_matrix(lfp)[2][0]</span>
+<span class="sd">    csd.append(s)</span>
+
+<span class="sd"># Coherence example</span>
+<span class="sd">Fs = 1000</span>
+<span class="sd">N = Fs*4</span>
+<span class="sd">t = arange(N)</span>
+
+<span class="sd">s1 = cos(t*2*pi*90/Fs)</span>
+<span class="sd">s2 = cos(t*2*pi*40/Fs)</span>
+<span class="sd">n1 = randn(N)</span>
+<span class="sd">n2 = randn(N)</span>
+<span class="sd">n3 = randn(N)</span>
+
+<span class="sd">g1 = n1+n2</span>
+<span class="sd">g2 = n3+n2</span>
+
+<span class="sd">tapers,eigen = dpss_memo(N,10.0)</span>
+<span class="sd">tapered1 = array([fft(g1*taper,axis=1) for taper in tapers])</span>
+<span class="sd">tapered2 = array([fft(g2*taper,axis=1) for taper in tapers])</span>
+<span class="sd">DF = sum(eigen) </span>
+<span class="sd">NT = len(eigen)</span>
+<span class="sd">psd1 = sum([magsq(tapered1[k,:])*eigen[k] for k in range(NT)],0)/DF</span>
+<span class="sd">psd2 = sum([magsq(tapered2[k,:])*eigen[k] for k in range(NT)],0)/DF</span>
+<span class="sd">def magsq(z):</span>
+<span class="sd">    return real(z*conj(z))</span>
+<span class="sd">nn = sum([tapered1[k]*tapered2(b[k])*eigen[k] for k in range(NT)],0)/DF</span>
+<span class="sd">coherence = magsq(nn)/(psd[i]*psd[j])</span>
+<span class="sd">plot(coherence)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

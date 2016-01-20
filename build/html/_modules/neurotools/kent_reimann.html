@@ -1,0 +1,228 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.kent_reimann &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.kent_reimann</h1><div class="highlight"><pre>
+<span class="sd">r&#39;&#39;&#39;</span>
+<span class="sd">The 5-parameter Fisher-Bingham distribution or Kent distribution, named </span>
+<span class="sd">after Ronald Fisher, Christopher Bingham, and John T. Kent, is a probability</span>
+<span class="sd">distribution on the two-dimensional unit sphere &lt;math&gt;S^{2}\,&lt;/math&gt; in</span>
+<span class="sd">&lt;math&gt;\Bbb{R}^{3}&lt;/math&gt; .  It is the analogue on the two-dimensional unit </span>
+<span class="sd">sphere of the bivariate normal distribution with an unconstrained covariance</span>
+<span class="sd">matrix. The distribution belongs to the field of directional statistics. </span>
+<span class="sd">The Kent distribution was proposed by John T. Kent in 1982, and is used in</span>
+<span class="sd">geology, bioinformatics.</span>
+
+<span class="sd">The probability density function &lt;math&gt;f(\mathbf{x})\,&lt;/math&gt; of the Kent </span>
+<span class="sd">istribution is given by: </span>
+
+<span class="sd">f(\mathbf{x})=\frac{1}{\textrm{c}(\kappa,\beta)}\exp\{\kappa\boldsymbol{\gamma}_{1}\cdot\mathbf{x}+\beta[(\boldsymbol{\gamma}_{2}\cdot\mathbf{x})^{2}-(\boldsymbol{\gamma}_{3}\cdot\mathbf{x})^{2}]\} </span>
+
+<span class="sd">where  &lt;math&gt;\mathbf{x}\,&lt;/math&gt;  is a three-dimensional unit vector and the normalizing constant  &lt;math&gt;\textrm{c}(\kappa,\beta)\,&lt;/math&gt;  is:</span>
+
+<span class="sd">&lt;math&gt;</span>
+<span class="sd">c(\kappa,\beta)=2\pi\sum_{j=0}^\infty\frac{\Gamma(j+\frac{1}{2})}{\Gamma(j+1)}\beta^{2j}\left(\frac{1}{2}\kappa\right)^{-2j-\frac{1}{2}}{I}_{2j+\frac{1}{2}}(\kappa)</span>
+<span class="sd">&lt;/math&gt;</span>
+
+<span class="sd">Where &lt;math&gt;{I}_v(\kappa)&lt;/math&gt; is the modified Bessel function.  Note that &lt;math&gt;c(0,0) = 4\pi&lt;/math&gt; and &lt;math&gt;c(\kappa,0)=4\pi\kappa^{-1}\sinh(\kappa)&lt;/math&gt;, the normalizing constant of the Von Mises-Fisher distribution.</span>
+
+<span class="sd">The parameter &lt;math&gt;\kappa\,&lt;/math&gt;  (with &lt;math&gt;\kappa&gt;0\,&lt;/math&gt; ) determines the concentration or spread of the distribution, while  &lt;math&gt;\beta\,&lt;/math&gt;  (with  &lt;math&gt;0\leq2\beta&lt;\kappa&lt;/math&gt; ) determines the ellipticity of the contours of equal probability. The higher the  &lt;math&gt;\kappa\,&lt;/math&gt;  and  &lt;math&gt;\beta\,&lt;/math&gt;  parameters, the more concentrated and elliptical the distribution will be, respectively. Vector  &lt;math&gt;\gamma_{1}\,&lt;/math&gt;  is the mean direction, and vectors  &lt;math&gt;\gamma_{2},\gamma_{3}\,&lt;/math&gt;  are the major and minor axes. The latter two vectors determine the orientation of the equal probability contours on the sphere, while the first vector determines the common center of the contours. The 3x3 matrix &lt;math&gt;(\gamma_{1},\gamma_{2},\gamma_{3})\,&lt;/math&gt; must be orthogonal.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="riemann2complex"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.riemann2complex">[docs]</a><span class="k">def</span> <span class="nf">riemann2complex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">normed</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">])</span>
+    <span class="n">zeta</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1j</span><span class="o">*</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">zeta</span>
+</div>
+<div class="viewcode-block" id="complex2riemann"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.complex2riemann">[docs]</a><span class="k">def</span> <span class="nf">complex2riemann</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">,</span><span class="n">Y</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">),</span><span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">Y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">X</span><span class="o">*</span><span class="n">scale</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">Y</span><span class="o">*</span><span class="n">scale</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">Y</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span>
+</div>
+<div class="viewcode-block" id="kentPDF"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.kentPDF">[docs]</a><span class="k">def</span> <span class="nf">kentPDF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">b</span><span class="p">,(</span><span class="n">g1</span><span class="p">,</span><span class="n">g2</span><span class="p">,</span><span class="n">g3</span><span class="p">)):</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s">&#39;this is not normalized&#39;</span><span class="p">)</span>
+    <span class="n">logpdf</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">dot</span><span class="p">(</span><span class="n">g1</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">g2</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">dot</span><span class="p">(</span><span class="n">g3</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="n">logpdf</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="kentPDFRiemann"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.kentPDFRiemann">[docs]</a><span class="k">def</span> <span class="nf">kentPDFRiemann</span><span class="p">(</span><span class="n">z</span><span class="p">,(</span><span class="n">k</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">G</span><span class="p">)):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">complex2riemann</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kentPDF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">G</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="rotatex"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.rotatex">[docs]</a><span class="k">def</span> <span class="nf">rotatex</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+    <span class="n">ct</span><span class="p">,</span><span class="n">st</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">rotation</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">ct</span><span class="p">,</span><span class="o">-</span><span class="n">st</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">st</span><span class="p">,</span> <span class="n">ct</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="rotatey"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.rotatey">[docs]</a><span class="k">def</span> <span class="nf">rotatey</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+    <span class="n">ct</span><span class="p">,</span><span class="n">st</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">rotation</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">ct</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="n">st</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">],</span>
+                    <span class="p">[</span><span class="n">st</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ct</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="rotatez"><a class="viewcode-back" href="../../neurotools.kent_reimann.html#neurotools.kent_reimann.rotatez">[docs]</a><span class="k">def</span> <span class="nf">rotatez</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+    <span class="n">ct</span><span class="p">,</span><span class="n">st</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">rotation</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">ct</span><span class="p">,</span><span class="o">-</span><span class="n">st</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">st</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">We are going to do an experiment and try to use the</span>
+<span class="sd"> kent distribution on the Reimann spehere.</span>
+<span class="sd">First, an experiment to see if we can get the type of </span>
+<span class="sd">distributions of interest.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">g1 = [1,0,-10]</span>
+<span class="sd">g2 = [0,1,0]</span>
+<span class="sd">g3 = [1,1,0]</span>
+<span class="sd">normed = lambda x:array(x)/sqrt(sum(array(x)**2))</span>
+<span class="sd">G = array(map(normed,[g1,g2,g3]))</span>
+<span class="sd">def orthogonalize(x):</span>
+<span class="sd">    return dot(x,inv(cholesky(dot(x.T,x))))</span>
+<span class="sd">G = orthogonalize(G)</span>
+<span class="sd">G = array(map(normed,[g1,g2,g3]))</span>
+
+
+
+
+<span class="sd">k = 10</span>
+<span class="sd">b = -k/2</span>
+<span class="sd">G = array([[0,0,-1],[1,0,0],[0,1,0]])</span>
+
+<span class="sd">while 1:</span>
+<span class="sd">    G = rotatey(G.T,pi/5).T</span>
+<span class="sd">    G = rotatez(G.T,pi/7).T</span>
+<span class="sd">    plane = array([[kentPDFRiemann(x+1j*y,(k,b,G)) for x in linspace(-2,2,50)] for y in linspace(-2,2,50)])</span>
+<span class="sd">    imshow(plane)</span>
+<span class="sd">    draw()</span>
+
+
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Test riemann projection code</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">close(&#39;all&#39;)</span>
+<span class="sd">import matplotlib.pyplot as plt</span>
+<span class="sd">from mpl_toolkits.mplot3d import Axes3D</span>
+<span class="sd">fig = plt.figure()</span>
+<span class="sd">ax = fig.add_subplot(111, projection=&#39;3d&#39;)</span>
+<span class="sd">N = 1000</span>
+<span class="sd">data = (randn(N)+1j*randn(N))/5</span>
+<span class="sd">points = [complex2riemann(z) for z in data]</span>
+<span class="sd">x,y,z = zip(*points)</span>
+<span class="sd">ax.scatter(x,y,z)</span>
+
+<span class="sd"># check that riemann projection works</span>
+<span class="sd">data = (randn(N)+1j*randn(N))/5</span>
+<span class="sd">check = [riemann2complex(*complex2riemann(z)) for z in data]</span>
+<span class="sd">print sum(abs(data-check)**2)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

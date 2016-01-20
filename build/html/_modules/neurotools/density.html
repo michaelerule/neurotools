@@ -1,0 +1,177 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.density &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.density</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gaussian_kde</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">kdepeak</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_grid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="kdepeak"><a class="viewcode-back" href="../../neurotools.density.html#neurotools.density.kdepeak">[docs]</a>    <span class="k">if</span> <span class="n">x_grid</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+        <span class="n">x_grid</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="mi">201</span><span class="p">)</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_grid</span><span class="p">,</span><span class="n">kde</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">knn_1d_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span></div>
+<div class="viewcode-block" id="knn_1d_density"><a class="viewcode-back" href="../../neurotools.density.html#neurotools.density.knn_1d_density">[docs]</a>    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses local K nearest neighbors to estimate a density and center of </span>
+<span class="sd">    mass at each point in a distribution</span>
+<span class="sd">    </span>
+<span class="sd">    Let&#39;s assume x are in units of time with 1ms bin size.</span>
+<span class="sd">    intervals are in ms, centers are in ms</span>
+<span class="sd">    kernel is unit mass and estimates local average interval and location</span>
+<span class="sd">    so centers are in ms, and density is in 1/ms</span>
+<span class="sd">    so to convert density to Hz you need a scale factor of 100</span>
+<span class="sd">    </span>
+<span class="sd">    returns a local density estimator in units of 1/input_units</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">centers</span>   <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.5</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">hanning</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> 
+    <span class="n">kernel</span> <span class="o">/=</span><span class="nb">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span><span class="n">kernel</span><span class="p">,</span><span class="s">&#39;same&#39;</span><span class="p">)</span>
+    <span class="c">#centers   = convolve(centers  ,kernel,&#39;valid&#39;)</span>
+    <span class="k">return</span> <span class="n">centers</span><span class="p">,(</span><span class="n">eps</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">eps</span><span class="o">+</span><span class="n">intervals</span><span class="p">)</span>
+    
+<span class="k">def</span> <span class="nf">adaptive_density_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">fill</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+<div class="viewcode-block" id="adaptive_density_grid"><a class="viewcode-back" href="../../neurotools.density.html#neurotools.density.adaptive_density_grid">[docs]</a>    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Follow the knn_1d_density estimation with interpolation of the </span>
+<span class="sd">    density on a grid</span>
+<span class="sd">    </span>
+<span class="sd">    fill: if not given will fill with the mean rate</span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="n">centers</span><span class="p">,</span><span class="n">density</span> <span class="o">=</span> <span class="n">knn_1d_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">density</span><span class="p">):</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&#39;something is wrong&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">density</span><span class="p">))</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">density</span><span class="p">))</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">density</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">fill</span><span class="o">=</span><span class="n">mean</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span><span class="n">density</span><span class="p">,</span><span class="n">bounds_error</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fill_value</span><span class="o">=</span><span class="n">fill</span><span class="p">)(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">knn_1d_density_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span></div>
+<div class="viewcode-block" id="knn_1d_density_density"><a class="viewcode-back" href="../../neurotools.density.html#neurotools.density.knn_1d_density_density">[docs]</a>    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses local K nearest neighbors to estimate a density and center of </span>
+<span class="sd">    mass at each point in a distribution</span>
+<span class="sd">    </span>
+<span class="sd">    Let&#39;s assume x are in units of time with 1ms bin size.</span>
+<span class="sd">    intervals are in ms, centers are in ms</span>
+<span class="sd">    kernel is unit mass and estimates local average interval and location</span>
+<span class="sd">    so centers are in ms, and density is in 1/ms</span>
+<span class="sd">    so to convert density to Hz you need a scale factor of 100</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">find</span><span class="p">(</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">weights</span>   <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">weights</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.5</span>
+
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">centers</span>   <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.5</span>
+    <span class="n">kernel</span>    <span class="o">=</span> <span class="n">hanning</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> 
+    <span class="n">kernel</span>   <span class="o">/=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">intervals</span><span class="o">*</span><span class="n">weights</span><span class="p">,</span><span class="n">kernel</span><span class="p">,</span><span class="s">&#39;same&#39;</span><span class="p">)</span>
+    <span class="n">reweights</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">kernel</span><span class="p">,</span><span class="s">&#39;same&#39;</span><span class="p">)</span>
+    <span class="n">intervals</span> <span class="o">/=</span> <span class="n">reweights</span>
+    <span class="nb">int</span>
+    <span class="c">#centers  = convolve(centers  ,kernel,&#39;valid&#39;)</span>
+    <span class="k">return</span> <span class="n">centers</span><span class="p">,(</span><span class="n">eps</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">eps</span><span class="o">+</span><span class="n">intervals</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

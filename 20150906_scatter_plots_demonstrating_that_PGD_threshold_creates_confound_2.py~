@@ -1,0 +1,118 @@
+'''
+
+Other aspects of waves covary with phase gradient directionality.
+This creates confounds.
+
+Wavelength and propagation veclocity are possibly not uniform, but 
+conditioning on PGD threshold creates appearance of uniformity.
+
+24 M1 is an anomaly as PGD seems to go down with increased amplitude
+
+It's possible you might be able to just adapt existing scatter plots
+via illustrator. 
+
+It's not really that mysterious,
+
+PGD = abs(mean(pg))/mean(abs(pg))
+
+With more noise, the numerator goes down, and the denominator goes up
+or stays the same. 
+
+in the case where long wavelenghts are associated with low PGD, this is
+probably because the phase gradient is getting "washed out" and its average
+is lower.
+
+in the case where longer wavelengths are associated with higher PGD, we're
+probably seeing an ordered component emerge against a disordered background.
+
+Hmm yeah this is kinda confusing. I think I want to see it re-done, with
+the numerator and the denominator of PGD plotted against amplitude
+and also phase gradient directionality. 
+
+That's six plots.
+
+In regards to sensitivity to filtering:
+Ok, worst situation is in Sike PMd
+Rusty PMd is also not great but does stay within a factor of 2, so that's good
+May want to inspect these areas more closely.
+
+These seem to disagree with previous scatter plots. Previous scatter plots
+averaged over 50ms bins and also used an amplitude cutoff to identify beta
+events/
+
+'''
+
+
+print 'Running...'
+from cgid.setup import *
+from neurotools.nlab import *
+Fs=1000
+scale=2.0
+SKIP=50
+
+statfuns = [
+    array_average_ampltiude,
+    array_phasegradient_upper,
+    array_phasegradient_lower,
+    array_synchrony_pgd]
+
+N      = len(statfuns)
+Ncombo = N*(N-1)/2
+
+for session,area in sessions_areas():
+    close('all')
+    figure(figsize=(1+2.8*Ncombo,7.5),facecolor='w')
+    for ie,epoch in en|[(6,-1000,0),(8,-1000,0)]:
+        print '>>> SESSION IS',session
+        print '>>> AREA IS',area
+        print '>>> EPOCH IS',epoch
+        prefix = '  %s %s %s'%(session,area,epoch)
+        
+        # determine beta peak
+        allspec=[]
+        for trial in good_trials(session):
+            x = get_all_raw_lfp(session, area, trial, epoch)
+            f,mts = multitaper_spectrum(x,5,Fs)
+            allspec.append(mts)
+        allspec     = arr(allspec)
+        Ntr,Nch,Nti = shape(allspec)
+        meanspec    = mean(allspec,axis=(0,1))
+        peaks,vals  = local_maxima(meanspec)
+        betapeaks   = peaks[(f[peaks]>12)&(f[peaks]<45)]
+        betapeak    = f[betapeaks][argmax(meanspec[betapeaks])]
+        print prefix,'beta peak at ',betapeak
+        scale = 0.2
+        fa = betapeak/(1+scale)
+        fb = betapeak*(1+scale)
+        print prefix,'fa,fb=',fa,fb
+        
+        stats = defaultdict(list)
+        for trial in good_trials(session):
+            x = get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb)[...,::SKIP]
+            for f in statfuns:
+                stats[f].append(f(x))
+        
+        Isubplot=0
+        for i,f1 in en|statfuns:
+            for j,f2 in en|statfuns[:i]:
+                subplot(2,Ncombo,Isubplot+ie*Ncombo+1)
+                d1 = ravel(arr(stats[f1]))
+                d2 = ravel(arr(stats[f2]))
+                scatter(d1,d2,s=1,marker='.',color='k')
+                xlabel('\n'.join(f1.__name__.split('_')))
+                ylabel('\n'.join(f1.__name__.split('_')))
+                if Isubplot==0:
+                    xlabel(str(epoch)+'\n'+'\n'.join(f1.__name__.split('_')))
+                Isubplot+=1
+                positivex()
+                positivey()
+                nicex()
+                nicey()
+               
+    tight_layout()
+    subplots_adjust(top=0.9)
+    suptitle('%s %s'%(session,area),fontsize=18)
+    savefig('20150906_scatter_figure_inspection_3_%s_%s.pdf'%(session,area))
+
+
+

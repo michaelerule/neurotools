@@ -1,0 +1,256 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.opto &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.opto</h1><div class="highlight"><pre>
+<span class="n">opto_dataset</span> <span class="o">=</span> <span class="s">&#39;TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001&#39;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/Dropbox/bin&#39;</span><span class="p">))</span>
+<span class="kn">import</span> <span class="nn">neurotools</span>
+<span class="kn">from</span> <span class="nn">neurotools.nlab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="kn">import</span> <span class="n">metaloadmat</span><span class="p">,</span><span class="n">globalize</span>
+<span class="n">nowarn</span><span class="p">()</span>
+<span class="c">#opto_data = metaloadmat(opto_dataset)</span>
+<span class="c">#print opto_data[&#39;README&#39;][0]</span>
+
+<span class="nd">@globalize</span>
+<span class="k">def</span> <span class="nf">opto_get_events_passive</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">):</span>
+    <span class="n">start</span><span class="p">,</span><span class="n">stop</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;events&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="opto_get_events_passive"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_events_passive">[docs]</a>    <span class="k">return</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span>
+
+<span class="k">def</span> <span class="nf">opto_get_all_lfp_quick</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="o">+</span><span class="s">&#39;_compact&#39;</span><span class="p">)[</span><span class="s">&#39;lfp&#39;</span><span class="p">]</span></div>
+<div class="viewcode-block" id="opto_get_all_lfp_quick"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_all_lfp_quick">[docs]</a>    <span class="k">return</span> <span class="n">data</span>
+
+<span class="nd">@globalize</span>
+<span class="k">def</span> <span class="nf">opto_get_map</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="o">+</span><span class="s">&#39;_compact&#39;</span><span class="p">)[</span><span class="s">&#39;arrayChannelMap&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="opto_get_map"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_map">[docs]</a>
+<span class="nd">@globalize</span>
+<span class="k">def</span> <span class="nf">opto_get_laser</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;laser&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<div class="viewcode-block" id="opto_get_laser"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_laser">[docs]</a>
+<span class="k">def</span> <span class="nf">opto_get_lfp</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">channel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span></div>
+<div class="viewcode-block" id="opto_get_lfp"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_lfp">[docs]</a><span class="sd">    Retrieves channel or channels from opto LFP dataset</span>
+<span class="sd">    Channels are 1-indexed</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    opto_dataset : string</span>
+<span class="sd">        path or string identifier for a dataset</span>
+<span class="sd">    channel:</span>
+<span class="sd">        1-indexed channel ID or None to return a NTimes x NChannel array</span>
+<span class="sd">        of all LFP data</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;LFP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">channel</span><span class="o">&gt;=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;LFP&#39;</span><span class="p">][:,</span><span class="n">channel</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">__opto_get_lfp_filtered_helper__</span><span class="p">((</span><span class="n">i</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">,</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">opto_get_lfp_filtered</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="opto_get_lfp_filtered"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_lfp_filtered">[docs]</a><span class="sd">    Retrieves channel or channels from opto LFP dataset</span>
+<span class="sd">    Channels are 1-indexed</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    opto_dataset : string</span>
+<span class="sd">        path or string identifier for a dataset</span>
+<span class="sd">    channel:</span>
+<span class="sd">        1-indexed channel ID or None to return a NTimes x NChannel array</span>
+<span class="sd">        of all LFP data</span>
+<span class="sd">    fa:</span>
+<span class="sd">        low frequency of band-pass, or &#39;None&#39; to use a low-pass filter.</span>
+<span class="sd">        if fb is &#39;None&#39; then this is the cutoff for a high-pass filter.</span>
+<span class="sd">    fb:</span>
+<span class="sd">        high-frequency of band-pass, or &#39;None to use a high-pass filter.</span>
+<span class="sd">        if fa is &#39;None&#39; then this is the cutoff for a low-pass filter</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">Fs</span> <span class="o">=</span> <span class="n">opto_get_Fs</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;LFP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="c">#return array([bandfilter(x,fa,fb,Fs,order) for x in data])</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">parmap</span><span class="p">(</span><span class="n">__opto_get_lfp_filtered_helper__</span><span class="p">,</span><span class="n">problems</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">squeeze</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">channel</span><span class="o">&gt;=</span><span class="mi">1</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;LFP&#39;</span><span class="p">][:,</span><span class="n">channel</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">)</span>
+
+<span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">opto_get_all_lfp_analytic_quick</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span></div>
+    <span class="n">Fs</span> <span class="o">=</span> <span class="mf">1000.0</span>
+<div class="viewcode-block" id="opto_get_all_lfp_analytic_quick"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_all_lfp_analytic_quick">[docs]</a>    <span class="n">order</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="o">+</span><span class="s">&#39;_compact&#39;</span><span class="p">)[</span><span class="s">&#39;lfp&#39;</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">__opto_get_all_lfp_analytic_quick_parallel_helper__</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">0</span></div>
+    <span class="k">pass</span> 
+
+<span class="k">def</span> <span class="nf">opto_get_all_lfp_analytic_quick_parallel</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="opto_get_all_lfp_analytic_quick_parallel"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_all_lfp_analytic_quick_parallel">[docs]</a><span class="sd">    Fs = 1000.0</span>
+<span class="sd">    order = 4</span>
+<span class="sd">    data = metaloadmat(opto_dataset+&#39;_compact&#39;)[&#39;lfp&#39;]</span>
+<span class="sd">    data = data.transpose((0,2,1))</span>
+<span class="sd">    data = squeeze(parmap(</span>
+<span class="sd">        __opto_get_all_lfp_analytic_quick_parallel_helper__,</span>
+<span class="sd">        None)</span>
+<span class="sd">    data = bandfilter(hilbert(data),fa,fb,Fs,order)</span>
+<span class="sd">    return data</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">__opto_get_lfp_analytic_helper__</span><span class="p">((</span><span class="n">i</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">)):</span>
+    <span class="sd">&#39;&#39;&#39;</span></div>
+<div class="viewcode-block" id="__opto_get_lfp_analytic_helper__"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.__opto_get_lfp_analytic_helper__">[docs]</a><span class="sd">    Parallel function wrapper for opto_get_lfp_analytic</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">print</span> <span class="mi">5</span><span class="p">,</span><span class="n">i</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">,</span><span class="n">hilbert</span><span class="p">(</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">opto_get_lfp_analytic</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span></div>
+<div class="viewcode-block" id="opto_get_lfp_analytic"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_lfp_analytic">[docs]</a><span class="sd">    Retrieves channel or channels from opto LFP dataset</span>
+<span class="sd">    Channels are 1-indexed</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    opto_dataset : string</span>
+<span class="sd">        path or string identifier for a dataset</span>
+<span class="sd">    channel:</span>
+<span class="sd">        1-indexed channel ID or None to return a NTimes x NChannel array</span>
+<span class="sd">        of all LFP data</span>
+<span class="sd">    fa:</span>
+<span class="sd">        low frequency of band-pass, or &#39;None&#39; to use a low-pass filter.</span>
+<span class="sd">        if fb is &#39;None&#39; then this is the cutoff for a high-pass filter.</span>
+<span class="sd">    fb:</span>
+<span class="sd">        high-frequency of band-pass, or &#39;None to use a high-pass filter.</span>
+<span class="sd">        if fa is &#39;None&#39; then this is the cutoff for a low-pass filter</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">print</span> <span class="mi">1</span>
+    <span class="n">Fs</span> <span class="o">=</span> <span class="n">opto_get_Fs</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">print</span> <span class="mi">2</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;LFP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="c">#return array([bandfilter(x,fa,fb,Fs,order) for x in data])</span>
+        <span class="k">print</span> <span class="mi">3</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
+        <span class="k">print</span> <span class="mi">4</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">parmap</span><span class="p">(</span><span class="n">__opto_get_lfp_analytic_helper__</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">squeeze</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">channel</span><span class="o">&gt;=</span><span class="mi">1</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;LFP&#39;</span><span class="p">][:,</span><span class="n">channel</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="p">))</span>
+
+<span class="nd">@globalize</span>
+<span class="k">def</span> <span class="nf">opto_get_Fs</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">)[</span><span class="s">&#39;Fs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<div class="viewcode-block" id="opto_get_Fs"><a class="viewcode-back" href="../../neurotools.opto.html#neurotools.opto.opto_get_Fs">[docs]</a></pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">neurotools 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

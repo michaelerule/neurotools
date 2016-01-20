@@ -1,0 +1,324 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.regressions module &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.regressions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.regressions">
+<span id="neurotools-regressions-module"></span><h1>neurotools.regressions module<a class="headerlink" href="#module-neurotools.regressions" title="Permalink to this headline">¶</a></h1>
+<p>I need to regress on the following model for synchrony
+synchrony(x) = cos(wx)*exp(-x/tau)+b</p>
+<p>which means that the angular synchrony cos(theta_x1-theta_x2) should
+decay as a damped cosine, with some constant offset b. Note that
+a nonzero constant offset may not indicate uniform synchrony, for
+example, the direction of constant phase in a plane wave will contribute
+a DC component.</p>
+<p>Uses L2 penaly</p>
+<p>X: List of distances
+W: List of weights
+Y: List of average pairwise distances</p>
+<p>Model is cos(wx)*exp(-x/L)+b
+Generates predictions Z
+error is sum W*(Z-Y)^2</p>
+<p>gradient of the error
+dErr/dw sum(W*(cos(w*x)*exp(-x/L)+b-Y)**2)
+dErr/dL sum(W*(cos(w*x)*exp(-x/L)+b-Y)**2)
+dErr/db sum(W*(cos(w*x)*exp(-x/L)+b-Y)**2)</p>
+<p>sum(W* dErr/dw (cos(w*x)*exp(-x/L)+b-Y)**2)
+sum(W* dErr/dL (cos(w*x)*exp(-x/L)+b-Y)**2)
+sum(W* dErr/db (cos(w*x)*exp(-x/L)+b-Y)**2)</p>
+<p>sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) dErr/dw (cos(w*x)*exp(-x/L)+b-Y))
+sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) dErr/dL (cos(w*x)*exp(-x/L)+b-Y))
+sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) dErr/db (cos(w*x)*exp(-x/L)+b-Y))</p>
+<p>sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) * -sin(w*x)*exp(-x/L) )
+sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) *  cos(w*x)*(-1/L)*exp(-x/L) )
+sum(W* 2(cos(w*x)*exp(-x/L)+b-Y))</p>
+<p>objective function is</p>
+<dl class="docutils">
+<dt>def objective(w,L,b):</dt>
+<dd>z = cos(w*x)*exp(-x/L)+b
+error = sum( W*(z-Y)**2 )
+return error</dd>
+<dt>def gradient(w,lambda,b):</dt>
+<dd>z = cos(w*x)*exp(-x/L)+b
+h = 2*(z-Y)
+dEdw = sum(W*h*-sin(w*x)*exp(-x/L))
+dEdL = sum(W*h* cos(w*x)*(-1/L)*exp(-x/L))
+dEdb = sum(W*H)
+return [dEdw,dEdL,dEdb]</dd>
+</dl>
+<p>We use the minimize function from scipy.optimize.</p>
+<dl class="docutils">
+<dt>scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,</dt>
+<dd><p class="first">hessp=None, bounds=None, constraints=(), tol=None, callback=None,
+options=None)</p>
+<p>Minimization of scalar function of one or more variables.</p>
+<p>New in version 0.11.0.
+Parameters:
+fun : callable</p>
+<blockquote>
+<div>Objective function.</div></blockquote>
+<dl class="docutils">
+<dt>x0 <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Initial guess.</dd>
+<dt>args <span class="classifier-delimiter">:</span> <span class="classifier">tuple, optional</span></dt>
+<dd>Extra arguments passed to the objective function and its derivatives
+(Jacobian, Hessian).</dd>
+<dt>method <span class="classifier-delimiter">:</span> <span class="classifier">str or callable, optional</span></dt>
+<dd><dl class="first docutils">
+<dt>Type of solver. Should be one of</dt>
+<dd>&#8216;Nelder-Mead&#8217;
+&#8216;Powell&#8217;
+&#8216;CG&#8217;
+&#8216;BFGS&#8217;
+&#8216;Newton-CG&#8217;
+&#8216;Anneal (deprecated as of scipy version 0.14.0)&#8217;
+&#8216;L-BFGS-B&#8217;
+&#8216;TNC&#8217;
+&#8216;COBYLA&#8217;
+&#8216;SLSQP&#8217;
+&#8216;dogleg&#8217;
+&#8216;trust-ncg&#8217;
+custom - a callable object (added in version 0.14.0)</dd>
+</dl>
+<p class="last">If not given, chosen to be one of BFGS, L-BFGS-B, SLSQP, d
+epending if the problem has constraints or bounds.</p>
+</dd>
+<dt>jac <span class="classifier-delimiter">:</span> <span class="classifier">bool or callable, optional</span></dt>
+<dd>Jacobian (gradient) of objective function. Only for CG, BFGS,
+Newton-CG, L-BFGS-B, TNC, SLSQP, dogleg, trust-ncg. If jac is a Boolean
+and is True, fun is assumed to return the gradient along with the
+objective function. If False, the gradient will be estimated
+numerically. jac can also be a callable returning the gradient of the
+objective. In this case, it must accept the same arguments as fun.</dd>
+<dt>hess, hessp <span class="classifier-delimiter">:</span> <span class="classifier">callable, optional</span></dt>
+<dd>Hessian (matrix of second-order derivatives) of objective function or
+Hessian of objective function times an arbitrary vector p. Only for
+Newton-CG, dogleg, trust-ncg. Only one of hessp or hess needs to be
+given. If hess is provided, then hessp will be ignored. If neither hess
+nor hessp is provided, then the Hessian product will be approximated
+using finite differences on jac. hessp must compute the Hessian times
+an arbitrary vector.</dd>
+<dt>bounds <span class="classifier-delimiter">:</span> <span class="classifier">sequence, optional</span></dt>
+<dd>Bounds for variables (only for L-BFGS-B, TNC and SLSQP). (min, max)
+pairs for each element in x, defining the bounds on that parameter. Use
+None for one of min or max when there is no bound in that direction.</dd>
+<dt>constraints <span class="classifier-delimiter">:</span> <span class="classifier">dict or sequence of dict, optional</span></dt>
+<dd><p class="first">Constraints definition (only for COBYLA and SLSQP). Each constraint is
+defined in a dictionary with fields:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Constraint type: &#8216;eq&#8217; for equality, &#8216;ineq&#8217; for inequality.</dd>
+<dt>fun <span class="classifier-delimiter">:</span> <span class="classifier">callable</span></dt>
+<dd>The function defining the constraint.</dd>
+<dt>jac <span class="classifier-delimiter">:</span> <span class="classifier">callable, optional</span></dt>
+<dd>The Jacobian of fun (only for SLSQP).</dd>
+<dt>args <span class="classifier-delimiter">:</span> <span class="classifier">sequence, optional</span></dt>
+<dd>Extra arguments to be passed to the function and Jacobian.</dd>
+</dl>
+</div></blockquote>
+<p class="last">Equality constraint means that the constraint function result is to be
+zero whereas inequality means that it is to be non-negative. Note that
+COBYLA only supports inequality constraints.</p>
+</dd>
+<dt>tol <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd>Tolerance for termination. For detailed control, use solver-specific
+options.</dd>
+<dt>options <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first">A dictionary of solver options. All methods accept the following
+generic options:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>maxiter <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Maximum number of iterations to perform.</dd>
+<dt>disp <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd>Set to True to print convergence messages.</dd>
+</dl>
+</div></blockquote>
+<p class="last">For method-specific options, see show_options.</p>
+</dd>
+<dt>callback <span class="classifier-delimiter">:</span> <span class="classifier">callable, optional</span></dt>
+<dd>Called after each iteration, as callback(xk), where xk is the current
+parameter vector.</dd>
+</dl>
+<p>Returns:
+res : OptimizeResult</p>
+<blockquote class="last">
+<div>The optimization result represented as a OptimizeResult object.
+Important attributes are: x the solution array, success a Boolean flag
+indicating if the optimizer exited successfully and message which
+describes the cause of the termination. See OptimizeResult for a
+description of other attributes.</div></blockquote>
+</dd>
+</dl>
+<dl class="function">
+<dt id="neurotools.regressions.damped_cosine_regression">
+<code class="descclassname">neurotools.regressions.</code><code class="descname">damped_cosine_regression</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/regressions.html#damped_cosine_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.regressions.damped_cosine_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>X: List of distances
+W: List of weights
+Y: List of average pairwise distances</p>
+<p>todo: constrain b, L to be positive</p>
+<p># simple test
+X = 0.4*arange(9)
+Y = exp(-X/4+1)*cos(X)
+Z = Y+randn(<a href="#id1"><span class="problematic" id="id2">*</span></a>shape(X))
+W = ones(shape(X))
+w,L,b = damped_cosine_regression(X,Z,W).x
+plot(X,Y)
+plot(X,Z)
+plot(X,cos(w*X)*exp(-X/L+b))</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.regressions.exponential_decay_regression">
+<code class="descclassname">neurotools.regressions.</code><code class="descname">exponential_decay_regression</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/regressions.html#exponential_decay_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.regressions.exponential_decay_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>X: List of distances
+Y: List of amplitudes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.regressions.gaussian_function_regression">
+<code class="descclassname">neurotools.regressions.</code><code class="descname">gaussian_function_regression</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/regressions.html#gaussian_function_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.regressions.gaussian_function_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>X: List of distances
+Y: List of amplitudes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.regressions.half_gaussian_function_regression">
+<code class="descclassname">neurotools.regressions.</code><code class="descname">half_gaussian_function_regression</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/regressions.html#half_gaussian_function_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.regressions.half_gaussian_function_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>X: List of distances
+Y: List of amplitudes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.regressions.power_law_regression">
+<code class="descclassname">neurotools.regressions.</code><code class="descname">power_law_regression</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/regressions.html#power_law_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.regressions.power_law_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a power law, but with error terms computed by r^2 in
+the original space.</p>
+<p>power law form is</p>
+<p>log(y)  = a*log(x)+b
+or
+y = b*x^a</p>
+<p>initial best guess using linear regression</p>
+<p>minimize failing, just stick to weighted log-log linear regress</p>
+<p>result = power_law_regression(X,Y,1/X**16)
+a,b = result.x</p>
+<p>EPS = 1e-10
+use = (X&gt;EPS)&amp;(Y&gt;EPS)
+a,b = weighted_least_squares(log(X)[use],log(Y)[use],W[use]).x
+plot(sorted(X),b*arr(sorted(X))**a)</p>
+<p>from numpy.polynomial.polynomial import polyfit</p>
+<p>X,Y = ravel(f),ravel(y[:,i])
+a,b = power_law_regression(X,Y,1/X**2)
+plot(sorted(X),b*arr(sorted(X))**a)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.regressions.weighted_least_squares">
+<code class="descclassname">neurotools.regressions.</code><code class="descname">weighted_least_squares</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/regressions.html#weighted_least_squares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.regressions.weighted_least_squares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Was using this one to initialize power law fit
+EPS = 1e-10
+use = (X&gt;EPS)&amp;(Y&gt;EPS)
+weighted_least_squares(log(X+EPS)[use],log(Y+EPS)[use],1/(EPS+X[use]))</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

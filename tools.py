@@ -1,10 +1,13 @@
 
+import os
 import traceback
 from itertools import *
 from collections import *
 import inspect
 import numpy as np
 from numpy import *
+from matplotlib.cbook import flatten
+
 try:
     from decorator import decorator
 except Exception, e:
@@ -14,7 +17,6 @@ except Exception, e:
     print 'or  pip  install decorator'
     print 'hopefully at least one of those works'
 
-from matplotlib.cbook import flatten
 
 print 'WARNING MOST FUNCTIONS HAVE MOVED TO SIGNALTOOLS'
 

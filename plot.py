@@ -342,6 +342,15 @@ def xbartext(y,t,c1,c2,**kwargs):
     if 'outline' in kwargs:
         outline = kwargs['outline']
         del kwargs['outline']
+    text_kwargs = {}
+    text_kwargs['horizontalalignment'] = 'left'
+    text_kwargs['verticalalignment'] = 'bottom'
+    text_kwargs['fontsize'] = 12
+    for key in text_kwargs.keys():
+        if key in kwargs:
+            text_kwargs[key] = kwargs[key]
+            del kwargs[key]
+    text_kwargs['color']=c1
     plot([a,b],[y,y],**kwargs)
     xlim(a,b)
     dx,dy = get_ax_pixel()
@@ -351,9 +360,13 @@ def xbartext(y,t,c1,c2,**kwargs):
                 text(ix+a+dx*4,iy+y,t,
                     color=c2,
                     horizontalalignment='left',verticalalignment='bottom',fontsize=12)
-    text(a+dx*4,y,t,
-        color=c1,fontsize=12,
-        horizontalalignment='left',verticalalignment='bottom')
+                    
+    if text_kwargs['horizontalalignment']=='left':
+        # left aligned text
+        text(a+dx*4,y,t,**text_kwargs)
+    elif text_kwargs['horizontalalignment']=='right':
+        # right aligned text
+        text(b-dx*4,y,t,**text_kwargs)
     xlim(a,b)
 
 '''
@@ -628,7 +641,20 @@ def nudge_axis_left(ax,dx=9):
     dx = pixels_to_xfigureunits(dx,ax)
     ax.set_position((x+dx,y,w-dx,h))
 
-
+def complex_axis(scale):
+    ''' 
+    Draws a nice complex-plane axis with LaTeX Re, Im labels and everythinn
+    '''
+    xlim(-scale,scale)
+    ylim(-scale,scale)
+    nicexy()
+    fudgey()
+    ybartext(0,'$\Im(z)$','k','w',lw=1,color='k',outline=False)
+    xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    noaxis()
+    xlabel('$\mu V$')
+    ylabel('$\mu V$')
+    force_aspect()
 
 
 

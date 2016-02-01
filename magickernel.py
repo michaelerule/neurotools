@@ -3,6 +3,7 @@ Utilities related to the image interpolation kernel described here
 http://johncostella.webs.com/magic/
 '''
 
+import numpy as np
 from numpy import *
 
 def continuum_kernel(x):
@@ -18,7 +19,7 @@ def continuum_kernel(x):
     '''
     return piecewise(x,[x>=1.5,(x>=0.5)&(x<1.5),(x>=0.0)&(x<0.5)],[lambda x:0, lambda x:0.5*(x-1.5)**2, lambda x:0.75-x**2])
 
-def log_spline_basis(N=range(1,6),t=arange(100),base=2,offset=1):
+def log_spline_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
     s = log(t+offset)/log(base)
     kernels = array([continuum_kernel(s-k) for k in N]) # evenly spaced in log-time
     kernels = kernels/log(base)/(offset+t) # correction for change of variables, kernals integrate to 1 now
@@ -35,20 +36,20 @@ def cosine_kernel(x):
     x = float64(abs(x))/2.0*pi
     return piecewise(x,[x<=pi],[lambda x:(cos(x)+1)/4.0])
 
-def log_cosine_basis(N=range(1,6),t=arange(100),base=2,offset=1):
+def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
     s = log(t+offset)/log(base)
     kernels = array([cosine_kernel(s-k) for k in N]) # evenly spaced in log-time
     kernels = kernels/log(base)/(offset+t) # correction for change of variables, kernals integrate to 1 now
     return kernels
 
-def exponential_basis(N=range(1,6),t=arange(100),base=2,offset=1):
+def exponential_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
     means = base**array(N)
     t = float64(t)
     kernels = array([exp(-t/m) for m in means])
     kernels = kernels.T / sum(kernels,1)
     return kernels.T
 
-def diffusion_basis(N=range(1,6),t=arange(100)):
+def diffusion_basis(N=range(1,6),t=np.arange(100)):
     '''
     Note: conceptually similar to other basis functions in this file
     with base=2 and offset=1

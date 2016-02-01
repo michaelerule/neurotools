@@ -48,6 +48,7 @@ from multiprocessing import Process, Pipe, cpu_count, Pool
 from itertools import izip, chain
 import traceback
 import sys
+import signal
 
 __N_CPU__ = cpu_count()
 '''
@@ -134,11 +135,34 @@ def reset_pool(leavefree=1):
     else:
         print 'POOL FOUND. RESTARTING'
         print 'Attempting to terminate pool, may become unresponsive'
+        '''
         mypool.terminate()
         mypool.join()
         mypool.close()
+        '''
+        # might fix the freezing issues
+        # http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate
+        def close_pool():
+            global mypool
+            mypool.close()
+            mypool.terminate()
+            mypool.join()
+        def term(*args,**kwargs):
+            sys.stderr.write('\nStopping...')
+            stoppool=threading.Thread(target=close_pool)
+            stoppool.daemon=True
+            stoppool.start()
+        signal.signal(signal.SIGTERM, term)
+        signal.signal(signal.SIGINT, term)
+        signal.signal(signal.SIGQUIT, term)
+        #
         del mypool
         mypool = Pool(cpu_count()-leavefree)
+
+
+
+
+
 
 def parmap_enum(f,problems):
     '''

@@ -4,6 +4,8 @@ Library of array statistics routines.
 #from os.path import expanduser
 #execfile(expanduser('~/Dropbox/bin/stattools.py'))
 
+from scipy.signal.signaltools import convolve2d
+from neurotools.tools import warn
 from neurotools.stats import *
 from neurotools.dct import  dct_upsample,dct_cut_antialias
 

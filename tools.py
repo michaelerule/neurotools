@@ -1,4 +1,3 @@
-
 import os
 import traceback
 from itertools import *
@@ -7,6 +6,12 @@ import inspect
 import numpy as np
 from numpy import *
 from matplotlib.cbook import flatten
+
+
+#TODO: make this robust / cross-platform
+matlabpath = '/usr/local/bin/matlab -nodesktop -nodisplay -r'
+
+
 
 try:
     from decorator import decorator
@@ -245,19 +250,19 @@ ce = exists
 enum = enumerate
 enm = enum
 en = enm
-arr = array
+arr = np.array
 nmx = np.max
 npx = np.max
 nmn = np.min
 npn = np.min
 npm = np.min
-zro = zeros
+zro = np.zeros
 zr = zro
-ons = ones
+ons = np.ones
 on = ons
 xr = xrange
 iz = izip
-concat = concatenate
+concat = np.concatenate
 conct = concat
 ccat = concat
 cct = concat
@@ -309,8 +314,9 @@ def metaloadmat(path):
     return data
 
 
-# a bad idea? 
-
+def shortscientific(x):
+    return ('%0.0e'%x).replace('-0','-')
+    
 
 
 

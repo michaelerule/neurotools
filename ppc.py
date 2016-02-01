@@ -1,14 +1,13 @@
-
-
 from spectrum.mtm import dpss
 import types
+import numpy as np
 from numpy import *
 from neurotools.getfftw import *
 from numpy.random import *
 from neurotools.tools import warn
 from neurotools.signal import phaserand
 
-__PPC_FP_TYPE__=float128
+__PPC_FP_TYPE__=np.float128
 
 def fftppc_biased(snippits,Fs=1000,taper=None):
     # some precision trouble
@@ -113,10 +112,8 @@ def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=Tru
     Fs:     sample rate for computing freqs
     k:      number of tapers
     Also accepts lists of signals / times
-    returns frequencies, ppc values
+    returns (freqs, ppc, phase), lfp_segments
     
-    returns (PPC, frequencies), number of spikes ultimately used to compute
-    PPC
     '''
     if multitaper:
         print "Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!"

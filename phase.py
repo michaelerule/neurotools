@@ -5,7 +5,7 @@ Library of array statistics routines.
 #execfile(expanduser('~/Dropbox/bin/stattools.py'))
 from stat import *
 from numpy import *
-
+import numpy as np
 from neurotools.tools import *
 
 ELECTRODE_SPACING = 0.4
@@ -144,7 +144,7 @@ def mirrorpad(data,amount):
     '''
     assert 0
 
-def analytic_signal_coherence(data,window=hanning):
+def analytic_signal_coherence(data,window=np.hanning):
     '''
     Data is K x N
     K channels
@@ -169,7 +169,7 @@ def analytic_signal_coherence(data,window=hanning):
     weights /= sum(weights)
     return sum(cos(dfdt-mdf)*weights,axis=0)
 
-def population_sliding_signal_coherence(data,L=100,window=hanning):
+def population_sliding_signal_coherence(data,L=100,window=np.hanning):
     '''
     Data is K x N
     K channels
@@ -198,7 +198,7 @@ def population_sliding_signal_coherence(data,L=100,window=hanning):
 
 sliding_population_signal_coherence = population_sliding_signal_coherence
 
-def population_normalized_sliding_signal_coherence(data,L=100,window=hanning):
+def population_normalized_sliding_signal_coherence(data,L=100,window=np.hanning):
     '''
     Data is K x N
     K channels
@@ -228,7 +228,7 @@ def population_normalized_sliding_signal_coherence(data,L=100,window=hanning):
         slide.append(sig)
     return 1/sqrt(1+arr(slide)**2)
 
-def population_phase_relative_sliding_kuromoto(data,L=100,window=hanning):
+def population_phase_relative_sliding_kuromoto(data,L=100,window=np.hanning):
     '''
     Uses the phase of each channel in the middle of each block as a
     reference point. Can separate coherent wave activity from synchrony.

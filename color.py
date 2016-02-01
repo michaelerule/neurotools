@@ -33,6 +33,10 @@ GATHER = [
 '#44525c'] # "Black"
 WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK = GATHER
 
+# completes the Gather spectrum
+MOSS  = '#77ae64'
+MAUVE = '#956f9b'
+
 #############################################################################
 # Hue / Saturation / Luminance color space code
 
@@ -142,13 +146,13 @@ def isoluminance4(h):
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%60))/60
 
 def lighthues(N=10,l=0.7):
-    return [isoluminance1(h,l) for h in linspace(0,360,N+1)[:-1]] 
+    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]] 
 
 def darkhues(N=10,l=0.4):
-    return [isoluminance1(h,l) for h in linspace(0,360,N+1)[:-1]] 
+    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]] 
 
 def medhues(N=10,l=0.6):
-    return [isoluminance1(h,l) for h in linspace(0,360,N+1)[:-1]] 
+    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]] 
 
 def radl2rgb(h,l=1.0):
     '''
@@ -173,13 +177,19 @@ def radl2rgb(h,l=1.0):
     elif luminance>l:
         RGB *= l/luminance 
     return clip(RGB,0,1)
-__N_HL_LUT__ = 256
-__HL_LUT__ = zeros((__N_HL_LUT__,__N_HL_LUT__,3),dtype=float32)
-for ih,h in enum(linspace(0,2*pi,__N_HL_LUT__+1)[:-1]):
-    for il,l in enum(linspace(0,1,__N_HL_LUT__)):
-        r,g,b = radl2rgb(h,l)
-        __HL_LUT__[ih,il] = r,g,b
 
+# this is a problem. Grr.
+# Sphinx can't get past this static initializer code
+try:
+    __N_HL_LUT__ = 256
+    __HL_LUT__ = np.zeros((__N_HL_LUT__,__N_HL_LUT__,3),dtype=np.float32)
+    for ih,h in enum(np.linspace(0,2*3.141592653589793,__N_HL_LUT__+1)[:-1]):
+        for il,l in enum(np.linspace(0,1,__N_HL_LUT__)):
+            r,g,b = radl2rgb(h,l)
+            __HL_LUT__[ih,il] = r,g,b
+except:
+    pass
+    
 def radl2rgbLUT(h,l=1.0):
     '''
     radl2rgb backed with a limited resolution lookup table
@@ -217,9 +227,13 @@ def color_boxplot(bp,COLOR):
 # Unfortunately the hue distribution is a bit off for these and they come
 # out a little heavy in the red, gree, and blue. I don't reccommend using
 # them
-lighthue = mcolors.ListedColormap(lighthues(360),'lighthue')
-medhue   = mcolors.ListedColormap(medhues  (360),'medhue')
-darkhue  = mcolors.ListedColormap(darkhues (360),'darkhue')
+try:
+    lighthue = mcolors.ListedColormap(lighthues(360),'lighthue')
+    medhue   = mcolors.ListedColormap(medhues  (360),'medhue')
+    darkhue  = mcolors.ListedColormap(darkhues (360),'darkhue')
+except:
+    pass
+    #sphinx was crashing
 
 #############################################################################
 # Isoluminance hue wheel color map
@@ -322,9 +336,20 @@ isolum_data = [
 [0.8747,0.5129,0.5853],[0.8736,0.5128,0.5916],[0.8724,0.5127,0.5980],
 [0.8710,0.5127,0.6045],[0.8695,0.5128,0.6109],[0.8677,0.5130,0.6173],
 [0.8658,0.5133,0.6237]]
-isolum = matplotlib.colors.ListedColormap(isolum_data,'isolum')
-plt.register_cmap(name='isolum', cmap=isolum)
-isolum_data = float32(isolum_data)
+
+try:
+    isolum = matplotlib.colors.ListedColormap(isolum_data,'isolum')
+    plt.register_cmap(name='isolum', cmap=isolum)
+    isolum_data = np.float32(isolum_data)
+
+    double_isolum_data = concatenate([isolum_data[::2],isolum_data[::2]])
+    double_isolum = matplotlib.colors.ListedColormap(double_isolum_data,'isolum')
+    plt.register_cmap(name='double_isolum', cmap=double_isolum)
+
+except:
+    pass
+    #sphinx workaround
+
 
 
 #############################################################################
@@ -434,14 +459,19 @@ parula_data = [
 [0.9624, 0.9368, 0.0850],[0.9641, 0.9443, 0.0802],[0.9662, 0.9518, 0.0753],
 [0.9685, 0.9595, 0.0703],[0.9710, 0.9673, 0.0651],[0.9736, 0.9752, 0.0597],
 [0.9763, 0.9831, 0.0538]]
-parula = matplotlib.colors.ListedColormap(parula_data,'parula')
-register_cmap(name='parula', cmap=parula)
-parula_data = float32(parula_data)
 
+try:
+    parula = matplotlib.colors.ListedColormap(parula_data,'parula')
+    register_cmap(name='parula', cmap=parula)
+    parula_data = np.float32(parula_data)
+except:
+    parula=None
+    pass
+    #sphinx
 
 #############################################################################
 # A parula-like color map, extended all the way to black at one end
-extended_data = array([
+extended_data = np.array([
 [ 11,   0,   0],[ 12,   0,   0],[ 15,   0,   0],[ 17,   0,   1],
 [ 19,   0,   1],[ 21,   0,   2],[ 23,   1,   2],[ 26,   1,   3],
 [ 28,   1,   3],[ 30,   1,   4],[ 32,   1,   4],[ 34,   1,   4],
@@ -506,21 +536,27 @@ extended_data = array([
 [255, 251, 135],[254, 251, 136],[254, 252, 137],[255, 252, 139],
 [254, 252, 140],[255, 253, 141],[254, 253, 143],[254, 253, 144],
 [255, 254, 145],[254, 254, 147],[255, 254, 148],[254, 254, 149]])
-extended_data = float32(extended_data)/255
-extended = matplotlib.colors.ListedColormap(extended_data,'extended')
-register_cmap(name='extended', cmap=extended)
+try:
+    extended_data = np.float32(extended_data)/255
+    extended = matplotlib.colors.ListedColormap(extended_data,'extended')
+    register_cmap(name='extended', cmap=extended)
 
-#############################################################################
-# A balanced colormap that combines aspects of HSV, HSL, and 
-# Matteo Niccoli's isoluminant hue wheel, with a little smoothing
-# 
-x = array([hsv2rgb(h,1,1) for h in linspace(0,1,256)*360])
-y = array([hcl2rgb(h,1,0.75) for h in linspace(0,1,256)*360])
-z = isolum_data[::-1]
-balance_data = circularly_smooth_colormap(x*0.2+y*0.4+z*0.4,30)
-balance = matplotlib.colors.ListedColormap(balance_data,'extended')
-register_cmap(name='balance', cmap=balance)
-
+    #############################################################################
+    # A balanced colormap that combines aspects of HSV, HSL, and 
+    # Matteo Niccoli's isoluminant hue wheel, with a little smoothing
+    # 
+    x = np.array([hsv2rgb(h,1,1) for h in np.linspace(0,1,256)*360])
+    y = np.array([hcl2rgb(h,1,0.75) for h in np.linspace(0,1,256)*360])
+    z = isolum_data[::-1]
+    balance_data = circularly_smooth_colormap(x*0.2+y*0.4+z*0.4,30)
+    balance = matplotlib.colors.ListedColormap(balance_data,'extended')
+    register_cmap(name='balance', cmap=balance)
+except:
+    extended=None
+    isolum=None
+    balance=None
+    pass
+    #sphinx bug workaround
 
 #############################################################################
 # Bit-packed color fiddling
@@ -531,7 +567,7 @@ def hex_pack_BGR(RGB):
     Javascript canvas. 
     RGB: 256x3 RGB array-like, 0..1 values
     '''
-    RGB = clip(array(RGB),0,1)
+    RGB = clip(np.array(RGB),0,1)
     return ['0x%2x%2x%2x'%(B*255,G*255,R*255) for (R,G,B) in RGB]
     
 

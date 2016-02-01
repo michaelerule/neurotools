@@ -1,3 +1,13 @@
+'''
+This was an experiment. 
+
+Idea was to generate common aliases of functions to mimic case-
+insensitivity. 
+
+Needless to say it was a terrible idea and should never be used under
+any circumstances
+'''
+
 
 def camel2underscore(s):
     '''

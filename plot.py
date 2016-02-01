@@ -1,6 +1,7 @@
 
 from   neurotools.color   import *
 from   neurotools.getfftw import *
+from   neurotools.tools   import *
 
 import pickle
 import scipy
@@ -658,6 +659,24 @@ def complex_axis(scale):
 
 
 
+def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
+    fontproperties = {
+        'family':'Bitstream Vera Sans',
+        'weight': 'bold', 
+        'size': subplot_label_size,
+        'verticalalignment':'bottom',
+        'horizontalalignment':'right'}
+    text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,**fontproperties)
+
+
+def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
+    '''
+    draw a significance bar between position x1 and x2 at height y
+    '''
+    dy = pixels_to_yunits(dy)
+    height = y+2*dy
+    plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],lw=0.5,color=BLACK)
+    text(mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
 
 
 

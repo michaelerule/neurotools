@@ -86,15 +86,15 @@ from neurotools.tools               import *
 from neurotools.vonmises            import *
 from neurotools.functions           import *
 
-print 'Restoring pylab namespace (in event of accidental shadowing of pylab functions by nlab)'
+print 'Restoring pylab namespace (in event of accidental shadowing of pylab functions)'
 # from scipy.stats    import *
 from neurotools.getfftw             import *
 # seems like too many imports ruining pylab context
 # try to fix it up a bit
 # from pylab    import *
 
+# suppress verbose warningmessages
 nowarn()
-
 
 from numpy.core.multiarray import concatenate as cat
 

@@ -1,6 +1,17 @@
 
+import datetime
 import time as systime
-current_milli_time = lambda: int(round(systime.time() * 1000))
+
+def current_milli_time():
+    int(round(systime.time() * 1000))
+
+now = current_milli_time
+
+def today():
+    return datetime.date.today().strftime('%y%m%d')
+
+#crude versions of tic and toc from Matlab
+#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
 
 def tic(st=''):
     global __GLOBAL_TIC_TIME__
@@ -26,4 +37,6 @@ def waitfor(t):
         pass
     return current_milli_time()
 
-now = current_milli_time
+
+
+

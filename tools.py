@@ -49,6 +49,7 @@ def memoize(fun,*args, **kwargs):
         return fun    
     @wraps(fun)
     def wrapper(*args, **kwargs):
+        args = [frozenset(x) if type(x) is set else x for x in args]
         key = (args, frozenset(sorted(kwargs.items())))
         if key in cache:
             #print 'located memo for',fun.__name__,':',key
@@ -313,12 +314,13 @@ def metaloadmat(path):
     if dowarn(): print 'loaded'
     return data
 
+# printing routines
 
 def shortscientific(x):
     return ('%0.0e'%x).replace('-0','-')
     
-
-
+def percent(n,total):
+    return '%0.2g%%'%(n*100.0/total)
 
 
 

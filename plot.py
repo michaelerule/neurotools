@@ -2,6 +2,7 @@
 from   neurotools.color   import *
 from   neurotools.getfftw import *
 from   neurotools.tools   import *
+from   neurotools.time    import *
 
 import pickle
 import scipy
@@ -657,8 +658,6 @@ def complex_axis(scale):
     ylabel('$\mu V$')
     force_aspect()
 
-
-
 def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
     fontproperties = {
         'family':'Bitstream Vera Sans',
@@ -667,7 +666,6 @@ def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
         'verticalalignment':'bottom',
         'horizontalalignment':'right'}
     text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,**fontproperties)
-
 
 def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
     '''
@@ -678,10 +676,50 @@ def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
     plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],lw=0.5,color=BLACK)
     text(mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
 
+def savefigure(name):
+    savefig(today()+'_'+name+'.svg')
+    savefig(today()+'_'+name+'.pdf')
 
+def clean_y_range(ax=None,precision=1):
+    if ax is None: ax=gca()
+    y1,y2 = ylim()
+    precision = 10.0**precision
+    _y1 = floor(y1*precision)/precision
+    _y2 = ceil (y2*precision)/precision
+    ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
 
+def round_to_precision(x,precision=1):
+    if x==0.0: return 0
+    magnitude = abs(x)
+    digits = ceil(log10(magnitude))
+    factor = 10.0**(precision-digits)
+    return round(x*precision)/precision
+    
+def ceil_to_precision(x,precision=1):
+    if x==0.0: return 0
+    magnitude = abs(x)
+    digits = ceil(log10(magnitude))
+    factor = 10.0**(precision-digits)
+    return ceil(x*precision)/precision
+    
+def floor_to_precision(x,precision=1):
+    if x==0.0: return 0
+    magnitude = abs(x)
+    digits = ceil(log10(magnitude))
+    factor = 10.0**(precision-digits)
+    return floor(x*precision)/precision
 
-
+def expand_y_range(yvalues,ax=None,precision=1,pad=1.2):
+    if ax is None: ax=gca()
+    yy = array(yvalues)
+    m = mean(yy)
+    yy = (yy-m)*pad+m
+    y1 = np.min(yy)
+    y2 = np.max(yy)
+    precision = 10.0**precision
+    _y1 = floor_to_precision(y1,precision)
+    _y2 = ceil_to_precision(y2,precision)
+    ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
 
 
 

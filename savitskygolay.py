@@ -1,6 +1,7 @@
 
 #execfile(expanduser('~/Dropbox/bin/tools.py'))
 from tools import *
+import numpy as np
 
 def SGOrd(m,fc,fs):
     '''
@@ -64,50 +65,29 @@ def SGfiltJ(m,fc,fs):
 def SGaccelerate(x,m,fc,fs):
     n = len(x)
     x = concatenate([x[::-1],x,x[::-1]])
-    x = fftconvolve(x,SGfiltA(m,fc,fs),mode='same')
+    x = np.convolve(x,SGfiltA(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs*fs
 
 def SGjerk(x,m,fc,fs):
     n = len(x)
     x = concatenate([x[::-1],x,x[::-1]])
-    x = fftconvolve(x,SGfiltA(m,fc,fs),mode='same')
+    x = np.convolve(x,SGfiltA(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs*fs*fs
 
 def SGdifferentiate(x,m,fc,fs):
     n = len(x)
     x = concatenate([x[::-1],x,x[::-1]])
-    x = fftconvolve(x,SGfiltV(m,fc,fs),mode='same')
+    x = np.convolve(x,SGfiltV(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs
 
 def SGsmooth(x,m,fc,fs):
     n = len(x)
     x = concatenate([x[::-1],x,x[::-1]])
-    x = fftconvolve(x,SGfilt(m,fc,fs),mode='same')
+    x = np.convolve(x,SGfilt(m,fc,fs),mode='same')
     x = x[n:n*2]
-    return x
-
-def lowpass_filter(x, cut=10, Fs=1000, order=4):
-    return bandfilter(x,fb=cut,Fs=fs,order=order)
-    
-def highpassFilter(x, cut=40, Fs=240, order=2):
-    return bandfilter(x,fa=cut,Fs=Fs,order=order)
-
-def fdiff(x,fs=240.):
-    return (x[2:]-x[:-2])*fs*.5
-
-def killSpikes(x):
-    x = array(x)
-    y = zscore(highpassFilter(x))
-    x[y<-1] = nan
-    x[y>1] = nan
-    for s,e in zip(*get_edges(isnan(x))):
-        a = x[s-1]
-        b = x[e+1]
-        print s,e,a,b
-        x[s:e+2] = linspace(a,b,e-s+2)
     return x
 
 

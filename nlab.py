@@ -84,6 +84,7 @@ from neurotools.stats               import *
 from neurotools.ntime               import *
 from neurotools.tools               import *
 from neurotools.vonmises            import *
+from neurotools.time                import *
 from neurotools.functions           import *
 
 print 'Restoring pylab namespace (in event of accidental shadowing of pylab functions)'

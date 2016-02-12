@@ -324,8 +324,43 @@ def phaserand(signal):
     randomized = ifft(ff)
     return real(randomized)
     
+def lowpass_filter(x, cut=10, Fs=1000, order=4):
+    return bandfilter(x,fb=cut,Fs=fs,order=order)
     
-    
-    
+def highpassFilter(x, cut=40, Fs=240, order=2):
+    return bandfilter(x,fa=cut,Fs=Fs,order=order)
+
+def fdiff(x,fs=240.):
+    return (x[2:]-x[:-2])*fs*.5
+
+def killSpikes(x):
+    x = array(x)
+    y = zscore(highpassFilter(x))
+    x[y<-1] = nan
+    x[y>1] = nan
+    for s,e in zip(*get_edges(isnan(x))):
+        a = x[s-1]
+        b = x[e+1]
+        print s,e,a,b
+        x[s:e+2] = linspace(a,b,e-s+2)
+    return x
+
+def peak_within(freqs,spectrum,fa,fb):
+    '''
+    Find maximum within a band
+    '''
+    # clean up arguments
+    order    = argsort(freqs)
+    freqs    = array(freqs)[order]
+    spectrum = array(spectrum)[order]
+    start = find(freqs>=fa)[0]
+    stop  = find(freqs<=fb)[-1]+1
+    index = argmax(spectrum[start:stop]) + start
+    return freqs[index], spectrum[index]
+
+
+def zeromean(x):
+    return x-mean(x)
+
 
 

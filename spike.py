@@ -13,4 +13,7 @@ def times_to_raster(spikes,duration=1000):
     if len(spikes)>0: result[spikes]=1
     return result
 
+def bin_spikes(train,binsize=5):
+    bins = int(ceil(len(train)/float(binsize)))
+    return histogram(find(train),bins,(0,bins*binsize))[0]
 

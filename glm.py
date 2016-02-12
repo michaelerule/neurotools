@@ -15,6 +15,8 @@ statsmodels
 http://statsmodels.sourceforge.net/devel/install.html
 '''
 
+from neurotools.time import *
+
 #############################################################################
 # Imports
 # Check that numpy and scipy is installed
@@ -142,18 +144,6 @@ def ppglmfit(X,Y):
     M = poisson_results.params
     return M[0],M[1:]
 
-#crude versions of tic and toc from Matlab
-#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
-import time
-def tic():
-    global startTime_for_tictoc
-    startTime_for_tictoc = time.time()
-def toc():
-    if 'startTime_for_tictoc' in globals():
-        print "Elapsed time is "+str(time.time()-startTime_for_tictoc)\
-            +" seconds."
-    else:
-        print "Toc: start time not set"
 
 def fitGLM(X,Y):
     # Fit the model using gradient descent with hessian

@@ -12,8 +12,8 @@
 
 shopt -s extglob
 ./go
-touch .nojekyll
 git add *
 git rm !(.*)
+git add -u :/
 git commit -m 'autosynchronized'
 git push origin master

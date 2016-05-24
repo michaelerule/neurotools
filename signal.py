@@ -4,6 +4,7 @@ from matplotlib.mlab import *
 from neurotools.getfftw import *
 from scipy.signal.signaltools import fftconvolve,hilbert
 from numpy.random import *
+import numpy as np
 
 def gaussian_kernel(sigma):
     '''
@@ -27,22 +28,45 @@ def gaussian_smooth(x,sigma):
     K = gaussian_kernel(sigma)
     return convolve(x,K,'same')
 
-def zscore(x):
-    ss = std(x,0)+1e-30
-    #if std(x,0)<1e-60: return x
-    return (x-mean(x,0))/ss
+def zscore(x,axis=0,regularization=1e-30):
+    '''
+    Z-scores data, defaults to the first axis.    
+    A regularization factor is added to the standard deviation to preven
+    numerical instability when the standard deviation is extremely small.
+    The default refularization is 1e-30.
+    x: NDarray
+    axis: axis to zscore; default 0
+    ''' 
+    ss = std(x,axis=axis)+regularization
+    return (x-mean(x,axis=axis))/ss
 
 def local_maxima(x):
    '''
-   returns signal index and values at those indecies
+   Returns signal index and values at those indecies
    '''
    t = find(diff(sign(diff(x)))<0)+1
    return t,x[t]
 
+def local_minima(x):
+   '''
+   Returns signal index and values at those indecies for all local minima.
+   See local_maxima
+   '''
+   t,x = local_maxima(-x)
+   return t,-x
+
 def amp(x):
+    '''
+    Extracts amplitude envelope using Hilbert transform. X must be narrow
+    band. No padding is performed so watch out for boundary effects
+    '''
     return abs(hilbert(x))
     
 def getsnips(signal,times,window):
+    '''
+    Extract snippits of a time series surronding a list of times. Typically
+    used for spike-triggered statistics
+    '''
     times = times[times>window]
     times = times[times<len(signal)-window-1]
     snips = array([signal[t-window:t+window+1] for t in times])
@@ -52,19 +76,34 @@ def triggeredaverage(signal,times,window):
     return mean(getsnips(signal,times,window),0)
 
 def gettriggeredstats(signal,times,window):
+    '''
+    Get a statistical summary of data in length window around time point
+    times.
+    '''
     s = getsnips(signal,times,window)
     return mean(s,0),std(s,0),std(s,0)/sqrt(len(times))*1.96
 
 def padout(data):
+    '''
+    Generates a reflected version of a 1-dimensional signal. This can be
+    handy for achieving reflected boundary conditions in algorithms that
+    do not support this condition by default.
+    
+    The original data is placed in the middle, between the mirrord copies. 
+    Use the function "padin" to strip the padding
+    '''
     N = len(data)
     assert len(shape(data))==1
     padded = zeros(2*N,dtype=data.dtype)
-    padded[N/2:N/2+N]=data
-    padded[:N/2]=data[N/2:0:-1]
-    padded[N/2+N:]=data[-1:N/2-1:-1]
+    padded[N/2  :N/2+N]=data
+    padded[     :N/2  ]=data[N/2:0    :-1]
+    padded[N/2+N:     ]=data[-1 :N/2-1:-1]
     return padded
 
 def padin(data):
+    '''
+    See padout
+    '''
     N = len(data)
     assert len(shape(data))==1
     return data[N/2:N/2+N]
@@ -137,15 +176,38 @@ def median_filter(x,window=100,mode='same'):
     assert 0
         
 def rewrap(x):
+    '''
+    Used to handle wraparound when getting phase derivatives.
+    See pdiff.
+    '''
+    x = array(x)
     return (x+pi)%(2*pi)-pi
 
 def pdiff(x):
+    '''
+    Take the derivative of a sequence of phases. 
+    Times when this derivative wraps around form 0 to 2*pi are correctly
+    handeled.
+    '''
+    x = array(x)
     return rewrap(diff(x))
 
 def pghilbert(x):
+    '''
+    Extract phase gradient using the hilbert transform. See also pdiff.
+    '''
+    x = array(x)
     return pdiff(angle(hilbert(x)))
 
 def fudge_derivative(x):
+    '''
+    Discretely differentiating a signal reduces its signal by one sample.
+    In some cases, this may be undesirable. It also creates ambiguity as
+    the sample times of the differentiated signal occur halfway between the
+    sample times of the original signal. This procedure uses averaging to 
+    move the sample times of a differentiated signal back in line with the
+    original. 
+    '''
     n = len(x)+1
     result = zeros(n)
     result[1:]   += x
@@ -154,28 +216,48 @@ def fudge_derivative(x):
     return result
 
 def ifreq(x,Fs=1000,mode='pad'):
+    '''
+    Extract the instantaneous frequency from a narrow-band signal using
+    the Hilbert transform.
+    Fs defaults to 1000
+    mode 'pad' will return a signal of the original length
+    mode 'valid' will return a signal 1 sample shorter, with derivative
+        computed between each pair od points in the original signal.
+    '''
     pg = pghilbert(x)
     pg = pg/(2*pi)*Fs
     if mode=='valid':
         return pg # in Hz
     if mode=='pad':
-        return fudgeDerivative(pg)
+        return fudge_derivative(pg)
     assert 0
-        
-def zscore(x):
-    return (x-mean(x,0))/std(x,0)
 
 def unwrap(h):
+    '''
+    Unwraps a sequences of phase measurements so that rather than
+    ranging from 0 to 2*pi, the values increase (or decrease) continuously.
+    '''
     d = fudgeDerivative(pdiff(h))
     return cumsum(d)
 
 def ang(x):
+    '''
+    Uses the Hilbert transform to extract the phase of x. X should be 
+    narrow-band. The signal is not padded, so be wary of boundary effects.
+    '''
     return angle(hilbert(x))
     
-def randband(N,fa=None,fb=None):
-    return zscore(bandfilter(randn(N*2),fa=fa,fb=fb))[N/2:N/2+N]
-    
+def randband(N,fa=None,fb=None,Fs=1000):
+    '''
+    Returns Gaussian random noise band-pass filtered between fa and fb.
+    '''
+    return zscore(bandfilter(randn(N*2),fa=fa,fb=fb,Fs=Fs))[N/2:N/2+N]
+
 def arenear(b,K=5):
+    '''
+    Expand a boolean/binary sequence by K samples in each direction.
+    See "aresafe"
+    '''
     for i in range(1,K+1):
         b[i:] |= b[:-i]
     for i in range(1,K+1):
@@ -183,6 +265,11 @@ def arenear(b,K=5):
     return b
 
 def aresafe(b,K=5):
+    '''
+    Contract a boolean/binary sequence by K samples in each direction.
+    For example, you may want to test for a condition, but avoid samples
+    close to edges in that condition. 
+    '''
     for i in range(1,K+1):
         b[i:] &= b[:-i]
     for i in range(1,K+1):
@@ -190,6 +277,10 @@ def aresafe(b,K=5):
     return b
 
 def get_edges(signal):
+    '''
+    Assuming a binary signal, get the start and stop times of each
+    treatch of "1s"
+    '''
     starts = list(find(diff(int32(signal))==1))
     stops  = list(find(diff(int32(signal))==-1))
     if signal[0]: starts = [0]+starts
@@ -249,7 +340,7 @@ def median_block(data,N=100):
     
 def mean_block(data,N=100):
     '''
-    blocks data by median over last axis
+    blocks data by mean over last axis
     '''
     N = int(N)
     L = shape(data)[-1]
@@ -260,45 +351,12 @@ def mean_block(data,N=100):
     data = reshape(data,shape(data)[:-1]+(B,N))
     return mean(data,axis=-1)
 
-zc = zscore
-
 def phase_randomize(signal):
-    N = len(signal)
-    x = fft(signal)
-    if N%2==0: # N is even
-        rephase = exp(1j*2*pi*rand((N-2)/2))
-        rephase = concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
-    else: # N is odd
-        rephase = exp(1j*2*pi*rand((N-1)/2))
-        rephase = append(rephase,conj(rephase[::-1]))
-    rephase = append([1],rephase)
-    x *= rephase
-    return ifft(x)
-
-def phase_randomize_from_amplitudes(amplitudes):
     '''
-    phase_randomize_from_amplitudes(amplitudes)
-    treats input amplitudes as amplitudes of fourier components
+    Phase randomizes a signal by rotating frequency components by a random
+    angle. Negative frequencies are rotated in the opposite direction. 
+    The nyquist frequency, if present, has it's sign randomly flipped.
     '''
-    N = len(amplitudes)
-    x = complex128(amplitudes) # need to make a copy
-    if N%2==0: # N is even
-        rephase = exp(1j*2*pi*rand((N-2)/2))
-        rephase = concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
-    else: # N is odd
-        rephase = exp(1j*2*pi*rand((N-1)/2))
-        rephase = append(rephase,conj(rephase[::-1]))
-    rephase = append([1],rephase)
-    x *= rephase
-    return real(ifft(x))
-
-def estimate_padding(fa,fb,Fs=1000):
-    bandwidth  = fb if fa is None else fa if fb is None else min(fa,fb)
-    wavelength = Fs/bandwidth
-    padding    = int(ceil(2.5*wavelength))
-    return padding
-
-def phaserand(signal):
     assert 1==len(shape(signal))
     N = len(signal)
     if N%2==1:
@@ -323,21 +381,70 @@ def phaserand(signal):
     # take inverse
     randomized = ifft(ff)
     return real(randomized)
-    
+
+def phase_randomize_from_amplitudes(amplitudes):
+    '''
+    phase_randomize_from_amplitudes(amplitudes)
+    treats input amplitudes as amplitudes of fourier components
+    '''
+    N = len(amplitudes)
+    x = complex128(amplitudes) # need to make a copy
+    if N%2==0: # N is even
+        rephase = exp(1j*2*pi*rand((N-2)/2))
+        rephase = concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
+    else: # N is odd
+        rephase = exp(1j*2*pi*rand((N-1)/2))
+        rephase = append(rephase,conj(rephase[::-1]))
+    rephase = append([1],rephase)
+    x *= rephase
+    return real(ifft(x))
+
+def estimate_padding(fa,fb,Fs=1000):
+    '''
+    Estimate the amount of padding needed to address boundary conditions
+    when filtering. Takes into account the filter bandwidth, which is 
+    related to the time-locality of the filter, and therefore the amount
+    of padding needed to prevent artifacts at the edge.
+    '''
+    bandwidth  = fb if fa is None else fa if fb is None else min(fa,fb)
+    wavelength = Fs/bandwidth
+    padding    = int(ceil(2.5*wavelength))
+    return padding
+
 def lowpass_filter(x, cut=10, Fs=1000, order=4):
+    '''
+    Execute a butterworth low pass Filter at frequency "cut"
+    Defaults to order=4 and Fs=1000
+    '''
     return bandfilter(x,fb=cut,Fs=fs,order=order)
     
-def highpassFilter(x, cut=40, Fs=240, order=2):
+def highpassFilter(x, cut=40, Fs=1000, order=4):
+    '''
+    Execute a butterworth high pass Filter at frequency "cut"
+    Defaults to order=4 and Fs=1000
+    '''
     return bandfilter(x,fa=cut,Fs=Fs,order=order)
 
-def fdiff(x,fs=240.):
-    return (x[2:]-x[:-2])*fs*.5
+def fdiff(x,Fs=240.):
+    '''
+    Take the discrete derivative of a signal, correcting result for
+    sample rate. This procedure returns a singnal two samples shorter than
+    the original.
+    '''
+    return (x[2:]-x[:-2])*Fs*.5
 
-def killSpikes(x):
+def killSpikes(x,threshold=1):
+    '''
+    Remove times when the signal exceeds a given threshold of the 
+    standard deviation of the underlying signal. Removed data are
+    re-interpolated from the edges. This procedure is particularly 
+    useful in correcting kinematics velocity trajectories. Velocity 
+    should be smooth, but motion tracking errors can cause sharp spikes
+    in the signal.      
+    '''
     x = array(x)
     y = zscore(highpassFilter(x))
-    x[y<-1] = nan
-    x[y>1] = nan
+    x[abs(y)>threshold] = nan
     for s,e in zip(*get_edges(isnan(x))):
         a = x[s-1]
         b = x[e+1]
@@ -358,9 +465,89 @@ def peak_within(freqs,spectrum,fa,fb):
     index = argmax(spectrum[start:stop]) + start
     return freqs[index], spectrum[index]
 
+def zeromean(x,axis=None):
+    '''
+    Remove the mean trend from data
+    '''
+    return x-mean(x,axis=axis)
 
-def zeromean(x):
-    return x-mean(x)
+def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
+    '''
+    Extracts an amplitude-modulated component from an analytic signal,
+    Correctly flipping the sign of the signal when it crosses zero, 
+    rather than returning a rectified result.
+    
+    Sign-changes are heuristically detected basd on the following:
+        - An abnormally large skip in phase between two time points,
+          larger than pi/2, that is also a local extremum in phase velocity
+        - local minima in the amplitude at low-voltage with high curvature
+        
+    '''
+
+    analytic_signal = zscore(analytic_signal)
+    
+    phase      = angle(analytic_signal)
+    amplitude  = abs(analytic_signal)
+    
+    phase_derivative     = fudge_derivative(pdiff(phase))
+    phase_curvature      = fudge_derivative(diff(phase_derivative))
+    amplitude_derivative = fudge_derivative(diff(amplitude))
+    amplitude_curvature  = fudge_derivative(diff(amplitude_derivative))
+
+    amplitude_candidates = find( (amplitude_curvature >= 0.05) & (amplitude < 0.6) )
+    amplitude_exclude    = find( (amplitude_curvature <  0.01) | (amplitude > 0.8) )
+    phase_candidates     = find( (phase_curvature     >= 0.05) & (phase_derivative < pi*0.5) )
+    phase_exclude        = find( (phase_derivative > pi*0.9) )
+    aminima,_ = local_minima(amplitude)
+    pminima,_ = local_minima(phase_derivative)
+    pmaxima,_ = local_maxima(phase_derivative)
+    minima = \
+        ((set(aminima)|set(amplitude_candidates)) - \
+          set(amplitude_exclude)) & \
+        ((set(pminima)|set(pminima-1)|set(pmaxima)|set(pmaxima-1)) -\
+          set(phase_exclude))
+    
+    minima = array(list(minima))
+    minima = minima[diff(list(minima))!=1]
+    
+    edges = zeros(shape(analytic_signal),dtype=np.int32)
+    edges[list(minima)] = 1
+    sign = cumsum(edges)%2*2-1
+    
+    demodulated = amplitude*sign
+    
+    if doplot:
+        clf()
+        
+        Nplots = 4
+        iplot = 1
+        
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(demodulated,color='r',lw=2)
+        [axvline(x,lw=2,color='k') for x in (minima)]
+        
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(phase_derivative,color='r',lw=2)
+        [axvline(x,lw=2,color='k') for x in (minima)]
+        
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(amplitude_curvature,color='r',lw=2)
+        [axvline(x,lw=2,color='k') for x in (minima)]
+        
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(real(analytic_signal),color='g')
+        [axvline(x,lw=2,color='k') for x in (minima)]
+
+    return demodulated
+
+
+
+
+
 
 
 

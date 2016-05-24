@@ -5,7 +5,7 @@ from numpy import *
 from neurotools.getfftw import *
 from numpy.random import *
 from neurotools.tools import warn
-from neurotools.signal import phaserand
+from neurotools.signal import phase_randomize
 
 __PPC_FP_TYPE__=np.float128
 
@@ -157,7 +157,7 @@ def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=Tru
 def estimate_bias_in_uncorrected_ppc(signal,times,window=50,Fs=1000,nrand=100):
     tried = []
     for i in range(nrand):
-        ff,ppc = uncorrectedppc(phaserand(signal),times,window,Fs)
+        ff,ppc = uncorrectedppc(phase_randomize(signal),times,window,Fs)
         tried.append(ppc)
     bias = mean(tried,0)
     return ff,bias
@@ -219,7 +219,7 @@ def ppc_chance_level(nSamples,nrandom,p,nTapers=1):
     return sorted(simulated)[int(p*len(simulated))]
 
 
-def ppc_phaserand_chance_level_sample(
+def ppc_phase_randomize_chance_level_sample(
     signal,times,window=50,Fs=1000,k=4,multitaper=True,
     biased=False,delta=100,taper=None):
     '''
@@ -254,14 +254,14 @@ def ppc_phaserand_chance_level_sample(
     if len(shape(signal))==1:
         # only a single trial provided
         usetimes = discard_spikes_closer_than_delta(signal,times,delta,window)
-        signal = phaserand(signal)
+        signal = phase_randomize(signal)
         snippits = array([nodc(signal[t-window:t+window+1]) for t in usetimes])
     elif len(shape(signal))==2:
         warn('assuming first dimension is trials / repititions')
         signals,alltimes = signal,times
         snippits = []
         for signal,times in zip(signals,alltimes):
-            signal = phaserand(signal)
+            signal = phase_randomize(signal)
             N = len(signal)
             times = array(times)
             times = times[times>=window]

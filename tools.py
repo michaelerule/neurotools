@@ -1,20 +1,37 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+
+# Start migrating to print-as-a-function 
+# from __future__ import print_function
+
 import os
 import traceback
-from itertools import *
-from collections import *
 import inspect
 import numpy as np
-from numpy import *
-from matplotlib.cbook import flatten
 
+from itertools   import *
+from collections import *
+from numpy       import *
+
+from matplotlib.cbook          import flatten
+from scipy.stats.stats         import describe
+from neurotools.jobs.decorator import *
+from scipy.io                  import loadmat
+
+# this line must come last if we want memoization 
+from neurotools.jobs.cache import *
 
 #TODO: make this robust / cross-platform
 matlabpath = '/usr/local/bin/matlab -nodesktop -nodisplay -r'
 
-
-
 try:
     from decorator import decorator
+    from decorator import decorator as robust_decorator
 except Exception, e:
     traceback.print_exc()
     print 'Importing decorator failed, nothing will work.'
@@ -22,48 +39,7 @@ except Exception, e:
     print 'or  pip  install decorator'
     print 'hopefully at least one of those works'
 
-
 print 'WARNING MOST FUNCTIONS HAVE MOVED TO SIGNALTOOLS'
-
-'''
-def memoize(f):
-    """ Memoization decorator for a function taking one or more arguments. """
-    class memodict(dict):
-        def __getitem__(self, *key):
-            return dict.__getitem__(self, key)
-        def __missing__(self, key):
-            ret = self[key] = f(*key)
-            return ret
-    return memodict().__getitem__
-'''
-
-# http://stackoverflow.com/questions/6407993/how-to-memoize-kwargs
-from functools import wraps
-def memoize(fun,*args, **kwargs):
-    """A simple memoize decorator for functions supporting positional args."""
-    if not fun.func_defaults is None:
-        print 'ERROR NO LONGER ACCEPTING KWARGS FOR MEMOIZATION'
-        print 'UNIQUE KEY,VALUE ASSOCIATIONS HARD TO DETERMINE SINCE'
-        print 'KWARGS MAY BE PASSED IN ANY ORDER, AND MAY DEFINE DEFAULTS'
-        print 'THIS CAN BE IMPLMENTED BUT IT WILL TAKE TIME TO CORRECTLY'
-        return fun    
-    @wraps(fun)
-    def wrapper(*args, **kwargs):
-        args = [frozenset(x) if type(x) is set else x for x in args]
-        key = (args, frozenset(sorted(kwargs.items())))
-        if key in cache:
-            #print 'located memo for',fun.__name__,':',key
-            return cache[key]
-        else:
-            #print 'could not find memo for',fun.__name__,':',key
-            ret = cache[key] = fun(*args, **kwargs)
-        return ret
-    wrapper.__name__ = fun.__name__
-    wrapper.__doc__ = fun.__doc__
-    cache = {}
-    return wrapper
-
-#memoize = lambda x:x
 
 def varexists(varname):
     if varname in vars():
@@ -179,7 +155,7 @@ class piper():
     def __pow__(self,other):
         return self.operation(other)
 
-@decorator
+@robust_decorator
 def globalize(function,*args,**krgs):
     '''
     globalize allows the positional argument list of a python to be
@@ -235,7 +211,7 @@ def globalize(function,*args,**krgs):
     warn('globalized ' +' '.join(map(str,argnames)))
     return function(*newargs,**krgs)
 
-
+@robust_decorator
 def synonymize(fun):
     '''
     decorator to register likely name variant of a function with globals
@@ -244,32 +220,19 @@ def synonymize(fun):
     '''
     assert 0
 
-
 # common aliases
 exists = varexists
 ce = exists
 enum = enumerate
-enm = enum
-en = enm
 arr = np.array
 nmx = np.max
 npx = np.max
 nmn = np.min
 npn = np.min
 npm = np.min
-zro = np.zeros
-zr = zro
-ons = np.ones
-on = ons
 xr = xrange
 iz = izip
 concat = np.concatenate
-conct = concat
-ccat = concat
-cct = concat
-ct = cct
-
-
 
 @piper
 def en(x):
@@ -282,18 +245,14 @@ zc = piper(lambda x: (x-mean(x,0))/std(x,0))
 def ar(x):
     return array(x)
 
-
 def enlist(iterable):
     print '\n'.join(map(str,iterable))
-
 
 def scat(*args,**kwargs):
     if 's' in kwargs:
         return kwargs['s'].join(map(str,args))
     return ' '.join(map(str,args))
 
-
-from scipy.io import loadmat
 matfilecache = {}
 def metaloadmat(path):
     '''
@@ -322,5 +281,116 @@ def shortscientific(x):
 def percent(n,total):
     return '%0.2g%%'%(n*100.0/total)
 
+def find_all_extension(d,ext='png'):
+    '''
+    Locate manually sorted unit classes
+    '''
+    found = []
+    for root,dirs,files in os.walk(d):
+        found.extend([f for f  in files if f.lower().split('.')[-1]==ext])
+    return found
+
+# really should make nice datastructures for all this
+setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b)}
+mapdict    = lambda data,function: {k:function(v) for k,v in data.iteritems()}
+getdict    = lambda data,index: mapdict(data, lambda v:v[index])
+
+# quick complete statistical description
+class description:
+    def __init__(self,data):
+        
+        self.N, (self.min, self.max),self.mean,self.variance,self.skewness,self.kurtosis = describe(data)
+        self.median = median(data)
+        self.std  = std(data)
+        
+        # quartiles
+        self.q1   = percentile(data,25)
+        self.q3   = self.median
+        self.q2   = percentile(data,75)
+        
+        # percentiles
+        self.p01  = percentile(data,1)
+        self.p025 = percentile(data,2.5)
+        self.p05  = percentile(data,5)
+        self.p10  = percentile(data,10)
+        self.p90  = percentile(data,90)
+        self.p95  = percentile(data,95)
+        self.p975 = percentile(data,97.5)
+        self.p99  = percentile(data,99)
+        
+    def __str__(self):
+        result = ''
+        for stat,value in self.__dict__.iteritems():
+            result += ' %s=%0.2f '%(stat,value)
+        return result
+    
+    def short(self):
+        '''
+        Abbreviated summary
+        '''
+        abbreviations = {
+            'N':'N',
+            'min':'mn',
+            'max':'mx',
+            'mean':u'μ',
+            'variance':u'σ²',
+            'skewness':'Sk',
+            'kurtosis':'K'
+        }
+        result = []
+        for stat,value in self.__dict__.iteritems():
+            if stat in abbreviations:
+                result.append('%s:%s '%(abbreviations[stat],shortscientific(value)))
+        return ' '.join(result)
 
 
+
+def ensure_dir(dirname):
+    """
+    Ensure that a named directory exists; if it does not, attempt to create it.
+    http://stackoverflow.com/questions/944536/efficient-way-of-creating-recursive-paths-python
+    """
+    try:
+        os.makedirs(dirname)
+    except OSError, e:
+        if e.errno != errno.EEXIST:
+            raise
+            
+            
+
+# http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python
+            
+import sys
+from numbers import Number
+from collections import Set, Mapping, deque   
+            
+try: # Python 2
+    zero_depth_bases = (basestring, Number, xrange, bytearray)
+    iteritems = 'iteritems'
+except NameError: # Python 3
+    zero_depth_bases = (str, bytes, Number, range, bytearray)
+    iteritems = 'items'
+
+def getsize(obj):
+    """Recursively iterate to sum size of object & members."""
+    def inner(obj, _seen_ids = set()):
+        obj_id = id(obj)
+        if obj_id in _seen_ids:
+            return 0
+        _seen_ids.add(obj_id)
+        size = sys.getsizeof(obj)
+        if isinstance(obj, zero_depth_bases):
+            pass # bypass remaining control flow and return
+        elif isinstance(obj, (tuple, list, Set, deque)):
+            size += sum(inner(i) for i in obj)
+        elif isinstance(obj, Mapping) or hasattr(obj, iteritems):
+            size += sum(inner(k) + inner(v) for k, v in getattr(obj, iteritems)())
+        # Now assume custom object instances
+        elif hasattr(obj, '__slots__'): 
+            size += sum(inner(getattr(obj, s)) for s in obj.__slots__ if hasattr(obj, s))
+        else: 
+            attr = getattr(obj, '__dict__', None)
+            if attr is not None:
+                size += inner(attr)
+        return size
+    return inner(obj)

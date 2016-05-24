@@ -43,12 +43,15 @@ number, which will lead to more readable and more reusable code.
 
 '''
 
+# avoid import collision
+from __future__ import absolute_import
 
 from multiprocessing import Process, Pipe, cpu_count, Pool
 from itertools import izip, chain
-import traceback
+import traceback, warnings
 import sys
 import signal
+import threading 
 
 __N_CPU__ = cpu_count()
 '''
@@ -90,8 +93,13 @@ def parmap(f,problems,leavefree=1,fakeit=False,verbose=False):
             num_tasks = len(problems)
             if verbose: print 'STARTING PARALLEL'
             for i,result in enumerate(mypool.imap_unordered(f,problems)):
-                sys.stderr.write('\rdone %0.1f%% '%((100.0*(i+1)/num_tasks)))
-                results[result[0]] = result[1:]
+                try:
+                    sys.stderr.write('\rdone %0.1f%% '%((100.0*(i+1)/num_tasks)))
+                    results[result[0]] = result[1:]
+                except:
+                    traceback.print_exc()
+                    warnings.warn('ERROR ENCOUNTERED IN ONE THREAD, CONTINUING')
+                    
             if verbose: print 'FINISHED PARALLEL'
     sys.stderr.write('\r            \r')
     return [results[i] for i in sorted(list(results.keys()))]
@@ -121,8 +129,12 @@ def parmap_dict(f,problems,leavefree=1,fakeit=False,verbose=False):
             num_tasks = len(problems)
             if verbose: print 'STARTING PARALLEL'
             for i,result in enumerate(mypool.imap_unordered(f,problems)):
-                sys.stderr.write('\rdone %0.1f%% '%((100.0*(i+1)/num_tasks)))
-                results[result[0]] = result[1:]
+                try:
+                    sys.stderr.write('\rdone %0.1f%% '%((100.0*(i+1)/num_tasks)))
+                    results[result[0]] = result[1:]
+                except:
+                    traceback.print_exc()
+                    warnings.warn('ERROR ENCOUNTERED IN ONE THREAD, CONTINUING')
             if verbose: print 'FINISHED PARALLEL'
     sys.stderr.write('\r            \r')
     return results

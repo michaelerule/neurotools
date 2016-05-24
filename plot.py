@@ -1,9 +1,12 @@
-
+#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
+          
 from   neurotools.color   import *
 from   neurotools.getfftw import *
 from   neurotools.tools   import *
-from   neurotools.time    import *
+from   neurotools.ntime   import *
 
+import os
 import pickle
 import scipy
 import numpy
@@ -137,7 +140,6 @@ def adjustmap(arraymap):
     available   = sorted(list(set([x for x in ravel(arraymap) if x>0])))
     for i,ch in enumerate(available):
         adjustedmap[arraymap==ch]=i
-    # this doesn't really work
     #if nrow==10 and ncol==10:
     #    print 'trimming to control for array size effects'
     #    return adjustedmap[2:-2,2:-2]
@@ -181,9 +183,26 @@ def pixels_to_xunits(n,ax=None,fig=None):
     w,h = get_ax_size()
     dx = diff(xlim())[0]
     return n*dx/float(w)
-pixel_to_xunits = pixels_to_xunits
-pixel_to_xunit = pixels_to_xunits
-pixels_to_xunit = pixels_to_xunits
+
+def yunits_to_pixels(n,ax=None,fig=None):
+    '''
+    Converts a measurement in units of the current y-axis to pixels
+    '''
+    if fig is None: fig = gcf()
+    if ax  is None: ax  = gca()
+    w,h = get_ax_size()
+    dy = diff(ylim())[0]
+    return n*float(h)/dy
+
+def xunits_to_pixels(n,ax=None,fig=None):
+    '''
+    Converts a measurement in units of the current x-axis to pixels
+    '''
+    if fig is None: fig = gcf()
+    if ax  is None: ax  = gca()
+    w,h = get_ax_size()
+    dx = diff(xlim())[0]
+    return n*float(w)/dx
 
 def pixels_to_yunits(n,ax=None,fig=None):
     '''
@@ -195,9 +214,7 @@ def pixels_to_yunits(n,ax=None,fig=None):
     w,h = get_ax_size()
     dy = diff(ylim())[0]
     return n*dy/float(h)
-pixel_to_yunit = pixels_to_yunits
-pixel_to_yunits = pixels_to_yunits
-pixels_to_yunit = pixels_to_yunits
+
 
 def pixels_to_xfigureunits(n,ax=None,fig=None):
     '''
@@ -247,6 +264,41 @@ def adjust_axis_height_pixels(dy,ax=None):
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     ax.set_position((x,y,w,h-pixels_to_yfigureunits(float(dy),ax)))
+
+def nudge_axis_y(dy,ax=None):
+    if ax is None: ax = gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dy = pixels_to_yfigureunits(dy,ax)
+    ax.set_position((x,y+dy,w,h))
+
+def nudge_axis_x(dx,ax=None):
+    if ax is None: ax = gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dx = pixels_to_xfigureunits(dx,ax)
+    ax.set_position((x+dx,y,w,h))
+
+def expand_axis_y(dy,ax=None):
+    if ax is None: ax = gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dy = pixels_to_yfigureunits(dy,ax)
+    ax.set_position((x,y,w,h+dy))
+
+def nudge_axis_baseline(dy,ax=None):
+    if ax is None: ax = gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dy = pixels_to_yfigureunits(dy,ax)
+    ax.set_position((x,y+dy,w,h-dy))
+
+def nudge_axis_left(dx,ax=None):
+    if ax is None: ax = gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dx = pixels_to_xfigureunits(dx,ax)
+    ax.set_position((x+dx,y,w-dx,h))
 
 def zoombox(ax1,ax2,xspan1=None,xspan2=None):
     # need to do this to get the plot to ... update correctly 
@@ -561,7 +613,7 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=F
     for frame in z:
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
-def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spacing=5):
+def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spacing=5,fontsize=12):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'    
@@ -602,46 +654,15 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spa
             xlim()[1]+pixels_to_xunits(5,ax=cax),
             mean(ylim()),        
             title,
-            fontsize=12,
+            fontsize=fontsize,
             rotation=0,
             horizontalalignment='left',
             verticalalignment='center')
     else:
-        ylabel(title)
+        ylabel(title,fontsize=fontsize)
     cax.yaxis.set_label_position("right")
     sca(oldax) #restore previously active axis
     return cax
-    
-
-def nudge_axis_y(ax,dy=9):
-    bb = ax.get_position()
-    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = pixels_to_yfigureunits(dy,ax)
-    ax.set_position((x,y+dy,w,h))
-
-def nudge_axis_x(ax,dx=9):
-    bb = ax.get_position()
-    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dx = pixels_to_xfigureunits(dx,ax)
-    ax.set_position((x+dx,y,w,h))
-
-def expand_axis_y(ax,dy=9):
-    bb = ax.get_position()
-    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = pixels_to_yfigureunits(dy,ax)
-    ax.set_position((x,y,w,h+dy))
-
-def nudge_axis_baseline(ax,dy=9):
-    bb = ax.get_position()
-    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = pixels_to_yfigureunits(dy,ax)
-    ax.set_position((x,y+dy,w,h-dy))
-
-def nudge_axis_left(ax,dx=9):
-    bb = ax.get_position()
-    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dx = pixels_to_xfigureunits(dx,ax)
-    ax.set_position((x+dx,y,w-dx,h))
 
 def complex_axis(scale):
     ''' 
@@ -654,8 +675,8 @@ def complex_axis(scale):
     ybartext(0,'$\Im(z)$','k','w',lw=1,color='k',outline=False)
     xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
     noaxis()
-    xlabel('$\mu V$')
-    ylabel('$\mu V$')
+    xlabel(u'μV',fontname='DejaVu Sans')
+    ylabel(u'μV',fontname='DejaVu Sans')
     force_aspect()
 
 def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
@@ -677,8 +698,11 @@ def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
     text(mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
 
 def savefigure(name):
-    savefig(today()+'_'+name+'.svg')
-    savefig(today()+'_'+name+'.pdf')
+    dirname  = os.path.dirname(name)
+    if dirname=='': dirname='./'
+    basename = os.path.basename(name)
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True)
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True)
 
 def clean_y_range(ax=None,precision=1):
     if ax is None: ax=gca()

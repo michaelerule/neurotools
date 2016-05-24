@@ -21,7 +21,7 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 from os.path import expanduser, abspath
-sys.path.insert(0,abspath(expanduser('~/Dropbox/bin')))
+sys.path.insert(0,abspath(expanduser('~/Dropbox/python_libraries')))
 
 # -- General configuration ------------------------------------------------
 
@@ -297,3 +297,49 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+
+
+
+
+# Patch for the numpy doc error
+# http://stackoverflow.com/questions/23543886/sphinx-adds-documentation-for-numpy-modules-to-my-docs
+import sys
+class Mock(object):
+    __all__ = []
+    def __init__(self, *args, **kwargs):
+        pass
+    def __call__(self, *args, **kwargs):
+        return Mock()
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            mockType = type(name, (), {})
+            mockType.__module__ = __name__
+            return mockType
+        else:
+            return Mock()
+
+
+MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse','scipy','matplotlib', 'numpy', 'nitime','statsmodels','pyfftw','spectrum','pylab','pyplot','matplotlib.pylab','sklearn','sklearn.metrics']
+                               
+try:
+    for l in open('./missing_modules').readlines():
+        l=l[:-1]
+        if any([x in l for x in MOCK_MODULES]):
+            print '>>>',l
+            if '.' in l:
+                n = len(l.split('.'))
+                for i in range(n):
+                    MOCK_MODULES.append('.'.join(l.split('.')[:i+1]))
+except:
+    print "( couldn't patch missing modules )"            
+
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
+    
+    
+

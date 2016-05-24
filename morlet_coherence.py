@@ -1,6 +1,7 @@
 
 print "CAUTION THIS IS NOT GENERAL PURPOSE CHECK PARAMETERS"
 from tools import memoize
+
 # from plottools import *
 ############################################################################
 # Configure the beta band complex morlet transform

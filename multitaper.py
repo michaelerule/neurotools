@@ -10,19 +10,14 @@ except:
     print 'THE "nitime" MODULE IS MISSING'
     print '> sudo easy_install nitime'
     print '(coherence function is undefined)'
-    print '(so none of the multitaper coherence functions will work)'
+    print '(none of the multitaper coherence functions will work)'
 
 def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
     '''
-    x: signal
-    k: number of tapers
-    Fs: sa
-    mple rate (default 1K)
-    
+    x : signal
+    k : number of tapers
+    Fs: sample rate (default 1K)
     returns frequencies, average sqrt(power) over tapers.
-    
-    How to compute the bandwidth given the number of tapers:
-        
     '''
     N = shape(x)[-1]
     if nodc:
@@ -35,15 +30,10 @@ def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
 
 def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
     '''
-    x: signal
-    k: number of tapers
-    Fs: sa
-    mple rate (default 1K)
-    
+    x : signal
+    k : number of tapers
+    Fs: sample rate (default 1K)
     returns frequencies, average sqrt(power) over tapers.
-    
-    How to compute the bandwidth given the number of tapers:
-        
     '''
     N = shape(x)[-1]
     if nodc:
@@ -56,24 +46,14 @@ def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
 
 def sliding_multitaper_spectrum(x,window=500,step=100,Fs=1000,BW=5):
     '''
-    sliding_multitaper_spectrum(x,window=500,step=100,Fs=1000,BW=5)
-    return ff,array(allcohere)
-    NOT IMPLEMENTED NOT SUPPORTED
+    NOT IMPLEMENTED
     '''
     assert 0
-    N = len(x)
-    assert len(y)==N
-    allcohere = []
-    for tstart in xrange(0,N-window+1,step):
-        ff,cohere = multitaper_coherence(x[tstart:tstart+window],y[tstart:tstart+window],Fs,BW)
-        allcohere.append(cohere)
-    return ff,array(allcohere)
 
 def multitaper_coherence(x,y,Fs=1000,BW=5):
     '''
     multitaper_coherence(x,y,Fs=1000,BW=5)
     BW is the multitaper bandwidth
-    
     returns freqs, cohere
     '''
     x -= mean(x)
@@ -104,7 +84,8 @@ def mtmchpar((t,(x,y,Fs,BW))):
 def sliding_multitaper_coherence_parallel(x,y,window=500,step=100,Fs=1000,BW=5):
     '''
     Sliding multitaper coherence between x and y
-    Not implemented / not supported
+    Takes multiple samples over time, but estimates each sample using multi-taper
+    See also multitaper_coherence
     '''
     N = len(x)
     assert len(y)==N
@@ -115,7 +96,12 @@ def sliding_multitaper_coherence_parallel(x,y,window=500,step=100,Fs=1000,BW=5):
     return freqs,allcohere
 
 
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    

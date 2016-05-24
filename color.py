@@ -36,6 +36,12 @@ WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK = GATHER
 # completes the Gather spectrum
 MOSS  = '#77ae64'
 MAUVE = '#956f9b'
+INDEGO     = [0.37843053,  0.4296282 ,  0.76422011]
+VERIDIAN   = [0.06695279,  0.74361409,  0.55425139]
+CHARTREUSE = [0.71152929,  0.62526339,  0.10289384]
+CRIMSON    = [0.84309675,  0.37806273,  0.32147779]
+
+
 
 #############################################################################
 # Hue / Saturation / Luminance color space code
@@ -60,13 +66,97 @@ def hsv2rgb(h,s,v):
     q = min(1.,max(0.,q))
     return ((v,t,p),(q,v,p),(p,v,t),(p,q,v),(t,p,v),(v,p,q))[hi]
 
-def lightness(r,g,b):
-    x1 = 0.30
-    x2 = 0.59
-    x3 = 0.11
+def lightness(r,g,b,method='lightness'):
+    return dot(luminance_matrix(method=method),(r,g,b))
+
+def luminance_matrix(method='perceived'):
+    '''
+    Method 'perceived' 0.299*R + 0.587*G + 0.114*B
+    Method 'standard'  0.2126*R + 0.7152*G + 0.0722*B
+    Method 'lightness' 0.3*R + 0.59*G + 0.11*B
+    '''
+    if method=='standard':
+        x1 = 0.2126
+        x2 = 0.7152
+        x3 = 0.0722
+    elif method=='perceived':
+        x1 = 0.299
+        x2 = 0.587
+        x3 = 0.114
+    elif method=='lightness':
+        x1 = 0.30
+        x2 = 0.59
+        x3 = 0.11
+    else:
+        assert 0
     LRGB = np.array([x1,x2,x3])
     LRGB = LRGB / np.sum(LRGB)
-    return dot(LRGB,(r,g,b))
+    return LRGB
+
+def match_luminance(target,color,THRESHOLD=0.01,squared=False,method='perceived'):
+    '''
+    Adjust color to match luminosity of target
+    
+    Method 'perceived' 0.299*R + 0.587*G + 0.114*B
+    Method 'standard'  0.2126*R + 0.7152*G + 0.0722*B
+    Method 'lightness' 0.3*R + 0.59*G + 0.11*B
+    '''
+    LRGB   = luminance_matrix(method)
+    color  = array(color)
+    target = array(target)
+    if squared:
+        luminance = np.dot(LRGB,target**2)**0.5
+        source    = np.dot(LRGB,color**2)**0.5
+    else:
+        luminance = np.dot(LRGB,target)
+        source    = np.dot(LRGB,color)
+    # do a bounded relaxation of the color to attempt to tweak luminance
+    # while preserving hue, saturation as much as is possible
+    while abs(source-luminance)>THRESHOLD:
+        arithmetic_corrected = clip(color+luminance-source,0,1)
+        geometric_corrected  = clip(color*luminance/source,0,1)
+        correction = 0.5*(arithmetic_corrected+geometric_corrected)
+        color = 0.9*color+0.1*np.clip(correction,0,1)
+        if squared:
+            source    = np.dot(LRGB,color**2)**0.5
+        else:
+            source    = np.dot(LRGB,color)
+    return color
+
+def rotate(colors,th):
+    '''
+    Rotate a list of rgb colors by angle theta
+    '''
+    Q1 = sin(th)/sqrt(3)
+    Q2 = (1-cos(th))/3
+    results = []
+    for (r,g,b) in colors:
+        rb = r-b;
+        gr = g-r;
+        bg = b-g;
+        r1 = Q2*(gr-rb)-Q1*bg+r;
+        Z  = Q2*(bg-rb)+Q1*gr;
+        g += Z + (r-r1);
+        b -= Z;
+        r = r1;
+        results.append((r,g,b))
+    return results
+
+def RGBtoHCL(r,g,b,method='perceived'):
+    alpha  = 0.5*(2*r-g-b)
+    beta   = sqrt(3)/2*(g-b)
+    hue    = arctan2(beta,alpha)
+    chroma = sqrt(alpha**2+beta**2)
+    L = lightness(r,g,b)
+    return hue,chroma,L
+
+def hue_angle(c1,c2):
+    '''
+    Calculates the angular difference in hue between two colors
+    '''
+    H1 = RGBtoHCL(*c1)[0]
+    H2 = RGBtoHCL(*c2)[0]
+    return H2-H1    
 
 def hcl2rgb(h,c,l,target = 1.0):
     '''
@@ -74,11 +164,7 @@ def hcl2rgb(h,c,l,target = 1.0):
     c: chroma
     l: luminosity
     '''
-    x1 = 0.30
-    x2 = 0.59
-    x3 = 0.11
-    LRGB = np.array([x1,x2,x3])
-    LRGB = LRGB / np.sum(LRGB)
+    LRGB = luminance_matrix()
     h = h*pi/180.0
     alpha = cos(h)
     beta = sin(h)*2/sqrt(3)
@@ -119,7 +205,7 @@ def circularly_smooth_colormap(cm,s):
     '''
     Smooth a colormap with cirular boundary conditions
     
-    s: sigma, standard deviation of gaussian smoothing kernel
+    s: sigma, standard deviation of gaussian smoothing kernel in samples
     cm: color map, array-like of RGB tuples
     '''
     # Do circular boundary conditions the lazy way

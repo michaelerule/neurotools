@@ -1,12 +1,19 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
 
-from spectrum.mtm import dpss
+try:
+    from spectrum.mtm import dpss
+except:
+    print('Could not locate the spectrum module, please install it')
+    print('Multitaper methods will not work')
+    def dpss(*args):
+        raise NotImplementedError("Please install the spectrum module")
+
 import types
 import numpy as np
 from numpy import *
@@ -20,7 +27,7 @@ __PPC_FP_TYPE__=np.float128
 def fftppc_biased(snippits,Fs=1000,taper=None):
     # some precision trouble
     # use quad precition
-    # PPC doesn't care about scale so also rescale? 
+    # PPC doesn't care about scale so also rescale?
     snippits = array(snippits,dtype=__PPC_FP_TYPE__)
     snippits = snippits/std(snippits)
     M,window = shape(snippits)
@@ -39,28 +46,28 @@ def fftppc(snippits,Fs=1000,taper=None):
     make sure this is equivalent to the following matlab lines
     raw     = abs(sum(S./abs(S))).^2;
     ppc     = (raw - M)./(M.*(M-1));
-    
+
     the raw computation uses the mean which includes a 1/M factor
     which is then squared so the raw PPC is already /M^2 compared
     to the PPC value intermediate in the matlab code. So we have to
     multiply it by M^2
-    '''    
+    '''
     M,window = shape(snippits)
     ff,raw,phase = fftppc_biased(snippits,Fs,taper=taper)
-    unbiased = (raw*M-1)/(M-1)   
+    unbiased = (raw*M-1)/(M-1)
     return ff, unbiased, phase
 
 def fftppc_biased_multitaper(snippits,Fs=1000,k=4):
     # some precision trouble
     # use quad precition
-    # PPC doesn't care about scale so also rescale? 
+    # PPC doesn't care about scale so also rescale?
     #nippits = array(snippits,dtype=__PPC_FP_TYPE__)
     #snippits = snippits/std(snippits)
     M,window = shape(snippits)
-    print M,window
+    print(M,window)
     if M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
-    #print 'BROKE FOR MATLAB CHECK REMOVE +1 on K KEEP ALL TAPERS'
-    #tapers   = dpss(window,NW=0.499*(k+1),k=(k+1))[0][:,:-1] 
+    #print('BROKE FOR MATLAB CHECK REMOVE +1 on K KEEP ALL TAPERS')
+    #tapers   = dpss(window,NW=0.499*(k+1),k=(k+1))[0][:,:-1]
     tapers   = dpss(window,NW=0.499*k,k=k)[0]
     results  = []
     unit  = lambda x:x/abs(x)
@@ -73,12 +80,12 @@ def fftppc_biased_multitaper(snippits,Fs=1000,k=4):
 def fftppc_multitaper(snippits,Fs=1000,k=4):
     # some precision trouble
     # use quad precition
-    # PPC doesn't care about scale so also rescale? 
+    # PPC doesn't care about scale so also rescale?
     #snippits = array(snippits,dtype=__PPC_FP_TYPE__)
     M,window = shape(snippits)
     if M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
     ff,raw,phase = fftppc_biased_multitaper(snippits,Fs,k)
-    unbiased = (raw*M-1)/(M-1)   
+    unbiased = (raw*M-1)/(M-1)
     return ff, unbiased, phase
 
 def nodc(x):
@@ -86,10 +93,10 @@ def nodc(x):
 
 def discard_spikes_closer_than_delta(signal,times,delta,window):
     '''
-    When computing PPC, we need to throw out spikes that are too close 
-    together. This is a heuristic to make the spiking samples 
+    When computing PPC, we need to throw out spikes that are too close
+    together. This is a heuristic to make the spiking samples
     "more independent". We also need to skip spikes that are so close to
-    the edge of our data that we can't get the LFP window surrounding 
+    the edge of our data that we can't get the LFP window surrounding
     the spike time. Because certain tests that compare across conditions
     require matching the number of spikes, to ensure that the variance
     of the PPC estimator is comparable between the conditions, we expose
@@ -99,17 +106,17 @@ def discard_spikes_closer_than_delta(signal,times,delta,window):
     '''
     N = len(signal)
     times = array(times)
-    #print '%d spikes total'%len(times)
+    #print('%d spikes total'%len(times))
     times = times[times>=window]
     times = times[times<N-window]
-    #print '%d spikes with enough padding'%len(times)
+    #print('%d spikes with enough padding'%len(times))
     usetimes = []
     t_o = -inf
     for t in times:
         if t-t_o>=delta:
             t_o = t
             usetimes.append(t)
-    #print '%d spikes far enough apart to be usable'%len(usetimes)
+    #print('%d spikes far enough apart to be usable'%len(usetimes))
     return usetimes
 
 def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=True,biased=False,delta=100,taper=None):
@@ -121,14 +128,14 @@ def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=Tru
     k:      number of tapers
     Also accepts lists of signals / times
     returns (freqs, ppc, phase), lfp_segments
-    
+
     '''
     if multitaper:
-        print "Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!"
-        print "For a fixed number of tapers, the bias is constant, but be careful"
-    
+        print("Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!")
+        print("For a fixed number of tapers, the bias is constant, but be careful")
+
     if not taper is None and multitaper:
-        print "A windowing taper was specified, but multitaper mode was also selected? The taper argument is for providing a windowing function when not using multitaper estimation"
+        print("A windowing taper was specified, but multitaper mode was also selected? The taper argument is for providing a windowing function when not using multitaper estimation")
         assert 0
     if type(taper) is types.FunctionType:
         taper = taper(window*2+1)
@@ -146,14 +153,12 @@ def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=Tru
             times = array(times)
             times = times[times>=window]
             times = times[times<N-window]
-            #snippits.extend([nodc(signal[t-window:t+window+1]) for t in times])
             t_o = -inf
             for t in times:
                 if t-t_o>delta:
                     t_o = t
                     snippits.append(nodc(signal[t-window:t+window+1]))
     else: assert 0
-    #print shape(snippits)
     if biased:
         if multitaper: return fftppc_biased_multitaper(snippits,Fs,k),snippits
         else:          return fftppc_biased(snippits,Fs,taper=taper),snippits
@@ -174,18 +179,18 @@ def phase_randomized_bias_correction(signal,times,window=50,Fs=1000,nrand=100):
     '''
     Estimates degrees of freedom using phase randomization.
     experimental.
-    
+
     algebra could be dramaticalyl simplified, but keeping all explicit
     for clarity for now
     '''
-    warn('AS FAR AS WE KNOW THIS DOESNT REALLY WORK')    
+    warn('AS FAR AS WE KNOW THIS DOESNT REALLY WORK')
     ff,bias = estimate_bias_in_uncorrected_ppc(signal,times,window,Fs,nrand)
     K = 1.0-bias
     M = K/(1-K)
-    print 'estimated degrees of freedom:',M
-    print 'nominal degrees of freedom=',len(times)
+    print('estimated degrees of freedom:',M)
+    print('nominal degrees of freedom=',len(times))
     ff,raw = uncorrectedppc(signal,times,window,Fs)
-    unbiased = (raw*M-1)/(M-1)  
+    unbiased = (raw*M-1)/(M-1)
     return ff, unbiased
 
 
@@ -195,7 +200,7 @@ def temp_code_for_exploring_chance_level_delete_later():
     # value, but it will affect the variance. Since the PPC is computed as
     # a sum of complex unit vectors, we can reason about it's bias/variance
     # as a function of samples from a few simple simulations. This will replace
-    # brute force simulations of chance level based on phase randomization. 
+    # brute force simulations of chance level based on phase randomization.
     # The effect of multitaper on reducing the bias or variance is interesting.
     # I don't know how to account for that.
     nTapers = 1
@@ -205,10 +210,10 @@ def temp_code_for_exploring_chance_level_delete_later():
             unbiased = (mean([abs(mean(exp(2*pi*1j*rand(nSamples)))) for t in range(nTapers)])**2*nSamples-1)/(nSamples-1)
             simulated.append(unbiased)
         simulated = sorted(simulated)
-        print 'n=%d 90%%=%f'%(nSamples,simulated[int(.90*len(simulated))])
-        print 'n=%d 95%%=%f'%(nSamples,simulated[int(.95*len(simulated))])
-        print 'n=%d 99%%=%f'%(nSamples,simulated[int(.99*len(simulated))])
-        print 'n=%d 99.9%%=%f'%(nSamples,simulated[int(.999*len(simulated))])
+        print('n=%d 90%%=%f'%(nSamples,simulated[int(.90*len(simulated))]))
+        print('n=%d 95%%=%f'%(nSamples,simulated[int(.95*len(simulated))]))
+        print('n=%d 99%%=%f'%(nSamples,simulated[int(.99*len(simulated))]))
+        print('n=%d 99.9%%=%f'%(nSamples,simulated[int(.999*len(simulated))]))
         clf()
         hist(simulated,100)
         draw()
@@ -243,22 +248,22 @@ def ppc_phase_randomize_chance_level_sample(
     You can do what you want with the distribution returned.
     '''
     if multitaper:
-        print "Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!"
-        print "For a fixed number of tapers, the bias is constant, but be careful"
-    
+        print("Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!")
+        print("For a fixed number of tapers, the bias is constant, but be careful")
+
     if not taper is None and multitaper:
-        print "A windowing taper was specified, but multitaper mode was also selected."
-        print "The taper argument is for providing a windowing function when not using multitaper estimation."
+        print("A windowing taper was specified, but multitaper mode was also selected.")
+        print("The taper argument is for providing a windowing function when not using multitaper estimation.")
         assert 0
     if type(taper) is types.FunctionType:
         taper = taper(window*2+1)
     if biased: warn('skipping bias correction entirely')
     assert window>0
-    
+
     # need to compute PPC from phase randomized samples
     # We can't phase randomize the snippits because there may be some
     # correlation between them, we have to randomize the underlying LFP
-    
+
     if len(shape(signal))==1:
         # only a single trial provided
         usetimes = discard_spikes_closer_than_delta(signal,times,delta,window)
@@ -280,7 +285,7 @@ def ppc_phase_randomize_chance_level_sample(
                     t_o = t
                     snippits.append(nodc(signal[t-window:t+window+1]))
     else: assert 0
-    
+
     if biased:
         if multitaper: return fftppc_biased_multitaper(snippits,Fs,k),snippits
         else:          return fftppc_biased(snippits,Fs,taper=taper),snippits
@@ -288,11 +293,3 @@ def ppc_phase_randomize_chance_level_sample(
         if multitaper: return fftppc_multitaper(snippits,Fs,k),snippits
         else:          return fftppc(snippits,Fs,taper=taper),snippits
     assert 0
-    
-    
-    
-
-
-
-
-

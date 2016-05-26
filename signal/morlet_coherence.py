@@ -6,6 +6,8 @@ from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import unicode_literals
+from __future__ import print_function
+
 try:
     from future.utils import raise_with_traceback
     from future.utils import raise_from
@@ -14,8 +16,6 @@ try:
     from builtins import int
 except:
     pass
-
-print "CAUTION THIS IS NOT GENERAL PURPOSE CHECK PARAMETERS"
 
 from neurotools.tools import memoize
 
@@ -64,7 +64,7 @@ def fft_cwt(beta,fa,fb,w=4.0,resolution=0.1,Fs=1000):
         beta = reshape(beta,shape(beta)+(1,))
     N,NCH        = shape(beta)
     if NCH>N:
-        print 'MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED'
+        print('MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED')
     padded       = zeros((N*2,NCH),dtype=complex64)
     padded[:N,:] = beta
     padded[N:,:] = beta[::-1,:]

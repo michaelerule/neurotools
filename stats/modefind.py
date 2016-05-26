@@ -5,10 +5,9 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
-
+from __future__ import print_function
 
 import os,sys,pickle
-from itertools import izip
 from numpy import *
 from neurotools.stats.density import kdepeak
 
@@ -43,11 +42,11 @@ def logmodeplot(allisi):
     cla()
     hist(allisi,60,normed=1,color='k')
     plot(x,y,lw=2,color='r')
-    ybar(x[argmax(y)],color='r',lw=2)  
+    ybar(x[argmax(y)],color='r',lw=2)
     draw()
     show()
     return x[argmax(y)]
-        
+
 def logmode(allisi):
     '''
     Accepts list of ISI times.
@@ -60,7 +59,7 @@ def logmode(allisi):
     x   = exp(x)-K
     y   = y/(K+x)
     return x[argmax(y)]
-    
+
 def peakfinder5(st):
     '''
     Found this with the old unit classification code.
@@ -69,7 +68,7 @@ def peakfinder5(st):
     allisi = diff(st)
     allisi = array(allisi)
     allisi = allisi[allisi>10] # remove burst
-    n, bins, patches = hist(allisi,bins=linspace(0,500,251),facecolor='k',normed=1)   
+    n, bins, patches = hist(allisi,bins=linspace(0,500,251),facecolor='k',normed=1)
     centers = (bins[1:]+bins[:-1])/2
     x,y = kdepeak(allisi,x_grid=linspace(0,500,251))
     plot(x,y,color='r',lw=1)
@@ -82,6 +81,3 @@ def peakfinder5(st):
     p2 = x[argmax(y)]
     xlim(0,500)
     return p1,p2
-
-
-

@@ -3,12 +3,13 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import print_function
 
 '''
 Parallel tools
 ==============
 
-Notes on why "parmap" and related functions are awkward in Python: 
+Notes on why "parmap" and related functions are awkward in Python:
 
 Python multiprocessing will raise "cannot pickle"
 errors if you try to pass general functions as arguments to parallel
@@ -16,30 +17,30 @@ map. This flaw arises because python multiprocessing is achieved by
 forking subprocesses that contain a full copy of the interpreter state,
 mapped in memory with copy-on-write. (incidentally this is also why
 you don't want to load large datasets in worker processes, since each
-process will load the dataset separately, consuming a large amount of 
+process will load the dataset separately, consuming a large amount of
 memory). Because functions defined after worker-pool initiation depend
 on the interpreter state of the process in which they were defined, they
-cannot be sent over to worker processes as we cannot guarantee in 
+cannot be sent over to worker processes as we cannot guarantee in
 general that the context they reference will exist in the worker process.
-Consequentially, the only way to use a function with the "parmap" 
+Consequentially, the only way to use a function with the "parmap"
 function is to define it BEFORE the worker pool is initialized (or to
 re-initialize the pool once it is defined). The function must be at
-global scope. 
+global scope.
 
 Furthermore, the work-stealing pool model can only send back the return
 values of function evaluations from the work queue -- and it does so in
 no particular order. Therefore, if we want to know which job corresponds
 to which return value, we must return identifying information. In this
-case wer return the job number. 
+case wer return the job number.
 
 The reason we cannot make a generic function that masks this "return the
-job ID" issue is that we cannot pass an arbitrary function over to 
+job ID" issue is that we cannot pass an arbitrary function over to
 the worker pool processes due to the aforementioned interpreter context
 issue.
 
-A more laborous workaround, which we might consider later, would be to 
+A more laborous workaround, which we might consider later, would be to
 re-implement the work-stealing queue so that job IDs are automatically
-preserved and communicated through inter-process communication. 
+preserved and communicated through inter-process communication.
 
 This will not solve the problem of needing to define all functions used
 with "parmap" before the working pool is initailized and at global scope,
@@ -50,12 +51,11 @@ number, which will lead to more readable and more reusable code.
 '''
 
 from multiprocessing import Process, Pipe, cpu_count, Pool
-from itertools import izip, chain
 import traceback, warnings
 import sys
 import signal
 import threading
-import functools 
+import functools
 
 import inspect
 import neurotools.jobs.decorator
@@ -74,22 +74,22 @@ def parmap(f,problems,leavefree=1,fakeit=False,verbose=False):
         for i,job in enumerate(problems):
             results[i] = f(job)
             if verbose and type(results[i]) is RuntimeError:
-                print 'ERROR PROCESSING',problems[i]
-            print i,num_tasks
+                print('ERROR PROCESSING',problems[i])
+            print(i,num_tasks)
     else:
         if not 'mypool' in globals() or mypool is None:
-            if verbose: print 'NO POOL FOUND. RESTARTING.'
+            if verbose: print('NO POOL FOUND. RESTARTING.')
             mypool = Pool(cpu_count()-leavefree)
         if num_tasks==0:
-            if verbose: print 'NOTHING TO DO?'
+            if verbose: print('NOTHING TO DO?')
         else:
-            if verbose: print 'STARTING PARALLEL'
+            if verbose: print('STARTING PARALLEL')
             for i,result in enumerate(mypool.imap(f,problems)):
                 sys.stderr.write('\rdone %0.1f%% '%((100.0*(i+1)/float(num_tasks))))
                 results[i] = result
                 if verbose and type(result) is RuntimeError:
-                    print 'ERROR PROCESSING',problems[i]
-            if verbose: print 'FINISHED PARALLEL'
+                    print('ERROR PROCESSING',problems[i])
+            if verbose: print('FINISHED PARALLEL')
     sys.stderr.write('\r            \r')
     return [results[i] if i in results else None for i,k in enumerate(problems)]
 
@@ -97,19 +97,20 @@ def parmap_dict(f,problems,leavefree=1,fakeit=False,verbose=False):
     results = parmap(f, problems, fakeit=fakeit)
     return dict(zip(problems,results))
 
-def parmap_indirect_helper((lookup_mode,function_information,args)):
+def parmap_indirect_helper(args):
     global reference_globals
+    (lookup_mode,function_information,args) = args #py 2.5 -> 3 compatibility
     '''
     Multiprocessing doesn't work on functions that weren't accessible from
     the global namespace at the time that the multiprocessing pool was
     created.
-    
+
     However, it is possible to send a subset of "safe" functions to
     worker processes. This can be done either by telling the worker
     where to find the function in system-wide libraries, or by sending
     over the function source code in the event that it does not depend on
     or close over mutable state.
-    
+
     Multiprocessing can already map top level functions by name, but it only
     supports passing iterables to the map functions, which limit functions
     to one argument. This wrapper merely unpacks the argument list.
@@ -119,23 +120,23 @@ def parmap_indirect_helper((lookup_mode,function_information,args)):
             # Locate function based on module name
             module,name = function_information
             return getattr(
-                locals ().get(module) or 
+                locals ().get(module) or
                 globals().get(module) or
-                __import__   (module), 
+                __import__   (module),
                 name)(*args)
         elif lookup_mode == 'source':
             # Regenerate function from source. RISKY
             source,name = function_information
-            if not reference_globals is None:   
+            if not reference_globals is None:
                 exec(source,reference_globals)
             else:
                 exec(source)
-            f = (locals ().get(name) or 
+            f = (locals ().get(name) or
                  globals().get(name))
             if f is None:
-                if not reference_globals is None:   
+                if not reference_globals is None:
                     f = reference_globals[name]
-            f.__source__ = source 
+            f.__source__ = source
             g = neurotools.jobs.decorator.unwrap(f)
             if not g is None:
                 g.__source__ = source
@@ -144,7 +145,7 @@ def parmap_indirect_helper((lookup_mode,function_information,args)):
             raise NotImplementedError(\
                 "indirect call mode %s not implemented"%lookup_mode)
     except Exception as exc:
-        # In event of an error, return error info 
+        # In event of an error, return error info
         return RuntimeError(traceback.format_exc(), exc)
 
 def parmap_indirect(f,problems,leavefree=1,fakeit=False,verbose=False):
@@ -160,18 +161,18 @@ def parmap_indirect(f,problems,leavefree=1,fakeit=False,verbose=False):
     # don't allow closing over state that is likely to mutate
     # this isn't 100% safe, mutable globals remain an issue.
     neurotools.jobs.closure.verify_function_closure(f)
-    
+
     name = f.func_name
-    
+
     if f.__module__ != '__main__':
-        # can say where to locate function. 
+        # can say where to locate function.
         information = f.__module__,name
         lookup = 'module'
     else:
-        # Function is not defined through a module. We might be able to 
+        # Function is not defined through a module. We might be able to
         # send the source code.
-        print "Attempting to fall back on source code based solution"
-        print "RISKY"  
+        print("Attempting to fall back on source code based solution")
+        print("RISKY")
         source = inspect.getsource(neurotools.jobs.decorator.unwrap(f))
         information = source,name
         lookup = 'source'
@@ -184,27 +185,27 @@ def parmap_indirect(f,problems,leavefree=1,fakeit=False,verbose=False):
         verbose=verbose)
     # Detect failed jobs, assign them something nasty that's likely to
     # bet detected downstream.
-    for i,(args,result) in enumerate(izip(args,results)):
+    for i,(args,result) in enumerate(zip(args,results)):
         if type(result) is RuntimeError:
-            print 'Job %d %s failed'%(i,args)
+            print('Job %d %s failed'%(i,args))
             traceback, exception = result.args
-            print traceback
+            print(traceback)
         results[i] = NotImplemented
     return results
 
 def reset_pool(leavefree=1,context=None):
     global mypool, reference_globals
-    
+
     # try to see what the calling function sees
     if not context is None:
         reference_globals = context
-    
+
     if not 'mypool' in globals() or mypool is None:
-        print 'NO POOL FOUND. STARTING'
+        print('NO POOL FOUND. STARTING')
         mypool = Pool(cpu_count()-leavefree)
     else:
-        print 'POOL FOUND. RESTARTING'
-        print 'Attempting to terminate pool, may become unresponsive'
+        print('POOL FOUND. RESTARTING')
+        print('Attempting to terminate pool, may become unresponsive')
         # http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate
         def close_pool():
             global mypool
@@ -217,7 +218,7 @@ def reset_pool(leavefree=1,context=None):
             stoppool.daemon=True
             stoppool.start()
         signal.signal(signal.SIGTERM, term)
-        signal.signal(signal.SIGINT, term)
+        signal.signal(signal.SIGINT,  term)
         signal.signal(signal.SIGQUIT, term)
         del mypool
         mypool = Pool(cpu_count()-leavefree)
@@ -226,7 +227,7 @@ def parallel_error_handling(f):
     '''
     We can't really use exception handling in parallel calls.
     This is a wrapper to just catch errors to prevent them from
-    propagating up. 
+    propagating up.
     '''
     def parallel_helper(args):
         try:
@@ -236,6 +237,3 @@ def parallel_error_handling(f):
             info = traceback.format_exc()
             return RuntimeError(info, exc)
     return parallel_helper
-
-
-

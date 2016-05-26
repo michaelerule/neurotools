@@ -1,25 +1,24 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import print_function
 
 r'''
-The 5-parameter Fisher-Bingham distribution or Kent distribution, named 
+The 5-parameter Fisher-Bingham distribution or Kent distribution, named
 after Ronald Fisher, Christopher Bingham, and John T. Kent, is a probability
 distribution on the two-dimensional unit sphere <math>S^{2}\,</math> in
-<math>\Bbb{R}^{3}</math> .  It is the analogue on the two-dimensional unit 
+<math>\Bbb{R}^{3}</math> .  It is the analogue on the two-dimensional unit
 sphere of the bivariate normal distribution with an unconstrained covariance
-matrix. The distribution belongs to the field of directional statistics. 
+matrix. The distribution belongs to the field of directional statistics.
 The Kent distribution was proposed by John T. Kent in 1982, and is used in
 geology, bioinformatics.
 
-The probability density function <math>f(\mathbf{x})\,</math> of the Kent 
-istribution is given by: 
+The probability density function <math>f(\mathbf{x})\,</math> of the Kent
+istribution is given by:
 
-f(\mathbf{x})=\frac{1}{\textrm{c}(\kappa,\beta)}\exp\{\kappa\boldsymbol{\gamma}_{1}\cdot\mathbf{x}+\beta[(\boldsymbol{\gamma}_{2}\cdot\mathbf{x})^{2}-(\boldsymbol{\gamma}_{3}\cdot\mathbf{x})^{2}]\} 
+f(\mathbf{x})=\frac{1}{\textrm{c}(\kappa,\beta)}\exp\{\kappa\boldsymbol{\gamma}_{1}\cdot\mathbf{x}+\beta[(\boldsymbol{\gamma}_{2}\cdot\mathbf{x})^{2}-(\boldsymbol{\gamma}_{3}\cdot\mathbf{x})^{2}]\}
 
 where  <math>\mathbf{x}\,</math>  is a three-dimensional unit vector and the normalizing constant  <math>\textrm{c}(\kappa,\beta)\,</math>  is:
 
@@ -50,12 +49,14 @@ def complex2riemann(z):
     z = (X**2+Y**2-1)*scale
     return x,y,z
 
-def kentPDF(x,k,b,(g1,g2,g3)):
+def kentPDF(x,k,b,g123):
+    (g1,g2,g3) = g123
     warn('this is not normalized')
     logpdf = k*dot(g1,x)+b*(dot(g2,x)**2-dot(g3,x)**2)
     return exp(logpdf)
 
-def kentPDFRiemann(z,(k,b,G)):
+def kentPDFRiemann(z,kbG):
+    (k,b,G) = kbG
     x = complex2riemann(z)
     return kentPDF(x,k,b,G)
 
@@ -85,7 +86,7 @@ def rotatez(p,theta):
 '''
 We are going to do an experiment and try to use the
  kent distribution on the Reimann spehere.
-First, an experiment to see if we can get the type of 
+First, an experiment to see if we can get the type of
 distributions of interest.
 '''
 g1 = [1,0,-10]
@@ -134,8 +135,3 @@ data = (randn(N)+1j*randn(N))/5
 check = [riemann2complex(*complex2riemann(z)) for z in data]
 print sum(abs(data-check)**2)
 """
-
-
-
-
-

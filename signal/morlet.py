@@ -3,6 +3,8 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
 
 from neurotools.plot    import *
 from neurotools.getfftw import *
@@ -12,8 +14,8 @@ from scipy.signal.wavelets import morlet
 def normalized_morlet(m,w):
     '''
     See morlet(m,w)
-    
-    This applies post-processing such that the sum absolute magnitued of 
+
+    This applies post-processing such that the sum absolute magnitued of
     the wavelet is 1
     '''
     wl = morlet(m,w)
@@ -53,7 +55,7 @@ def fft_cwt(beta,fa,fb,w=4.0,resolution=0.1,Fs=1000.0):
     '''
     beta is data, should be Ntimes x NCH
     can do multiple at once!
-    
+
     returns Nch x Nfreq x Ntimes
     '''
     fa,fb = map(float,(fa,fb)) # integer math was causing bugs
@@ -79,7 +81,7 @@ def fft_cwt_transposed(data,fa,fb,w=4.0,resolution=0.1,Fs=1000.0,threads=1):
     ----------
     data : numeric
         NCH x Ntimes list of signals to transform
-    
+
     Returns
     ------
     freqs : float
@@ -179,15 +181,11 @@ if __name__=='__main__':
             df = a[1]-a[0]
             bw.append(sum(b)*df)
             s = convolve(signal,wl,'same')
-            #print m,w,mean(abs(s)),mean(abs(s)**2)
+            #print(m,w,mean(abs(s)),mean(abs(s)**2))
             x.append(var(s))
 
         bw = arr(bw)
         x = arr(x)
         plot(x/bw)
         positivey()
-        print freq,1/mean(bw/x)
-
-
-
-
+        print(freq,1/mean(bw/x))

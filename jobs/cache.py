@@ -24,7 +24,12 @@ import pickle
 import json
 import base64
 import zlib
-from cPickle import PicklingError
+
+#something weird here. which pickle does multiprocessing use?
+try:
+    from cPickle import PicklingError
+except:
+    from pickle import PicklingError
 
 import neurotools.jobs.decorator
 import neurotools.tools

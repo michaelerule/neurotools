@@ -1,3 +1,11 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+
 '''
 2D spatial power spectral density
 '''
@@ -6,7 +14,7 @@ def psd2d(data,spacing = 0.4):
     2D power spectral density
     accepts HxWx... data
     returns frequencies in 1/mm and power in uV^2
-    
+
     # test code
     data = randn(6,8)
     clf()
@@ -74,29 +82,30 @@ for i in range(stop-start):
     sc.set_offsets(arr([X,Y]).T)
     title('Scale = %s '%(-a))
     draw()
-    print i,a,b
+    print(i,a,b)
 AB = arr([power_law_regression(f,y[:,i],1/f) for i in range(shape(y)[-1])])
 scale = -AB[:,0]
 '''
 
 
 def spatialPSD_length_scale_spectrum(session,area,trial,lowf,highf):
-    print trial,'computing wavelet transforms'
+    print(trial,'computing wavelet transforms')
     freqs,cwt = get_wavelet_transforms(session,area,trial,lowf,highf,4)
     cwt = cwt[:,:,::25]
     nf        = len(freqs)
-    print trial,'reconstructing array spatial locations'
+    print(trial,'reconstructing array spatial locations')
     frames    = arr([packArrayDataInterpolate(session,area,cwt[:,i,:]).T for i in range(nf)])
-    print trial,'extracting spatial power spectra'
+    print(trial,'extracting spatial power spectra')
     f,y       = psd2d(frames.T)
     reshaped  = reshape(y,(len(f),prod(shape(y)[1:])))
-    print trial,'performing power law regression'
+    print(trial,'performing power law regression')
     AB        = arr([power_law_regression(f,q,1/f) for q in reshaped.T])
     scale     = reshape(-AB[:,0], shape(y)[1:])
     return scale
 
-def spatialPSD_parallel_wrapper((session,area,trial,lowf,highf)):
-    print trial,'starting computations'
+def spatialPSD_parallel_wrapper(args):
+    (session,area,trial,lowf,highf) = args #py 2.x->3 compatibility
+    print(trial,'starting computations')
     scale = spatialPSD_length_scale_spectrum(session,area,trial,lowf,highf)
     return trial,scale
 
@@ -122,7 +131,6 @@ if __name__=='=__main__':
     session = SS
     area = 'PMv'
     extent = (0,7,55,1)
-
     data = {}
     #reset_pool()
     for area in areas:
@@ -131,18 +139,15 @@ if __name__=='=__main__':
             if name in os.listdir('.'):
                 test = loadmat(name)['test']
             else:
-                print get_good_trials(session) # PRELOAD!
-                print get_good_channels(session,area) # PRELOAD!
+                print(get_good_trials(session)) # PRELOAD!
+                print(get_good_channels(session,area)) # PRELOAD!
                 nowarn()
                 test = all_spatial_PSD_parallel(session,area,lowf,highf)
                 show = median(test,0).T
                 imshow(show,interpolation='nearest',extent=extent,aspect=1./100)
                 savemat(name,{'test':test})
             data[session,area] = test
-
-
     cbsc = 15.0
-
     vmin=1
     vmax=2.5
     aspect = 1./100
@@ -201,9 +206,3 @@ if __name__=='=__main__':
     suptitle('%s trial average spatial spectral scale (dB/decade?)'%(RS),fontsize=16)
     xlabel('spatial spectral scale (dB/decade?)')
     savefig('spatial_spectral_scale_%s.pdf'%RS)
-
-
-
-
-
-

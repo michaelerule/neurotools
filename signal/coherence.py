@@ -3,6 +3,8 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
 
 """
 Routines for calculating coherence
@@ -26,30 +28,30 @@ try:
     import nitime
     from nitime.algorithms import coherence
 except:
-    print 'The nitime module is missing. To install, run one of these'
-    print '> sudo easy_install nitime'
-    print '> sudo pip install nitime'
+    print('The nitime module is missing. To install, run one of these')
+    print('> sudo easy_install nitime')
+    print('> sudo pip install nitime')
     def coherence(*args,**kwargs):
         raise ImportError("nitime module not loaded, coherence missing")
-        
+
 def morlet_population_synchrony_spectrum(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     '''
     First dimension is nchannels, second is time.
     Use morlet wavelets ( essentially bandpass filter bank ) to compute
     short-timescale synchrony.
-    for each band: take morlet spectrum over time. 
+    for each band: take morlet spectrum over time.
     take kuromoto or synchrony measure over complex vectors attained
     '''
     freqs, transformed = fft_cwt(lfp.T,fa,fb,w,resolution,Fs)
     return freqs, abs(mean(transformed,0))/mean(abs(transformed),0)
-    
+
 def population_eigencoherence(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     '''
-    Uses the eigenvalue spectrum of the pairwise coherence matrix. 
-    In the case of wavelets, each time-frequency point has one 
+    Uses the eigenvalue spectrum of the pairwise coherence matrix.
+    In the case of wavelets, each time-frequency point has one
     complex value.
     The matrix we build will be I think |z_i z_j|
-    ... this will involve a lot of computation. 
+    ... this will involve a lot of computation.
     ... let's not do it.
     See ramirez et al
     A GENERALIZATION OF THE MAGNITUDE SQUARED COHERENCE SPECTRUM FOR
@@ -142,16 +144,16 @@ def coherence_pvalue(C,NSample,beta = 23/20.):
     '''
     Jarvis & Mitra (Neural Comp., 2001, p732)
     Pesaran et al. (Nature, 2008, supp info, p5)
-    
+
     beta = 23/20. Jarvis & Mitra suggest (Neural Comp., 2001, p732)
     Pesaran et al. suggest beta=1.5 (Nature, 2008, supp info, p5)
-    
+
     \citep{jarvis2001sampling, pesaran2008free}
     '''
     df = 2*NSample                 # degrees of freedom
     q  = sqrt(-(df-2)*log(1-C**2)) # ???
     Z  = beta*(q-beta)             # z-transformed coherence
-    # testing whether coherence is greater than zero: 
+    # testing whether coherence is greater than zero:
     # to get the chance level p-value, use the right tail, i.e. 1 - cdf
     # here the p-value is computed based both on the t and normal distributions, respectively
     return 1-scipy.stats.t.cdf(Z,df)
@@ -167,29 +169,29 @@ def multitaper_multitrial_coherence(x,
     '''
     multitaper_multitrial_coherence(x,y,Fs=1000,NT=5)
     Computes coherence over multiple tapers and multiple trials
-    
+
     x: data. NVariables×NTrials×NTime
-    
+
     NTapers: number of tapers, defaults to 5
-    
+
     bootstrap: defaults to 100
         If bootstrap is a positive integer, we will perform bootstrap
         resampling and return this distribution along with the coherence
         result.
-        
+
     unbiased: defaults to True
         If true it will apply the standard bias correction for averaging
         of circular data, which should remove sample-size dependence for
         the coherence values, at the cost of increasing estimator variance
         and occassionally generating strange (negative) coherence values.
         Bias correction for magnitude squared is (N|z|²-1)/(N-1)
-        
+
     Procedure:
     1   Z-score each trial (removes mean)
     2   Generate tapers
     3   Compute tapered FFTs for all trials and tapers
     4   Cross-spectral density
-    
+
     return freqs, coherence, bootstrapped
     '''
     if not len(shape(x)) == 3:
@@ -197,14 +199,14 @@ def multitaper_multitrial_coherence(x,
     if not test in (None,'bootstrap','shuffle','pvalue'):
         raise ValueError("test must be None, bootstrap, shuffle, pvalue")
     x = zscore(np.array(x).T,axis=0).T
-    
+
     NVar, NTrials, NTime = shape(x)
     NSample = NTapers * NTrials
-    
+
     tapers, eigen = dpss_cached(NTime,0.4999*NTapers)
-    
+
     NThread = max(1,__N_CPU__-1) if parallel else 1
-    
+
     FMax  = NTime//2+1
     freqs = abs(fftfreq(NTime,1./Fs)[:FMax]) # NFreq
     ft = np.array([fft(x*t,axis=-1,threads=NThread)\
@@ -216,10 +218,10 @@ def multitaper_multitrial_coherence(x,
     else:            ft[:,:,1:  ]*=2         # NVar×NSample×NFreq
     psds = (abs(ft)**2)                      # NVar×NSample×NFreq
     psd  = np.mean(psds,axis=1)              # NVar×NFreq
-    
+
     def _coherence_(pij,pii,pjj):
         return (pij+eps)/(pii*pjj+eps)
-    
+
     coherence = {}
     for i in range(NVar):
         coherence[i] = psd[i]
@@ -229,10 +231,10 @@ def multitaper_multitrial_coherence(x,
                 axis=0,
                 unbiased=unbiased)
             coherence[i,j] = coherence[j,i] = _coherence_(pij,psd[i],psd[j])
-        
+
     if test is None:
         samples = None
-        
+
     elif test=='pvalue':
         # Use transformed null distribution to estiamte a z-score, then use
         # a t-test.
@@ -270,7 +272,7 @@ def multitaper_multitrial_coherence(x,
                             axis=0,
                             unbiased=unbiased)
                         samples[i,j].append( _coherence_(pij,psd[i],psd[j]))
-        
+
         # Sort samples and convert to regular dictionary
         for i in range(NVar):
             for j in range(i):
@@ -278,21 +280,21 @@ def multitaper_multitrial_coherence(x,
                 b.sort(axis=0)
                 samples[i,j] = samples[j,i] = b
         samples = dict(samples)
-    
+
     return freqs, coherence, samples
 
 
 
 if __name__=="__main__":
-    print "Testing coherence code on CGID data"
+    print("Testing coherence code on CGID data")
     from cgid.setup import *
     okwarn()
     session = 'RUS120518'
     area = 'M1'
     trial = get_good_trials(session,area)[0]
     csd = []
-    for i in range(0,7000-100,5): 
-        print i
+    for i in range(0,7000-100,5):
+        print(i)
         lfp = get_all_lfp(session,area,trial,(6,-1000+i,-1000+i+100))
         s = population_coherence_matrix(lfp)[2][0]
         csd.append(s)
@@ -310,7 +312,7 @@ if __name__=="__main__":
     tapers,eigen = dpss_cached(N,10.0)
     tapered1 = np.array([fft(g1*taper,axis=1) for taper in tapers])
     tapered2 = np.array([fft(g2*taper,axis=1) for taper in tapers])
-    DF = sum(eigen) 
+    DF = sum(eigen)
     NT = len(eigen)
     psd1 = sum([magsq(tapered1[k,:])*eigen[k] for k in range(NT)],0)/DF
     psd2 = sum([magsq(tapered2[k,:])*eigen[k] for k in range(NT)],0)/DF

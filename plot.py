@@ -1,6 +1,12 @@
-#!/usr/local/bin/python
-# -*- coding: utf-8 -*-
-          
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 from   neurotools.color   import *
 from   neurotools.getfftw import *
 from   neurotools.tools   import *
@@ -15,18 +21,22 @@ import scipy.optimize
 from   scipy.io          import savemat
 from   scipy.optimize    import leastsq
 from   multiprocessing   import Process, Pipe, cpu_count, Pool
-from   itertools         import izip, chain
 from   scipy.io          import loadmat
 from   scipy.signal      import butter,filtfilt,lfilter
 from   matplotlib.pyplot import *
 
+try: # python 2.x
+    from itertools import izip, chain
+except: # python 3
+    from itertools import chain
+    izip = zip
 
 try:
     import statsmodels
     import statsmodels.api as smapi
     import statsmodels.graphics as smgraphics
 except:
-    print 'statsmodels probably not installed'
+    print('statsmodels probably not installed')
 
 zscore = lambda x: (x-mean(x,0))/std(x,0)
 
@@ -44,7 +54,7 @@ def simpleraxis(ax=None):
     ax.spines['bottom'].set_visible(False)
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
-    
+
 def bareaxis(ax=None):
     if ax is None: ax=gca()
     ax.spines['top'].set_visible(False)
@@ -101,7 +111,7 @@ def positivexy():
 def nox():
     xticks([])
     xlabel('')
-    
+
 def noy():
     yticks([])
     ylabel('')
@@ -140,9 +150,6 @@ def adjustmap(arraymap):
     available   = sorted(list(set([x for x in ravel(arraymap) if x>0])))
     for i,ch in enumerate(available):
         adjustedmap[arraymap==ch]=i
-    #if nrow==10 and ncol==10:
-    #    print 'trimming to control for array size effects'
-    #    return adjustedmap[2:-2,2:-2]
     return adjustedmap
 
 def get_ax_size(ax=None,fig=None):
@@ -218,7 +225,7 @@ def pixels_to_yunits(n,ax=None,fig=None):
 
 def pixels_to_xfigureunits(n,ax=None,fig=None):
     '''
-    Converts a measurement in pixels to units of the current 
+    Converts a measurement in pixels to units of the current
     figure width scale
     '''
     if fig is None: fig = gcf()
@@ -228,7 +235,7 @@ def pixels_to_xfigureunits(n,ax=None,fig=None):
 
 def pixels_to_yfigureunits(n,ax=None,fig=None):
     '''
-    Converts a measurement in pixels to units of the current 
+    Converts a measurement in pixels to units of the current
     figure height scale
     '''
     if fig is None: fig = gcf()
@@ -245,8 +252,8 @@ def adjust_xlabel_space(n,ax=None):
     ax.xaxis.labelpad = n
 
 def nudge_axis_y_pixels(dy,ax=None):
-    ''' 
-    moves axis dx pixels. 
+    '''
+    moves axis dx pixels.
     Direction of dx may depent on axis orientation. TODO: fix this
     '''
     if ax is None: ax=gca()
@@ -256,8 +263,8 @@ def nudge_axis_y_pixels(dy,ax=None):
     ax.set_position((x,y-dy,w,h))
 
 def adjust_axis_height_pixels(dy,ax=None):
-    ''' 
-    moves axis dx pixels. 
+    '''
+    moves axis dx pixels.
     Direction of dx may depent on axis orientation. TODO: fix this
     '''
     if ax is None: ax=gca()
@@ -301,17 +308,17 @@ def nudge_axis_left(dx,ax=None):
     ax.set_position((x+dx,y,w-dx,h))
 
 def zoombox(ax1,ax2,xspan1=None,xspan2=None):
-    # need to do this to get the plot to ... update correctly 
+    # need to do this to get the plot to ... update correctly
     show()
     draw()
     show()
-    fig = gcf()    
-    
+    fig = gcf()
+
     if xspan1==None:
         xspan1 = ax1.get_xlim()
     if xspan2==None:
         xspan2 = ax2.get_xlim()
-    
+
     transFigure = fig.transFigure.inverted()
     coord1 = transFigure.transform(ax1.transData.transform([xspan1[0],ax1.get_ylim()[1]]))
     coord2 = transFigure.transform(ax2.transData.transform([xspan2[0],ax2.get_ylim()[0]]))
@@ -324,7 +331,7 @@ def zoombox(ax1,ax2,xspan1=None,xspan2=None):
                                    transform=fig.transFigure,lw=1,color='k')
     fig.lines.append(line)
     show()
-    
+
 def fudgex(by=10,ax=None):
     if ax is None: ax=gca()
     ax.xaxis.labelpad = -by
@@ -345,13 +352,13 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
     a,b = ylim()
     c,d = xlim()
     for x1,x2 in zip(*edges):
-        print x1,x2
+        print(x1,x2)
         fill_between([x1,x2],[a,a],[b,b],color=color,lw=0)
     ylim(a,b)
     xlim(c,d)
 
 shade = shade_edges
-    
+
 def ybar(x,**kwargs):
     a,b = ylim()
     plot([x,x],[a,b],**kwargs)
@@ -414,7 +421,7 @@ def xbartext(y,t,c1,c2,**kwargs):
                 text(ix+a+dx*4,iy+y,t,
                     color=c2,
                     horizontalalignment='left',verticalalignment='bottom',fontsize=12)
-                    
+
     if text_kwargs['horizontalalignment']=='left':
         # left aligned text
         text(a+dx*4,y,t,**text_kwargs)
@@ -458,10 +465,10 @@ def nice_legend(*args,**kwargs):
 
 def rangeto(rangefun,data):
     rangefun(np.min(data),np.max(data))
-    
+
 def rangeover(data):
     return np.min(data),np.max(data)
-    
+
 def cleartop(x):
     subplots_adjust(top=1-x)
 
@@ -485,7 +492,7 @@ def plotCWT(ff,cwt,aspect='auto',vmin=None,vmax=None,cm='afmhot',interpolation='
     try:
         tight_layout()
     except:
-        print 'tight_layout missing, you should update'
+        print('tight_layout missing, how old is your python? seriously')
     if dodraw:
         draw()
         show()
@@ -503,7 +510,7 @@ def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     try:
         tight_layout()
     except:
-        print 'tight_layout missing, you should update matplotlib'
+        print('tight_layout missing, you should update matplotlib')
     draw()
     show()
 
@@ -528,7 +535,7 @@ def plotWTPhaseFig(ff,cwt,aspect=50,vmin=None,vmax=None,cm='bone',interpolation=
     try:
         tight_layout()
     except:
-        print 'tight_layout missing, you should update'
+        print('tight_layout missing, you should update')
     draw()
     show()
 
@@ -543,7 +550,7 @@ def domask(*args):
         warn('WARNING MASK IS TOO LONG.')
         warn('MIGHT BE AN OFF BY 1 ERROR HERE')
         d = (N-M)/2
-        print len(mm),len(ok[d:N-((N-M)-d)])
+        print(len(mm),len(ok[d:N-((N-M)-d)]))
         mm[ok[d:N-((N-M)-d)]]=NaN
         return mm
     mm[ok]=NaN
@@ -564,13 +571,13 @@ class HandlerSquare(HandlerPatch):
         p = mpatches.Rectangle(xy=center,width=height,height=height, angle=0.0)
         self.update_prop(p,orig_handle,legend)
         p.set_transform(trans)
-        return [p]  
+        return [p]
 
 def plot_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=False,previous=None,origin='lower'):
     '''
     Renders complex array as image, in polar form with magnitude mapped to
     lightness and hue mapped to phase.
-    
+
     :param z: 2D array of complex values
     :param vm: max complex modulus. Default of None will use max(abs(z))
     :param aspect: image aspect ratio. defaults auto
@@ -579,8 +586,8 @@ def plot_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=Fals
     :param previous: if available, output of a previous call to plot_complex
         can be used to skirt replotting nuisances and update data directly,
         which should be a little faster.
-    
-    :return img: a copy of the result of imshow, which can be reused in 
+
+    :return img: a copy of the result of imshow, which can be reused in
         subsequent calls to speed things up, if animating a video
     '''
     z   = squeeze(z)
@@ -616,8 +623,8 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=F
 def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spacing=5,fontsize=12):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
-    r'$\mathrm{\mu V}^2$'    
-    
+    r'$\mathrm{\mu V}^2$'
+
     Parameters:
         vmin (number): min value for colormap
         vmax (number): mac value for colormap
@@ -652,7 +659,7 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spa
     if sideways:
         text(
             xlim()[1]+pixels_to_xunits(5,ax=cax),
-            mean(ylim()),        
+            mean(ylim()),
             title,
             fontsize=fontsize,
             rotation=0,
@@ -665,7 +672,7 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spa
     return cax
 
 def complex_axis(scale):
-    ''' 
+    '''
     Draws a nice complex-plane axis with LaTeX Re, Im labels and everythinn
     '''
     xlim(-scale,scale)
@@ -682,7 +689,7 @@ def complex_axis(scale):
 def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
     fontproperties = {
         'family':'Bitstream Vera Sans',
-        'weight': 'bold', 
+        'weight': 'bold',
         'size': subplot_label_size,
         'verticalalignment':'bottom',
         'horizontalalignment':'right'}
@@ -718,14 +725,14 @@ def round_to_precision(x,precision=1):
     digits = ceil(log10(magnitude))
     factor = 10.0**(precision-digits)
     return round(x*precision)/precision
-    
+
 def ceil_to_precision(x,precision=1):
     if x==0.0: return 0
     magnitude = abs(x)
     digits = ceil(log10(magnitude))
     factor = 10.0**(precision-digits)
     return ceil(x*precision)/precision
-    
+
 def floor_to_precision(x,precision=1):
     if x==0.0: return 0
     magnitude = abs(x)
@@ -744,9 +751,3 @@ def expand_y_range(yvalues,ax=None,precision=1,pad=1.2):
     _y1 = floor_to_precision(y1,precision)
     _y2 = ceil_to_precision(y2,precision)
     ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
-
-
-
-
-
-

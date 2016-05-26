@@ -1,13 +1,18 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 '''
-This was an experiment. 
-
+This was an experiment.
 Idea was to generate common aliases of functions to mimic case-
-insensitivity. 
-
-Needless to say it was a terrible idea and should never be used under
+insensitivity. It was a terrible idea and should never be used under
 any circumstances
 '''
-
 
 def camel2underscore(s):
     '''
@@ -19,11 +24,11 @@ def camel2underscore(s):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 def underscore2camel(s):
-    ''' 
+    '''
     http://stackoverflow.com/questions/4303492/
     how-can-i-simplify-this-conversion-from-underscore-to-camelcase-in-python
     '''
-    def camelcase(): 
+    def camelcase():
         yield str.lower
         while True:
             yield str.capitalize
@@ -59,7 +64,7 @@ def camelKludge(silent=False):
     if not silent: warn('THIS WILL SMASH THE GLOBALS')
     import types
     to_add = {}
-    tocheck = list(globals().iteritems())
+    tocheck = globals().items()
     for name,value in tocheck:
         if type(value) is not types.FunctionType: continue
         if '__IS_AN_ALIAS__' in value.__dict__: continue
@@ -80,14 +85,11 @@ def camelKludge(silent=False):
                 return aliasf
             aliasf = bindAlias(name,value)
             for alt in alternatives:
-                if not silent: print name,alt
-                if alt in globals(): 
+                if not silent: print(name,alt)
+                if alt in globals():
                     pass
                 else:
                     to_add[alt]=aliasf
     globals().update(to_add)
 
 camelKludge(True)
-
-
-

@@ -5,11 +5,11 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import print_function
 
 """
 Routines for computing commonly used summary statistics not otherwise
 available in pylab
-
 """
 
 import neurotools.stats.modefind as modefind
@@ -29,11 +29,11 @@ def crossvalidated_least_squares(a,b,K,regress=np.linalg.lstsq):
     '''
     predicts B from A in K-fold cross-validated blocks using linear
     least squares
-    returns 
+    returns
         model coefficients x
         predicted values of b under crossvalidation
         correlation coefficient
-        root mean squared error    
+        root mean squared error
     '''
     N = len(b)
     B = N/K
@@ -66,9 +66,9 @@ def print_stats(g,name='',prefix=''):
     mode = modefind.modefind(g,0)
     mn   = np.mean(g)
     md   = np.median(g)
-    print prefix,'mode    %s\t%0.4f'%(name,mode)
-    print prefix,'mean    %s\t%0.4f'%(name,mn)
-    print prefix,'median  %s\t%0.4f'%(name,md)
+    print(prefix,'mode    %s\t%0.4f'%(name,mode))
+    print(prefix,'mean    %s\t%0.4f'%(name,mn))
+    print(prefix,'median  %s\t%0.4f'%(name,md))
     return mode,mn,md
 
 def squared_first_circular_moment(samples, axis=-1, unbiased=True, dof=None):
@@ -84,8 +84,3 @@ def squared_first_circular_moment(samples, axis=-1, unbiased=True, dof=None):
                 dof = shape(samples)[axis]
         squared_average = (dof*squared_average-1)/(dof-1)
     return squared_average
-
-
-
-
-

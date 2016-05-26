@@ -1,3 +1,10 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 '''
 Utilities related to the image interpolation kernel described here
 http://johncostella.webs.com/magic/
@@ -55,13 +62,13 @@ def diffusion_basis(N=range(1,6),t=np.arange(100)):
     with base=2 and offset=1
     repeatly convolves exponential with itself to generate basis
     '''
-    print 'THIS IS BAD'
+    print('THIS IS BAD')
     assert 0
     normalize = lambda x:x/sum(x)
     first = fft(exp(-t))
     kernels = [normalize(real(ifft(first**(2**(1+(n-1)*0.5))))) for n in N]
     return array(kernels)
-    
+
 def iterative_orthogonalize_basis(B):
     '''
     iterated orthogonalization to try to help maintain locality?
@@ -74,11 +81,3 @@ def iterative_orthogonalize_basis(B):
         overlap = dot(a,b)
         B[i] -= a*overlap
     return B
-    
-    
-    
-    
-    
-
-
-

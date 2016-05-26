@@ -5,8 +5,9 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import print_function
 
-# Start migrating to print-as-a-function 
+# Start migrating to print-as-a-function
 # from __future__ import print_function
 
 import os
@@ -23,7 +24,7 @@ from scipy.stats.stats         import describe
 from neurotools.jobs.decorator import *
 from scipy.io                  import loadmat
 
-# this line must come last if we want memoization 
+# this line must come last if we want memoization
 from neurotools.jobs.cache import *
 
 #TODO: make this robust / cross-platform
@@ -32,14 +33,12 @@ matlabpath = '/usr/local/bin/matlab -nodesktop -nodisplay -r'
 try:
     from decorator import decorator
     from decorator import decorator as robust_decorator
-except Exception, e:
+except Exception as e:
     traceback.print_exc()
-    print 'Importing decorator failed, nothing will work.'
-    print 'try easy_install decorator'
-    print 'or  pip  install decorator'
-    print 'hopefully at least one of those works'
-
-print 'WARNING MOST FUNCTIONS HAVE MOVED TO SIGNALTOOLS'
+    print('Importing decorator failed, nothing will work.')
+    print('try easy_install decorator')
+    print('or  pip  install decorator')
+    print('hopefully at least one of those works')
 
 def varexists(varname):
     if varname in vars():
@@ -60,20 +59,20 @@ def dowarn(*a,**kw):
     if varexists('SUPPRESS_WARNINGS'):
         return not SUPPRESS_WARNINGS
     else: return True
-    
+
 def warn(*a,**kw):
-    if dowarn(*a,**kw): print ' '.join(map(str,a))
+    if dowarn(*a,**kw): print(' '.join(map(str,a)))
 
 # todo: make these separate
 debug = warn
 
 def wait(prompt='--- press enter to continue ---'):
-    print prompt
+    print(prompt)
     raw_input()
 
 def matlab(commands):
     commands = commands.replace('\n',' ')
-    print commands
+    print(commands)
     os.system("""%s "identifyHost(); %s; exit" """%(matlabpath,commands))
     os.system('reset')
 
@@ -87,8 +86,8 @@ def ensuredir(d):
     os.system('mkdir %s'%d)
 
 def history(n):
-    print '\n'.join(In[-n:])
-    
+    print('\n'.join(In[-n:]))
+
 def p2c(p):
     return p[0]+1j*p[1]
 
@@ -99,9 +98,9 @@ def c2p(z):
 class emitter():
     '''
     This is a toy example test of a concept used in the piper dectorator
-    below. It extends callables so that using them with the logical or 
+    below. It extends callables so that using them with the logical or
     operator "|" will apply the callable as a side effect before
-    returning the original value of the expression. The default side 
+    returning the original value of the expression. The default side
     effect is printing the object value.
     emit = emitter()
     emit | cos(10)
@@ -109,7 +108,7 @@ class emitter():
     def __init__(self,operation=None):
         if operation is None:
             def operation(x):
-                print x         
+                print(x)
         self.operation=operation
         self._IS_EMITTER_=True
     def __or__(self,other):
@@ -121,12 +120,12 @@ class emitter():
 
 class piper():
     '''
-    Piper does some unusual things to the python language. It extends 
+    Piper does some unusual things to the python language. It extends
     callables such that they can be called by using various infix operators.
     this is slightly dangerous, due to the complexity of operator precedence
     and the nuances of whether the operator definition of the left or right
     operand is used.
-       
+
     #piper test
     def foo(x):
         return x+1
@@ -159,11 +158,11 @@ class piper():
 def globalize(function,*args,**krgs):
     '''
     globalize allows the positional argument list of a python to be
-    truncated. missing arguments will be filled in by name from the 
+    truncated. missing arguments will be filled in by name from the
     globals dictionary. This is actually very handy for the functions
-    that reference data by session and area. Arguments can be omitted to 
+    that reference data by session and area. Arguments can be omitted to
     these functions if the session and area are defined in global scope.
-    
+
     # globalizer test
     @globalize
     def fun(r,something='no'):
@@ -178,8 +177,8 @@ def globalize(function,*args,**krgs):
     # we also can't auto-fill kwargs
     # but we can forward them?
     # we won't know how.
-    # so basically it's just args that we tweak. 
-    # kwargs will be forwarded 
+    # so basically it's just args that we tweak.
+    # kwargs will be forwarded
     # print argsp
     assert argsp.varargs   is None
     assert argsp.keywords is None
@@ -198,14 +197,14 @@ def globalize(function,*args,**krgs):
                 argnames.append(a)
                 continue
             else: break
-        if i<len(args): 
+        if i<len(args):
             newargs.append(args[i])
             argnames.append(a)
-        else: 
+        else:
             if a in globals():
                 newargs.append(globals()[a])
             else:
-                print 'warning missing key, setting to None'
+                print('warning missing key, setting to None')
                 newargs.append(None)
             argnames.append(a)
     warn('globalized ' +' '.join(map(str,argnames)))
@@ -222,16 +221,8 @@ def synonymize(fun):
 
 # common aliases
 exists = varexists
-ce = exists
 enum = enumerate
 arr = np.array
-nmx = np.max
-npx = np.max
-nmn = np.min
-npn = np.min
-npm = np.min
-xr = xrange
-iz = izip
 concat = np.concatenate
 
 @piper
@@ -246,7 +237,7 @@ def ar(x):
     return array(x)
 
 def enlist(iterable):
-    print '\n'.join(map(str,iterable))
+    print('\n'.join(map(str,iterable)))
 
 def scat(*args,**kwargs):
     if 's' in kwargs:
@@ -258,7 +249,7 @@ def metaloadmat(path):
     '''
     Loads a matfile from the provided path, caching it in the global dict
     "matfilecache" using path as the lookup key.
-    
+
     Parameters
     ----------
     path : string
@@ -266,18 +257,18 @@ def metaloadmat(path):
     '''
     global matfilecache
     if path in matfilecache: return matfilecache[path]
-    print 'caching',path
-    if dowarn(): print 'loading data...',
+    print('caching',path)
+    if dowarn(): print('loading data...',)
     data = loadmat(path)
     matfilecache[path]=data
-    if dowarn(): print 'loaded'
+    if dowarn(): print('loaded')
     return data
 
 # printing routines
 
 def shortscientific(x):
     return ('%0.0e'%x).replace('-0','-')
-    
+
 def percent(n,total):
     return '%0.2g%%'%(n*100.0/total)
 
@@ -298,16 +289,16 @@ getdict    = lambda data,index: mapdict(data, lambda v:v[index])
 # quick complete statistical description
 class description:
     def __init__(self,data):
-        
+
         self.N, (self.min, self.max),self.mean,self.variance,self.skewness,self.kurtosis = describe(data)
         self.median = median(data)
         self.std  = std(data)
-        
+
         # quartiles
         self.q1   = percentile(data,25)
         self.q3   = self.median
         self.q2   = percentile(data,75)
-        
+
         # percentiles
         self.p01  = percentile(data,1)
         self.p025 = percentile(data,2.5)
@@ -317,13 +308,13 @@ class description:
         self.p95  = percentile(data,95)
         self.p975 = percentile(data,97.5)
         self.p99  = percentile(data,99)
-        
+
     def __str__(self):
         result = ''
         for stat,value in self.__dict__.iteritems():
             result += ' %s=%0.2f '%(stat,value)
         return result
-    
+
     def short(self):
         '''
         Abbreviated summary
@@ -352,18 +343,18 @@ def ensure_dir(dirname):
     """
     try:
         os.makedirs(dirname)
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST:
             raise
-            
-            
+
+
 
 # http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python
-            
+
 import sys
 from numbers import Number
-from collections import Set, Mapping, deque   
-            
+from collections import Set, Mapping, deque
+
 try: # Python 2
     zero_depth_bases = (basestring, Number, xrange, bytearray)
     iteritems = 'iteritems'
@@ -386,9 +377,9 @@ def getsize(obj):
         elif isinstance(obj, Mapping) or hasattr(obj, iteritems):
             size += sum(inner(k) + inner(v) for k, v in getattr(obj, iteritems)())
         # Now assume custom object instances
-        elif hasattr(obj, '__slots__'): 
+        elif hasattr(obj, '__slots__'):
             size += sum(inner(getattr(obj, s)) for s in obj.__slots__ if hasattr(obj, s))
-        else: 
+        else:
             attr = getattr(obj, '__dict__', None)
             if attr is not None:
                 size += inner(attr)

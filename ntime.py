@@ -5,7 +5,7 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
-
+from __future__ import print_function
 
 import datetime
 import time as systime
@@ -38,11 +38,11 @@ def tic(st=''):
     try:
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
-            print 't=%dms'%((t-__GLOBAL_TIC_TIME__)),st
+            print('t=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
         else:
-            print "timing..."
+            print("timing...")
     except:
-        print "timing..."
+        print("timing...")
     __GLOBAL_TIC_TIME__ = current_milli_time()
     return t
 
@@ -55,11 +55,11 @@ def toc(st=''):
     try:
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
-            print 'dt=%dms'%((t-__GLOBAL_TIC_TIME__)),st
+            print('dt=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
         else:
-            print "you didn't call tic"
+            print("you didn't call tic")
     except:
-        print "you didn't call tic"
+        print("you didn't call tic")
     return t
 
 def waitfor(t):
@@ -69,6 +69,3 @@ def waitfor(t):
     while current_milli_time()<t:
         pass
     return current_milli_time()
-
-
-

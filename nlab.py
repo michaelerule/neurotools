@@ -5,8 +5,9 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import print_function
 
-# Start migrating to print-as-a-function 
+# Start migrating to print-as-a-function
 # from __future__ import print_function
 
 import os, sys
@@ -25,9 +26,9 @@ import scipy.optimize
 
 try:
     from   sklearn.metrics   import roc_auc_score,roc_curve,auc
-except Exception, e:
+except Exception as e:
     traceback.print_exc()
-    print 'Importing sklearn failed, ROC and AUC will be missing'
+    print('Importing sklearn failed, ROC and AUC will be missing')
 
 from   scipy.stats       import wilcoxon
 from   scipy.signal      import *
@@ -55,11 +56,11 @@ for module in modules:
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-print matplotlib.pyplot.get_backend() 
+print matplotlib.pyplot.get_backend()
 '''
 
 
-print 'Loading nlab namespace'
+print( 'Loading nlab namespace')
 from neurotools.spike               import *
 from neurotools.tools               import *
 from neurotools.ntime               import *
@@ -102,7 +103,6 @@ from neurotools.signal.conv                import *
 from neurotools.jobs.parallel            import *
 from neurotools.jobs.decorator           import *
 
-print 'Restoring pylab namespace (in event of accidental shadowing of pylab functions)'
 # from scipy.stats    import *
 from neurotools.getfftw             import *
 # seems like too many imports ruining pylab context
@@ -113,8 +113,3 @@ from neurotools.getfftw             import *
 nowarn()
 
 from numpy.core.multiarray import concatenate as cat
-
-
-
-
-

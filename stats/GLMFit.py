@@ -1,23 +1,29 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 
 # IF THIS FAILS THEN DO
 # > sudo easy_install statsmodels
 # AND RESTART PYTHON INTERPRETER
 
-try: 
+try:
     import statsmodels.api as sm
 
     def glmfit(X,Y):
         '''
-        
         THIS IS NOT A CLONE OF THE MATLAB GLMFIT. IT IS FOR POISSON PROCESS
         GLMS ONLY. IT DOES IMPLEMENT NEWTON-RAPHSON THOUGH.
-        
+
         STATSMODELS HAS IMPLEMENTED ITERATIVELY REWEIGHTED LEAST SQUARES FOR US
         SO LETS TAKE ADVANTAGE OF THAT
-        
+
         This method will automatically add a constant colum to the feature
         matrix Y
-        
+
         Parameters
         -----------
         X : array-like
@@ -29,7 +35,7 @@ try:
             1d array of poisson counts.  This array can be 1d or 2d.
 
         The statsmodels GLM code is listed as
-        
+
         # Load modules and data
         import statsmodels.api as sm
         data = sm.datasets.scotland.load()
@@ -38,10 +44,10 @@ try:
         # Instantiate a gamma family model with the default link function.
         gamma_model = sm.GLM(data.endog, data.exog, family=sm.families.Gamma())
         gamma_results = gamma_model.fit()
-        
+
         The docstring for statsmodels.api.GLM may be relevant. This is just a
         thin wrapper for that function.
-        
+
             Generalized Linear Models class
 
         GLM inherits from statsmodels.base.model.LikelihoodModel
@@ -194,22 +200,17 @@ try:
             available after fit is called.  See statsmodels.families.family for
             the specific distribution weighting functions.
         '''
-
         # check for and maybe add constant value to X
         if not all(X[:,0]==X[0,0]):
             X = hstack([ ones((shape(X)[0],1),dtype=X.dtype), X])
-        
+
         poisson_model   = sm.GLM(Y,X,family=sm.families.Poisson())
         poisson_results = poisson_model.fit()
         M = poisson_results.params
         return M
 
 except:
-    print 'statsmodels is not installed! no GLMfit'
-    print 'TRY'
-    print ' > sudo easy_install statsmodels'
-    print 'AND RESTART PYTHON INTERPRETER'
-    
-    
-
-
+    print('statsmodels is not installed! no GLMfit')
+    print('TRY')
+    print(' > sudo easy_install statsmodels')
+    print('AND RESTART PYTHON INTERPRETER')

@@ -1,6 +1,15 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 '''
-Miscellaneous color-related functions. Several color maps for use with 
-matplotlib. A couple idiosyncratic color pallets. 
+Miscellaneous color-related functions. Several color maps for use with
+matplotlib. A couple idiosyncratic color pallets.
 
 Defines the color maps parula, isolum, and extended
 
@@ -96,7 +105,7 @@ def luminance_matrix(method='perceived'):
 def match_luminance(target,color,THRESHOLD=0.01,squared=False,method='perceived'):
     '''
     Adjust color to match luminosity of target
-    
+
     Method 'perceived' 0.299*R + 0.587*G + 0.114*B
     Method 'standard'  0.2126*R + 0.7152*G + 0.0722*B
     Method 'lightness' 0.3*R + 0.59*G + 0.11*B
@@ -156,7 +165,7 @@ def hue_angle(c1,c2):
     '''
     H1 = RGBtoHCL(*c1)[0]
     H2 = RGBtoHCL(*c2)[0]
-    return H2-H1    
+    return H2-H1
 
 def hcl2rgb(h,c,l,target = 1.0):
     '''
@@ -176,9 +185,9 @@ def hcl2rgb(h,c,l,target = 1.0):
     RGB = RGB/np.max(RGB)
     # old code forced luminance conversion. No longer doin this
     luminance = np.dot(LRGB,RGB)
-    # luminance will be off target. why? 
+    # luminance will be off target. why?
     if luminance<target:
-        # the color is not as bright as it needs to be. 
+        # the color is not as bright as it needs to be.
         # blend in white
         lw = np.dot(LRGB,ones(3))
         # solve convex combination:
@@ -199,12 +208,12 @@ def hcl2rgb(h,c,l,target = 1.0):
         a = (target-lb)/(luminance-lb)
         RGB = a*RGB + (1-a)*BLACK
     '''
-    return clip(RGB,0,1)    
+    return clip(RGB,0,1)
 
 def circularly_smooth_colormap(cm,s):
     '''
     Smooth a colormap with cirular boundary conditions
-    
+
     s: sigma, standard deviation of gaussian smoothing kernel in samples
     cm: color map, array-like of RGB tuples
     '''
@@ -232,13 +241,13 @@ def isoluminance4(h):
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%60))/60
 
 def lighthues(N=10,l=0.7):
-    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]] 
+    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
 def darkhues(N=10,l=0.4):
-    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]] 
+    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
 def medhues(N=10,l=0.6):
-    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]] 
+    return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
 def radl2rgb(h,l=1.0):
     '''
@@ -261,7 +270,7 @@ def radl2rgb(h,l=1.0):
         a = (l-1)/(luminance-1)
         RGB = a*RGB + (1-a)*ones(3)
     elif luminance>l:
-        RGB *= l/luminance 
+        RGB *= l/luminance
     return clip(RGB,0,1)
 
 # this is a problem. Grr.
@@ -275,7 +284,7 @@ try:
             __HL_LUT__[ih,il] = r,g,b
 except:
     pass
-    
+
 def radl2rgbLUT(h,l=1.0):
     '''
     radl2rgb backed with a limited resolution lookup table
@@ -441,15 +450,15 @@ except:
 #############################################################################
 # Parula color map
 '''
-Provides the Matlab(r)(tm) parula color map for matplotlib. 
-Mathworks claims copyright on the parula color scheme. 
+Provides the Matlab(r)(tm) parula color map for matplotlib.
+Mathworks claims copyright on the parula color scheme.
 Accordingly, you may only use this file and this color map if you currently
 own a lisence for a Matlab version that contains the Parula color map.
 Please see hsvtools.py for non-copyrighted colormaps of constant luminance
-and constant luminance gradient. 
-Some have argued that since Parula arises from constraint optimization 
+and constant luminance gradient.
+Some have argued that since Parula arises from constraint optimization
 for constant luminance and color-blindness, it may not be subject to
-copyright. If you can show analytically that the Parula color map is the 
+copyright. If you can show analytically that the Parula color map is the
 unique solution to an optimization problem, it is likely that the copyright
 can be safely ignored. (However, check patents! it could be patented)
 However, I have not done this math so I am riterating that, as far as
@@ -628,9 +637,9 @@ try:
     register_cmap(name='extended', cmap=extended)
 
     #############################################################################
-    # A balanced colormap that combines aspects of HSV, HSL, and 
+    # A balanced colormap that combines aspects of HSV, HSL, and
     # Matteo Niccoli's isoluminant hue wheel, with a little smoothing
-    # 
+    #
     x = np.array([hsv2rgb(h,1,1) for h in np.linspace(0,1,256)*360])
     y = np.array([hcl2rgb(h,1,0.75) for h in np.linspace(0,1,256)*360])
     z = isolum_data[::-1]
@@ -650,12 +659,12 @@ except:
 def hex_pack_BGR(RGB):
     '''
     Packs RGB colors data in hexadecimal BGR format for fast rendering to
-    Javascript canvas. 
+    Javascript canvas.
     RGB: 256x3 RGB array-like, 0..1 values
     '''
     RGB = clip(np.array(RGB),0,1)
     return ['0x%2x%2x%2x'%(B*255,G*255,R*255) for (R,G,B) in RGB]
-    
+
 
 def code_to_16bit(code):
     '''
@@ -686,13 +695,13 @@ def enumerate_fast_colors():
     Enumerates colors that can be rendered over a 16 bit bus
     using two identical bytes, skipping the lowest two bits of
     each byte, and reserving the fourth bit for mask storage.
-    This is intended for development of optimized color pallets for 
+    This is intended for development of optimized color pallets for
     mictrocontroller driven display interfaces.
     '''
     bytes = sorted(list(set([i&0b11110100 for i in range(0,256)])))
     colors = [bit16_RGB_to_tuple(x*256|x) for x in bytes]
     return colors
-       
+
 def tuple_to_bit16(c):
     '''
     convert RGB float tuple in 565 bit packed RGB format
@@ -702,8 +711,8 @@ def tuple_to_bit16(c):
     G = int(G*0b111111)
     B = int(B*0b11111)
     RGB = (R<<11)|(G<<5)|B
-    return RGB       
-    
+    return RGB
+
 def tuple_to_bit24(c):
     '''
     convert RGB float tuple in 565 bit packed RGB format
@@ -714,7 +723,7 @@ def tuple_to_bit24(c):
     B = int(B*0b11111111)
     RGB = (R<<16)|(G<<8)|B
     return RGB
-    
+
 def bit16_print_color(c):
     '''
     Convert RGB tuple to 16 bit 565 RGB formt as a binary string literal
@@ -736,7 +745,7 @@ def show_fast_pallet():
             c2 = bit16_RGB_to_tuple(tuple_to_bit16(c0)|0b0000100000001000)
             cA = 0.5*(array(c0)+array(c2))
             ax.add_patch(patches.Rectangle((ik,j),1,1,facecolor=cA))
-            print '%06x'%tuple_to_bit24(cA)
+            print('%06x'%tuple_to_bit24(cA))
     draw()
 
 def show_complete_fast_pallet():
@@ -754,7 +763,7 @@ def show_complete_fast_pallet():
             c2 = bit16_RGB_to_tuple(tuple_to_bit16(c0)|0b0000100000001000)
             cA = 0.5*(array(c0)+array(c2))
             ax.add_patch(patches.Rectangle((k,j),1,1,facecolor=cA,edgecolor=cA))
-            print '#%06x'%tuple_to_bit24(cA)
+            print('#%06x'%tuple_to_bit24(cA))
     draw()
 
 
@@ -777,7 +786,7 @@ def show_complete_fastest_pallet():
             c2 = bit16_RGB_to_tuple((c|0b0000100000001000)&0b1111111100000000)
             cA = 0.5*(array(c0)+array(c2))
             ax.add_patch(patches.Rectangle((k,ij),1,1,facecolor=cA,edgecolor=cA))
-            print "'#%06x',"%tuple_to_bit24(cA),
+            print("'#%06x',"%tuple_to_bit24(cA),)
     draw()
 
 def show_hex_pallet(colors):
@@ -794,18 +803,18 @@ def show_hex_pallet(colors):
 
 '''
 show_hex_pallet([
-'#040000', '#350000', '#560000', 
-'#770000', 
-'#870000', '#980000', 
-'#a80000', '#b90000', 
-'#c90000', '#d90000', 
-'#fa0000', 
-'#048100', 
-'#458100', '#568100', 
-'#668100', '#778100', 
-'#878100', '#988100', 
-'#a88100', '#b98100', 
-'#c98100', '#d98100', 
+'#040000', '#350000', '#560000',
+'#770000',
+'#870000', '#980000',
+'#a80000', '#b90000',
+'#c90000', '#d90000',
+'#fa0000',
+'#048100',
+'#458100', '#568100',
+'#668100', '#778100',
+'#878100', '#988100',
+'#a88100', '#b98100',
+'#c98100', '#d98100',
 '#fa8100',
 ])
 #040000
@@ -853,7 +862,3 @@ show_hex_pallet([
 #define FAST_MAGENTA 0b0b1111000011110000
 #define FAST_WHITE   0b0b1111010011110100
 '''
-
-
-
-

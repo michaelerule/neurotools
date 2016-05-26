@@ -1,3 +1,11 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+
 '''
 Routines for computing statistics from multielectrode arrays
 that are sensitive to distances between channels.
@@ -7,12 +15,12 @@ Test code
 session='SPK120925'
 area='M1'
 am = get_array_map(session,area)
-print am
+print(am)
 
 for ch1 in get_good_channels(session,area):
     for ch2 in get_good_channels(session,area):
-        print ch1,ch2,get_pair_distance(session,area,ch1,ch2)
-        
+        print(ch1,ch2,get_pair_distance(session,area,ch1,ch2))
+
 trial = get_good_trials(session,area)[0]
 epoch = 6,-1000,6000
 
@@ -46,9 +54,9 @@ def get_pair_distance(session,area,ch1,ch2):
     x1,y1 = where(am==ch1)
     x2,y2 = where(am==ch2)
     if not (len(x1)==1 and len(x2)==1):
-        print 'Something is wrong, multiple or missing matches for electrodes'
-        print ch1,ch2,(x1,y1),(x2,y2)
-        print am
+        print('Something wrong, multiple or missing matches for electrodes')
+        print(ch1,ch2,(x1,y1),(x2,y2))
+        print(am)
         assert 0
     return sqrt( (x1-x2)**2 + (y1-y2)**2 )[0]
 
@@ -72,7 +80,8 @@ def distance_angular_deviation(session,area,trial,epoch,threads=1):
             results[x].append(((ch1,ch2),hd))
     return results
 
-def get_averaged_angular_distance((session,area,trial,epoch)):
+def get_averaged_angular_distance(args):
+    (session,area,trial,epoch) = args #py 2.x->3 compatibility
     if epoch is None: epoch = 6,-1000,6000
     lfp = get_all_raw_lfp(session,area,trial,epoch)
     freqs,cwt = fft_cwt_transposed(lfp,1,55,w=4.0,resolution=1,threads=1)
@@ -112,7 +121,7 @@ def get_length_constant_trial(session,area,trial,epoch):
     e = mean(q,0)
     return e
     #return mean(diff(x[:7,:,:],1,0)/0.4,0)
-    
+
 def get_average_synchrony_length_constant_parallel(session,area,epoch):
     '''
     Test code
@@ -122,28 +131,28 @@ def get_average_synchrony_length_constant_parallel(session,area,epoch):
     freqs,y = get_average_synchrony_length_constant_parallel(session,area,epoch)
     imshow(y,extent=(0,7000,freqs[-1],freqs[0]),
         interpolation='nearest',aspect=50,cmap=luminance)#,vmin=0.5,vmax=0.7)
-    
+
     Dev code
     from os.path import *
     execfile(expanduser('~/Dropbox/bin/cgid/cgidsetup.py'))
     session='SPK120925'
     area='M1'
     am = get_array_map(session,area)
-    print am
+    print(am)
     for ch1 in get_good_channels(session,area):
         for ch2 in get_good_channels(session,area):
-            print ch1,ch2,get_pair_distance(session,area,ch1,ch2)
+            print(ch1,ch2,get_pair_distance(session,area,ch1,ch2))
     trial = get_good_trials(session,area)[0]
     epoch = 6,-1000,6000
     nowarn()
     def get_averaged_angular_distance(trial):
-        print "processing trial",trial
+        print("processing trial",trial)
         results = distance_angular_deviation(session,area,trial,epoch,threads=1)
         sums   = {}
         counts = {}
         for k,v in results.iteritems():
             l = round(k)
-            print k,l
+            print(k,l)
             for ch,x in v:
                 if l in sums:
                     sums[l]   += x
@@ -175,9 +184,9 @@ def get_average_synchrony_length_constant_parallel(session,area,epoch):
     warn('But we focus on 10-45Hz')
     warn('only looks over 2.4mm')
     if epoch is None: epoch = 6,-1000,6000
-    # am is not used, but should preload dataset 
+    # am is not used, but should preload dataset
     # to avoid memory distasters when parallizing
-    am = get_array_map(session,area) 
+    am = get_array_map(session,area)
     jobs = [(session,area,trial,epoch) for trial in get_good_trials(session,area)]
     reset_pool()
     allblocked = squeeze(arr(parmap(get_averaged_angular_distance,jobs)))
@@ -196,24 +205,24 @@ def synchrony_length_constant_areas_summary(session,trial,epoch):
     '''
     This is descended from a one-off plotting script, that's why i'ts weird
     and messy.
-    
+
     test code
-    
+
     session = 'SPK120924'
     synchrony_length_constant_areas_summary(session,good_trials(session)[0],None)
     '''
     res = {}
     for area in areas:
-        print session,area
+        print(session,area)
         res[area]=get_length_constant_trial(session,area,trial,epoch)
-        
+
     freqs = arange(1,56)
     figure('Length constant',figsize=(5.5,3.7))
     clf()
 
     vmin,vmax=-0.5,0.5
     vmin,vmax=0,100
-    
+
     def dz(x):
         x[isnan(x)]=0
         return x
@@ -276,11 +285,3 @@ def synchrony_length_constant_areas_summary(session,trial,epoch):
     sca(ax3)
     overlayEvents('w','k',FS=1,fontsize=10,npad=1)
     noaxis()
-    
-    
-    
-    
-
-
-
-

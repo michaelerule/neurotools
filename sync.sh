@@ -15,5 +15,5 @@ shopt -s extglob
 git add *
 git rm !(.*)
 git add -u :/
-git commit -m '$1'
+git commit -m "$1"
 git push origin master

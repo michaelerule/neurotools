@@ -13,12 +13,13 @@ Primarily used with fftzeros code for finding critical points in phase gradient 
 '''
 
 from matplotlib.mlab import find
+from neurotools.getfftw import *
+from neurotools.tools import *
+from neurotools.jobs.parallel import *
+from neurotools.signal.signal import *
+from neurotools.signal.conv import *
 
-import neurotools.getfftw
-import neurotools.tools
-import neurotools.jobs.parallel
-import neurotools.signal.signal
-import neurotools.signal.conv
+import numpy as np
 
 """
 def get_grid(data,spacing=0.4):
@@ -36,7 +37,7 @@ def get_grid(data,spacing=0.4):
     >>> imshow(real(result),interpolation='nearest')
     >>> bone()
     '''
-    h,w = shape(data)[:2]
+    h,w = np.shape(data)[:2]
     x1 = list(arange(w+1)*spacing)
     x2 = list(arange(h+1)*spacing)
     x1 = x1+list(reversed(x1[1:-1]))
@@ -58,7 +59,7 @@ def get_mask_antialiased(h_w,aa,spacing,cutoff):
     w : int
         width
     aa : int
-        antialiasing upsampling factor
+        antialiasing supsampling factor
     spacing : numeric
         array spacing in mm
     cutoff : numeric
@@ -73,10 +74,10 @@ def get_mask_antialiased(h_w,aa,spacing,cutoff):
     f2     = fftfreq(w*2*aa,spacing)
     ff     = abs(outer_complex(f1,f2))
     radius = 1./cutoff
-    up     = int32(ff<=radius)
-    up     = roll(up,aa*h+aa/2,0)
-    up     = roll(up,aa*w+aa/2,1)
-    mask   = array([[mean(up[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])
+    sup    = np.int32(ff<=radius)
+    sup    = np.roll(sup,aa*h+aa//2,0)
+    sup    = np.roll(sup,aa*w+aa//2,1)
+    mask   = array([[mean(sup[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])
     mask   = fftshift(mask)
     return mask
 
@@ -94,8 +95,8 @@ def get_mask(h_w,spacing,cutoff):
     f2     = fftfreq(w*2,spacing)
     ff     = abs(outerComplex(f1,f2))
     radius = 1./cutoff
-    up     = int32(ff<=radius)
-    return up
+    sup    = int32(ff<=radius)
+    return sup
 
 def dct_cut(data,cutoff,spacing=0.4):
     '''
@@ -110,7 +111,7 @@ def dct_cut(data,cutoff,spacing=0.4):
     accurate.
     '''
     print('WARNING DEPRICATED USE dct_cut_antialias')
-    h,w    = shape(data)[:2]
+    h,w    = np.shape(data)[:2]
     mask   = getMask((h,w),spacing,cutoff)
     mirror = reflect2D(data)
     ff2    = fft2(mirror,axes=(0,1))
@@ -129,7 +130,7 @@ def outer_complex(a,b):
 
 def dct_cut_antialias(data,cutoff,spacing=0.4):
     '''
-    Uses brute-force upsampling to anti-alias the frequency space sinc
+    Uses brute-force supsampling to anti-alias the frequency space sinc
     function, skirting numerical issues that derives either from
     attempting to evaulate the radial sinc function on a small 2D domain,
     or select a constant frequency cutoff in the frequency space.
@@ -139,7 +140,7 @@ def dct_cut_antialias(data,cutoff,spacing=0.4):
 
     M,N    = 60,80
     data   = randn(M,N)+1j*randn(M,N)
-    h,w    = shape(data)[:2]
+    h,w    = np.shape(data)[:2]
 
     aa     = 7
     assert(aa%2==1)
@@ -147,11 +148,11 @@ def dct_cut_antialias(data,cutoff,spacing=0.4):
     f2     = fftfreq(w*2*aa,spacing)
     ff     = abs(outerComplex(f1,f2))
     radius = spacing/cutoff
-    up     = int32(ff<=radius)
-    #up    = fftshift(up)
-    up     = roll(up,aa*h+aa/2,0)
-    up     = roll(up,aa*w+aa/2,1)
-    mask   = array([[mean(up[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])
+    sup    = int32(ff<=radius)
+    #sup   = fftshift(sup)
+    sup    = np.roll(sup,aa*h+aa//2,0)
+    sup    = np.roll(sup,aa*w+aa//2,1)
+    mask   = array([[mean(sup[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])
     mask   = fftshift(mask)
 
     f1B    = fftfreq(h*2,spacing)
@@ -165,7 +166,7 @@ def dct_cut_antialias(data,cutoff,spacing=0.4):
     result = ifft2(cut,axes=(0,1))[:h,:w,...]
 
     subplot(231)
-    imshow(real(up),interpolation='nearest')
+    imshow(real(sup),interpolation='nearest')
     subplot(232)
     kern   = fft2(mask,axes=(0,1))
     imshow(fftshift(real(kern)),interpolation='nearest')
@@ -176,7 +177,7 @@ def dct_cut_antialias(data,cutoff,spacing=0.4):
     subplot(235)
     imshow(fftshift(real(maskB)),interpolation='nearest')
     '''
-    h,w    = shape(data)[:2]
+    h,w    = np.shape(data)[:2]
     mask   = get_mask_antialiased((h,w),7,spacing,cutoff)
     mirror = reflect2D(data)
     ff2    = fft2(mirror,axes=(0,1))
@@ -190,7 +191,7 @@ def dct_cut_downsampled(data,cutoff,spacing=0.4):
     representation from which the whole downsampled data could be
     recovered
     '''
-    h,w    = shape(data)[:2]
+    h,w    = np.shape(data)[:2]
     f1     = fftfreq(h*2,spacing)
     f2     = fftfreq(w*2,spacing)
     wl     = 1./abs(reshape(f1,(2*h,1))+1j*reshape(f2,(1,2*w)))
@@ -204,11 +205,11 @@ def dct_cut_downsampled(data,cutoff,spacing=0.4):
     delete_row = len(empty_rows)/2 #idiv important here
     keep_cols  = w-delete_col
     keep_rows  = h-delete_row
-    col_mask = zeros(w*2)
+    col_mask = np.zeros(w*2)
     col_mask[:keep_cols] =1
     col_mask[-keep_cols:]=1
     col_mask = col_mask==1
-    row_mask = zeros(h*2)
+    row_mask = np.zeros(h*2)
     row_mask[:keep_rows] =1
     row_mask[-keep_rows:]=1
     row_mask = row_mask==1
@@ -219,8 +220,8 @@ def dct_cut_downsampled(data,cutoff,spacing=0.4):
 
 def dct_upsample(data,factor=2):
     '''
-    Uses the DCT to upsample array data. Nice for visualization. Uses a
-    discrete cosine transform to smoothly upsample image data. Boundary
+    Uses the DCT to supsample array data. Nice for visualization. Uses a
+    discrete cosine transform to smoothly supsample image data. Boundary
     conditions are handeled as reflected.
 
     Data is made symmetric, fourier transformed, then inserted into the
@@ -233,19 +234,19 @@ def dct_upsample(data,factor=2):
     Parameters:
         data (ndarray): frist two dimensions should be height and width.
             data may contain aribtrary number of additional dimensions
-        factor (int): upsampling factor.
+        factor (int): supsampling factor.
 
     Test code
     grid = arange(10)&1
     grid = grid[None,:]^grid[:,None]
-    amp  = dct_upsample(grid,UPSAMPLE).real
+    amp  = dct_upsample(grid,supSAMPLE).real
     '''
-    h,w = shape(data)[:2]
+    h,w = np.shape(data)[:2]
     mirrored = reflect2D_1(data)
     ff = fft2(mirrored,axes=(0,1))
-    h2,w2 = shape(mirrored)[:2]
-    newshape = (h2*factor,w2*factor) + shape(data)[2:]
-    result = zeros(newshape,dtype=ff.dtype)
+    h2,w2 = np.shape(mirrored)[:2]
+    newshape = (h2*factor,w2*factor) + np.shape(data)[2:]
+    result = np.zeros(newshape,dtype=ff.dtype)
     H = h+1#have to add one more on the left to grab the nyqist term
     W = w+1
     result[:H ,:W ,...]=ff[:H , :W,...]
@@ -265,8 +266,8 @@ def iterated_upsample(data,niter=1):
 
 def dct_upsample_notrim(data,factor=2):
     '''
-    Uses the DCT to upsample array data. Nice for visualization. Uses a
-    discrete cosine transform to smoothly upsample image data. Boundary
+    Uses the DCT to supsample array data. Nice for visualization. Uses a
+    discrete cosine transform to smoothly supsample image data. Boundary
     conditions are handeled as reflected.
 
     Data is made symmetric, fourier transformed, then inserted into the
@@ -279,16 +280,16 @@ def dct_upsample_notrim(data,factor=2):
     Parameters:
         data (ndarray): frist two dimensions should be height and width.
             data may contain aribtrary number of additional dimensions
-        factor (int): upsampling factor.
+        factor (int): supsampling factor.
     '''
     print('ALIGNMENT BUG DO NOT USE YET')
     assert 0
-    h,w = shape(data)[:2]
+    h,w = np.shape(data)[:2]
     mirrored = reflect2D_1(data)
     ff = fft2(mirrored,axes=(0,1))
-    h2,w2 = shape(mirrored)[:2]
-    newshape = (h2*factor,w2*factor) + shape(data)[2:]
-    result = zeros(newshape,dtype=ff.dtype)
+    h2,w2 = np.shape(mirrored)[:2]
+    newshape = (h2*factor,w2*factor) + np.shape(data)[2:]
+    result = np.zeros(newshape,dtype=ff.dtype)
     H = h+1#have to add one more on the left to grab the nyqist term
     W = w+1
     result[:H ,:W ,...]=ff[:H , :W,...]

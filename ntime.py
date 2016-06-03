@@ -22,7 +22,7 @@ def today():
     '''
     Returns the date in YYMMDD format
     '''
-    return datetime.date.today().strftime('%y%m%d')
+    return datetime.date.today().strftime('%Y%m%d')
 
 #crude versions of tic and toc from Matlab
 #stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python

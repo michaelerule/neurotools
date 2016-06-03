@@ -14,13 +14,15 @@ Robust decorators are provided by the decorator package
 
 from neurotools.ntime import current_milli_time
 
-import os, sys 
+import os, sys
 
 from collections import defaultdict
 
 import inspect, ast, types
 import warnings, traceback, errno
 import pickle, json, base64, zlib
+
+import numpy as np
 
 try:
     import decorator
@@ -39,19 +41,25 @@ except:
 
 def listit(t):
     return list(map(listit, t)) if isinstance(t, (list, tuple)) else t
-    
+
 def tupleit(t):
     return tuple(map(tupleit, t)) if isinstance(t, (list, tuple)) else t
 
 def sanitize(sig,mode='liberal'):
     '''
-    Converts an argument signature into a standard format. 
-    Lists will be converted to tuples.
-    Non-hashable types will cause an error.
-    
-    "strict" mode requires that all data be numeric primitives or 
+    Converts an argument signature into a standard format. Lists will
+    be converted to tuples. Non-hashable types will cause an error.
+
+    "strict" mode requires that all data be numeric primitives or
     strings containing "very safe" chracters a-zA-Z0-9 and space
     '''
+    if isinstance(sig,np.ndarray):
+        if sig.ndim==0:
+            sig = sig[()]
+        return sanitize(sig)
+    if isinstance(sig,np.core.memmap):
+        sig = np.array(sig)
+        return sanitize(sig)
     if isinstance(sig, (list,tuple)):
         return tuple(sanitize(s,mode=mode) for s in sig)
     if isinstance(sig,(unicode,)):
@@ -63,7 +71,11 @@ def sanitize(sig,mode='liberal'):
     if isinstance(sig, (set,)):
         return tuple(sanitize(s,mode=mode) for s in sorted(list(sig)))
     if hasattr(sig, '__iter__'):
-        return tuple(sanitize(s,mode=mode) for s in list(sig))
+        try:
+            return tuple(sanitize(s,mode=mode) for s in list(sig))
+        except:
+            # Probably a 0 dimensional iterable, not sure how to handle this
+            pass
 
     if mode=='strict':
         if type(sig) in (int,float,bool,None):
@@ -73,7 +85,7 @@ def sanitize(sig,mode='liberal'):
                 raise ValueError('Strict mode requires all strings consist of letters, numbers, and spaces')
             return sig
     return sig
-    
+
 def summarize_function(f):
     '''Prints function information, Used for debugging decorators.'''
     print(f)
@@ -91,16 +103,16 @@ def summarize_function(f):
 
 def argument_signature(function,*args,**kwargs):
     '''
-    Convert the function arguments and values to a unique set. 
+    Convert the function arguments and values to a unique set.
     Throws ValueError if the provided arguments cannot match argspec.
     '''
-    named_store = {} # map from parameter names to values 
+    named_store = {} # map from parameter names to values
     named,vargname,kwargname,defaults = inspect.getargspec(function)
-    
+
     # Pattern matching can give rise to lists in the "named" variable
     # returned here. We need to convert these to something hashable.
     named = sanitize(named)
-    
+
     available = zip(named,args)
     nargs     = len(available)
     ndefault  = len(defaults)   if not defaults is None else 0
@@ -108,7 +120,7 @@ def argument_signature(function,*args,**kwargs):
     # All positional arguments must be filled
     nmandatory = nnamed - ndefault
     if nargs<nmandatory: raise ValueError('Not enough positional arguments')
-    # Assign available positional arguments to names    
+    # Assign available positional arguments to names
     for k,v in available:
         if k in named_store: raise ValueError('Duplicate argument',k)
         named_store[k] = v
@@ -177,27 +189,27 @@ def memoize(f):
 
 def unwrap(f):
     '''
-    Strips decorators from a decorated function, provided that the 
+    Strips decorators from a decorated function, provided that the
     decorators were so kind as to set the .__wrapped__ attribute
     '''
     g = f
-    while hasattr(g, '__wrapped__'): 
+    while hasattr(g, '__wrapped__'):
         g = g.__wrapped__
     return g
 
 if __name__=="__main__":
 
     print("Testing the memoize decorator")
-    
+
     def example_function(a,b,c=1,d=('ok',),*vargs,**kw):
         ''' This docstring should be preserved by the decorator '''
         e,f = vargs if (len(vargs)==2) else (None,None)
         g = kw['k'] if 'k' in kw else None
         print(a,b,c,d,e,f,g)
-    
+
     f = example_function
     g = memoize(example_function)
-    
+
     print('Testing example_function')
     fn = f
     fn('a','b','c','d')
@@ -219,4 +231,3 @@ if __name__=="__main__":
     fn('a','b',d='d',*['c'])
     fn('a','b',*['c'],**{'d':'d'})
     fn('a','b','c','d','e','f')
-

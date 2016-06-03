@@ -104,9 +104,9 @@ def padout(data):
     N = len(data)
     assert len(shape(data))==1
     padded = zeros(2*N,dtype=data.dtype)
-    padded[N/2  :N/2+N]=data
-    padded[     :N/2  ]=data[N/2:0    :-1]
-    padded[N/2+N:     ]=data[-1 :N/2-1:-1]
+    padded[N//2  :N//2+N]=data
+    padded[     :N//2  ]=data[N//2:0    :-1]
+    padded[N//2+N:     ]=data[-1 :N//2-1:-1]
     return padded
 
 def padin(data):
@@ -115,7 +115,7 @@ def padin(data):
     '''
     N = len(data)
     assert len(shape(data))==1
-    return data[N/2:N/2+N]
+    return data[N//2:N//2+N]
 
 from scipy.signal import butter, filtfilt, lfilter
 def bandfilter(data,fa=None,fb=None,Fs=1000.,order=4,zerophase=True,bandstop=False):
@@ -126,10 +126,10 @@ def bandfilter(data,fa=None,fb=None,Fs=1000.,order=4,zerophase=True,bandstop=Fal
     '''
     N = shape(data)[-1]
     padded = zeros(shape(data)[:-1]+(2*N,),dtype=data.dtype)
-    padded[...,N/2  :N/2+N] = data
-    padded[...,     :N/2  ] = data[...,N/2:0    :-1]
-    padded[...,N/2+N:     ] = data[...,-1 :N/2-1:-1]
-    if not fa==None and not fb==None:
+    padded[...,N//2  :N//2+N] = data
+    padded[...,     :N//2  ] = data[...,N//2:0    :-1]
+    padded[...,N//2+N:     ] = data[...,-1 :N//2-1:-1]
+    if not fa is None and not fb is None:
         if bandstop:
             b,a = butter(order,array([fa,fb])/(0.5*Fs),btype='bandstop')
         else:
@@ -143,7 +143,7 @@ def bandfilter(data,fa=None,fb=None,Fs=1000.,order=4,zerophase=True,bandstop=Fal
         b,a  = butter(order,fb/(0.5*Fs),btype='low')
         assert not bandstop
     else: raise Exception('Both fa and fb appear to be None')
-    return (filtfilt if zerophase else lfilter)(b,a,padded)[...,N/2:N/2+N]
+    return (filtfilt if zerophase else lfilter)(b,a,padded)[...,N//2:N//2+N]
     assert 0
 
 def box_filter(data,smoothat):
@@ -154,11 +154,11 @@ def box_filter(data,smoothat):
     N = len(data)
     assert len(shape(data))==1
     padded = zeros(2*N,dtype=data.dtype)
-    padded[N/2:N/2+N]=data
-    padded[:N/2]=data[N/2:0:-1]
-    padded[N/2+N:]=data[-1:N/2-1:-1]
+    padded[N//2:N//2+N]=data
+    padded[:N//2]=data[N//2:0:-1]
+    padded[N//2+N:]=data[-1:N//2-1:-1]
     smoothed = fftconvolve(padded,ones(smoothat)/float(smoothat),'same')
-    return smoothed[N/2:N/2+N]
+    return smoothed[N//2:N//2+N]
 
 def median_filter(x,window=100,mode='same'):
     '''
@@ -260,7 +260,7 @@ def randband(N,fa=None,fb=None,Fs=1000):
     '''
     Returns Gaussian random noise band-pass filtered between fa and fb.
     '''
-    return zscore(bandfilter(randn(N*2),fa=fa,fb=fb,Fs=Fs))[N/2:N/2+N]
+    return zscore(bandfilter(randn(N*2),fa=fa,fb=fb,Fs=Fs))[N//2:N//2+N]
 
 def arenear(b,K=5):
     '''

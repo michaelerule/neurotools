@@ -1,6 +1,6 @@
 
 
-opto_dataset = 'TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001'
+opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001';
 
 import sys, os
 sys.path.insert(1,os.path.expanduser('~/Dropbox/bin'))
@@ -8,31 +8,39 @@ import neurotools
 from neurotools.nlab import *
 from neurotools.tools import metaloadmat,globalize
 nowarn()
-#opto_data = metaloadmat(opto_dataset)
-#print opto_data['README'][0]
+import numpy as np
 
-@globalize
+@memoize
 def opto_get_events_passive(opto_dataset):
     start,stop = metaloadmat(opto_dataset)['events']
     return start, stop
 
+@memoize
 def opto_get_all_lfp_quick(opto_dataset):
-    data = metaloadmat(opto_dataset+'_compact')['lfp']
-    return data
+    try:
+        data = metaloadmat(opto_dataset+'_compact')['lfp']
+    except:
+        data = metaloadmat(opto_dataset)['lfp']
+    return np.array(data)
 
-@globalize
+@memoize
 def opto_get_map(opto_dataset):
-    return array(metaloadmat(opto_dataset+'_compact')['arrayChannelMap'])
+    try:
+        data = metaloadmat(opto_dataset+'_compact')['arrayChannelMap']
+    except:
+        data = metaloadmat(opto_dataset)['arrayChannelMap']
+    return np.array(data)
 
-@globalize
+@memoize
 def opto_get_laser(opto_dataset):
-    return metaloadmat(opto_dataset)['laser'][0]
+    return np.array(metaloadmat(opto_dataset)['laser'][0])
 
+@memoize
 def opto_get_lfp(opto_dataset,channel):
     '''
     Retrieves channel or channels from opto LFP dataset
     Channels are 1-indexed
-    
+
     Parameters
     ----------
     opto_dataset : string
@@ -54,7 +62,7 @@ def opto_get_lfp_filtered(opto_dataset,channel,fa,fb,order=4):
     '''
     Retrieves channel or channels from opto LFP dataset
     Channels are 1-indexed
-    
+
     Parameters
     ----------
     opto_dataset : string
@@ -93,7 +101,7 @@ def opto_get_all_lfp_analytic_quick(opto_dataset,fa,fb):
 
 def __opto_get_all_lfp_analytic_quick_parallel_helper__():
     assert 0
-    pass 
+    pass
 
 def opto_get_all_lfp_analytic_quick_parallel(opto_dataset,fa,fb):
     '''
@@ -121,7 +129,7 @@ def opto_get_lfp_analytic(opto_dataset,channel,fa,fb,order=4):
     '''
     Retrieves channel or channels from opto LFP dataset
     Channels are 1-indexed
-    
+
     Parameters
     ----------
     opto_dataset : string
@@ -152,14 +160,6 @@ def opto_get_lfp_analytic(opto_dataset,channel,fa,fb,order=4):
         data = metaloadmat(opto_dataset)['LFP'][:,channel-1]
         return hilbert(bandfilter(data,fa,fb,Fs,order))
 
-@globalize
+@memoize
 def opto_get_Fs(opto_dataset):
     return metaloadmat(opto_dataset)['Fs'][0,0]
-
-
-
-
-
-
-
-

@@ -345,7 +345,7 @@ def ensure_dir(dirname):
         os.makedirs(dirname)
     except OSError as e:
         if e.errno != errno.EEXIST:
-            raise
+            pass#raise
 
 
 

@@ -453,13 +453,14 @@ def overlayEvents(c1='w',c2='k',FS=1000.,nevents=3,fontsize=12,npad=3):
 '''
 
 def nice_legend(*args,**kwargs):
-    kwargs['framealpha']=0.9
-    kwargs['fancybox']=True
-    kwargs['fontsize']=10
-    kwargs['numpoints']=1
-    kwargs['scatterpoints']=1
-    lg = legend(*args,**kwargs)
-    #lg.draw_frame(False)
+    defaults = {
+        'framealpha':0.9,
+        'fancybox':True,
+        'fontsize':10,
+        'numpoints':1,
+        'scatterpoints':1}
+    defaults.update(kwargs)
+    lg = legend(*args,**defaults)
     lg.get_frame().set_linewidth(0.0)
     return lg
 

@@ -39,7 +39,7 @@ from neurotools.jobs.closure import verify_function_closure
 
 CACHE_IDENTIFIER ='.__neurotools_cache__'
 
-VERBOSE_CACHING = True#False
+VERBOSE_CACHING = 0#True
 
 def validate_argument_signature(sig):
     '''
@@ -197,13 +197,16 @@ def function_signature(f):
         str(hash((identity,signature))&0xffff)).replace('=','')
     return name+'.'+code
 
-def signature_to_file_string(f,sig,mode='repr',compressed=True,base64encode=True):
+def signature_to_file_string(f,sig,
+    mode='repr',
+    compressed=True,
+    base64encode=True):
     '''
-    Converts an argument signature to a string if possible. This can be
-    used to store cached results in a human-readable format. Alternatively,
-    we may want to simply encode the value of the argument signature in
-    a string that is compatible with most file systems. We'd still need
-    to perform verification on the object to
+    Converts an argument signature to a string if possible. This can
+    be used to store cached results in a human-readable format.
+    Alternatively, we may want to simply encode the value of the
+    argument signature in a string that is compatible with most file
+    systems. We'd still need to perform verification on the object to
 
     No more than 4096 characters in path string
     No more than 255 characters in file string
@@ -275,7 +278,11 @@ def signature_to_file_string(f,sig,mode='repr',compressed=True,base64encode=True
     # If for some reason the path is too long, complain
     if len(filename)>255:
         raise ValueError(\
-            'Argument specification exceeds maximum path length.')
+            'Argument specification exceeds maximum path length.\n'+
+            'Function probably accepts data as an argument,\n'+
+            'rather than a key to locate data. See Joblib for a\n'+
+            'caching framework that uses cryptographic hashes\n'+
+            'to solve this problem. For now, we skip the cache.')
     check_filename(filename)
     return filename
 
@@ -334,7 +341,8 @@ def human_encode(sig):
     sig = neurotools.sanitize(sig,mode='strict')
     named, vargs = sig
     if not vargs is None:
-        raise ValueError('Currently variable arguments are not permitted '+
+        raise ValueError(
+            'Currently variable arguments are not permitted '+
             'in the human-readable format')
     result = ','.join(['%s=%s'%(k,repr(v)) for (k,v) in named])
     return result
@@ -349,10 +357,14 @@ def human_decode(key):
 
 def locate_cached(cache_root,f,method,*args,**kwargs):
     sig = neurotools.jobs.decorator.argument_signature(f,*args,**kwargs)
-    fn  = signature_to_file_string(f,sig,
-            mode        ='repr',
-            compressed  =True,
-            base64encode=True)
+    try:
+        fn  = signature_to_file_string(f,sig,
+                mode        ='repr',
+                compressed  =True,
+                base64encode=True)
+    except ValueError as ve:
+        print(ve)
+
     pieces   = fn.split('.')
     path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
     filename = '.'.join(pieces[-2:])+'.'+method
@@ -429,11 +441,16 @@ def validate_for_numpy(x):
         raise ValueError("Numpy type %s is not on the list of compatible types"%x.dtype)
     return True
 
-def disk_cacher(cache_location,method='npy',write_back=True,skip_fast=False,verbose=VERBOSE_CACHING,allow_mutable_bindings=False):
+def disk_cacher(
+    cache_location,
+    method='npy',
+    write_back=True,
+    skip_fast=False,
+    verbose=VERBOSE_CACHING,
+    allow_mutable_bindings=False):
     '''
     Decorator to memoize functions to disk.
     Currying pattern here where cache_location creates decotrators
-
 
     write_back:
 
@@ -465,10 +482,8 @@ def disk_cacher(cache_location,method='npy',write_back=True,skip_fast=False,verb
     cache_location = os.path.abspath(cache_location)+os.sep
     cache_root     = cache_location+CACHE_IDENTIFIER
     def cached(f):
-
         if not allow_mutable_bindings:
             verify_function_closure(f)
-
         @neurotools.jobs.decorator.robust_decorator
         def wrapped(f,*args,**kwargs):
             t0 = neurotools.ntime.current_milli_time()
@@ -483,7 +498,6 @@ def disk_cacher(cache_location,method='npy',write_back=True,skip_fast=False,verb
                         result = np.load(location, mmap_mode='r')
                     except ValueError:
                         result = np.load(location)
-
                 if verbose:
                     print('Retrieved cache at ',path)
                     print('\t%s.%s'%(f.__module__,f.func_name))
@@ -511,13 +525,14 @@ def disk_cacher(cache_location,method='npy',write_back=True,skip_fast=False,verb
                             validated_result = validate_for_matfile(result)
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a matfile')
-                            scipy.io.savemat(location,{'varargout':result})
+                            scipy.io.savemat(location,{
+                                'varargout':result})
                         elif method =='npy':
                             validated_result = validate_for_numpy(result)
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a numpy file')
                             np.save(location, result)
-                    except (RuntimeError, ValueError, PicklingError) as exc2:
+                    except (RuntimeError, ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
                             print('\t%s.%s'%(f.__module__,f.func_name))
@@ -557,7 +572,6 @@ def disk_cacher(cache_location,method='npy',write_back=True,skip_fast=False,verb
                             print('\tWe should really do something about this?')
                             print('\tZeroing out the file, hopefully that causes it to crash on load?')
                         with open(location, 'w'): pass
-
             return result
         def purge(*args,**kwargs):
             '''
@@ -580,7 +594,13 @@ def disk_cacher(cache_location,method='npy',write_back=True,skip_fast=False,verb
         return decorated
     return cached
 
-def hierarchical_cacher(fast_to_slow,method='npy',write_back=True,verbose=VERBOSE_CACHING,allow_mutable_bindings=False):
+
+def hierarchical_cacher(
+        fast_to_slow,
+        method='npy',
+        write_back=True,
+        verbose=VERBOSE_CACHING,
+        allow_mutable_bindings=False):
     '''
     Designed for constructing a hierarchy of disk caches.
     '''
@@ -606,12 +626,27 @@ def hierarchical_cacher(fast_to_slow,method='npy',write_back=True,verbose=VERBOS
     return hierarchical
 
 
-#############################################################################
+
+
+
+######################################################################
 # Setup advanced memoization
 
-ramdisk_location   = '/media/neurotools_ramdisk'
-ssd_cache_location = '/ssd_1/mrule'
-hdd_cache_location = '/ldisk_1/mrule'
+import os
+myhost = os.uname()[1]
+if myhost in ('moonbase',):
+    ramdisk_location   = '/media/neurotools_ramdisk'
+    ssd_cache_location = '/ssd_1/mrule'
+    hdd_cache_location = '/ldisk_1/mrule'
+elif myhost in ('basecamp',):
+    ramdisk_location   = '/media/neurotools_ramdisk'
+    ssd_cache_location = '/home/mrule'
+elif myhost in ('RobotFortress',):
+    ramdisk_location   = '/Users/mrule/neurotools_ramdisk'
+    ssd_cache_location = '/Users/mrule'
+else:
+    print('New System. Cache Locations will need configuring.')
+
 
 disk_cache_hierarchy = (
     ramdisk_location,

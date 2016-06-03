@@ -61,45 +61,48 @@ import inspect
 import neurotools.jobs.decorator
 import neurotools.jobs.closure
 
+from itertools import imap as map
+
 __N_CPU__ = cpu_count()
 
 reference_globals = globals()
 
-def parmap(f,problems,leavefree=1,fakeit=False,verbose=False):
+def parmap(f,problems,leavefree=1,debug=False,verbose=False):
     global mypool
-    problems  = list(problems)
-    results   = {}
-    num_tasks = len(problems)
-    if fakeit:
-        for i,job in enumerate(problems):
-            results[i] = f(job)
-            if verbose and type(results[i]) is RuntimeError:
-                print('ERROR PROCESSING',problems[i])
-            print(i,num_tasks)
-    else:
-        if not 'mypool' in globals() or mypool is None:
-            if verbose: print('NO POOL FOUND. RESTARTING.')
-            mypool = Pool(cpu_count()-leavefree)
-        if num_tasks==0:
-            if verbose: print('NOTHING TO DO?')
-        else:
-            if verbose: print('STARTING PARALLEL')
-            for i,result in enumerate(mypool.imap(f,problems)):
-                sys.stderr.write('\rdone %0.1f%% '%((100.0*(i+1)/float(num_tasks))))
-                results[i] = result
-                if verbose and type(result) is RuntimeError:
-                    print('ERROR PROCESSING',problems[i])
-            if verbose: print('FINISHED PARALLEL')
-    sys.stderr.write('\r            \r')
-    return [results[i] if i in results else None for i,k in enumerate(problems)]
+    problems = list(problems)
+    njobs    = len(problems)
+    
+    if njobs==0:
+        if verbose: print('NOTHING TO DO?')
+        return []
+    
+    if not debug and (not 'mypool' in globals() or mypool is None):
+        if verbose: print('NO POOL FOUND. RESTARTING.')
+        mypool = Pool(cpu_count()-leavefree)
+    
+    enumerator = map(f,problems) if debug else mypool.imap(f,problems)
+    results = {}
+    sys.stdout.write('\n')
+    for i,result in enumerator:
+        sys.stdout.write('\rdone %0.1f%% '%((i+1)*100./njobs))
+        sys.stdout.flush()
+        if isinstance(result,tuple) and len(result)==1:
+            result=result[0]
+        results[i]=result
+        if verbose and type(result) is RuntimeError:
+            print('ERROR PROCESSING',problems[i])
 
-def parmap_dict(f,problems,leavefree=1,fakeit=False,verbose=False):
-    results = parmap(f, problems, fakeit=fakeit)
+    sys.stdout.write('\r            \r')
+    return [results[i] if i in results else None \
+        for i,k in enumerate(problems)]
+
+def parmap_dict(f,problems,leavefree=1,debug=False,verbose=False):
+    results = parmap(f, problems, debug=debug)
     return dict(zip(problems,results))
 
 def parmap_indirect_helper(args):
     global reference_globals
-    (lookup_mode,function_information,args) = args #py 2.5 -> 3 compatibility
+    (lookup_mode,function_information,args) = args #py 2.5/3 compat.
     '''
     Multiprocessing doesn't work on functions that weren't accessible from
     the global namespace at the time that the multiprocessing pool was
@@ -148,7 +151,7 @@ def parmap_indirect_helper(args):
         # In event of an error, return error info
         return RuntimeError(traceback.format_exc(), exc)
 
-def parmap_indirect(f,problems,leavefree=1,fakeit=False,verbose=False):
+def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
     '''
     Functions cannot be pickled. Multiprocessing routines must be defined
     in the global namespace before the pool is initialized, so that the
@@ -181,7 +184,7 @@ def parmap_indirect(f,problems,leavefree=1,fakeit=False,verbose=False):
         parmap_indirect_helper,
         [(lookup,information,args) for args in problems],
         leavefree=leavefree,
-        fakeit=fakeit,
+        debug=debug,
         verbose=verbose)
     # Detect failed jobs, assign them something nasty that's likely to
     # bet detected downstream.

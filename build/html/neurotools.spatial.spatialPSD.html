@@ -1,0 +1,146 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.spatial.spatialPSD module &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.spatial.spatialPSD.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.spatial.spatialPSD">
+<span id="neurotools-spatial-spatialpsd-module"></span><h1>neurotools.spatial.spatialPSD module<a class="headerlink" href="#module-neurotools.spatial.spatialPSD" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.spatial.spatialPSD.all_spatial_PSD_parallel">
+<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">all_spatial_PSD_parallel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>lowf</em>, <em>highf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#all_spatial_PSD_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.all_spatial_PSD_parallel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.spatialPSD.psd2d">
+<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">psd2d</code><span class="sig-paren">(</span><em>data</em>, <em>spacing=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#psd2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.psd2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D power spectral density
+accepts HxWx... data
+returns frequencies in 1/mm and power in uV^2</p>
+<p># test code
+data = randn(6,8)
+clf()
+cut = 1
+subplot(221)
+f,x=psd2d(dctCutAA(data,cut))
+scatter(f,x)
+xlim(0,cut*2)
+subplot(222)
+f,x=psd2d(dctCut(data,cut))
+scatter(f,x)
+xlim(0,cut*2)
+subplot(223)
+imshow(getMaskAA(shape(data),3,0.4,cut),interpolation=&#8217;nearest&#8217;)
+subplot(224)
+imshow(getMask(shape(data),0.4,cut),interpolation=&#8217;nearest&#8217;)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.spatialPSD.spatialPSD_length_scale_spectrum">
+<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">spatialPSD_length_scale_spectrum</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>lowf</em>, <em>highf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#spatialPSD_length_scale_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.spatialPSD_length_scale_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.spatialPSD.spatialPSD_parallel_wrapper">
+<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">spatialPSD_parallel_wrapper</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#spatialPSD_parallel_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.spatialPSD_parallel_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

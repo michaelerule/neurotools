@@ -1,0 +1,160 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.jobs.race module &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.jobs.race.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.jobs.race">
+<span id="neurotools-jobs-race-module"></span><h1>neurotools.jobs.race module<a class="headerlink" href="#module-neurotools.jobs.race" title="Permalink to this headline">¶</a></h1>
+<p>This is a hobby project that probably should not be seen through to
+completion.</p>
+<dl class="docutils">
+<dt>Note: nice features to add to the disk caching framework:</dt>
+<dd><dl class="first docutils">
+<dt>&#8211; a &#8220;touched&#8221; piece of information stating how recently a cache was</dt>
+<dd>used</dd>
+</dl>
+<p class="last">&#8211; stats on how expensive a chunk is to compute</p>
+</dd>
+<dt>Note: cool things to create as decorators</dt>
+<dd><dl class="first docutils">
+<dt>&#8211; Decorator to detect whether function closes over mutable scope</dt>
+<dd>( this includes mutable defaults )</dd>
+</dl>
+<p>&#8211; Creates EARLY BINDING behavior
+&#8211; Objective: CREATE PICKLEABLE FUNCTIONS FOR DISTRIBUTED COMPUTING</p>
+<blockquote class="last">
+<div>( worse-case scenario the source code can be pickled and sent!)</div></blockquote>
+</dd>
+</dl>
+<p>I&#8217;m having some trouble with using disk-caching / disk-memoizing in python.
+Namely, sometimes due to contention for disk IO, caching is slower than
+recomputing. Since the level of contention varies at runtime, its hard
+to predict in advance whether retrieving a cached copy is better / faster
+than recomputing something. Furthermore, because CPU contention can
+also affect runtime, it&#8217;s very hard to predict wether grabbing a disk
+cache is faster or slower than recomputing on the CPU.</p>
+<p>Clearly, the answer here is to run BOTH approaches in parallel and see
+which one returns faster, killing the slower once. This is perilous and
+must be done with extreme caution.</p>
+<p>No code yet, let&#8217;s just sketch out the requirements:</p>
+<p>Functions involved should not close over mutable scope or have mutable
+default arguments.</p>
+<p>Open design question: If fork() is used to implement this, then functions
+need only exist in the current namespace at the time of invokation. If a
+worker-pool is used to implement this, then the functions must exist
+before said worker-pool is created, or somehow be serializable to send to
+the worker processes.</p>
+<p>Functions MAY perform disk IO. Primarily, this is to support calling of
+routines to retrieve disk caches. It is OK to kill disk reads, it is NOT OK
+to kill disk writes, as this will lead to needless proliferation of corrupt
+caches. In a worst case scenario, a corrupted cache file may not even be
+detectable!</p>
+<dl class="docutils">
+<dt>SO we need a SAFE way of killing processes, that can ensure that either</dt>
+<dd>[1] disk writing COMPLETES</dd>
+</dl>
+<p>or  [2] disk writing is ABORTED with NO FILE generated</p>
+<p>[2] may be NECESSARY if there is high disk IO contention and we CANNOT wait
+for cache writing of a partial computation to complete.</p>
+<p>Getting all this right is HARD. Do it very slowly, and do thorough research
+before you proceed.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

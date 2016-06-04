@@ -1,0 +1,220 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.spatial.distance module &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.spatial.distance.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.spatial.distance">
+<span id="neurotools-spatial-distance-module"></span><h1>neurotools.spatial.distance module<a class="headerlink" href="#module-neurotools.spatial.distance" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.spatial.distance.distance_angular_deviation">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">distance_angular_deviation</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#distance_angular_deviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.distance_angular_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes angular distance function over time, frequency, and distance.
+cos(theta-phi)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.distance.get_average_synchrony_length_constant_parallel">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">get_average_synchrony_length_constant_parallel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#get_average_synchrony_length_constant_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.get_average_synchrony_length_constant_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test code
+session=&#8217;SPK120925&#8217;
+session=&#8217;RUS120518&#8217;
+area=&#8217;PMv&#8217;
+freqs,y = get_average_synchrony_length_constant_parallel(session,area,epoch)
+imshow(y,extent=(0,7000,freqs[-1],freqs[0]),</p>
+<blockquote>
+<div>interpolation=&#8217;nearest&#8217;,aspect=50,cmap=luminance)#,vmin=0.5,vmax=0.7)</div></blockquote>
+<p>Dev code
+from os.path import *
+execfile(expanduser(&#8216;~/Dropbox/bin/cgid/cgidsetup.py&#8217;))
+session=&#8217;SPK120925&#8217;
+area=&#8217;M1&#8217;
+am = get_array_map(session,area)
+print(am)
+for ch1 in get_good_channels(session,area):</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>for ch2 in get_good_channels(session,area):</dt>
+<dd>print(ch1,ch2,get_pair_distance(session,area,ch1,ch2))</dd>
+</dl>
+</div></blockquote>
+<p>trial = get_good_trials(session,area)[0]
+epoch = 6,-1000,6000
+nowarn()
+def get_averaged_angular_distance(trial):</p>
+<blockquote>
+<div><p>print(&#8220;processing trial&#8221;,trial)
+results = distance_angular_deviation(session,area,trial,epoch,threads=1)
+sums   = {}
+counts = {}
+for k,v in results.iteritems():</p>
+<blockquote>
+<div><p>l = round(k)
+print(k,l)
+for ch,x in v:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>if l in sums:</dt>
+<dd>sums[l]   += x
+counts[l] += 1</dd>
+<dt>else:</dt>
+<dd>sums[l] = arr(x)
+counts[l] = 1</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<dl class="docutils">
+<dt>for k in sums.keys():</dt>
+<dd>x = sums[k]
+x = x/float(counts[k])
+x = mean_block(x,50)
+sums[k] = x</dd>
+</dl>
+<p>blocked = zeros((len(sums.keys()),)+shape(sums[k]),dtype=float64)
+for k,v in sums.iteritems():</p>
+<blockquote>
+<div>blocked[k-1,:] = v</div></blockquote>
+<p>del results
+del sums
+return trial, blocked</p>
+</div></blockquote>
+<p>reset_pool()
+allblocked = squeeze(arr(parmap(get_averaged_angular_distance,get_good_trials(session,area))))
+freqs = arange(1,56)
+x = mean(allblocked,0)
+y = mean(diff(x[:7,:,:],0),0)
+use = (freqs&gt;10)*(freqs&lt;45)==1
+imshow(y[use,:],extent=(0,7000,freqs[use][-1],freqs[use][0]),</p>
+<blockquote>
+<div>interpolation=&#8217;nearest&#8217;,aspect=50,cmap=luminance,vmin=0.5,vmax=0.7)</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.distance.get_averaged_angular_distance">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">get_averaged_angular_distance</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#get_averaged_angular_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.get_averaged_angular_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.distance.get_electrode_locations">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">get_electrode_locations</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#get_electrode_locations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.get_electrode_locations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.distance.get_length_constant_trial">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">get_length_constant_trial</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#get_length_constant_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.get_length_constant_trial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.distance.get_pair_distance">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">get_pair_distance</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch1</em>, <em>ch2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#get_pair_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.get_pair_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.distance.synchrony_length_constant_areas_summary">
+<code class="descclassname">neurotools.spatial.distance.</code><code class="descname">synchrony_length_constant_areas_summary</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/distance.html#synchrony_length_constant_areas_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.distance.synchrony_length_constant_areas_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is descended from a one-off plotting script, that&#8217;s why i&#8217;ts weird
+and messy.</p>
+<p>test code</p>
+<p>session = &#8216;SPK120924&#8217;
+synchrony_length_constant_areas_summary(session,good_trials(session)[0],None)</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

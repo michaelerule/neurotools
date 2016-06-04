@@ -1,0 +1,291 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>neurotools.spatial.phase module &mdash; neurotools 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="neurotools 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.spatial.phase.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.spatial.phase">
+<span id="neurotools-spatial-phase-module"></span><h1>neurotools.spatial.phase module<a class="headerlink" href="#module-neurotools.spatial.phase" title="Permalink to this headline">¶</a></h1>
+<p>Library of array statistics routines.</p>
+<dl class="function">
+<dt id="neurotools.spatial.phase.analytic_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">analytic_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>window=&lt;Mock object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#analytic_signal_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.analytic_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data is K x N
+K channels
+N timepoints
+no other shapes for now
+Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.
+Test code
+s,a,tr = (&#8216;SPK120918&#8217;, &#8216;M1&#8217;, 16)
+lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
+data = lfp[:,500:600]</p>
+<p>sliding = arr([population_signal_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.mirrorpad">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">mirrorpad</code><span class="sig-paren">(</span><em>data</em>, <em>amount</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#mirrorpad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.mirrorpad" title="Permalink to this definition">¶</a></dt>
+<dd><p>reflected padding of data</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_average_amplitude">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_average_amplitude</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_average_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_average_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_kuromoto">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_kuromoto</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_kuromoto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_kuromoto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_median_frequency">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_median_frequency</code><span class="sig-paren">(</span><em>data</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_median_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_median_frequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert from phase in radians/frame to
+Frequency in cycles/s</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_median_phase_velocity">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_median_phase_velocity</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_median_phase_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_median_phase_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>median phase velocity.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_normalized_sliding_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_normalized_sliding_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;Mock object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_normalized_sliding_signal_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_normalized_sliding_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data is K x N
+K channels
+N timepoints
+no other shapes for now
+Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.
+Test code
+s,a,tr = (&#8216;SPK120918&#8217;, &#8216;M1&#8217;, 16)
+lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
+Adding modification:</p>
+<blockquote>
+<div>compute the standard deviation of dfdt / dfdt_median</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_phase_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_phase_coherence</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_phase_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_phase_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data is K x N
+K channels
+N timepoints
+no other shapes for now
+Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.
+Test code
+s,a,tr = (&#8216;SPK120918&#8217;, &#8216;M1&#8217;, 16)
+lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
+data = lfp[:,500:600]</p>
+<p>sliding = arr([population_phase_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_phase_relative_sliding_kuromoto">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_phase_relative_sliding_kuromoto</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;Mock object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_phase_relative_sliding_kuromoto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_phase_relative_sliding_kuromoto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the phase of each channel in the middle of each block as a
+reference point. Can separate coherent wave activity from synchrony.
+kuromoto order = &lt;z/<a href="#id1"><span class="problematic" id="id2">|z|</span></a>&gt;
+onpopdata(population_phase_relative_sliding_kuromoto)</p>
+<p>Basically, assumes constant phase velocity, and a constant per-channel
+phase shift, and then computes the order. This is a notion of
+&#8220;relative phase stability&#8221;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_polar_std">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_polar_std</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_polar_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_polar_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_amplitude_dispersion">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_amplitude_dispersion</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_amplitude_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_amplitude_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_amplitude_precision">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_amplitude_precision</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_amplitude_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_amplitude_precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_amplitude_std">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_amplitude_std</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_amplitude_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_amplitude_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_concentration">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_concentration</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_concentration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_concentration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_description">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_description</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_dispersion">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_dispersion</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_phase_dispersion">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_phase_dispersion</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_phase_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_phase_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_phase_precision">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_phase_precision</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_phase_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_phase_precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_phase_std">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_phase_std</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_phase_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_phase_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_precision">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_precision</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_sliding_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_sliding_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;Mock object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_sliding_signal_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_sliding_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data is K x N
+K channels
+N timepoints
+no other shapes for now
+Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.
+Test code
+s,a,tr = (&#8216;SPK120918&#8217;, &#8216;M1&#8217;, 16)
+lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_synchrony">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_synchrony</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_synchrony"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_synchrony" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_synchrony_linear">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_synchrony_linear</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_synchrony_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_synchrony_linear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.sliding_population_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">sliding_population_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;Mock object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.phase.sliding_population_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data is K x N
+K channels
+N timepoints
+no other shapes for now
+Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.
+Test code
+s,a,tr = (&#8216;SPK120918&#8217;, &#8216;M1&#8217;, 16)
+lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">neurotools 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -15,11 +15,6 @@ except:
     print('Multitaper methods will not work')
     def dpss(*args):
         raise NotImplementedError("Please install the spectrum module")
-
-from neurotools.getfftw import *
-from neurotools.signal.signal import zscore
-from neurotools.jobs.decorator import memoize
-
 try:
     import nitime
     from nitime.algorithms import coherence
@@ -28,6 +23,11 @@ except:
     print('> sudo easy_install nitime')
     print('(coherence function is undefined)')
     print('(none of the multitaper coherence functions will work)')
+
+
+from neurotools.getfftw import *
+from neurotools.signal.signal import zscore
+from neurotools.jobs.decorator import memoize
 
 @memoize
 def dpss_cached(length,half_bandwidth_parameter):

@@ -641,7 +641,7 @@ if myhost in ('moonbase',):
 elif myhost in ('basecamp',):
     ramdisk_location   = '/media/neurotools_ramdisk'
     ssd_cache_location = '/home/mrule'
-elif myhost in ('RobotFortress',):
+elif myhost in ('RobotFortress','petra'):
     ramdisk_location   = '/Users/mrule/neurotools_ramdisk'
     ssd_cache_location = '/Users/mrule'
 else:

@@ -46,8 +46,6 @@ This will not solve the problem of needing to define all functions used
 with "parmap" before the working pool is initailized and at global scope,
 but it will save us from having to manually track and return the job
 number, which will lead to more readable and more reusable code.
-
-
 '''
 
 from multiprocessing import Process, Pipe, cpu_count, Pool
@@ -61,7 +59,8 @@ import inspect
 import neurotools.jobs.decorator
 import neurotools.jobs.closure
 
-from itertools import imap as map
+if sys.version_info<(3,0):
+    from itertools import imap as map
 
 __N_CPU__ = cpu_count()
 
@@ -71,15 +70,15 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False):
     global mypool
     problems = list(problems)
     njobs    = len(problems)
-    
+
     if njobs==0:
         if verbose: print('NOTHING TO DO?')
         return []
-    
+
     if not debug and (not 'mypool' in globals() or mypool is None):
         if verbose: print('NO POOL FOUND. RESTARTING.')
         mypool = Pool(cpu_count()-leavefree)
-    
+
     enumerator = map(f,problems) if debug else mypool.imap(f,problems)
     results = {}
     sys.stdout.write('\n')

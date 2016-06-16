@@ -59,7 +59,6 @@ import matplotlib.pyplot as plt
 print matplotlib.pyplot.get_backend()
 '''
 
-
 print( 'Loading nlab namespace')
 from neurotools.spike               import *
 from neurotools.tools               import *

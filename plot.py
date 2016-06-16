@@ -1,11 +1,18 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+import sys
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 
 from   neurotools.color   import *
 from   neurotools.getfftw import *
@@ -36,11 +43,14 @@ try:
     import statsmodels.api as smapi
     import statsmodels.graphics as smgraphics
 except:
-    print('statsmodels probably not installed')
+    print('statsmodels is missing!')
 
 zscore = lambda x: (x-mean(x,0))/std(x,0)
 
 def simpleaxis(ax=None):
+    '''
+    Only draw the bottom and left axis lines
+    '''
     if ax is None: ax=gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -48,6 +58,9 @@ def simpleaxis(ax=None):
     ax.get_yaxis().tick_left()
 
 def simpleraxis(ax=None):
+    '''
+    Only draw the left y axis, nothing else
+    '''
     if ax is None: ax=gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -55,7 +68,10 @@ def simpleraxis(ax=None):
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
 
-def bareaxis(ax=None):
+def noaxis(ax=None):
+    '''
+    Hide all axes
+    '''
     if ax is None: ax=gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -64,9 +80,10 @@ def bareaxis(ax=None):
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
 
-noaxis = bareaxis
-
 def nicebp(bp,c):
+    '''
+    Improve the appearance of a box and whiskers plot
+    '''
     for kk in 'boxes whiskers fliers caps'.split():
         setp(bp[kk], color=c)
     setp(bp['whiskers'], linestyle='solid',linewidth=.5)
@@ -74,34 +91,62 @@ def nicebp(bp,c):
     #setp(bp['caps'], color=(0,)*4)
 
 def eformat(f, prec, exp_digits):
+    '''
+    Format a float in scientific notation with fewer characters.
+    '''
     s = "%.*e"%(prec, f)
     mantissa, exp = s.split('e')
     return "%se%+0*d"%(mantissa, exp_digits+1, int(exp))
 
 def nicey():
+    '''
+    Mark only the min/max value of y axis
+    '''
     if ylim()[0]<0:
         yticks([ylim()[0],0,ylim()[1]])
     else:
         yticks([ylim()[0],ylim()[1]])
 
 def nicex():
+    '''
+    Mark only the min/max value of x axis
+    '''
     if xlim()[0]<0:
         xticks([xlim()[0],0,xlim()[1]])
     else:
         xticks([xlim()[0],xlim()[1]])
 
-def nicelimits():
+def nicexy():
+    '''
+    Mark only the min/max value of y/y axis
+    '''
     nicey()
     nicex()
 
-nicexy = nicelimits
-
 def positivex():
-    xlim(0,xlim()[1])
+    '''
+    Sets the lower x limit to zero, and the upper limit to the largest
+    positive value un the current xlimit. If the curent xlim() is
+    negative, a value error is raised.
+    '''
+    top = np.max(xlim())
+    if top<=0:
+        raise ValueError('Current axis view lies within negative '+
+            'numbers, cannot crop to a positive range')
+    xlim(0,top)
     nicex()
 
 def positivey():
-    ylim(0,ylim()[1])
+    '''
+    Sets the lower y limit to zero, and the upper limit to the largest
+    positive value un the current ylimit. If the curent ylim() is
+    negative, a value error is raised.
+    '''
+    top = np.max(ylim())
+    if top<=0:
+        raise ValueError('Current axis view lies within negative '+
+            'numbers, cannot crop to a positive range')
+    ylim(0,top)
     nicey()
 
 def positivexy():
@@ -221,7 +266,6 @@ def pixels_to_yunits(n,ax=None,fig=None):
     w,h = get_ax_size()
     dy = diff(ylim())[0]
     return n*dy/float(h)
-
 
 def pixels_to_xfigureunits(n,ax=None,fig=None):
     '''
@@ -349,6 +393,10 @@ def fudgexy(by=10,ax=None):
     fudgey(by,ax)
 
 def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
+    '''
+    Edges of the form (start,stop)
+    Shades regions of graph defined by "edges"
+    '''
     a,b = ylim()
     c,d = xlim()
     for x1,x2 in zip(*edges):
@@ -430,29 +478,11 @@ def xbartext(y,t,c1,c2,**kwargs):
         text(b-dx*4,y,t,**text_kwargs)
     xlim(a,b)
 
-'''
-def overlayEvents(c1='w',c2='k',FS=1000.,nevents=3,fontsize=12,npad=3):
-    a,b = xlim()
-    dx,dy = get_ax_pixel()
-    print 'dx,dy=',dx,dy
-    for time,label in zip([1000,2000,4000],['Object','Grip','Go Cue'])[:nevents]:
-        time = float(time)/FS
-        if time<=a: continue
-        if time>=b: continue
-        plot([time,time],ylim(),color=c2,lw=3)
-        plot([time,time],ylim(),color=c1,lw=1)
-        for ix in arange(-npad,npad+1)*dx:
-            for iy in arange(-npad,npad+1)*dy:
-                text(ix+time-10./FS,iy+ylim()[1]-dy*4,label,
-                    rotation=90,color=c2,
-                    horizontalalignment='right',verticalalignment='top',fontsize=fontsize)
-        text(time-10./FS,ylim()[1]-dy*4,label,
-            rotation=90,color=c1,fontsize=fontsize,
-            horizontalalignment='right',verticalalignment='top')
-    xlim(a,b)
-'''
-
 def nice_legend(*args,**kwargs):
+    '''
+    Better defaults for the plot legend. TODO: make this into a
+    matplotlib style.
+    '''
     defaults = {
         'framealpha':0.9,
         'fancybox':True,
@@ -473,7 +503,8 @@ def rangeover(data):
 def cleartop(x):
     subplots_adjust(top=1-x)
 
-def plotCWT(ff,cwt,aspect='auto',vmin=None,vmax=None,cm='afmhot',interpolation='nearest',dodraw=1):
+def plotCWT(ff,cwt,aspect='auto',
+    vmin=None,vmax=None,cm='afmhot',interpolation='nearest',dodraw=1):
     '''
     Parameters
     ----------
@@ -498,6 +529,22 @@ def plotCWT(ff,cwt,aspect='auto',vmin=None,vmax=None,cm='afmhot',interpolation='
         draw()
         show()
 
+def complex_axis(scale):
+    '''
+    Draws a nice complex-plane axis with LaTeX Re, Im labels and everything
+    '''
+    xlim(-scale,scale)
+    ylim(-scale,scale)
+    nicexy()
+    ybartext(0,'$\Im(z)$','k','w',lw=1,color='k',outline=False)
+    xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    noaxis()
+    xlabel(u'μV',fontname='DejaVu Sans',fontsize=12)
+    ylabel(u'μV',fontname='DejaVu Sans',fontsize=12)
+    xticks(xticks()[0],fontsize=12)
+    yticks(yticks()[0],fontsize=12)
+    force_aspect()
+
 def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     cwt = squeeze(cwt)
     nf,N = shape(cwt)
@@ -505,7 +552,8 @@ def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     pwr = abs(cwt)
     rgb = complexHLArr2RGB(cwt*(0.9/nmx(pwr)))
     cla()
-    imshow(rgb,cmap=None,aspect=aspect,extent=(0,N,ff[-1],ff[0]),interpolation=ip)
+    imshow(rgb,cmap=None,aspect=aspect,
+        extent=(0,N,ff[-1],ff[0]),interpolation=ip)
     xlim(0,N)
     ylim(ff[0],ff[-1])
     try:
@@ -517,7 +565,8 @@ def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
 
 wtpshow = plotWTPhase
 
-def plotWTPhaseFig(ff,cwt,aspect=50,vmin=None,vmax=None,cm='bone',interpolation='nearest'):
+def plotWTPhaseFig(ff,cwt,aspect=50,
+    vmin=None,vmax=None,cm='bone',interpolation='nearest'):
     cwt = squeeze(cwt)
     nf,N = shape(cwt)
     pwr    = abs(cwt)
@@ -574,7 +623,8 @@ class HandlerSquare(HandlerPatch):
         p.set_transform(trans)
         return [p]
 
-def plot_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=False,previous=None,origin='lower'):
+def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
+    extent=None,onlyphase=False,previous=None,origin='lower'):
     '''
     Renders complex array as image, in polar form with magnitude mapped to
     lightness and hue mapped to phase.
@@ -613,7 +663,8 @@ def plot_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=Fals
         draw()
         return previous
 
-def animate_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=False,previous=None,origin='lower'):
+def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
+    extent=None,onlyphase=False,previous=None,origin='lower'):
     '''
     Like plot_complex except has an additional dimention for time
     '''
@@ -621,7 +672,8 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',extent=None,onlyphase=F
     for frame in z:
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
-def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,border=True,spacing=5,fontsize=12):
+def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,
+    border=True,spacing=5,fontsize=12):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'
@@ -706,6 +758,10 @@ def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
     text(mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
 
 def savefigure(name):
+    '''
+    Saves figure as both SVG and PDF, prepending the current date
+    in YYYYMMDD format.
+    '''
     dirname  = os.path.dirname(name)
     if dirname=='': dirname='./'
     basename = os.path.basename(name)
@@ -721,6 +777,9 @@ def clean_y_range(ax=None,precision=1):
     ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
 
 def round_to_precision(x,precision=1):
+    '''
+    Round to a specified number of significant figures
+    '''
     if x==0.0: return 0
     magnitude = abs(x)
     digits = ceil(log10(magnitude))
@@ -728,6 +787,9 @@ def round_to_precision(x,precision=1):
     return round(x*precision)/precision
 
 def ceil_to_precision(x,precision=1):
+    '''
+    Round up to a specified number of significant figures
+    '''
     if x==0.0: return 0
     magnitude = abs(x)
     digits = ceil(log10(magnitude))
@@ -735,6 +797,9 @@ def ceil_to_precision(x,precision=1):
     return ceil(x*precision)/precision
 
 def floor_to_precision(x,precision=1):
+    '''
+    Round down to a specified number of significant figures
+    '''
     if x==0.0: return 0
     magnitude = abs(x)
     digits = ceil(log10(magnitude))

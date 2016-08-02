@@ -23,7 +23,7 @@ from neurotools.signal.morlet     import *
 from neurotools.getfftw           import *
 from neurotools.signal.signal     import zscore
 from neurotools.signal.multitaper import dpss_cached
-from neurotools.stats.stats       import squared_first_circular_moment
+from neurotools.stats.circular    import squared_first_circular_moment
 try:
     import nitime
     from nitime.algorithms import coherence

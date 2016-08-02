@@ -21,32 +21,6 @@ from neurotools.signal.conv import *
 
 import numpy as np
 
-"""
-def get_grid(data,spacing=0.4):
-    '''
-    I do not remember what this function did, and it doesn't seem to be
-    in use by any other functions, so I'm commenting it out.
-    >>> M,N = 10,10
-    >>> data = randn(M,N)+1j*randn(M,N)
-    >>> gg = getGrid(data)
-    >>> dd = abs(gg)
-    >>> a  = 4.5/(2*pi)
-    >>> kern = sinc(a*dd)*a
-    >>> imshow(kern)
-    >>> result = ifft2(kern)
-    >>> imshow(real(result),interpolation='nearest')
-    >>> bone()
-    '''
-    h,w = np.shape(data)[:2]
-    x1 = list(arange(w+1)*spacing)
-    x2 = list(arange(h+1)*spacing)
-    x1 = x1+list(reversed(x1[1:-1]))
-    x2 = x2+list(reversed(x2[1:-1]))
-    x1 = array((x1,)*(h*2))
-    x2 = array((x2,)*(w*2)).T
-    return x1+1j*x2
-"""
-
 def get_mask_antialiased(h_w,aa,spacing,cutoff):
     '''
     Computes a frequency space mask for (h,w) shaped domain with cutoff
@@ -112,7 +86,7 @@ def dct_cut(data,cutoff,spacing=0.4):
     '''
     print('WARNING DEPRICATED USE dct_cut_antialias')
     h,w    = np.shape(data)[:2]
-    mask   = getMask((h,w),spacing,cutoff)
+    mask   = get_mask((h,w),spacing,cutoff)
     mirror = reflect2D(data)
     ff2    = fft2(mirror,axes=(0,1))
     cut    = (ff2.T*mask.T).T # weird shape broadcasting constraints

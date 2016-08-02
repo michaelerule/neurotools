@@ -1,14 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
-
-# Start migrating to print-as-a-function
-# from __future__ import print_function
 
 import os
 import traceback

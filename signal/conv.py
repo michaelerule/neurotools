@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -101,7 +99,7 @@ def padKern(k,N):
     NOT IMPLEMENTED
     '''
     l = len(k)
-    #middle = 
+    #middle =
     pass
 
 def sepConv2dFTW(x,k):

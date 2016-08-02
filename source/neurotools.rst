@@ -23,13 +23,14 @@ Submodules
    neurotools.dependencies
    neurotools.functions
    neurotools.getfftw
+   neurotools.image
    neurotools.lif
    neurotools.namespace
    neurotools.nlab
    neurotools.ntime
    neurotools.opto
    neurotools.plot
-   neurotools.spike
+   neurotools.spikes
    neurotools.tools
    neurotools.waveform
 

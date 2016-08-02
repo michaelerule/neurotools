@@ -7,19 +7,22 @@ Submodules
 .. toctree::
 
    neurotools.stats.GLMFit
-   neurotools.stats.convolutionalmodels
+   neurotools.stats.circular
+   neurotools.stats.convolutional
    neurotools.stats.density
+   neurotools.stats.distributions
    neurotools.stats.entropy
    neurotools.stats.glm
+   neurotools.stats.gmm
    neurotools.stats.history_basis
+   neurotools.stats.hmm
    neurotools.stats.kent_reimann
-   neurotools.stats.magickernel
    neurotools.stats.matzner_bar-gad_PLoS_2015
+   neurotools.stats.mixtures
    neurotools.stats.modefind
    neurotools.stats.pvalues
    neurotools.stats.regressions
    neurotools.stats.stats
-   neurotools.stats.vonmises
 
 Module contents
 ---------------

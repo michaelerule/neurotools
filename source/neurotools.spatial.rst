@@ -7,8 +7,10 @@ Submodules
 .. toctree::
 
    neurotools.spatial.array
+   neurotools.spatial.dct
    neurotools.spatial.distance
    neurotools.spatial.fftzeros
+   neurotools.spatial.magickernel
    neurotools.spatial.phase
    neurotools.spatial.spatialPSD
    neurotools.spatial.wave_parametric_models

@@ -8,7 +8,6 @@ Submodules
 
    neurotools.signal.coherence
    neurotools.signal.conv
-   neurotools.signal.dct
    neurotools.signal.linenoise
    neurotools.signal.morlet
    neurotools.signal.morlet_coherence

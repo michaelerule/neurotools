@@ -12,9 +12,9 @@ Routines for computing commonly used summary statistics not otherwise
 available in pylab
 """
 
+from matplotlib.mlab import find
 import neurotools.stats.modefind as modefind
 import numpy as np
-from numpy import *
 
 def weighted_avg_and_std(values, weights):
     """
@@ -23,7 +23,7 @@ def weighted_avg_and_std(values, weights):
     """
     average  = np.average(values, weights=weights)
     variance = np.average((values-average)**2, weights=weights)  # Fast and numerically precise
-    return (average, math.sqrt(variance))
+    return (average, np.sqrt(variance))
 
 def crossvalidated_least_squares(a,b,K,regress=np.linalg.lstsq):
     '''
@@ -53,7 +53,7 @@ def crossvalidated_least_squares(a,b,K,regress=np.linalg.lstsq):
         error = np.mean((reconstructed-testB)**2)
         predict.extend(reconstructed)
     cc  = pearsonr(b,predict)[0]
-    rms = sqrt(mean((array(b)-array(predict))**2))
+    rms = np.sqrt(np.mean((np.array(b)-np.array(predict))**2))
     return x,predict,cc,rms
 
 def print_stats(g,name='',prefix=''):
@@ -71,16 +71,65 @@ def print_stats(g,name='',prefix=''):
     print(prefix,'median  %s\t%0.4f'%(name,md))
     return mode,mn,md
 
-def squared_first_circular_moment(samples, axis=-1, unbiased=True, dof=None):
+def outliers(x,percent=10,side='both'):
     '''
-    Computes the squared first circular moment R² of complex data.
+    Reject outliers from data based on percentiles.
+
+    Parameters
+    ----------
+    x : ndarary
+        1D numeric array of data values
+    percent : number
+        percent between 0 and 100 to remove
+    side : str
+        'left' 'right' or 'both'. Default is 'both'. Remove extreme
+        values from the left / right / both sides of the data
+        distribution. If both, the percent is halved and removed
+        from both the left and the right
+    Returns
+    -------
+    ndarray
+        Boolean array of same shape as x indicating outliers
     '''
-    squared_average = abs(np.mean(samples,axis=axis))**2
-    if unbiased:
-        if dof is None:
-            if not type(axis) == int:
-                dof = np.prod(np.array(shape(samples))[list(axis)])
-            else:
-                dof = shape(samples)[axis]
-        squared_average = (dof*squared_average-1)/(dof-1)
-    return squared_average
+    N = len(x)
+    remove = np.zeros(len(x),'bool')
+    if   side=='left':
+         remove |= x<np.percentile(x,percent)
+    elif side=='right':
+         remove |= x>np.percentile(x,100-percent)
+    elif side=='both':
+         remove |= x<np.percentile(x,percent*0.5)
+         remove |= x>np.percentile(x,100-percent*0.5)
+    else:
+        raise ValueError('side must be left, right, or both')
+    return remove
+
+def reject_outliers(x,percent=10,side='both'):
+    '''
+    Reject outliers from data based on percentiles.
+
+    Parameters
+    ----------
+    x : ndarary
+        1D numeric array of data values
+    percent : number
+        percent between 0 and 100 to remove
+    side : str
+        'left' 'right' or 'both'. Default is 'both'. Remove extreme
+        values from the left / right / both sides of the data
+        distribution. If both, the percent is halved and removed
+        from both the left and the right
+    Returns
+    -------
+    ndarray
+        Values with outliers removed
+    kept
+        Indecies of values kept
+    removed
+        Indecies of values removed
+    '''
+    N = len(x)
+    remove = outliers(x,percent,side)
+    to_remove = find(remove==True)
+    to_keep   = find(remove==False)
+    return x[to_keep], to_keep, to_remove

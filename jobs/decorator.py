@@ -13,9 +13,7 @@ Robust decorators are provided by the decorator package
 '''
 
 from neurotools.ntime import current_milli_time
-
 import os, sys
-
 from collections import defaultdict
 
 import inspect, ast, types
@@ -29,15 +27,11 @@ try:
     from decorator import decorator as robust_decorator
 except:
     print('Error, cannot find decorator module')
-    print('Try:')
-    print('\t$ pip install decorator')
 try:
     import typedecorator
     from typedecorator import params, returns, setup_typecheck
 except:
     print('Error, cannot find typedecorator module')
-    print('Try:')
-    print('\t$ pip install typedecorator')
 
 def listit(t):
     return list(map(listit, t)) if isinstance(t, (list, tuple)) else t

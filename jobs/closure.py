@@ -208,7 +208,7 @@ def verify_function_closure(f):
             if not is_probably_safe(v):
                 raise ValueError('Function %s is not safe for memoization/caching, it uses a mutable default %s!'%(f.__name__,v))
 
-    print('Function %s seems ok'%f.__name__)
+    #print('Function %s seems ok'%f.__name__)
     return True
 
 

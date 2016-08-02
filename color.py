@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -11,7 +10,6 @@ from __future__ import print_function
 import sys
 if sys.version_info<(3,):
     from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATEion
 
 '''
 Miscellaneous color-related functions. Several color maps for use with
@@ -26,17 +24,17 @@ This class also defines three hue wheel color maps of varying brightness
 >>> darkhue  = mcolors.ListedColormap(darkhues (NCMAP),'darkhue')
 '''
 
+import math
 import pylab
-from neurotools.tools  import *
-from neurotools.signal import *
-import matplotlib
+from neurotools import tools,signal
+import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from os.path    import expanduser
 from matplotlib import cm
-from matplotlib import *
-from pylab import *
+from numpy import pi,e
+from neurotools.signal.signal import gaussian_smooth
 
 # This is the color scheme from the painting "gather" by bridget riley
 GATHER = [
@@ -56,9 +54,7 @@ VERIDIAN   = [.06695279,  .74361409,  .55425139]
 CHARTREUSE = [.71152929,  .62526339,  .10289384]
 CRIMSON    = [.84309675,  .37806273,  .32147779]
 
-
-
-#############################################################################
+######################################################################
 # Hue / Saturation / Luminance color space code
 
 def hsv2rgb(h,s,v):
@@ -82,7 +78,7 @@ def hsv2rgb(h,s,v):
     return ((v,t,p),(q,v,p),(p,v,t),(p,q,v),(t,p,v),(v,p,q))[hi]
 
 def lightness(r,g,b,method='lightness'):
-    return dot(luminance_matrix(method=method),(r,g,b))
+    return luminance_matrix(method=method).dot((r,g,b))
 
 def luminance_matrix(method='perceived'):
     '''
@@ -108,7 +104,8 @@ def luminance_matrix(method='perceived'):
     LRGB = LRGB / np.sum(LRGB)
     return LRGB
 
-def match_luminance(target,color,THRESHOLD=0.01,squared=False,method='perceived'):
+def match_luminance(target,color,
+    THRESHOLD=0.01,squared=False,method='perceived'):
     '''
     Adjust color to match luminosity of target
 
@@ -117,8 +114,8 @@ def match_luminance(target,color,THRESHOLD=0.01,squared=False,method='perceived'
     Method 'lightness' .3*R + .59*G + .11*B
     '''
     LRGB   = luminance_matrix(method)
-    color  = array(color)
-    target = array(target)
+    color  = np.array(color)
+    target = np.array(target)
     if squared:
         luminance = np.dot(LRGB,target**2)**0.5
         source    = np.dot(LRGB,color**2)**0.5
@@ -142,8 +139,8 @@ def rotate(colors,th):
     '''
     Rotate a list of rgb colors by angle theta
     '''
-    Q1 = sin(th)/sqrt(3)
-    Q2 = (1-cos(th))/3
+    Q1 = np.sin(th)/np.sqrt(3)
+    Q2 = (1-np.cos(th))/3
     results = []
     for (r,g,b) in colors:
         rb = r-b;
@@ -173,65 +170,50 @@ def hue_angle(c1,c2):
     H2 = RGBtoHCL(*c2)[0]
     return H2-H1
 
-def hcl2rgb(h,c,l,target = 1.0):
+def hcl2rgb(h,c,l,target = 1.0, method='standard'):
     '''
     h: hue
     c: chroma
     l: luminosity
     '''
+    if method=='standard':
+        x1 = .2126
+        x2 = .7152
+        x3 = .0722
+    elif method=='perceived':
+        x1 = .299
+        x2 = .587
+        x3 = .114
+    elif method=='lightness':
+        x1 = .30
+        x2 = .59
+        x3 = .11
     LRGB = luminance_matrix()
     h = h*pi/180.0
-    alpha = cos(h)
-    beta = sin(h)*2/sqrt(3)
+    alpha = np.cos(h)
+    beta = np.sin(h)*2/np.sqrt(3)
     B = l - x1*(alpha+beta/2)-x2*beta
     R = alpha + beta/2+B
     G = beta+B
     RGB = np.array([R,G,B])
-    '''
-    RGB = RGB/np.max(RGB)
-    # old code forced luminance conversion. No longer doin this
-    luminance = np.dot(LRGB,RGB)
-    # luminance will be off target. why?
-    if luminance<target:
-        # the color is not as bright as it needs to be.
-        # blend in white
-        lw = np.dot(LRGB,ones(3))
-        # solve convex combination:
-        # alpha*luminance+(1-alpha)*lw = target
-        # a*l+lw-a*lw = t
-        # a*(l-lw)+lw = t
-        # a*(l-lw) = t-lw
-        # a = (t-lw)/(l-lw)
-        a = (target-lw)/(luminance-lw)
-        RGB = a*RGB + (1-a)*ones(3)
-    elif luminance>target:
-        # the color is too bright, blend with black
-        BLACK = zeros(3)
-        lb = np.dot(LRGB,BLACK)
-        # solve the convex combination
-        # a*l+(1-a)*lb = t
-        # a = (t-lb)/(l-lb)
-        a = (target-lb)/(luminance-lb)
-        RGB = a*RGB + (1-a)*BLACK
-    '''
-    return clip(RGB,0,1)
+    return np.clip(RGB,0,1)
 
 def circularly_smooth_colormap(cm,s):
     '''
     Smooth a colormap with cirular boundary conditions
 
-    s: sigma, standard deviation of gaussian smoothing kernel in samples
+    s: sigma, standard dev of gaussian smoothing kernel in samples
     cm: color map, array-like of RGB tuples
     '''
     # Do circular boundary conditions the lazy way
-    cm = array(cm)
-    N = shape(cm)[0]
-    cm = concatenate([cm,cm,cm])
+    cm = np.array(cm)
+    N = cm.shape[0]
+    cm = np.concatenate([cm,cm,cm])
     R,G,B = cm.T
     R = gaussian_smooth(R,s)
     G = gaussian_smooth(G,s)
     B = gaussian_smooth(B,s)
-    RGB = array([R,G,B]).T
+    RGB = np.array([R,G,B]).T
     return RGB[N:N*2,:]
 
 def isoluminance1(h,l=.5):
@@ -263,13 +245,13 @@ def radl2rgb(h,l=1.0):
     x1 = .30
     x2 = .59
     x3 = .11
-    LRGB  = array([x1,x2,x3])
-    alpha = cos(h)
-    beta  = sin(h)*2/sqrt(3)
+    LRGB  = np.array([x1,x2,x3])
+    alpha = np.cos(h)
+    beta  = np.sin(h)*2/sqrt(3)
     B = 1.0 - x1*(alpha+beta/2)-x2*beta
     R = alpha + beta/2+B
     G = beta+B
-    RGB = array([R,G,B])
+    RGB = np.array([R,G,B])
     RGB = RGB/np.max(RGB)
     luminance = dot(LRGB,RGB)
     if luminance<l:
@@ -301,15 +283,14 @@ def radl2rgbLUT(h,l=1.0):
 def complexHLArr2RGB(z):
     ''' Performs bulk LUT for complex numbers, avoids loops'''
     N = __N_HL_LUT__
-    h = ravel(int32(angle(z)*N/(2*pi))%N)
-    v = ravel(int32(clip(abs(z),0,1)*(N-1)))
-    return reshape(__HL_LUT__[h,v],shape(z)+(3,))
+    h = np.ravel(np.int32(np.angle(z)*N/(2*pi))%N)
+    v = np.ravel(np.int32(np.clip(np.abs(z),0,1)*(N-1)))
+    return np.reshape(__HL_LUT__[h,v],shape(z)+(3,))
 
 
 
 
-#############################################################################
-# Matplotlib extensions
+####################################################################### Matplotlib extensions
 
 def color_boxplot(bp,COLOR):
     '''
@@ -323,8 +304,7 @@ def color_boxplot(bp,COLOR):
     pylab.setp(bp['medians'], color=GATHER[-1], lw=1.5, solid_capstyle='butt')
 
 
-#############################################################################
-# Three isoluminance hue wheels at varying brightness
+####################################################################### Three isoluminance hue wheels at varying brightness
 # Unfortunately the hue distribution is a bit off for these and they come
 # out a little heavy in the red, gree, and blue. I don't reccommend using
 # them
@@ -336,16 +316,15 @@ except:
     pass
     #sphinx was crashing
 
-#############################################################################
-# Isoluminance hue wheel color map
+####################################################################### Isoluminance hue wheel color map
 # pip install husl
 # http://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/28790/versions/5/screenshot.jpg
 # https://pypi.python.org/pypi/husl
 # https://mycarta.wordpress.com/2014/10/30/new-matlab-isoluminant-colormap-for-azimuth-data/
 # radius = 38; % chroma
 # theta = linspace(0, 2*pi, 256)'; % hue
-# a = radius * cos(theta);
-# b = radius * sin(theta);
+# a = radius * np.cos(theta);
+# b = radius * np.sin(theta);
 # L = (ones(1, 256)*65)'; % lightness
 # Lab = [L, a, b];
 # RGB=colorspace('RGB<-Lab',Lab(end:-1:1,:));
@@ -439,40 +418,21 @@ isolum_data = [
 [.8658,0.5133,0.6237]]
 
 try:
-    isolum = matplotlib.colors.ListedColormap(isolum_data,'isolum')
+    isolum = mcolors.ListedColormap(isolum_data,'isolum')
     plt.register_cmap(name='isolum', cmap=isolum)
     isolum_data = np.float32(isolum_data)
-
-    double_isolum_data = concatenate([isolum_data[::2],isolum_data[::2]])
-    double_isolum = matplotlib.colors.ListedColormap(double_isolum_data,'isolum')
+    double_isolum_data = np.concatenate(
+        [isolum_data[::2],isolum_data[::2]])
+    double_isolum = mcolors.ListedColormap(
+        double_isolum_data,'isolum')
     plt.register_cmap(name='double_isolum', cmap=double_isolum)
-
 except:
     pass
     #sphinx workaround
 
 
 
-#############################################################################
-# Parula color map
-'''
-Provides the Matlab(r)(tm) parula color map for matplotlib.
-Mathworks claims copyright on the parula color scheme.
-Accordingly, you may only use this file and this color map if you currently
-own a lisence for a Matlab version that contains the Parula color map.
-Please see hsvtools.py for non-copyrighted colormaps of constant luminance
-and constant luminance gradient.
-Some have argued that since Parula arises from constraint optimization
-for constant luminance and color-blindness, it may not be subject to
-copyright. If you can show analytically that the Parula color map is the
-unique solution to an optimization problem, it is likely that the copyright
-can be safely ignored. (However, check patents! it could be patented)
-However, I have not done this math so I am riterating that, as far as
-currently known, Mathwork's copyright claim on the parula color map stands.
-'''
-import matplotlib
-from matplotlib.cm import *
-from numpy import *
+####################################################################### Parula color map
 parula_data = [
 [.2081, .1663, .5292],[.2091, .1721, .5411],[.2101, .1779, .5530],
 [.2109, .1837, .5650],[.2116, .1895, .5771],[.2121, .1954, .5892],
@@ -562,8 +522,8 @@ parula_data = [
 [.9763, .9831, .0538]]
 
 try:
-    parula = matplotlib.colors.ListedColormap(parula_data,'parula')
-    register_cmap(name='parula', cmap=parula)
+    parula = mcolors.ListedColormap(parula_data,'parula')
+    plt.register_cmap(name='parula', cmap=parula)
     parula_data = np.float32(parula_data)
 except:
     parula=None
@@ -637,29 +597,30 @@ extended_data = np.array([
 [255, 251, 135],[254, 251, 136],[254, 252, 137],[255, 252, 139],
 [254, 252, 140],[255, 253, 141],[254, 253, 143],[254, 253, 144],
 [255, 254, 145],[254, 254, 147],[255, 254, 148],[254, 254, 149]])
-try:
-    extended_data = np.float32(extended_data)/255
-    extended = matplotlib.colors.ListedColormap(extended_data,'extended')
-    register_cmap(name='extended', cmap=extended)
+#try:
+extended_data = np.float32(extended_data)/255
+extended = mcolors.ListedColormap(extended_data,'extended')
+plt.register_cmap(name='extended', cmap=extended)
 
-    #############################################################################
-    # A balanced colormap that combines aspects of HSV, HSL, and
-    # Matteo Niccoli's isoluminant hue wheel, with a little smoothing
-    #
-    x = np.array([hsv2rgb(h,1,1) for h in np.linspace(0,1,256)*360])
-    y = np.array([hcl2rgb(h,1,0.75) for h in np.linspace(0,1,256)*360])
-    z = isolum_data[::-1]
-    balance_data = circularly_smooth_colormap(x*0.2+y*0.4+z*0.4,30)
-    balance = matplotlib.colors.ListedColormap(balance_data,'extended')
-    register_cmap(name='balance', cmap=balance)
+##################################################################
+# A balanced colormap that combines aspects of HSV, HSL, and
+# Matteo Niccoli's isoluminant hue wheel, with a little smoothing
+#
+x = np.array([hsv2rgb(h,1,1) for h in np.linspace(0,1,256)*360])
+y = np.array([hcl2rgb(h,1,0.75) for h in np.linspace(0,1,256)*360])
+z = isolum_data[::-1]
+balance_data = circularly_smooth_colormap(x*0.2+y*0.4+z*0.4,30)
+balance = mcolors.ListedColormap(balance_data,'extended')
+plt.register_cmap(name='balance', cmap=balance)
+'''
 except:
     extended=None
     isolum=None
     balance=None
     pass
     #sphinx bug workaround
-
-#############################################################################
+'''
+######################################################################
 # Bit-packed color fiddling
 
 def hex_pack_BGR(RGB):
@@ -670,7 +631,6 @@ def hex_pack_BGR(RGB):
     '''
     RGB = clip(np.array(RGB),0,1)
     return ['0x%2x%2x%2x'%(B*255,G*255,R*255) for (R,G,B) in RGB]
-
 
 def code_to_16bit(code):
     '''
@@ -749,7 +709,7 @@ def show_fast_pallet():
             i = k*4+j
             c0 = colors[i]
             c2 = bit16_RGB_to_tuple(tuple_to_bit16(c0)|0b0000100000001000)
-            cA = .5*(array(c0)+array(c2))
+            cA = .5*(np.array(c0)+np.array(c2))
             ax.add_patch(patches.Rectangle((ik,j),1,1,facecolor=cA))
             print('%06x'%tuple_to_bit24(cA))
     draw()
@@ -767,11 +727,10 @@ def show_complete_fast_pallet():
             i = k*4+j
             c0 = colors[i]
             c2 = bit16_RGB_to_tuple(tuple_to_bit16(c0)|0b0000100000001000)
-            cA = .5*(array(c0)+array(c2))
+            cA = .5*(np.array(c0)+np.array(c2))
             ax.add_patch(patches.Rectangle((k,j),1,1,facecolor=cA,edgecolor=cA))
             print('#%06x'%tuple_to_bit24(cA))
     draw()
-
 
 def show_complete_fastest_pallet():
     '''
@@ -790,7 +749,7 @@ def show_complete_fastest_pallet():
             c  = tuple_to_bit16(colors[i])
             c0 = bit16_RGB_to_tuple(c & 0b1111111100000000)
             c2 = bit16_RGB_to_tuple((c|0b0000100000001000)&0b1111111100000000)
-            cA = .5*(array(c0)+array(c2))
+            cA = .5*(np.array(c0)+np.array(c2))
             ax.add_patch(patches.Rectangle((k,ij),1,1,facecolor=cA,edgecolor=cA))
             print("'#%06x',"%tuple_to_bit24(cA),)
     draw()

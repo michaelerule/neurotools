@@ -1,5 +1,5 @@
-.
-=
+neurotools
+==========
 
 .. toctree::
    :maxdepth: 4

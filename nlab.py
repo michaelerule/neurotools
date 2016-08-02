@@ -1,14 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
 
-# Start migrating to print-as-a-function
-# from __future__ import print_function
 
 import os, sys
 import pickle
@@ -27,7 +23,6 @@ import scipy.optimize
 try:
     from   sklearn.metrics   import roc_auc_score,roc_curve,auc
 except Exception as e:
-    traceback.print_exc()
     print('Importing sklearn failed, ROC and AUC will be missing')
 
 from   scipy.stats       import wilcoxon
@@ -60,44 +55,46 @@ print matplotlib.pyplot.get_backend()
 '''
 
 print( 'Loading nlab namespace')
-from neurotools.spike               import *
+from neurotools.spikes              import *
 from neurotools.tools               import *
 from neurotools.ntime               import *
 from neurotools.functions           import *
 from neurotools.namespace           import *
 from neurotools.color               import *
 from neurotools.plot                import *
-
 from neurotools.lif                 import *
 
-from neurotools.spatial.array               import *
-from neurotools.spatial.distance            import *
-from neurotools.spatial.fftzeros            import *
-from neurotools.spatial.spatialPSD          import *
-from neurotools.spatial.phase              import *
+from neurotools.spatial.dct              import *
+from neurotools.spatial.array            import *
+from neurotools.spatial.distance         import *
+from neurotools.spatial.fftzeros         import *
+from neurotools.spatial.spatialPSD       import *
+from neurotools.spatial.phase            import *
+from neurotools.spatial.magickernel      import *
 
-from neurotools.stats.density             import *
-from neurotools.stats.entropy             import *
-from neurotools.stats.GLMFit              import *
-from neurotools.stats.glm                 import *
-from neurotools.stats.history_basis       import *
-from neurotools.stats.kent_reimann        import *
-from neurotools.stats.stats               import *
-from neurotools.stats.magickernel         import *
-from neurotools.stats.modefind            import *
-from neurotools.stats.regressions         import *
-from neurotools.stats.vonmises            import *
+from neurotools.stats.density            import *
+from neurotools.stats.distributions      import *
+from neurotools.stats.mixtures           import *
+from neurotools.stats.entropy            import *
+from neurotools.stats.GLMFit             import *
+from neurotools.stats.glm                import *
+from neurotools.stats.hmm                import *
+from neurotools.stats.history_basis      import *
+from neurotools.stats.kent_reimann       import *
+from neurotools.stats.stats              import *
+from neurotools.stats.modefind           import *
+from neurotools.stats.regressions        import *
+from neurotools.stats.circular           import *
 
-from neurotools.signal.linenoise           import *
-from neurotools.signal.morlet_coherence    import *
-from neurotools.signal.morlet              import *
-from neurotools.signal.multitaper          import *
-from neurotools.signal.ppc                 import *
-from neurotools.signal.savitskygolay       import *
-from neurotools.signal.signal              import *
-from neurotools.signal.dct                 import *
-from neurotools.signal.coherence           import *
-from neurotools.signal.conv                import *
+from neurotools.signal.linenoise         import *
+from neurotools.signal.morlet_coherence  import *
+from neurotools.signal.morlet            import *
+from neurotools.signal.multitaper        import *
+from neurotools.signal.ppc               import *
+from neurotools.signal.savitskygolay     import *
+from neurotools.signal.signal            import *
+from neurotools.signal.coherence         import *
+from neurotools.signal.conv              import *
 
 from neurotools.jobs.parallel            import *
 from neurotools.jobs.decorator           import *
@@ -112,3 +109,22 @@ from neurotools.getfftw             import *
 nowarn()
 
 from numpy.core.multiarray import concatenate as cat
+
+try:
+    import h5py
+except:
+    print('h5py missing')
+    h5py = None
+
+@memoize
+def getVariable(path,var):
+    '''
+    Reads a variable from a .mat or .hdf5 file
+    The read result is cached in ram for later access
+    '''
+    if '.mat' in path:
+        return loadmat(path,variable_names=[var])[var]
+    elif '.hdf5' in path:
+        with h5py.File(path) as f:
+            return f[var].value
+    raise ValueError('Path is neither .mat nor .hdf5')

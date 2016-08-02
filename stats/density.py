@@ -2,6 +2,7 @@
 from scipy.stats import gaussian_kde
 from numpy import *
 import numpy as np
+from neurotools.signal.signal import get_edges
 
 def kdepeak(x, x_grid=None):
     if x_grid==None:
@@ -9,27 +10,50 @@ def kdepeak(x, x_grid=None):
     kde = gaussian_kde(x)
     return x_grid,kde.evaluate(x_grid)
 
+
 def knn_1d_density(x,k=10,eps=0.01):
     '''
     Uses local K nearest neighbors to estimate a density and center of
-    mass at each point in a distribution
+    mass at each point in a distribution. Returns a local density estimator in units of 1/input_units. For example, if a sequence
+    of times in seconds is provided, the result is an estimate of
+    the continuous time intensity function in units of Hz.
 
-    Let's assume x are in units of time with 1ms bin size.
-    intervals are in ms, centers are in ms
-    kernel is unit mass and estimates local average interval and location
-    so centers are in ms, and density is in 1/ms
-    so to convert density to Hz you need a scale factor of 100
+    Parameters
+    ----------
+    x : ndarray
+        List of points to model
+    k : integer
+        Number of nearest neighbors to use in local density estimate
+        Default is 10
+    eps : number
+        Small correction factor to avoid division by zero
 
-    returns a local density estimator in units of 1/input_units
+    Returns
+    -------
+    centers : ndarray
+        Point location of density estimates
+    density :
+        Density values at locations of centers
     '''
-    x=np.sort(x)
+    x=np.float64(np.sort(x))
+    # Handle duplicates by dithering
+    duplicates = get_edges(np.diff(x)==0.)+1
+    duplicates[duplicates>=len(x)-1]=len(x)-2
+    duplicates[duplicates<=0]=1
+    for a,b in zip(*duplicates):
+        n = b-a+1
+        q0 = x[a]
+        q1 = (x[a-1]-q0)
+        q2 = (x[b+1]-q0)
+        #print(a,b,q0,q1,q2)
+        x[a:b+1] += np.linspace(q1,q2,n+2)[1:-1]
     intervals = np.diff(x)
     centers   = (x[1:]+x[:-1])*0.5
-    kernel = np.hanning(k)
-    kernel /=sum(kernel)
+    kernel    = np.hanning(min(x.shape[0]-1,k)+2)[1:-1]
+    kernel   /=sum(kernel)
     intervals = np.convolve(intervals,kernel,'same')
-    #centers   = convolve(centers  ,kernel,'valid')
-    return centers,(eps+1.0)/(eps+intervals)
+    density = (eps+1.0)/(eps+intervals)
+    return centers,density
 
 def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None):
     '''
@@ -48,35 +72,6 @@ def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None):
     if fill is None: fill=mean(density)
     y = np.interp1d(centers,density,bounds_error=0,fill_value=fill)(grid)
     return y
-
-def knn_1d_density_density(x,k=10,eps=0.01):
-    '''
-    Uses local K nearest neighbors to estimate a density and center of
-    mass at each point in a distribution
-
-    Let's assume x are in units of time with 1ms bin size.
-    intervals are in ms, centers are in ms
-    kernel is unit mass and estimates local average interval and location
-    so centers are in ms, and density is in 1/ms
-    so to convert density to Hz you need a scale factor of 100
-    '''
-    x=sort(x)
-
-    weights = diff(append(-1,find(append(diff(x),1)>0)))
-    x = unique(x)
-    weights   = (weights[1:]+weights[:-1])*0.5
-
-    intervals = diff(x)
-    centers   = (x[1:]+x[:-1])*0.5
-    kernel    = hanning(k)
-    kernel   /= sum(kernel)
-    intervals = convolve(intervals*weights,kernel,'same')
-    reweights = convolve(weights,kernel,'same')
-    intervals /= reweights
-    int
-    #centers  = convolve(centers  ,kernel,'valid')
-    return centers,(eps+1.0)/(eps+intervals)
-
 
 def gridhist(ngrid,width,points):
     '''

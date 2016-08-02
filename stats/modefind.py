@@ -1,83 +1,95 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+import sys
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATEion
 
 import os,sys,pickle
-from numpy import *
 from neurotools.stats.density import kdepeak
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
-def modefind(allisi,burst=10):
+def modefind(points,burst=10):
     '''
     Removes intervals shorter than 10m
     Finds peak using log-KDE approximation
     '''
-    try:
-        allisi = array(allisi)
-        allisi = allisi[allisi>burst] # remove burst
-        K   = 5
-        x,y = kdepeak(log(K+allisi[allisi>0]))
-        x   = exp(x)-K
-        y   = y/(K+x)
-        return x[argmax(y)]
-    except:
-        return NaN
+    points = np.array(points)
+    points = points[points>burst] # remove burst
+    K   = 5
+    x,y = kdepeak(np.log(K+points[points>0]))
+    x   = np.exp(x)-K
+    y   = y/(K+x)
+    mode = x[np.argmax(y)]
+    return mode
 
-def logmodeplot(allisi):
+def logmodeplot(points,K=5,burst=None):
     '''
     Accepts list of ISI times.
     Finds the mode using a log-KDE density estimate
     Plots this along with histogram
-    Does not remove bursts
     '''
-    allisi = array(allisi)
-    K   = 5
-    x,y = kdepeak(log(K+allisi[allisi>0]))
-    x   = exp(x)-K
+    points = np.array(points)
+    if not burst is None:
+        points = points[points>burst] # remove burst
+    x,y = kdepeak(np.log(K+points[points>0]))
+    x   = np.exp(x)-K
     y   = y/(K+x)
     cla()
-    hist(allisi,60,normed=1,color='k')
-    plot(x,y,lw=2,color='r')
-    ybar(x[argmax(y)],color='r',lw=2)
-    draw()
-    show()
-    return x[argmax(y)]
+    plt.hist(points,60,normed=1,color='k')
+    plt.plot(x,y,lw=2,color='r')
+    ybar(x[np.argmax(y)],color='r',lw=2)
+    plt.draw()
+    plt.show()
+    mi = np.argmax(y)
+    mode = x[mi]
+    return mode
 
-def logmode(allisi):
+def logmode(points,K=5,burst=None):
     '''
     Accepts list of ISI times.
     Finds the mode using a log-KDE density estimate
-    Does not remove bursts
     '''
-    allisi = array(allisi)
-    K   = 5
-    x,y = kdepeak(log(K+allisi[allisi>0]))
-    x   = exp(x)-K
+    points = np.array(points)
+    if not burst is None:
+        points = points[points>burst] # remove burst
+    x,y = kdepeak(np.log(K+points[points>0]))
+    x   = np.exp(x)-K
     y   = y/(K+x)
-    return x[argmax(y)]
+    mode = x[np.argmax(y)]
+    return mode
 
-def peakfinder5(st):
+def peakfinder5(st,K=5):
     '''
     Found this with the old unit classification code.
     Haven't had time to reach it and check out what it does
     '''
-    allisi = diff(st)
-    allisi = array(allisi)
-    allisi = allisi[allisi>10] # remove burst
-    n, bins, patches = hist(allisi,bins=linspace(0,500,251),facecolor='k',normed=1)
+    points = np.diff(st)
+    points = np.array(points)
+    points = points[points>10] # remove burst
+    n, bins, patches = hist(points,
+        bins=np.linspace(0,500,251),
+        facecolor='k',
+        normed=1)
     centers = (bins[1:]+bins[:-1])/2
-    x,y = kdepeak(allisi,x_grid=linspace(0,500,251))
+    x,y = kdepeak(points,
+        x_grid=np.linspace(0,500,251))
     plot(x,y,color='r',lw=1)
-    p1 = x[argmax(y)]
-    K = 5
-    x,y = kdepeak(log(K+allisi[allisi>0]))
-    x = exp(x)-K
+    p1 = x[np.argmax(y)]
+    x,y = kdepeak(np.log(K+points[points>0]))
+    x = np.exp(x)-K
     y = y/(K+x)
-    plot(x,y,color='g',lw=1)
-    p2 = x[argmax(y)]
-    xlim(0,500)
+    plt.plot(x,y,color='g',lw=1)
+    p2 = x[np.argmax(y)]
+    plt.xlim(0,500)
     return p1,p2

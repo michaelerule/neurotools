@@ -153,6 +153,11 @@ def positivexy():
     positivex()
     positivey()
 
+def xylim(a,b,ax=None):
+    if ax==None: ax = gca()
+    ax.set_xlim(a,b)
+    ax.set_ylim(a,b)
+
 def nox():
     xticks([])
     xlabel('')
@@ -767,6 +772,7 @@ def savefigure(name):
     basename = os.path.basename(name)
     savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True)
     savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True)
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True)
 
 def clean_y_range(ax=None,precision=1):
     if ax is None: ax=gca()

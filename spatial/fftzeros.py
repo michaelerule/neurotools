@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
 
 '''
 Code for identifying critical points in phase gradient maps.
 '''
-from neurotools.signal.dct import *
+from neurotools.spatial.dct import *
 from neurotools.plot import *
 
 def plot_phase_gradient(dz):
@@ -71,7 +71,7 @@ def getpeaks2d(pp):
     This function differentiates the array pp in the x and y direction
     and then looks for zero crossings. It should return an array the
     same size as pp but with 1 at points that are local maxima and 0 else.
-    
+
         :pp: a 2D array in which to search for local maxima
     '''
     dx  = diff(pp,1,0)[:,:-1]
@@ -101,7 +101,7 @@ def find_critical_points(data,docoalesce=False):
     Parameters
     ----------
     data : numeric array, 2D, complex
-        
+
     Returns
     -------
     clockwise : numpy.ndarray
@@ -122,18 +122,18 @@ def find_critical_points(data,docoalesce=False):
     # extract inflection points ( extrema, saddles )
     # by looking for sign changes in derivatives
     # avoid points close to the known centres
-    avoid     = abs(winding)>1e-1 
+    avoid     = abs(winding)>1e-1
     ok        = ~avoid
     ddx       = diff(sign(dx),1,0)[:,:-1]/2
     ddy       = diff(sign(dy),1,1)[:-1,:]/2
-    
+
     clockwise = winding>3
-    widersyns = winding<-3 # close to pi, sometimes a little 
+    widersyns = winding<-3 # close to pi, sometimes a little
     saddles   = (ddx*ddy==-1)*ok
     peaks     = (ddx*ddy== 1)*ok
     maxima    = (ddx*ddy== 1)*(ddx==-1)*ok
     minima    = (ddx*ddy== 1)*(ddx== 1)*ok
-    
+
     if docoalesce:
         clockwise = unwrap_indecies(coalesce(clockwise))+1
         widersyns = unwrap_indecies(coalesce(widersyns))+1
@@ -182,11 +182,11 @@ def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect=
 def find_critical_potential_points(data):
     '''
     Critical points in a potential field (no centers / curl)
-    
+
     Parameters
     ----------
     data : numeric array, 2D, complex
-        
+
     Returns
     -------
     clockwise : numpy.ndarray
@@ -196,16 +196,16 @@ def find_critical_potential_points(data):
     maxima : numpy.ndarray
     minima : numpy.ndarray
     '''
-    
+
     dx,dy = grad(data)
     ddx       = diff(sign(dx),1,0)[:,:-1]/2
     ddy       = diff(sign(dy),1,1)[:-1,:]/2
-    
+
     saddles   = (ddx*ddy==-1)
     peaks     = (ddx*ddy== 1)
     maxima    = (ddx*ddy== 1)*(ddx==-1)
     minima    = (ddx*ddy== 1)*(ddx== 1)
-    
+
     saddles   = unwrap_indecies(saddles)+1
     peaks     = unwrap_indecies(peaks  )+1
     maxima    = unwrap_indecies(maxima )+1
@@ -288,17 +288,3 @@ def cut_array_data(data,arrayMap,cutoff=1.8,spacing=0.4):
     '''
     packed = packArrayDataInterpolate(data,arrayMap)
     return dctCut(packed,cutoff,spacing)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

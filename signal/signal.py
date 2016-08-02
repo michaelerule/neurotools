@@ -14,6 +14,7 @@ from neurotools.getfftw import *
 from scipy.signal.signaltools import fftconvolve,hilbert
 from numpy.random import *
 import numpy as np
+from scipy.signal import butter, filtfilt, lfilter
 
 def gaussian_kernel(sigma):
     '''
@@ -117,12 +118,52 @@ def padin(data):
     assert len(shape(data))==1
     return data[N//2:N//2+N]
 
-from scipy.signal import butter, filtfilt, lfilter
-def bandfilter(data,fa=None,fb=None,Fs=1000.,order=4,zerophase=True,bandstop=False):
+def nonnegative_bandpass_filter(data,fa=None,fb=None,
+    Fs=1000.,order=4,zerophase=True,bandstop=False,
+    offset=1.0):
     '''
-    IF fa is None, assumes high pass with cutoff fb
-    IF fb is None, assume low pass with cutoff fa
+    For filtering data that must remain non-negative. Due to ringing
+    conventional fitering can create values less than zero for non-
+    negative real inputs. This may be unrealistic for some data.
+
+    To compensate, this performs the filtering on the natural
+    logarithm of the input data. For small numbers, this can lead to
+    numeric underflow, so an offset parameter (default 1) is added
+    to the data for stability.
+
+    Args:
+        data (ndarray): data, filtering performed over last dimension
+        fa (number): low-freq cutoff Hz. If none, lowpass at fb
+        fb (number): high-freq cutoff Hz. If none, highpass at fa
+        Fs (int): Sample rate in Hz
+        order (1..6): butterworth filter order. Default 4
+        zerophase (boolean): Use forward-backward filtering? (true)
+        bandstop (boolean): Do band-stop rather than band-pass
+        offset (positive number): Offset data to avoid underflow (1)
+    '''
+    offset -= 1.0
+    data = np.log1p(data+offset)
+    filtered = bandpass_filter(data,
+        fa=fa, fb=fb, Fs=Fs,
+        order=order,
+        zerophase=zerophase,
+        bandstop=bandstop)
+    return np.expm1(filtered)
+
+def bandpass_filter(data,fa=None,fb=None,
+    Fs=1000.,order=4,zerophase=True,bandstop=False):
+    '''
+    IF fa is None, assumes lowpass with cutoff fb
+    IF fb is None, assume highpass with cutoff fa
     Array can be any dimension, filtering performed over last dimension
+
+    Args:
+        data (ndarray): data, filtering performed over last dimension
+        fa (number): low-frequency cutoff. If none, highpass at fb
+        fb (number): high-frequency cutoff. If none, lowpass at fa
+        order (1..6): butterworth filter order. Default 4
+        zerophase (boolean): Use forward-backward filtering? (true)
+        bandstop (boolean): Do band-stop rather than band-pass
     '''
     N = shape(data)[-1]
     padded = zeros(shape(data)[:-1]+(2*N,),dtype=data.dtype)
@@ -145,6 +186,9 @@ def bandfilter(data,fa=None,fb=None,Fs=1000.,order=4,zerophase=True,bandstop=Fal
     else: raise Exception('Both fa and fb appear to be None')
     return (filtfilt if zerophase else lfilter)(b,a,padded)[...,N//2:N//2+N]
     assert 0
+
+'''For legacy, bandpass_filter is aliased as bandfilter'''
+bandfilter = bandpass_filter
 
 def box_filter(data,smoothat):
     '''
@@ -290,11 +334,13 @@ def get_edges(signal):
     Assuming a binary signal, get the start and stop times of each
     treatch of "1s"
     '''
-    starts = list(find(diff(int32(signal))==1))
-    stops  = list(find(diff(int32(signal))==-1))
-    if signal[0]: starts = [0]+starts
+    if len(signal)<1:
+        return np.array([[],[]])
+    starts = list(find(np.diff(np.int32(signal))==1))
+    stops  = list(find(np.diff(np.int32(signal))==-1))
+    if signal[0 ]: starts = [0]+starts
     if signal[-1]: stops = stops + [len(signal)]
-    return starts, stops
+    return np.array([starts, stops])
 
 def set_edges(edges,N):
     '''
@@ -563,3 +609,50 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
         [axvline(x,lw=2,color='k') for x in (minima)]
 
     return demodulated
+
+
+def autocorrelation(x,lags=None):
+    '''
+    Computes the normalized autocorrelation over the specified
+    time-lags using convolution. Autocorrelation is normalized
+    such that the zero-lag autocorrelation is 1.
+
+    This was written in haste and needs some work. For long
+    lags it uses FFT, but has a different normalization from the
+    time-domain implementation for short lags. In practice this
+    will not matter, but formally it's good to be rigorous.
+
+    Parameters
+    ----------
+    x : 1d array
+        Data for which to compute autocorrelation function
+    lags : int
+        Number of time-lags over which to compute the ACF. Default
+        is min(200,len(x))
+
+    Returns
+    -------
+    ndarray
+        Autocorrelation function, length 2*lags + 1
+    '''
+    x = np.array(x)
+    x -= np.mean(x)
+    N = len(x)
+    if lags is None:
+        lags = min(200,N)
+    # TODO: TUNE THIS CONSTANT
+    if lags>0.5*np.log2(N):
+        # Use FFT for long lags
+        result = np.float32(fftconvolve(x,x[::-1],'same'))
+        M = len(result)//2
+        result *= 1./result[M]
+        return result[M-lags:M+lags+1]
+    else:
+        # Use time domain for short lags
+        result  = np.zeros(lags*2+1,'float')
+        zerolag = np.var(x)
+        result[lags] = zerolag
+        for i in range(1,lags):
+            result[i+lags] = result[lags-i] = np.mean(x[i:]*x[:-i])
+        result *= 1./zerolag
+        return result

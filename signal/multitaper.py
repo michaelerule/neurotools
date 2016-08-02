@@ -15,15 +15,6 @@ except:
     print('Multitaper methods will not work')
     def dpss(*args):
         raise NotImplementedError("Please install the spectrum module")
-try:
-    import nitime
-    from nitime.algorithms import coherence
-except:
-    print('THE "nitime" MODULE IS MISSING')
-    print('> sudo easy_install nitime')
-    print('(coherence function is undefined)')
-    print('(none of the multitaper coherence functions will work)')
-
 
 from neurotools.getfftw import *
 from neurotools.signal.signal import zscore
@@ -32,21 +23,48 @@ from neurotools.jobs.decorator import memoize
 @memoize
 def dpss_cached(length,half_bandwidth_parameter):
     '''
-    Get a collection of DPSS tapers.
-    N-tapers = half_bandwidth_parameter*2
+    Get a collection of DPSS tapers. The number of tapers equals the
+    half bandwidth parameter times two. For legacy reasons the tapers
+    are returned transposed such that the first dimension indexes
+    tapers rather than time.
 
-    For legacy reasons this also transposes the tapes returned, such that
-    the first dimension indexes tapers rather than time.
+    The advantage of using this function is that computing DPSS is
+    expensive. This function caches the results in RAM.
+
+    Parameters
+    ----------
+    length : integer
+        length of the domain for which to compute the DPSS
+    half_bandwidth_parameter : number
+        The number of is the half_bandwidth_parameter*2
+
+    Returns
+    -------
+    ndarray:
+        tapers.T a transposed list of DPSS tapers
+    ndarray:
+        taper eigenvalues ( weights )
     '''
     tapers,eigen = dpss(length,half_bandwidth_parameter)
     return tapers.T,eigen
 
 def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
     '''
-    x : signal
-    k : number of tapers
-    Fs: sample rate (default 1K)
-    returns frequencies, average sqrt(power) over tapers.
+    Parameters
+    ----------
+    x : ndarray
+        Signal to use
+    k : int (positive)
+        number of tapers (positive)
+    Fs: int
+        sample rate in Hz (default 1000)
+
+    Returns
+    -------
+    ndarray
+        frequencies,
+    ndarray
+        average sqrt(power) over tapers.
     '''
     N = shape(x)[-1]
     if nodc:
@@ -58,10 +76,21 @@ def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
 
 def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
     '''
-    x : signal
-    k : number of tapers
-    Fs: sample rate (default 1K)
-    returns frequencies, average sqrt(power) over tapers.
+    Parameters
+    ----------
+    x : ndarray
+        Signal to use
+    k : int (positive)
+        number of tapers (positive)
+    Fs: int
+        sample rate in Hz (default 1000)
+
+    Returns
+    -------
+    ndarray
+        frequencies,
+    ndarray
+        average squared power over tapers.
     '''
     N = shape(x)[-1]
     if nodc:

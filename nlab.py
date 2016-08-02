@@ -79,6 +79,7 @@ from neurotools.stats.entropy            import *
 from neurotools.stats.GLMFit             import *
 from neurotools.stats.glm                import *
 from neurotools.stats.hmm                import *
+from neurotools.stats.gmm                import *
 from neurotools.stats.history_basis      import *
 from neurotools.stats.kent_reimann       import *
 from neurotools.stats.stats              import *

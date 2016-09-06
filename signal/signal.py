@@ -1,19 +1,18 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import unicode_literals
 from __future__ import print_function
 
+from numpy.random import *
+import numpy as np
 
 from neurotools.tools   import *
 from matplotlib.mlab    import *
 from neurotools.getfftw import *
 from scipy.signal.signaltools import fftconvolve,hilbert
-from numpy.random import *
-import numpy as np
 from scipy.signal import butter, filtfilt, lfilter
 
 def gaussian_kernel(sigma):
@@ -656,3 +655,52 @@ def autocorrelation(x,lags=None):
             result[i+lags] = result[lags-i] = np.mean(x[i:]*x[:-i])
         result *= 1./zerolag
         return result
+
+
+def upsample(x,factor=4):
+    '''
+    Uses fourier transform to upsample x by some factor.
+
+    Operations:
+    1. remove linear trend
+    2. mirror to get reflected boundary
+    3. take the fourier transform
+    4. add padding zeros to FFT to effectively upsample
+    5. taking inverse fourier transform
+    6. remove mirroring
+    7. restore linear tend
+
+    Parameters
+    ----------
+    factor : int
+        Integer upsampling factor. Default is 4.
+    x : array-like
+        X is cast to float64 before processing. Complex values are
+        not supported.
+    '''
+    assert type(factor) is int
+    assert factor>1
+    N = len(x)
+    dc = mean(x)
+    x -= dc
+    dx = mean(diff(x))
+    x -= arange(N)*dx
+    y = zeros(2*N,dtype=float64)
+    y[:N]=x
+    y[N:]=x[::-1]
+    ft = fft(y)
+    # note
+    # if N is even we have 1 DC and one nyquist coefficient
+    # if N is odd we have 1 DC and two nyquist coefficients
+    # If there is only one nyquist coefficient, it will be real-values,
+    # so it will be it's own complex conjugate, so it's fine if we
+    # double it.
+    up = zeros(N*2*factor,dtype=float64)
+    up[:N//2+1]=ft[:N//2+1]
+    up[-N//2:] =ft[-N//2:]
+    x = (ifft(up).real)[:N*factor]*factor
+    x += dx*arange(N*factor)/float(factor)
+    x += dc
+    return x
+
+

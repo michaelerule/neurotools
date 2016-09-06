@@ -96,8 +96,32 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False):
         for i,k in enumerate(problems)]
 
 def parmap_dict(f,problems,leavefree=1,debug=False,verbose=False):
-    results = parmap(f, problems, debug=debug)
-    return dict(zip(problems,results))
+    global mypool
+    problems = list(problems)
+    njobs    = len(problems)
+
+    if njobs==0:
+        if verbose: print('NOTHING TO DO?')
+        return []
+
+    if not debug and (not 'mypool' in globals() or mypool is None):
+        if verbose: print('NO POOL FOUND. RESTARTING.')
+        mypool = Pool(cpu_count()-leavefree)
+
+    enumerator = map(f,problems) if debug else mypool.imap(f,problems)
+    results = {}
+    sys.stdout.write('\n')
+    for key,result in enumerator:
+        if isinstance(result,tuple) and len(result)==1:
+            result=result[0]
+        results[key]=result
+        if verbose and type(result) is RuntimeError:
+            print('ERROR PROCESSING',problems[i])
+
+    sys.stdout.write('\r            \r')
+    
+    results = {key:results[key] for key in problems if key in results and not results[key] is None}
+    return results
 
 def parmap_indirect_helper(args):
     global reference_globals
@@ -211,6 +235,8 @@ def reset_pool(leavefree=1,context=None):
         # http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate
         def close_pool():
             global mypool
+            if not 'mypool' in globals() or mypool is None:
+                return
             mypool.close()
             mypool.terminate()
             mypool.join()

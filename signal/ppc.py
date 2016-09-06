@@ -85,13 +85,13 @@ def fftppc_multitaper(snippits,Fs=1000,k=4):
     M,window = shape(snippits)
     if M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
     ff,raw,phase = fftppc_biased_multitaper(snippits,Fs,k)
-    unbiased = (raw*M-1)/(M-1)
+    unbiased = (raw*k*M-1)/(M-1)
     return ff, unbiased, phase
 
 def nodc(x):
     return x-mean(x)
 
-def discard_spikes_closer_than_delta(signal,times,delta,window):
+def discard_spikes_closer_than_delta(signal,times,delta):
     '''
     When computing PPC, we need to throw out spikes that are too close
     together. This is a heuristic to make the spiking samples
@@ -107,8 +107,8 @@ def discard_spikes_closer_than_delta(signal,times,delta,window):
     N = len(signal)
     times = array(times)
     #print('%d spikes total'%len(times))
-    times = times[times>=window]
-    times = times[times<N-window]
+    times = times[times>=delta]
+    times = times[times<N-delta]
     #print('%d spikes with enough padding'%len(times))
     usetimes = []
     t_o = -inf
@@ -142,7 +142,7 @@ def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=Tru
     if biased: warn('skipping bias correction entirely')
     assert window>0
     if len(shape(signal))==1:
-        usetimes = discard_spikes_closer_than_delta(signal,times,delta,window)
+        usetimes = discard_spikes_closer_than_delta(signal,times,delta)
         snippits = array([nodc(signal[t-window:t+window+1]) for t in usetimes])
     elif len(shape(signal))==2:
         warn('assuming first dimension is trials / repititions')
@@ -266,7 +266,7 @@ def ppc_phase_randomize_chance_level_sample(
 
     if len(shape(signal))==1:
         # only a single trial provided
-        usetimes = discard_spikes_closer_than_delta(signal,times,delta,window)
+        usetimes = discard_spikes_closer_than_delta(signal,times,delta)
         signal = phase_randomize(signal)
         snippits = array([nodc(signal[t-window:t+window+1]) for t in usetimes])
     elif len(shape(signal))==2:

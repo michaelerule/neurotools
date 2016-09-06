@@ -1,3 +1,7 @@
+
+import numpy as np
+
+
 def euler_integrate_LIF(x,C=1.0,g_L=0.1,g_E=0.00074,E_E=0.0,E_L=-70.0,Thr=-60.0,tau=1.0,Fs=2000,g_S=None):
     '''
     Modeled after the LIF implementation in Baker Pinches Lemon 2003
@@ -42,18 +46,18 @@ def euler_integrate_LIF(x,C=1.0,g_L=0.1,g_E=0.00074,E_E=0.0,E_L=-70.0,Thr=-60.0,
     timescale = dt/C              # kiloohm or 1/microsiemen
     alpha     = 1.0/tau           # 1/millisecond
     if g_S is None:
-        time  = arange(len(x))*dt # millisecond
-        t     = arange(5*tau/dt)*dt
-        alpha_function = t*exp(-alpha*t)
+        time  = np.arange(len(x))*dt # millisecond
+        t     = np.arange(5*tau/dt)*dt
+        alpha_function = t*np.exp(-alpha*t)
         g_S = g_E * alpha_function / np.max(alpha_function) 
-        g_S = convolve(x,g_S,'full')[:len(x)]
-        V      = zeros(shape(x))      # millivolts
-        spikes = zeros(shape(x))      
+        g_S = np.convolve(x,g_S,'full')[:len(x)]
+        V      = np.zeros(np.shape(x))      # millivolts
+        spikes = np.zeros(np.shape(x))      
     else:
-        g_S    = float64(g_S)
-        time   = arange(len(g_S))*dt # millisecond
-        V      = zeros(shape(g_S))      # millivolts
-        spikes = zeros(shape(g_S))
+        g_S    = np.float64(g_S)
+        time   = np.arange(len(g_S))*dt # millisecond
+        V      = np.zeros(np.shape(g_S))      # millivolts
+        spikes = np.zeros(np.shape(g_S))
     # precomputing all expressions that can be precomputed
     # this may speed things up
     g_L_E_L = g_L*E_L
@@ -124,18 +128,18 @@ def exponential_integrate_LIF(x,C=1.0,g_L=0.1,g_E=0.00074,E_E=0.0,E_L=-70.0,Thr=
     dt        = 1000.0/Fs         # millisecond
     alpha     = 1.0/tau           # 1/millisecond
     if g_S is None:
-        time      = arange(len(x))*dt # millisecond
-        t     = arange(5*tau/dt)*dt
-        alpha_function = t*exp(-alpha*t)
+        time  = np.arange(len(x))*dt # millisecond
+        t     = np.arange(5*tau/dt)*dt
+        alpha_function = t*np.exp(-alpha*t)
         g_S = g_E * alpha_function / np.max(alpha_function) 
-        g_S = convolve(x,g_S,'full')[:len(x)]
-        V      = zeros(shape(x))      # millivolts
-        spikes = zeros(shape(x))      
+        g_S = np.convolve(x,g_S,'full')[:len(x)]
+        V      = np.zeros(np.shape(x))      # millivolts
+        spikes = np.zeros(np.shape(x))      
     else:
-        g_S    = float64(g_S)
-        time   = arange(len(g_S))*dt # millisecond
-        V      = zeros(shape(g_S))      # millivolts
-        spikes = zeros(shape(g_S))      
+        g_S    = np.float64(g_S)
+        time   = np.arange(len(g_S))*dt # millisecond
+        V      = np.zeros(np.shape(g_S))      # millivolts
+        spikes = np.zeros(np.shape(g_S))      
     for i,t in enumerate(time):
         # exponential integrator
         A = g_L*E_L + g_S[i]*E_E
@@ -196,7 +200,7 @@ def exponential_moving_average(x,tau,Fs=1000):
     # from the end. We exploit this to set the initial conditions by 
     # placing a value in the last position of the output array y
     # this value will eventually be overwritten.
-    y = zeros(shape(x))
+    y = np.zeros(np.shape(x))
     y[-1] = 0#x[0]
     for i in xrange(len(x)):
         y[i] = (1-alpha) * y[i-1] + alpha * x[i]

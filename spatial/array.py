@@ -17,6 +17,7 @@ from scipy.signal.signaltools import convolve2d
 from neurotools.tools         import warn
 from neurotools.stats.stats   import *
 from neurotools.spatial.dct   import dct_upsample,dct_cut_antialias
+from neurotools.signal.signal import rewrap
 
 ELECTRODE_SPACING = 0.4
 
@@ -203,7 +204,7 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5):
     warn('expects first two dimensions x,y of 2d array data')
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
-    pg[:,:,~use] = NaN
+    pg[:,:,~use] = np.NaN
     return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*pi)
 
 def array_wavelength_pgd_threshold(frame,thresh=0.5):
@@ -219,7 +220,6 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     return 1/array_phasegradient_pgd_threshold(frame,thresh)
 
 
-
 def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
     '''
     The average phase gradient magnitude can tolerate non-planar waves, but
@@ -232,7 +232,7 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
     warn('expects first two dimensions x,y of 2d array data')
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
-    pg[:,:,~use] = NaN
+    pg[:,:,~use] = np.NaN
     return 1/np.mean(abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*pi)
 
 
@@ -265,8 +265,6 @@ def array_speed_lower(frame):
     '''expects first two dimensions x,y of 2d array data
     returns speed for plane waves in mm/s
     '''
-    assert 0
-    warn('BROKEN DONT USE')
     pg = array_phasegradient_upper(frame) #cycles / mm
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     warn('ASSUMING FS=1000ms HERE!!!')
@@ -322,8 +320,7 @@ def array_synchrony_pgd_standard_deviation(frame):
 
 def array_kuramoto_pgd(frame):
     '''
-    A related directionality index ignores vector amplitude. Nice if
-    there are large outliers.
+    A related directionality index ignores vector amplitude.
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
@@ -331,8 +328,7 @@ def array_kuramoto_pgd(frame):
 
 def array_kuramoto_pgd_standard_deviation(frame):
     '''
-    A related directionality index ignores vector amplitude. Nice if
-    there are large outliers.
+    A related directionality index ignores vector amplitude.
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)

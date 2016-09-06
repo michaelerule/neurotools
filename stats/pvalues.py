@@ -1,8 +1,9 @@
-from neurotools.parallel import *
+from neurotools.jobs.parallel import *
 import statsmodels
 import numpy as np
 from numpy import random
 from numpy import *
+from matplotlib.mlab import find
 
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''
@@ -60,8 +61,8 @@ def correct_pvalues_positive_dependent(pvalue_dictionary):
         label -> pvalue, reject
     '''
     labels, pvals = zip(*pvalue_dictionary.iteritems())
-    p_threshold = max(*benjamini_hochberg_positive_correlations(pvalues,0.05))
-    reject = (ar|pvals)<p_threshold
+    p_threshold = max(*benjamini_hochberg_positive_correlations(pvals,0.05))
+    reject = array(pvals)<p_threshold
     print 'BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject)))
     corrected = dict(zip(labels,zip(pvals,reject)))
     return corrected
@@ -91,7 +92,7 @@ def bootstrap_statistic_two_sided(statistic, test_population, null_population, n
     observed = statistic(test_population)
     T = observed-null
     delta = abs(T)
-    null_samples = ar|[statistic(random.choice(null_population,n)) for i in xrange(ntrials)]
+    null_samples = array([statistic(random.choice(null_population,n)) for i in xrange(ntrials)])
     null_delta   = abs(null_samples - null)    
     pvalue = mean(null_delta>delta)
     return pvalue
@@ -127,7 +128,7 @@ def bootstrap_compare_statistic_two_sided(statistic, population_A, population_B,
         s_a = statistic(draw_A)
         s_b = statistic(draw_B)
         return abs(s_a-s_b)
-    null_samples = ar|[sample() for i in xrange(ntrials)]
+    null_samples = array([sample() for i in xrange(ntrials)])
     delta = abs(A-B)
     pvalue = mean(null_samples>delta)
     return delta,pvalue
@@ -154,8 +155,8 @@ def bootstrap_compare_statistic_two_sided_parallel(statistic, population_A, popu
     '''
     Estimate pvalue using bootstrapping
     '''
-    problems     = ar|[(i,(statistic,population_A,population_B,NA,NB,100)) for i in range(ntrials//100+1)]
-    null_samples = ar|list(flatten(parmap(sample_parallel_helper,problems)))
+    problems     = array([(i,(statistic,population_A,population_B,NA,NB,100)) for i in range(ntrials//100+1)])
+    null_samples = array(list(flatten(parmap(sample_parallel_helper,problems))))
     A = statistic(population_A)
     B = statistic(population_B)    
     delta = abs(A-B)

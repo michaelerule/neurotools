@@ -282,7 +282,8 @@ def signature_to_file_string(f,sig,
             'Function probably accepts data as an argument,\n'+
             'rather than a key to locate data. See Joblib for a\n'+
             'caching framework that uses cryptographic hashes\n'+
-            'to solve this problem. For now, we skip the cache.')
+            'to solve this problem. For now, we skip the cache.\n\n'+
+            'The offending filename is '+filename)
     check_filename(filename)
     return filename
 
@@ -357,13 +358,10 @@ def human_decode(key):
 
 def locate_cached(cache_root,f,method,*args,**kwargs):
     sig = neurotools.jobs.decorator.argument_signature(f,*args,**kwargs)
-    try:
-        fn  = signature_to_file_string(f,sig,
-                mode        ='repr',
-                compressed  =True,
-                base64encode=True)
-    except ValueError as ve:
-        print(ve)
+    fn  = signature_to_file_string(f,sig,
+            mode        ='repr',
+            compressed  =True,
+            base64encode=True)
 
     pieces   = fn.split('.')
     path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
@@ -487,7 +485,14 @@ def disk_cacher(
         @neurotools.jobs.decorator.robust_decorator
         def wrapped(f,*args,**kwargs):
             t0 = neurotools.ntime.current_milli_time()
-            fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
+            try:
+                fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
+            except ValueError as exc:
+                print('Generating cache key has failed')
+                print('Skipping chaching entirely')
+                traceback.print_sxc(sxc)
+                time,result = f(*args,**kwargs)
+                return result
             try:
                 if method=='pickle':
                     result = pickle.load(open(location,'rb'))

@@ -119,7 +119,14 @@ def discard_spikes_closer_than_delta(signal,times,delta):
     #print('%d spikes far enough apart to be usable'%len(usetimes))
     return usetimes
 
-def pairwise_phase_consistancy(signal,times,window=50,Fs=1000,k=4,multitaper=True,biased=False,delta=100,taper=None):
+def pairwise_phase_consistancy(signal,times,
+    window=50,
+    Fs=1000,
+    k=4,
+    multitaper=True,
+    biased=False,
+    delta=100,
+    taper=None):
     '''
     signal: 1D real valued signal
     times:  Times of events relative to signal

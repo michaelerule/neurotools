@@ -63,7 +63,7 @@ def correct_pvalues_positive_dependent(pvalue_dictionary):
     labels, pvals = zip(*pvalue_dictionary.iteritems())
     p_threshold = max(*benjamini_hochberg_positive_correlations(pvals,0.05))
     reject = array(pvals)<p_threshold
-    print 'BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject)))
+    #print 'BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject)))
     corrected = dict(zip(labels,zip(pvals,reject)))
     return corrected
 

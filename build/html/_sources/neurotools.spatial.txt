@@ -10,6 +10,7 @@ Submodules
    neurotools.spatial.dct
    neurotools.spatial.distance
    neurotools.spatial.fftzeros
+   neurotools.spatial.kernels
    neurotools.spatial.magickernel
    neurotools.spatial.phase
    neurotools.spatial.spatialPSD

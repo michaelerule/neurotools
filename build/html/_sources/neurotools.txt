@@ -29,6 +29,7 @@ Submodules
    neurotools.namespace
    neurotools.nlab
    neurotools.ntime
+   neurotools.operators
    neurotools.opto
    neurotools.plot
    neurotools.spikes

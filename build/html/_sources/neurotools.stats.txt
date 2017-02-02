@@ -15,8 +15,10 @@ Submodules
    neurotools.stats.glm
    neurotools.stats.gmm
    neurotools.stats.history_basis
+   neurotools.stats.hmm (Michael Rule's conflicted copy 2016-10-15)
    neurotools.stats.hmm
    neurotools.stats.kent_reimann
+   neurotools.stats.lessons
    neurotools.stats.matzner_bar-gad_PLoS_2015
    neurotools.stats.mixtures
    neurotools.stats.modefind

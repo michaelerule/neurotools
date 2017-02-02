@@ -21,7 +21,7 @@ def gaussian_kernel(sigma):
     sigma: standard deviation, >0
     '''
     assert sigma>0
-    K = ceil(sigma)
+    K = np.ceil(sigma)
     N = K*2+1
     K = exp( - (arange(N)-K)**2 / (2*sigma**2) )
     K *= 1./sum(K)
@@ -462,7 +462,7 @@ def estimate_padding(fa,fb,Fs=1000):
     '''
     bandwidth  = fb if fa is None else fa if fb is None else min(fa,fb)
     wavelength = Fs/bandwidth
-    padding    = int(ceil(2.5*wavelength))
+    padding    = int(np.ceil(2.5*wavelength))
     return padding
 
 def lowpass_filter(x, cut=10, Fs=1000, order=4):

@@ -26,7 +26,8 @@ This class also defines three hue wheel color maps of varying brightness
 
 import math
 import pylab
-from neurotools import tools,signal
+from neurotools import signal
+from neurotools import tools
 import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt

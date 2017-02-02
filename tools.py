@@ -20,7 +20,7 @@ from neurotools.jobs.decorator import *
 from scipy.io                  import loadmat
 
 # this line must come last if we want memoization
-from neurotools.jobs.cache import *
+#from neurotools.jobs.cache import *
 
 #TODO: make this robust / cross-platform
 matlabpath = '/usr/local/bin/matlab -nodesktop -nodisplay -r'

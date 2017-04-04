@@ -17,7 +17,7 @@ from scipy.signal import butter, filtfilt, lfilter
 
 def gaussian_kernel(sigma):
     '''
-    generate Guassian kernel for smoothing
+    generate 1D Guassian kernel for smoothing
     sigma: standard deviation, >0
     '''
     assert sigma>0

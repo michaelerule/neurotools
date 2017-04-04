@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
 '''
 Robust decorators are provided by the decorator package
@@ -21,6 +22,10 @@ import warnings, traceback, errno
 import pickle, json, base64, zlib
 
 import numpy as np
+
+import sys
+__PYTHON_2__ = sys.version_info<(3, 0)
+
 
 try:
     import decorator
@@ -55,8 +60,10 @@ def sanitize(sig,mode='liberal'):
         sig = np.array(sig)
         return sanitize(sig)
     if isinstance(sig, (list,tuple)):
+        if len(sig)<=0: return ()
+        while len(sig)==1: sig=sig[0]
         return tuple(sanitize(s,mode=mode) for s in sig)
-    if isinstance(sig,(unicode,)):
+    if __PYTHON_2__ and isinstance(sig,(unicode,)):
         return sanitize(str(sig),mode=mode)
     if isinstance(sig, (dict,)):
         keys = sorted(sig.keys())
@@ -107,7 +114,7 @@ def argument_signature(function,*args,**kwargs):
     # returned here. We need to convert these to something hashable.
     named = sanitize(named)
 
-    available = zip(named,args)
+    available = list(zip(named,args))
     nargs     = len(available)
     ndefault  = len(defaults)   if not defaults is None else 0
     nnamed    = len(named)      if not named    is None else 0

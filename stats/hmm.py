@@ -456,6 +456,55 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4):
     fwd,bwd,p = forward_backward(y,X0hat,That,Bhat)
     return That,Bhat,X0hat,fwd,bwd,p,llikelihood
 
+def forward_abstract(y, x0, T, B):
+    '''
+    Abstracted form of forward filtering algorithm
+    
+    y     : sequence of observations
+    B     : y → P(x), conditioning on observations P(x|y(t))
+    x0    : P(x)
+    T.fwd : P(x)→P(x); linear operator for the forward  pass
+    T.bwd : P(x)→P(x); linear operator for the backward pass
+    '''
+    L = len(y)
+    # forward part of the algorithm
+    # Compute conditional probability for each state
+    # based on all previous observations
+    f = {}
+    # initial state conditioned on first observation
+    f[0] = B(y[0]) * x0
+    for i in range(1,L):
+        # condition on transition from previous state and current observation
+        f[i] = B(y[i])*T.fwd(f[i-1])
+    f = [f[i] for i in range(L)]
+    return np.array(f)
+    
+def backward_abstract(y, x0, T, B):
+    '''
+    Abstracted form of backward filtering algorithm
+    
+    y     : sequence of observations
+    B     : y → P(x), conditioning on observations P(x|y(t))
+    x0    : P(x)
+    T.fwd : P(x)→P(x); linear operator for the forward  pass
+    T.bwd : P(x)→P(x); linear operator for the backward pass
+    '''
+    L = len(y)
+    # backward part of the algorithm
+    # compute conditional probabilities of subsequent
+    # chain from each state at each time-point
+    b = {}
+    # final state is fixed with probability 1
+    b[L-1] = f[L-1];
+    for i in range(L-1)[::-1]:
+        # combine next observation, and likelihood
+        # of state based on all subsequent, weighted
+        # according to transition matrix
+        b[i] = T.bwd(B(y[i+1])*b[i+1])
+    # Clean up the dictionary representations used for notational clarity above
+    b = [b[i] for i in range(L)]
+    return np.array(b)
+
 def forward_backward_abstract(y, x0, T, B):
     '''
     Abstracted form of forward-backward algorithm
@@ -465,7 +514,7 @@ def forward_backward_abstract(y, x0, T, B):
     x0    : P(x)
     T.fwd : P(x)→P(x); linear operator for the forward  pass
     T.bwd : P(x)→P(x); linear operator for the backward pass
-    '''   
+    '''
     L = len(y)
     # forward part of the algorithm
     # Compute conditional probability for each state
@@ -502,16 +551,20 @@ def gaussian_quadrature(p,domain):
     p/= np.sum(p)
     m = np.sum(domain*p)
     assert np.isfinite(m)
-    v = np.sum(domain**2*p)-m**2
+    v = np.sum((domain-m)**2*p)
     assert np.isfinite(v)
-    t = 1./v
+    t = 1./(v+1e-10)
     assert np.isfinite(t)
+    assert t>=0
     return Gaussian(m, t)
 
 class Gaussian:
     '''
     Gaussian model to use in abstracted forward-backward
     Supports multiplication of Gaussians
+
+    m: mean 
+    t: precision (reciprocal of variance)
     '''
     def __init__(s,m,t):
         s.m,s.t = m,t
@@ -574,7 +627,12 @@ class PoissonObservationApproximator(Gaussian):
     '''
     Approximate Gaussian distribution to use in abstracted forward-
     backward. Used to condition Gaussian states on Poisson 
-    observations
+    observations. Uses 1D integration (quadrature) to estimate 
+    posterior moments. Assumes log λ = a*x+b.
+    
+    a: log-rate gain parameter
+    b: log-rate bias parameter
+    y: The observed count (non-negative integer)
     '''
     def __init__(s,a,b,y):
         s.a,s.b,s.y = (a,b,y)
@@ -593,19 +651,29 @@ class PoissonObservationApproximator(Gaussian):
             s0 = np.sqrt(1/o.t)
         # Integrate within ±4σ of the mean of the prior
         x = np.linspace(m0-4*s0,m0+4*s0,50)#
+        
+        # Poisson distribution
+        # Best when rate is large and counts are frequenty >1
         # Get the conditional probability of state given this observation
         # this is poisson in lambda = np.exp(ax+b)
-        #pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/fact(s.y)
-        # Bernoilli may also be a little more stable sometime
+        pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/fact(s.y)
+        
+        # Bernoilli: stable when rate is very low
         # pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
-        # Maybe a truncated Poisson?
-        ll = s.a*x+s.b 
-        l = np.exp(ll)
-        pxy = np.exp(s.y*ll)/(1+l+l**2*.5)
+        
+        # Truncated poisson: assumes nearly Bernoulli with small
+        # probability of 2-spikes being binned as 1-spike
+        #ll = s.a*x+s.b 
+        #l = np.exp(ll)
+        #pxy = np.exp(s.y*ll)/(1+l+l**2*.5)
+        
         # Multiply pxy by distribution o, 
         # handling identity as special case
         p = pxy*(o if o is 1 else o(x)+1e-10)
+        p = np.float64(p) #Hmm
         assert np.all(np.isfinite(p))
+        
+        # Estimate mean and variance of posterior
         return gaussian_quadrature(p,x)
     def __str__(s): 
         return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
@@ -621,9 +689,6 @@ class PoissonObservationModel:
         s.a,s.b = a,b
     def __call__(s,y):
         return PoissonObservationApproximator(s.a,s.b,y)
-
-
-
 
 class TruncatedPoissonObservationApproximator(Gaussian):
     '''
@@ -694,13 +759,20 @@ class MVGaussian:
     def __mul__(s,o):
         if o is 1: return s
         assert isinstance(o,MVGaussian)
+        assert np.all(np.isfinite(o.T))
+        assert np.all(np.isfinite(o.M))
         # Precision matricies add
         T = s.T+o.T
         # Linearly combine means weighted by precision
         TM = s.TM + o.TM
         # Recover mean vector via linear system solver
         # M=np.dot(np.linalg.inv(T),TM) ==> T*M=TM
-        M = np.linalg.solve(T,TM)
+        if abs(np.linalg.det(T))<1e-20:
+            # Singular?
+            print('MVGaussian: singular precision matrix!')
+            M = TM
+        else:
+            M = np.linalg.solve(T,TM)
         assert np.all(np.isfinite(T))
         assert np.all(np.isfinite(M))
         return MVGaussian(M,T,TM)
@@ -717,21 +789,29 @@ class MVGUpdate():
         s.sigma = sigma
     def fwd(s,o):
         assert isinstance(o,MVGaussian)
+        assert np.all(np.isfinite(o.T))
+        assert np.all(np.isfinite(o.M))
         M = s.A.dot(o.M)
         T = o.T
         T = s.B.T.dot(T.dot(s.B))
         D = T.shape[0]
         R = np.eye(D) + T.dot(s.sigma)
         T = np.linalg.solve(R,T)
+        assert np.all(np.isfinite(T))
+        assert np.all(np.isfinite(M))
         return MVGaussian(M,T)
     def bwd(s,o):
         assert isinstance(o,MVGaussian)
+        assert np.all(np.isfinite(o.T))
+        assert np.all(np.isfinite(o.M))
         M = o.M.dot(s.A)
         T = o.T
         D = T.shape[0]
         R = np.eye(D) + T.dot(s.sigma)
         T = np.linalg.solve(R,T)
         T = s.A.T.dot(T.dot(s.A))
+        assert np.all(np.isfinite(T))
+        assert np.all(np.isfinite(M))
         return MVGaussian(M,T)
 
 def lgcp_observation_minimizer(y,px,B):
@@ -759,6 +839,8 @@ class MVPoissonObservation():
             s.B,s.y=B,y
         def __mul__(s,o):
             assert isinstance(o,MVGaussian)
+            assert np.all(np.isfinite(o.T))
+            assert np.all(np.isfinite(o.M))
             # Get mode and covariance
             fun,jac,hess = lgcp_observation_minimizer(s.y,o,s.B)
             mode  = minimize(fun, o.M, jac=jac, hess=hess, method='Newton-CG')
@@ -786,6 +868,10 @@ class OUGaussian:
         return result
 
 class MVGOUUpdate():
+    '''
+    A: linear system transition matrix. Means evolve as X = AX
+    sigma: linear system covariance transition. it is a matrix.
+    '''
     def __init__(s,A,mean,sigma,regularize):
         s.A = A 
         A = T.shape[0]
@@ -795,21 +881,29 @@ class MVGOUUpdate():
         s.mean = mean
     def fwd(s,o):
         assert isinstance(o,MVGaussian)
+        assert np.all(np.isfinite(o.T))
+        assert np.all(np.isfinite(o.M))
         M = s.A.dot(o.M-s.mean)+s.mean
         T = o.T
         T = s.B.T.dot(T.dot(s.B))
         D = T.shape[0]
         R = np.eye(D) + T.dot(s.sigma)
         T = np.linalg.solve(R,T)
+        assert np.all(np.isfinite(T))
+        assert np.all(np.isfinite(M))
         return MVGaussian(M,T)
     def bwd(s,o):
         assert isinstance(o,MVGaussian)
+        assert np.all(np.isfinite(o.T))
+        assert np.all(np.isfinite(o.M))
         M = (o.M-s.mean).dot(s.A)+s.mean
         T = o.T
         D = T.shape[0]
         R = np.eye(D) + T.dot(s.sigma)
         T = np.linalg.solve(R,T)
         T = s.A.T.dot(T.dot(s.A))
+        assert np.all(np.isfinite(T))
+        assert np.all(np.isfinite(M))
         return MVGaussian(M,T)
         
         

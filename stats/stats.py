@@ -59,17 +59,22 @@ def crossvalidated_least_squares(a,b,K,regress=np.linalg.lstsq):
 def print_stats(g,name='',prefix=''):
     '''
     computes, prints, and returns
-    mode
     mean
     median
+    minimum
+    maximum
     '''
-    mode = modefind.modefind(g,0)
+    #mode = modefind.modefind(g,0)
     mn   = np.mean(g)
     md   = np.median(g)
-    print(prefix,'mode    %s\t%0.4f'%(name,mode))
+    mi   = np.min(g)
+    mx   = np.max(g)
+    #print(prefix,'mode    %s\t%0.4f'%(name,mode))
     print(prefix,'mean    %s\t%0.4f'%(name,mn))
     print(prefix,'median  %s\t%0.4f'%(name,md))
-    return mode,mn,md
+    print(prefix,'minimum %s\t%0.4f'%(name,mi))
+    print(prefix,'maximum %s\t%0.4f'%(name,mx))
+    return mn,md,mi,mx
 
 def outliers(x,percent=10,side='both'):
     '''

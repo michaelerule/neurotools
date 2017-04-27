@@ -15,7 +15,7 @@ from neurotools.stats.distributions import poisson_logpdf
 import random
 from scipy.optimize import minimize
 
-def hmm_poisson_parameter_guess(X,Y,N):
+def poisson_parameter_guess(X,Y,N):
     '''
     Based on a sequence of inferred states X, estimate the log of
     the transition matrix A, the prior vector P, and the state
@@ -50,7 +50,47 @@ def hmm_poisson_parameter_guess(X,Y,N):
     logB = np.array([
         poisson_logpdf(O, mu0),
         poisson_logpdf(O, mu1)])
-    return logP,logA,logB,paramsO
+    return logP,logA,logB,params
+
+def poisson_baum_welch(Y,initial=None):
+    '''
+    Fit Hidden Markov Model using Expectation Maximization. For now
+    it is limited to two latent states.
+
+    Parameters
+    ----------
+    Y : ndarray
+        One dimension array of integer count-process observations
+        Must have states ranging form 0 to N
+    initial : ndarray
+        Optional parameter initializing the guess for the hidden
+        states. If none is provided, we will use a 2 distribution
+        Poisson mixture model fit with EM. Please note that this
+        procedure fails when the frequency of latent states is
+        asymmetric, so you may want to provide different initial
+        conditions.
+    '''
+    N = np.max(Y)+1  # Number of observation states
+    O = np.arange(N) # List of available states
+
+    if initial is None:
+        classes = np.int32(Y>np.median(Y))
+    else:
+        classes = initial
+
+    # Start with the density-based heuristic
+    new_X = np.array(classes,np.int32)
+    # Start with random state
+    # new_X = np.array(urand(size=(len(counts),))<0.5,'float')
+    X     = np.zeros(np.shape(new_X),'float')
+    while not all(X==new_X):
+        X[:] = new_X
+        logP,logA,logB,params = poisson_parameter_guess(X,Y,N)
+        new_X = viterbi_log(Y,logP,logA,logB)
+        if any(map(hasNaN,(logP,logA,logB,X))):
+            raise RuntimeError('NaN encountered')
+    return X,params
+
 
 def viterbi(Y,P,A,B):
     '''
@@ -172,7 +212,7 @@ def poisson_viterbi_state_infer(Y,initial=None):
     X     = np.zeros(np.shape(new_X),'float')
     while not np.all(X==new_X):
         X[:] = new_X
-        logP,logA,logB,params = hmm_poisson_parameter_guess(X,Y,N)
+        logP,logA,logB,params = poisson_parameter_guess(X,Y,N)
         new_X = viterbi_log(Y,logP,logA,logB)
         if any(map(hasNaN,(logP,logA,logB,X))):
             raise RuntimeError('NaN encountered')
@@ -344,7 +384,7 @@ def log_likelihood(x,y,T,B,x0):
     
     # likelihood of observations
     for i in range(L):
-        log_likelihood += log(dot(x[i],B)[y[i]])
+        log_likelihood += np.log(dot(x[i],B)[y[i]])
     
     # likelihood of transitions
     # for each current state
@@ -356,12 +396,12 @@ def log_likelihood(x,y,T,B,x0):
     #
     # sum(T*x[i][:,None]*x[i+1][None,:])
     for i in range(L-1):
-        log_likelihood += log(sum(T*x[i][:,None]*x[i+1][None,:]))
+        log_likelihood += np.log(sum(T*x[i][:,None]*x[i+1][None,:]))
         
     return log_likelihood
     
 
-def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4):
+def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4, miniter=10):
     '''
     That,Bhat,X0hat,f,b,p,llikelihood = baum_welch(y,n_hid,convergence = 1e-6, eps = 1e-4)
     
@@ -383,16 +423,28 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4):
     eps = 1e-8 : 
         small uniform probability for regularization,
         to avoid probability of any state or transition going to zero
+        
+    Returns
+    -------
+    That : estimated transition matrix
+    Bhat : estimated observation matrix
+    X0hat : estimated initial state
+    f : forward filter of observations with estimated model
+    b : backward filter of observations with estimated model
+    p : smoothing estimation of latent state using estimated model
+    llikelihood : likelihood of data given model
     '''
 
     # Verify arguments
     ntime = len(y)
-    n_obs = len(unique(y))
+    n_obs = len(np.unique(y))
     assert n_hid>1
     assert n_obs>1
     print('%d hidden and %d observed states'%(n_hid,n_obs))
-    assert y.max()+1==n_obs
-    assert len(y) == len(x)
+    if not (y.max()+1==n_obs):
+        print('There are more state IDs than there are distinct states')
+        print('Please reformat data so that states map to 0..N and every state is represented')
+        assert y.max()+1==n_obs
 
     # Initialize random guess
     # Estimated transition operator between hidden states
@@ -409,8 +461,8 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4):
         # Infer hidden states using current estimated parameters
         fwd,bwd,p = forward_backward(y,X0hat,That,Bhat)
 
-        assert np.all(np.isfinite(f))
-        assert np.all(np.isfinite(b))
+        assert np.all(np.isfinite(fwd))
+        assert np.all(np.isfinite(bwd))
         assert np.all(np.isfinite(p))
 
         # Construct new state estimates
@@ -432,7 +484,6 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4):
         # get too small, it causes numerical precision issues
         nX0hat = p[0]+eps
         nX0hat/= nX0hat.sum()
-
         nBhat  = np.zeros(Bhat.shape)
         for i in range(n_obs):
             nBhat[:,i] = (p[y==i].sum(0))/(p.sum(0))
@@ -449,12 +500,13 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4):
         Bhat  = nBhat
         X0hat = nX0hat
         llikelihood = log_likelihood(p,y,That,Bhat,X0hat)
-        if (ii%50==0): 
+        if (ii%1==0): 
             print(ii,'\n\tdelta=',delta,'\n\tllike=',llikelihood)
-        if ii>100 and delta<convergence: break
+        if ii>miniter and delta<convergence: break
     #
     fwd,bwd,p = forward_backward(y,X0hat,That,Bhat)
     return That,Bhat,X0hat,fwd,bwd,p,llikelihood
+
 
 def forward_abstract(y, x0, T, B):
     '''

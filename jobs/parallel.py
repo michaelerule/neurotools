@@ -67,6 +67,19 @@ __N_CPU__ = cpu_count()
 reference_globals = globals()
 
 def parmap(f,problems,leavefree=1,debug=False,verbose=False):
+    '''
+    Parallel implmenetation of map using multiprocessing
+
+    Parameters
+    ----------
+    f : function to apply, takes one argument and returns a tuple
+        (i,result) where i is the index into the problems
+    problems : list of arguments to f to evaulate in parallel
+    leavefree : number of cores to leave open
+    debug : if True, will run on a single core so exceptions get 
+            handeled correctly
+    verbose : set to True to print out detailed logging information
+    '''
     global mypool
     problems = list(problems)
     njobs    = len(problems)

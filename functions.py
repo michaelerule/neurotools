@@ -20,17 +20,23 @@ Commonly used functions
 import numpy as np
 
 def softhresh(x):
+    '''
+    Soft-threshold function (rescaled hyperbolic tangent)
+    '''
     return 1./(1+np.exp(-x))
 
 zero128 = np.float128('0')
 def sigmoid(x):
     '''
-    More numerically accurate version of the logit function
+    More numerically stable version of the logit function
     '''
     x = np.float128(x)
     return np.exp(-np.logaddexp(zero128, -x))
 
 def npdf(mu,sigma,x):
+    '''
+    Gaussian probability density
+    '''
     partition = 1./(sigma*np.sqrt(2*np.pi))
     x = (x-mu)/sigma
     return partition * np.exp(-0.5*x**2)
@@ -40,6 +46,8 @@ def log_factorial(k):
     Returns the logarithm of a factorial by taking the sum of the
     logarithms of 1..N. Slow, but numerically more accurate than
     taking the logarithm of the factorial or using approximations.
+    
+    k should be an integer.
     '''
     return 1 if k<2 else np.sum([np.log(i) for i in range(1,k+1)])
 

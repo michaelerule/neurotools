@@ -813,6 +813,8 @@ def floor_to_precision(x,precision=1):
     return floor(x*precision)/precision
 
 def expand_y_range(yvalues,ax=None,precision=1,pad=1.2):
+    '''
+    '''
     if ax is None: ax=gca()
     yy = array(yvalues)
     m = mean(yy)
@@ -823,3 +825,28 @@ def expand_y_range(yvalues,ax=None,precision=1,pad=1.2):
     _y1 = floor_to_precision(y1,precision)
     _y2 = ceil_to_precision(y2,precision)
     ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
+
+
+def Gaussian2D_covellipse(M,C,N=60,**kwargs):
+    '''
+    xy = Gaussian2D_covellipse(M,C,N=60,**kwargs)
+
+    Plot a covariance ellipse for 2D Gaussian with mean M and covariance C
+    Ellipse is drawn at 1 standard deviation
+
+    Parameters
+    ----------
+    M : tuple of (x,y) coordinates for the mean
+    C : 2x2 array-like covariance matrix
+    N : optional, number of points in ellipse (default 60)
+
+    Returns
+    -------
+    xy : list of points in the ellipse
+    '''
+    circle = np.exp(1j*np.linspace(0,2*pi,N+1))
+    xy = np.array([circle.real,circle.imag])
+    xy = scipy.linalg.sqrtm(C).dot(xy)+M[:,None]
+    plot(*xy,**kwargs);
+    return xy
+

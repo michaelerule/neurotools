@@ -151,7 +151,7 @@ scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,
 
 from scipy.optimize import minimize
 
-def damped_cosine_regression(X,Y,W):
+def damped_cosine(X,Y,W):
     '''
     X: List of distances
     W: List of weights
@@ -165,7 +165,7 @@ def damped_cosine_regression(X,Y,W):
     Y = exp(-X/4+1)*cos(X)
     Z = Y+randn(*shape(X))
     W = ones(shape(X))
-    w,L,b = damped_cosine_regression(X,Z,W).x
+    w,L,b = damped_cosine(X,Z,W).x
     plot(X,Y)
     plot(X,Z)
     plot(X,cos(w*X)*exp(-X/L+b))
@@ -203,7 +203,7 @@ def weighted_least_squares(X,Y,W):
     return result
 
 
-def power_law_regression(X,Y,W):
+def power_law(X,Y,W):
     '''
     Fit a power law, but with error terms computed by r^2 in
     the original space.
@@ -218,7 +218,7 @@ def power_law_regression(X,Y,W):
 
     minimize failing, just stick to weighted log-log linear regress
 
-    result = power_law_regression(X,Y,1/X**16)
+    result = power_law(X,Y,1/X**16)
     a,b = result.x
 
     EPS = 1e-10
@@ -229,7 +229,7 @@ def power_law_regression(X,Y,W):
     from numpy.polynomial.polynomial import polyfit
 
     X,Y = ravel(f),ravel(y[:,i])
-    a,b = power_law_regression(X,Y,1/X**2)
+    a,b = power_law(X,Y,1/X**2)
     plot(sorted(X),b*arr(sorted(X))**a)
 
     '''
@@ -249,7 +249,7 @@ def power_law_regression(X,Y,W):
 
 
 
-def gaussian_function_regression(X,Y):
+def gaussian_function(X,Y):
     '''
     X: List of distances
     Y: List of amplitudes
@@ -266,7 +266,7 @@ def gaussian_function_regression(X,Y):
 
 from neurotools.functions import npdf
 
-def half_gaussian_function_regression(X,Y):
+def half_gaussian_function(X,Y):
     '''
     X: List of distances
     Y: List of amplitudes
@@ -281,7 +281,7 @@ def half_gaussian_function_regression(X,Y):
     return sigma,scale,dc
 
 
-def exponential_decay_regression(X,Y):
+def exponential_decay(X,Y):
     '''
     X: List of distances
     Y: List of amplitudes
@@ -294,3 +294,19 @@ def exponential_decay_regression(X,Y):
     result = minimize(objective,[1,1,1])
     lamb,scale,dc = result.x
     return lamb,scale,dc
+    
+def robust_line(X,Y):
+    '''
+    2-variable linear regression with L1 penalty
+    returns the tuple (m,b) for line in y = mx+b format
+    '''
+    def pldist(x,y,m,b):
+        return (-m*x+y-b)/sqrt(m**2+1)
+    def objective(H):
+        m,b = H
+        return sum([abs(pldist(x,y,m,b)) for (x,y) in zip(X,Y)])
+    res = scipy.optimize.minimize(objective,[1,0],method = 'Nelder-Mead')
+    return res.x
+
+
+

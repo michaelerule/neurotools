@@ -17,8 +17,12 @@ import numpy as np
 from neurotools.functions import log_factorial, slog
 
 def poisson_logpdf(k,l):
-    k,l = map(np.float128,(k,l))
-    return k*slog(l)-l-np.array(map(log_factorial,k))
+    '''
+    Gives the log-pdf for a poisson distribution with rate l 
+    evaluated at points k. k should be a vector of integers.
+    '''
+    # k,l = map(np.float128,(k,l))
+    return k*slog(l)-l-np.array([log_factorial(x) for x in k])
 
 def poisson_pdf(k,l):
     return np.exp(poisson_logpdf(k,l))

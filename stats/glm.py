@@ -20,6 +20,8 @@ http://scikit-learn.org/stable/install.html
 
 statsmodels
 http://statsmodels.sourceforge.net/devel/install.html
+
+See also 
 '''
 
 from neurotools.tools import varexists
@@ -152,9 +154,9 @@ def ppglmfit(X,Y):
     return M[0],M[1:]
 
 
-def fitGLM(X,Y):
+def fitGLM(X,Y,L2Penalty=0.0):
     # Fit the model using gradient descent with hessian
-    objective, gradient, hessian = GLMPenaltyL2(X,Y,0)
+    objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
     initial = zeros(shape(X)[1]+1)
     M = minimize(objective,initial,
         jac=gradient,hess=hessian,method='Newton-CG')['x']

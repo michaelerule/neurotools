@@ -12,6 +12,7 @@ Submodules
    neurotools.stats.density
    neurotools.stats.distributions
    neurotools.stats.entropy
+   neurotools.stats.glm (Michael Rule's conflicted copy 2017-04-08)
    neurotools.stats.glm
    neurotools.stats.gmm
    neurotools.stats.history_basis

@@ -35,19 +35,52 @@ def log_spline_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
 def cosine_kernel(x):
     '''
     raised cosine basis kernel, normalized such that it integrates to 1
-    centered at zero. Time is rescales so that the kernel spans from
-    -1.5 to 1.5
-    This is just for simple consistancy with the magic kernel code
-    actually that's bad I think, need more width, do -2,2
+    centered at zero. Time is rescaled so that the kernel spans from
+    -2 to 2
     '''
     x = float64(abs(x))/2.0*pi
     return piecewise(x,[x<=pi],[lambda x:(cos(x)+1)/4.0])
 
 def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
+    '''
+    Generate overlapping log-cosine basis elements
+    
+    Parameters
+    ----------
+    N : array of wave quarter-phases
+    t : time base
+    base : exponent base
+    offset : leave this set to 1 (default)
+    
+    Returns
+    -------
+    B : array, Basis with n_elements x n_times shape
+    '''
     s = log(t+offset)/log(base)
     kernels = array([cosine_kernel(s-k) for k in N]) # evenly spaced in log-time
-    kernels = kernels/log(base)/(offset+t) # correction for change of variables, kernals integrate to 1 now
+    kernels = kernels/log(base)/(offset+t) # correction for change of variables, kernels integrate to 1 now
     return kernels
+
+def derive_log_cosine_basis(N,L,min_interval):
+    '''
+    Build N logarightmically spaced cosine basis functions
+    spanning L samples, with a peak resolution of min_interval
+    
+    # Solve for a time basis with these constraints
+    # t[0] = 0
+    # t[min_interval] = 1
+    # log(L)/log(b) = n_basis+1
+    # log(b) = log(L)/(n_basis+1)
+    # b = exp(log(L)/(n_basis+1))
+    
+    Returns
+    -------
+    B : array, Basis with n_elements x n_times shape
+    '''
+    t = arange(L)
+    b = exp(log(L)/(N+1))
+    B = log_cosine_basis(arange(N),t/min_interval,base=b)
+    return B
 
 def exponential_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
     means = base**array(N)

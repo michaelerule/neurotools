@@ -19,6 +19,7 @@ Submodules
    neurotools.stats.kent_reimann
    neurotools.stats.lessons
    neurotools.stats.matzner_bar-gad_PLoS_2015
+   neurotools.stats.mcint
    neurotools.stats.mixtures
    neurotools.stats.modefind
    neurotools.stats.pvalues

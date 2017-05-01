@@ -230,7 +230,7 @@ if __name__=='__MAIN__':
     # Fit the model using gradient descent without hessian
     print('\nFitting using conjugate gradient (no Hessian)')
     tic()
-    objective, gradient, hessian = GLMPenaltyL2(X,Y,0)
+    objective, gradient, hessian = GLMPenaltyL2(X_train,Y_train,0)
     M = minimize(objective, zeros(len(B)+1), jac=gradient)['x']
     mu_hat,B_hat = M[0],M[1:]
     toc()

@@ -138,3 +138,18 @@ def reject_outliers(x,percent=10,side='both'):
     to_remove = find(remove==True)
     to_keep   = find(remove==False)
     return x[to_keep], to_keep, to_remove
+    
+def pca(c,eps=1e-6):
+    '''
+    wrapper for w,v=eig(c)
+    removes dimensions smaller than eps=1e-6 of the largest dimension
+    sorts dimensions by descending weight
+    '''
+    w,v = np.linalg.eig(c)
+    ok = w>eps*np.max(w)
+    w=w[ok]
+    v=v[:,ok]
+    order = np.argsort(-w)
+    w=w[order]
+    v=v[:,order]
+    return w,v

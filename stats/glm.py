@@ -31,7 +31,8 @@ from neurotools.ntime import *
 # Imports
 # Check that numpy and scipy is installed
 try:
-    from numpy import *
+    #from numpy import *
+    import numpy as np
 except:
     print('Numpy appears to be missing. Try:')
     print('> pip install -U numpy')
@@ -81,44 +82,44 @@ def GLMPenaltyL2(X,Y,penalties=None):
     Returns:
         objective, gradient(jacobian), hessian
     '''
-    N,D = shape(X)
+    N,D = X.shape
     assert N>D
-    if penalties is None: penalties = zeros((D,),dtype=float64)
+    if penalties is None: penalties = np.zeros((D,),'d')
     if type(penalties) in (float,int):
-        #print('Penalty parameter is a scalar'
-        #print('Penalizing all parameters with α=',penalties
-        penalties = ones((D,),dtype=float64)*penalties
-    assert shape(Y)[0]==N
-    Y = squeeze(Y)
-    assert len(shape(Y))==1
-    X = float64(X)       # use double precision
-    K = sum(Y)           # total number of events
-    Z = sum(X[Y==1,:],0) # event-conditioned sums of X
+        #print('Penalty parameter is a scalar')
+        #print('Penalizing all parameters with α=',penalties)
+        penalties = np.ones((D,),dtype='d')*penalties
+    assert Y.shape==(N,)
+    Y = np.squeeze(Y)
+    assert len(Y.shape)==1
+    X = np.float64(X)       # use double precision
+    K = np.sum(Y)           # total number of events
+    Z = np.sum(X[Y==1,:],0) # event-conditioned sums of X
     scale = 1./N         # normalized by the amount of data. can be tweaked?
     def objective(H):
         mu = H[0]
         B  = H[1:]
-        rate = exp(mu+dot(X,B))
-        like = K*mu+dot(Z,B)-sum(rate)-sum(penalties*B**2)
+        rate = np.exp(mu+X.dot(B))
+        like = K*mu+Z.dot(B)-np.sum(rate)-np.sum(penalties*B**2)
         return -like*scale
     def gradient(H):
         mu = H[0]
         B  = H[1:]
-        rate  = exp(mu+dot(X,B))
-        dmu   = K-sum(rate)
+        rate  = np.exp(mu+X.dot(B))
+        dmu   = K-np.sum(rate)
         dpenalty = 2*penalties*B
-        dbeta = Z.T-dot(X.T,rate) - dpenalty
-        grad = append(dmu, dbeta)
+        dbeta = Z.T-X.T.dot(rate) - dpenalty
+        grad = np.append(dmu, dbeta)
         return -grad*scale
     def hessian(H):
         mu = H[0]
         B  = H[1:]
-        rate  = exp(mu+dot(X,B))
-        dmumu = sum(rate)
-        dmuB  = dot(X.T,rate)
-        dBB   = dot(X.T,rate[:,None]*X)
-        ddpen = diag(ones(len(B)))*penalties*2
-        hess  = zeros((len(H),)*2)
+        rate  = np.exp(mu+X.dot(B))
+        dmumu = np.sum(rate)
+        dmuB  = X.T.dot(rate)
+        dBB   = X.T.dot(rate[:,None]*X)
+        ddpen = np.diag(np.ones(len(B)))*penalties*2
+        hess  = np.zeros((len(H),)*2)
         hess[0 ,0 ] = dmumu
         hess[0 ,1:] = dmuB
         hess[1:,0 ] = dmuB.T
@@ -142,12 +143,12 @@ def ppglmfit(X,Y):
         μ, B: the offset and parameter estimates for the GLM model.
     '''
     # add constant value to X, if the 1st column is not constant
-    if mean(Y)>0.1:
+    if np.mean(Y)>0.1:
         print('Caution: spike rate very high, is Poisson assumption valid?')
-    if sum(Y)<100:
+    if np.sum(Y)<100:
         print('Caution: fewer than 100 spikes to fit model')
     if not all(X[:,0]==X[0,0]):
-        X = hstack([ ones((shape(X)[0],1),dtype=X.dtype), X])
+        X = np.hstack([np.ones((X.shape[0],1),dtype=X.dtype), X])
     poisson_model   = GLM(Y,X,family=Poisson())
     poisson_results = poisson_model.fit()
     M = poisson_results.params
@@ -157,7 +158,7 @@ def ppglmfit(X,Y):
 def fitGLM(X,Y,L2Penalty=0.0):
     # Fit the model using gradient descent with hessian
     objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
-    initial = zeros(shape(X)[1]+1)
+    initial = np.zeros(X.shape[1]+1)
     M = minimize(objective,initial,
         jac=gradient,hess=hessian,method='Newton-CG')['x']
     mu,B = M[0],M[1:]
@@ -165,13 +166,13 @@ def fitGLM(X,Y,L2Penalty=0.0):
 
 from numpy.random import permutation
 def crossvalidatedAUC(X,Y,NXVAL=4):
-    N = shape(X)[0]
+    N = X.shape[0]
     P = permutation(N)
     X = X[P,:]
     Y = Y[P]
     blocksize = N//NXVAL
     predicted = []
-    M = zeros(shape(X)[1]+1)
+    M = np.zeros(X.shape[1]+1)
     for i in range(NXVAL):
         a = i*blocksize
         b = a + blocksize
@@ -181,7 +182,7 @@ def crossvalidatedAUC(X,Y,NXVAL=4):
         objective, gradient, hessian = GLMPenaltyL2(train_X,train_Y,0)
         M = minimize(objective,M,jac=gradient,hess=hessian,method='Newton-CG')['x']
         mu,B = M[0],M[1:]
-        predicted.append(mu + dot(X[a:b,:],B))
+        predicted.append(mu + X[a:b,:].dot(B))
     return auc(Y,concatenate(predicted))
 
 
@@ -201,12 +202,12 @@ if __name__=='__MAIN__':
     '''
     mu = -6
     K  = 4                # number of features
-    B  = randn(K)         # draw randomly model weights
-    X  = randn(N,K)       # simulate covariate data
-    L  = exp(mu+dot(X,B)) # simulat conditional intensities
-    Y  = rand(N)<L        # draw spike train from conditional intensity
+    B  = np.randn(K)         # draw randomly model weights
+    X  = np.randn(N,K)       # simulate covariate data
+    L  = np.exp(mu+X.dot(B)) # simulat conditional intensities
+    Y  = np.rand(N)<L        # draw spike train from conditional intensity
     print('Simulated',T,'seconds')
-    print(sum(Y),'spikes at a rate of',sum(Y)/T,'Hz')
+    print(np.sum(Y),'spikes at a rate of',np.sum(Y)/T,'Hz')
 
     # split into training and validation data
     split = N//2 # The operator // is integer division in Python
@@ -219,7 +220,7 @@ if __name__=='__MAIN__':
     tic()
     mu_hat,B_hat = ppglmfit(X_train,Y_train)
     toc()
-    L_hat = exp(dot(X,B_hat)+mu_hat)
+    L_hat = np.exp(X.dot(B_hat)+mu_hat)
     L_hat_train,L_hat_validate = L_hat[:split],L_hat[split:]
     print('The true model is   μ,B =',mu,B)
     print('GLM fit found       μ,B =',mu_hat,B_hat)
@@ -234,7 +235,7 @@ if __name__=='__MAIN__':
     M = minimize(objective, zeros(len(B)+1), jac=gradient)['x']
     mu_hat,B_hat = M[0],M[1:]
     toc()
-    L_hat = exp(dot(X,B_hat)+mu_hat)
+    L_hat = np.exp(X.dot(B_hat)+mu_hat)
     L_hat_train,L_hat_validate = L_hat[:split],L_hat[split:]
     print('The true model is   μ,B =',mu,B)
     print('minimize found      μ,B =',mu_hat,B_hat)
@@ -253,7 +254,7 @@ if __name__=='__MAIN__':
         method='Newton-CG')['x']
     mu_hat,B_hat = M[0],M[1:]
     toc()
-    L_hat = exp(dot(X,B_hat)+mu_hat)
+    L_hat = np.exp(X.dot(B_hat)+mu_hat)
     L_hat_train,L_hat_validate = L_hat[:split],L_hat[split:]
     print('The true model is   μ,B =',mu,B)
     print('minimize found      μ,B =',mu_hat,B_hat)
@@ -270,21 +271,21 @@ if __name__=='__MAIN__':
     mu = -4
     B  = randn(5)
     X  = randn(N,5)
-    L  = exp(mu+dot(X,B))
+    L  = exp(mu+X.dot(B))
     Y  = rand(N)<L
     objective, gradient, hessian = GLMPenaltyL2(X,Y,10)
     p = randn(len(B)+1)
     delta = 0.01
     numeric_gradient = zeros(len(p))
     for i in range(len(p)):
-        q = array(p)
+        q = np.array(p)
         q[i] += delta
         numeric_gradient[i] = (objective(q)-objective(p))/delta
-    numeric_hessian = zeros((len(p),)*2)
+    numeric_hessian = np.zeros((len(p),)*2)
     for i in range(len(p)):
         dp = gradient(p)
         for j in range(len(p)):
-            q = array(p)
+            q = np.array(p)
             q[j] += delta
             dq = gradient(q)
             numeric_hessian[i,j]=(dq-dp)[i]/delta
@@ -294,15 +295,38 @@ if __name__=='__MAIN__':
     print('hessian  of neg loglike at',p,'is\n',hessian(p))
     print('numeric  Δ² of -loglike at',p,'is\n',numeric_hessian)
 
+
+
 def gradientglmfit(X,Y,L2Penalty=0.0):
     '''
+    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)
+    
     Fit Poisson GLM using gradient descent with hessian
     '''
     objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
-    initial = zeros(shape(X)[1]+1)
+    initial = np.zeros(X.shape[1]+1)
     M = minimize(objective, initial,
-        jac=gradient,
-        hess=hessian,
+        jac   =gradient,
+        hess  =hessian,
         method='Newton-CG')['x']
     mu_hat,B_hat = M[0],M[1:]
     return mu_hat, B_hat
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

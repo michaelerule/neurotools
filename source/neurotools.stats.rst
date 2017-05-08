@@ -24,6 +24,7 @@ Submodules
    neurotools.stats.modefind
    neurotools.stats.pvalues
    neurotools.stats.regressions
+   neurotools.stats.spatiotemporal_glm_utils
    neurotools.stats.stats
 
 Module contents

@@ -77,9 +77,9 @@ def derive_log_cosine_basis(N,L,min_interval):
     -------
     B : array, Basis with n_elements x n_times shape
     '''
-    t = arange(L)
-    b = exp(log(L)/(N+1))
-    B = log_cosine_basis(arange(N),t/min_interval,base=b)
+    t = arange(L)/min_interval+1
+    b = exp(log(t[-1])/(N+1))
+    B = log_cosine_basis(arange(N),t,base=b,offset=0)
     return B
 
 def exponential_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):

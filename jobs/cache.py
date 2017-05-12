@@ -1,15 +1,23 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+import sys
+__PYTHON_2__ = sys.version_info<(3, 0)
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 from   collections import defaultdict
-
 import numpy as np
 import scipy.io
-
 import inspect
 import ast
 import types
@@ -53,7 +61,7 @@ def validate_argument_signature(sig):
 def is_dangerous_filename(filename):
     if len(filename)>255:
         return True
-    if type(filename) is unicode:
+    if __PYTHON_2__ and type(filename) is unicode:
         return True
     if any([c in filename for c in "\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
         return True
@@ -62,7 +70,7 @@ def is_dangerous_filename(filename):
 def check_filename(filename):
     if len(filename)>255:
         warnings.warn('FILE NAME MAY BE TOO LONG ON SOME SYSTEMS')
-    if type(filename) is unicode:
+    if __PYTHON_2__ and type(filename) is unicode:
         warnings.warn('FILE NAME IS UNICODE')
     if any([c in filename for c in "/?<>\:*|\"\n\t\b\r"]):
         raise ValueError('Filename contains character forbidden on windows')
@@ -154,7 +162,7 @@ def function_hash_no_subroutines(f):
     '''
     source    = get_source(f)
     docstring = inspect.getdoc(f)
-    name      = f.func_name
+    name      = f.__name__
     module    = f.__module__
     argspec   = neurotools.jobs.decorator.sanitize(inspect.getargspec(f))
     return hash((module,name,docstring,source,argspec,subroutines))
@@ -186,7 +194,7 @@ def function_signature(f):
     g = f
     source    = get_source(f)
     docstring = inspect.getdoc(f)
-    name      = f.func_name
+    name      = f.__name__
     module    = f.__module__
     argspec   = neurotools.jobs.decorator.sanitize(inspect.getargspec(f))
 
@@ -194,7 +202,7 @@ def function_signature(f):
     signature = (docstring,source,argspec)
     name = '.'.join(identity)
     code = base64.urlsafe_b64encode(\
-        str(hash((identity,signature))&0xffff)).replace('=','')
+        str(hash((identity,signature))&0xffff).encode('UTF-8')).decode().replace('=','')
     return name+'.'+code
 
 def signature_to_file_string(f,sig,
@@ -243,13 +251,14 @@ def signature_to_file_string(f,sig,
     Signatures are base64 encoded by default
     '''
     sig = neurotools.jobs.decorator.sanitize(sig)
+    print(sig)
 
     if compressed and not base64encode:
         raise ValueError('If you want compression, turn on base64 encoding')
 
     # A hash value gives us good distribution to control the complexity of
     # the directory tree used to manage the cache, but is not unique
-    hsh = base64.urlsafe_b64encode(str(hash(sig)&0xffff)).replace('=','')
+    hsh = base64.urlsafe_b64encode(str(hash(sig)&0xffff).encode('UTF-8')).decode().replace('=','')
 
     # We also need to store some information about which function this
     # is for. We'll get a human readable name identifying the funciton,
@@ -262,19 +271,22 @@ def signature_to_file_string(f,sig,
     # special characters. Passing the text representation through zlib
     # preserves the uniqueness of the key, while reducing the overall size.
     # This improves performance
+    # convert key to an encoded string
     if   mode=='repr'  : key = repr(sig)
     elif mode=='json'  : key = json.dumps(sig)
     elif mode=='pickle': key = pickle.dumps(sig)
     elif mode=='human' : key = human_encode(sig)
     else: raise ValueError('I support coding modes repr, json, and pickle\n'+
         'I do not recognize coding mode %s'%mode)
+    # compress and base64 encode string
+    key = key.encode('UTF-8')
     if compressed  : key = zlib.compress(key)
     if base64encode: key = base64.urlsafe_b64encode(key)
 
     # Path will be a joining of the hash and the key. The hash should give
     # good distribution, while the key means we can recover the arguments
     # from the file name.
-    filename = '%s.%s.%s'%(fname,hsh,key)
+    filename = '%s.%s.%s'%(fname,hsh,key.decode())
     # If for some reason the path is too long, complain
     if len(filename)>255:
         raise ValueError(\
@@ -326,8 +338,9 @@ def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=T
     # special characters. Passing the text representation through zlib
     # preserves the uniqueness of the key, while reducing the overall size.
     # This improves performance
-    if base64encode: key = base64.urlsafe_b64decode(key)
+    if base64encode: key = base64.urlsafe_b64decode(key.encode('UTF-8'))
     if compressed  : key = zlib.decompress(key)
+    key = key.decode()
     if   mode=='repr'  : sig = ast.literal_eval(key)
     elif mode=='json'  : sig = json.loads(key)
     elif mode=='pickle': sig = pickle.loads(key)
@@ -505,12 +518,12 @@ def disk_cacher(
                         result = np.load(location)
                 if verbose:
                     print('Retrieved cache at ',path)
-                    print('\t%s.%s'%(f.__module__,f.func_name))
+                    print('\t%s.%s'%(f.__module__,f.__name__))
                     print('\t%s'%neurotools.jobs.decorator.print_signature(sig))
             except (EOFError, IOError) as exc:
                 if verbose:
                     print('Recomputing cache at %s'%cache_location)
-                    print('\t%s.%s'%(f.__module__,f.func_name))
+                    print('\t%s.%s'%(f.__module__,f.__name__))
                     print('\t%s'%neurotools.jobs.decorator.print_signature(sig))
 
                 time,result = f(*args,**kwargs)
@@ -540,7 +553,7 @@ def disk_cacher(
                     except (RuntimeError, ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
-                            print('\t%s.%s'%(f.__module__,f.func_name))
+                            print('\t%s.%s'%(f.__module__,f.__name__))
                             print('\t%s'%\
                                 neurotools.jobs.decorator.print_signature(sig))
                             print('\n\t'.join(\
@@ -550,7 +563,7 @@ def disk_cacher(
                         try:
                             print('Wrote cache at ',path)
                             print('\tFor function %s.%s'%\
-                                (f.__module__,f.func_name))
+                                (f.__module__,f.__name__))
                             print('\tArgument signature %s'%\
                                 neurotools.jobs.decorator.print_signature(sig))
                             st        = os.stat(location)

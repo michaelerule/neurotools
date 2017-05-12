@@ -1,12 +1,19 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
-from __future__ import print_function
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+import sys
+__PYTHON_2__ = sys.version_info<(3, 0)
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 '''
 Robust decorators are provided by the decorator package
@@ -23,8 +30,6 @@ import pickle, json, base64, zlib
 
 import numpy as np
 
-import sys
-__PYTHON_2__ = sys.version_info<(3, 0)
 
 
 try:
@@ -71,7 +76,7 @@ def sanitize(sig,mode='liberal'):
         return sanitize(zip(keys,vals),mode=mode)
     if isinstance(sig, (set,)):
         return tuple(sanitize(s,mode=mode) for s in sorted(list(sig)))
-    if hasattr(sig, '__iter__'):
+    if hasattr(sig, '__iter__') and not isinstance(sig,str):
         try:
             return tuple(sanitize(s,mode=mode) for s in list(sig))
         except:

@@ -730,13 +730,7 @@ class PoissonObservationApproximator(Gaussian):
         
         # Bernoilli: stable when rate is very low
         # pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
-        
-        # Truncated poisson: assumes nearly Bernoulli with small
-        # probability of 2-spikes being binned as 1-spike
-        #ll = s.a*x+s.b 
-        #l = np.exp(ll)
-        #pxy = np.exp(s.y*ll)/(1+l+l**2*.5)
-        
+                
         # Multiply pxy by distribution o, 
         # handling identity as special case
         p = pxy*(o if o is 1 else o(x)+1e-10)

@@ -251,7 +251,6 @@ def signature_to_file_string(f,sig,
     Signatures are base64 encoded by default
     '''
     sig = neurotools.jobs.decorator.sanitize(sig)
-    print(sig)
 
     if compressed and not base64encode:
         raise ValueError('If you want compression, turn on base64 encoding')
@@ -503,7 +502,7 @@ def disk_cacher(
             except ValueError as exc:
                 print('Generating cache key has failed')
                 print('Skipping chaching entirely')
-                traceback.print_sxc(sxc)
+                traceback.print_exc(sxc)
                 time,result = f(*args,**kwargs)
                 return result
             try:

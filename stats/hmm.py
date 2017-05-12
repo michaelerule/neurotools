@@ -557,15 +557,16 @@ def backward_abstract(y, x0, T, B):
     b = [b[i] for i in range(L)]
     return np.array(b)
 
-def forward_backward_abstract(y, x0, T, B):
+def forward_backward_abstract(y, x0, T, B, prior=1):
     '''
     Abstracted form of forward-backward algorithm
     
     y     : sequence of observations
     B     : y → P(x), conditioning on observations P(x|y(t))
     x0    : P(x)
-    T.fwd : P(x)→P(x); linear operator for the forward  pass
-    T.bwd : P(x)→P(x); linear operator for the backward pass
+    T.fwd : P(x)→P(x); operator for the forward  pass
+    T.bwd : P(x)→P(x); operator for the backward pass
+    prior : Optional, P(x) multiplied with the latent state on every time-step
     '''
     L = len(y)
     # forward part of the algorithm
@@ -576,7 +577,7 @@ def forward_backward_abstract(y, x0, T, B):
     f[0] = B(y[0]) * x0
     for i in range(1,L):
         # condition on transition from previous state and current observation
-        f[i] = B(y[i])*T.fwd(f[i-1])
+        f[i] = B(y[i])*(T.fwd(f[i-1])*prior)
     # backward part of the algorithm
     # compute conditional probabilities of subsequent
     # chain from each state at each time-point
@@ -587,7 +588,7 @@ def forward_backward_abstract(y, x0, T, B):
         # combine next observation, and likelihood
         # of state based on all subsequent, weighted
         # according to transition matrix
-        b[i] = T.bwd(B(y[i+1])*b[i+1])
+        b[i] = T.bwd(B(y[i+1])*(b[i+1]*prior))
     # Merge the forward and backward inferences
     pr = [f[i]*b[i] for i in range(L)]
     # Clean up the dictionary representations used for notational clarity above
@@ -610,6 +611,23 @@ def gaussian_quadrature(p,domain):
     assert t>=0
     return Gaussian(m, t)
 
+def gaussian_quadrature_logarithmic(logp,domain):
+    '''
+    logp is (proportional to) a 1D density
+    estimate it's mean and precision over the domain
+    NOT IMPLEMENTED
+    '''
+    assert 0
+    normalization = sum(p)
+    m = np.sum(domain*p)/normalization
+    assert np.isfinite(m)
+    v = np.sum((domain-m)**2*p/normalization)
+    assert np.isfinite(v)
+    t = 1./(v+1e-10)
+    assert np.isfinite(t)
+    assert t>=0
+    return Gaussian(m, t)
+
 class Gaussian:
     '''
     Gaussian model to use in abstracted forward-backward
@@ -625,7 +643,7 @@ class Gaussian:
         if o is 1: return s
         assert isinstance(o,Gaussian)
         t = s.t+o.t
-        m = (s.m*s.t + o.m*o.t)/(t) if abs(t)>1e-16 else s.m+o.m
+        m = (s.m*s.t + o.m*o.t)/(t) if abs(t)>1e-16 else s.m+o.m        
         assert np.isfinite(t)
         assert np.isfinite(m)
         result = Gaussian(m,t)
@@ -742,6 +760,51 @@ class PoissonObservationModel:
     def __call__(s,y):
         return PoissonObservationApproximator(s.a,s.b,y)
 
+class BernoulliObservationApproximator(Gaussian):
+    '''
+    Approximate Gaussian distribution to use in abstracted forward-
+    backward. Used to condition Gaussian states on Poisson 
+    observations
+    '''
+    def __init__(s,a,b,y):
+        s.a,s.b,s.y = (a,b,y)
+    def __mul__(s,o):
+        # Estimate integration limits
+        if o is 1 or o.t<1e-6:
+            # No information about the state yet.
+            # We aren't sure over what domain to perform the integration
+            # Use a Laplace approximation of p(x|y) to get appx bounds
+            m0 = (np.log(s.y+1)-s.b)/s.a
+            t0 = (s.y+1)*s.a**2
+            s0 = np.sqrt(1/t0)
+        else:
+            # Use the prior on x to guess integration limits
+            m0 = o.m
+            s0 = np.sqrt(1/o.t)
+        # Integrate within ±4σ of the mean of the prior
+        x = np.linspace(m0-4*s0,m0+4*s0,50)#
+        # Get the conditional probability of state given this observation
+        # Bernoilli may also be a little more stable sometime
+        pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
+        # Multiply pxy by distribution o, 
+        # handling identity as special case
+        p = pxy*(o if o is 1 else o(x)+1e-10)
+        assert np.all(np.isfinite(p))
+        return gaussian_quadrature(p,x)
+    def __str__(s): 
+        return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
+class BernoulliObservationModel:
+    '''
+    Bernoulli observation model
+    Returns a density that, when multiplied by a Gaussian,
+    returns a numeric approximation of the posterior as a Gaussian
+    see: BernoulliObservationApproximator
+    '''
+    def __init__(s,a,b):
+        s.a,s.b = a,b
+    def __call__(s,y):
+        return BernoulliObservationApproximator(s.a,s.b,y)
+
 class TruncatedPoissonObservationApproximator(Gaussian):
     '''
     Approximate Gaussian distribution to use in abstracted forward-
@@ -769,11 +832,11 @@ class TruncatedPoissonObservationApproximator(Gaussian):
         # this is poisson in lambda = np.exp(ax+b)
         #pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/fact(s.y)
         # Bernoilli may also be a little more stable sometime
-        pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
-        # Maybe a truncated Poisson?
-        #ll = s.a*x+s.b 
-        #l = np.exp(ll)
-        #pxy = np.exp(s.y*ll)/(1+l+l**2*.5)
+        #pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
+        # Truncated Poisson
+        ll  = s.a*x+s.b 
+        l   = np.exp(ll)
+        pxy = np.exp(s.y*ll)/(1+l+l**2*.5)
         # Multiply pxy by distribution o, 
         # handling identity as special case
         p = pxy*(o if o is 1 else o(x)+1e-10)
@@ -781,7 +844,6 @@ class TruncatedPoissonObservationApproximator(Gaussian):
         return gaussian_quadrature(p,x)
     def __str__(s): 
         return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
-
 class TruncatedPoissonObservationModel:
     '''
     Poisson observation model

@@ -145,7 +145,9 @@ def spatiotemporal_history(stims,hlen,hn,hmin,chs=None,ncomp=None,pad=0):
     if not ncomp is None:
         assert(ncomp>0)
         assert(ncomp<=nch)
-        Bs = pca(stims,ncomp)[1].T
+        w,v = pca(stims,ncomp)
+        Bs = v.T
+        #Bs = np.sqrt(w[:,None])*v.T
     else:
         Bs = np.eye(nch)
     # Convolve w history basis

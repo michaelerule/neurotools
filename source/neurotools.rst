@@ -33,6 +33,7 @@ Submodules
    neurotools.opto
    neurotools.plot
    neurotools.spikes
+   neurotools.system
    neurotools.tools
    neurotools.waveform
 

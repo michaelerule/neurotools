@@ -765,14 +765,14 @@ def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
 def savefigure(name):
     '''
     Saves figure as both SVG and PDF, prepending the current date
-    in YYYYMMDD format.
+    in YYYYMMDD forma
     '''
     dirname  = os.path.dirname(name)
     if dirname=='': dirname='./'
     basename = os.path.basename(name)
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True)
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True)
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True)
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True,bbox_inches='tight')
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight')
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True,bbox_inches='tight')
 
 def clean_y_range(ax=None,precision=1):
     if ax is None: ax=gca()

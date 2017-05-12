@@ -61,8 +61,8 @@ def sanitize(sig,mode='liberal'):
         return sanitize(sig)
     if isinstance(sig, (list,tuple)):
         if len(sig)<=0: return ()
-        while len(sig)==1: sig=sig[0]
-        return tuple(sanitize(s,mode=mode) for s in sig)
+        if len(sig)==1: return sanitize(sig[0],mode=mode)
+        else: return tuple(sanitize(s,mode=mode) for s in sig)
     if __PYTHON_2__ and isinstance(sig,(unicode,)):
         return sanitize(str(sig),mode=mode)
     if isinstance(sig, (dict,)):

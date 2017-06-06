@@ -45,7 +45,7 @@ def dpss_cached(length,half_bandwidth_parameter):
     ndarray:
         taper eigenvalues ( weights )
     '''
-    tapers,eigen = dpss(length,half_bandwidth_parameter)
+    tapers,eigen = dpss(int(length),half_bandwidth_parameter)
     return tapers.T,eigen
 
 def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
@@ -53,7 +53,7 @@ def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
     Parameters
     ----------
     x : ndarray
-        Signal to use
+        Signal to use; spectrum taken over last dimension
     k : int (positive)
         number of tapers (positive)
     Fs: int

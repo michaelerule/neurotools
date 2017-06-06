@@ -14,19 +14,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.mlab import find
 
-def pca(x,n_keep=None):
-    '''
-    w,v = pca(x,n_keep=None)
-    Performs PCA on data x, keeping the first n_keep dimensions
-    '''
-    assert x.shape[1]<=x.shape[0]
-    cov = x.T.dot(x)
-    w,v = scipy.linalg.eig(cov)
-    o   = np.argsort(-w)
-    w,v = w[o].real,v[:,o].real
-    if n_keep is None: n_keep = len(w)
-    w,v = w[:n_keep],v[:,:n_keep]
-    return w,v
+from neurotools.stats.stats import pca
+
 
 def orthogonalize(B):
     '''

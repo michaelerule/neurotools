@@ -12,6 +12,7 @@ Submodules
    neurotools.stats.density
    neurotools.stats.distributions
    neurotools.stats.entropy
+   neurotools.stats.fast_kde
    neurotools.stats.glm
    neurotools.stats.gmm
    neurotools.stats.history_basis
@@ -22,8 +23,10 @@ Submodules
    neurotools.stats.mcint
    neurotools.stats.mixtures
    neurotools.stats.modefind
+   neurotools.stats.mvg
    neurotools.stats.pvalues
    neurotools.stats.regressions
+   neurotools.stats.sde
    neurotools.stats.spatiotemporal_glm_utils
    neurotools.stats.stats
 

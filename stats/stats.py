@@ -139,17 +139,17 @@ def reject_outliers(x,percent=10,side='both'):
     to_keep   = find(remove==False)
     return x[to_keep], to_keep, to_remove
     
-def pca(c,eps=1e-6):
+def pca(x,n_keep=None):
     '''
-    wrapper for w,v=eig(c)
-    removes dimensions smaller than eps=1e-6 of the largest dimension
-    sorts dimensions by descending weight
+    w,v = pca(x,n_keep=None)
+    Performs PCA on data x, keeping the first n_keep dimensions
     '''
-    w,v = np.linalg.eig(c)
-    ok = w>eps*np.max(w)
-    w=w[ok]
-    v=v[:,ok]
-    order = np.argsort(-w)
-    w=w[order]
-    v=v[:,order]
+    assert x.shape[1]<=x.shape[0]
+    cov = x.T.dot(x)
+    w,v = scipy.linalg.eig(cov)
+    o   = np.argsort(-w)
+    w,v = w[o].real,v[:,o].real
+    if n_keep is None: n_keep = len(w)
+    w,v = w[:n_keep],v[:,:n_keep]
     return w,v
+

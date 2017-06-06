@@ -21,9 +21,19 @@ import numpy as np
 
 def SGOrd(m,fc,fs):
     '''
+    
+    Compute polynomial order for Savitsky-Golay filter
+    
+    
     Fc = (N+1)/(3.2M-4.6)
     For fixed M, Fc
     N = Fc*(3.2M-4.6)-1
+    
+    Parameters
+    ----------
+    m : length of filter in samples
+    fc : low frequency cutoff
+    fs : sample rate
     '''
     fc = fc/(0.5*fs)
     return int(round(fc*(3.2*m-4.6)-1))
@@ -80,28 +90,39 @@ def SGfiltJ(m,fc,fs):
 
 def SGaccelerate(x,m,fc,fs):
     n = len(x)
-    x = concatenate([x[::-1],x,x[::-1]])
+    x = np.concatenate([x[::-1],x,x[::-1]])
     x = np.convolve(x,SGfiltA(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs*fs
 
 def SGjerk(x,m,fc,fs):
     n = len(x)
-    x = concatenate([x[::-1],x,x[::-1]])
+    x = np.concatenate([x[::-1],x,x[::-1]])
     x = np.convolve(x,SGfiltA(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs*fs*fs
 
 def SGdifferentiate(x,m,fc,fs):
     n = len(x)
-    x = concatenate([x[::-1],x,x[::-1]])
+    x = np.concatenate([x[::-1],x,x[::-1]])
     x = np.convolve(x,SGfiltV(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs
 
 def SGsmooth(x,m,fc,fs):
+    '''
+    Uses an inefficient method of handling the boundary conditions
+    
+    Parameters
+    ----------
+    x : signal to smooth
+    m : length of filter in samples
+    fc : low frequency cutoff
+    fs : sample rate
+
+    '''
     n = len(x)
-    x = concatenate([x[::-1],x,x[::-1]])
+    x = np.concatenate([x[::-1],x,x[::-1]])
     x = np.convolve(x,SGfilt(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x

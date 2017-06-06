@@ -31,7 +31,6 @@ import pickle, json, base64, zlib
 import numpy as np
 
 
-
 try:
     import decorator
     from decorator import decorator as robust_decorator
@@ -60,7 +59,7 @@ def sanitize(sig,mode='liberal'):
     if isinstance(sig,np.ndarray):
         if sig.ndim==0:
             sig = sig[()]
-        return sanitize(sig)
+        return sanitize(tuple(sig))
     if isinstance(sig,np.core.memmap):
         sig = np.array(sig)
         return sanitize(sig)
@@ -90,6 +89,7 @@ def sanitize(sig,mode='liberal'):
             if any([c not in 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890 ' for c in sig]):
                 raise ValueError('Strict mode requires all strings consist of letters, numbers, and spaces')
             return sig
+        raise ValueError('Strict mode requires int, float, bool, or str types')
     return sig
 
 def summarize_function(f):

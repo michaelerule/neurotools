@@ -42,11 +42,11 @@ def prepare_wavelet_fft_basis(fa,fb,resolution,L,w,Fs):
             N = len(wl)
             assert N==L
         padded = zeros(L,dtype=complex64)
-        start  = (L-N)/2
+        start  = int((L-N)//2)
         padded[start:start+N]=wl
         reordered = zeros(L,dtype=complex64)
-        reordered[L/2:]=padded[:L/2]
-        reordered[:L/2]=padded[L/2:]
+        reordered[L//2:]=padded[:L//2]
+        reordered[:L//2]=padded[L//2:]
         allwl.append(reordered)
         fftwl.append(fft(reordered))
     return freqs,array(fftwl)
@@ -130,11 +130,11 @@ def prepare_wavelet_fft_basis_logspace(fa,fb,nfreq,L,w,Fs):
             N = len(wl)
             assert N==L
         padded = zeros(L,dtype=complex64)
-        start  = (L-N)/2
+        start  = int((L-N)//2)
         padded[start:start+N]=wl
         reordered = zeros(L,dtype=complex64)
-        reordered[L/2:]=padded[:L/2]
-        reordered[:L/2]=padded[L/2:]
+        reordered[L//2:]=padded[:L//2]
+        reordered[:L//2]=padded[L//2:]
         allwl.append(reordered)
         fftwl.append(fft(reordered))
     return freqs,array(fftwl)

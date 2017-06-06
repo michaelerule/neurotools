@@ -1,7 +1,0 @@
-neurotools\.blackrock\.array module
-===================================
-
-.. automodule:: neurotools.blackrock.array
-    :members:
-    :undoc-members:
-    :show-inheritance:

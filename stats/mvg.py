@@ -25,59 +25,11 @@ import scipy.linalg
 import numpy.random
 from numpy.random import randn
 from numpy import pi
+from neurotools.matric import *
 
-print('init MVG')
-
-def real_eig(M):
-    if not np.all(np.isreal(M)):
-        raise ValueError("Matrix has complex entries; log-determinate unsupported")
-    if not (type(M)==np.ndarray):
-        raise ValueError("Expected array; type is %s"%type(M))
-    w,v = np.linalg.eig(M)
-    if any(np.iscomplex(w)):
-        raise ValueError('Complex eigenvalues! Matrix is non-PD or too large for machine precision')
-    w = np.real(w)
-    order = np.argsort(w)
-    w = w[order]
-    v = v[:,order]
-    return w,v
-
-
-print('defined real_eig')
-
-def condition(M):
-    w,v = real_eig(M)
-    mine = np.min(abs(w))
-    maxe = np.max(abs(w))
-    return mine/maxe
-
-def logdet(M,eps=1e-9):
-    w,v = real_eig(M)
-    if any(w<eps):
-        raise ValueError('Non positive-definite matrix provided, log-determinant is not real-valued') 
-    det = np.sum(np.log(w))
-    return det
-
-def check_finite_real(M):
-    if np.any(~np.isreal(M)):
-        raise ValueError("Complex value encountered for real vector")
-    if np.any(~np.isfinite(M)):
-        raise ValueError("Non-finite number encountered")
-
-def check_covmat(C,N,eps=1e-9):
-    '''
-    Verify that matrix M is a size NxN precision or covariance matirx
-    '''
-    if not C.shape==(N,N):
-        raise ValueError("Expected size %d x %d matrix"%(N,N))
-    w,v = real_eig(C)
-    if any(w<eps):
-        raise ValueError('Non positive-definite matrix') 
-
-def MVG_check(M,C):
+def MVG_check(M,C,eps=1e-6):
     check_finite_real(M)
-    N = len(M)
-    check_covmat(C,N)
+    check_covmat(C,len(M),eps=eps)
 
 def MVG_logPDF(X,M,P=None,C=None):
     '''
@@ -159,6 +111,7 @@ def MVG_multiply(M1,P1,M2,P2):
     MVG_check(M2,P2)
     P = P1 + P2
     M = scipy.linalg.lstsq(P,np.squeeze(P1.dot(M1)+P2.dot(M2)))[0]
+    MVG_check(M,P)
     return M,P
 
 
@@ -172,14 +125,36 @@ def MVG_multiply_C(M1,C1,M2,C2):
     assert 0 
     
 
-def MVG_divide(M1,P1,M2,P2):
+def MVG_divide(M1,P1,M2,P2,eps=1e-6,handle_negative='repair',verbose=0):
     '''
     Divide two multivariate Gaussians based on precision
+    
+    Parameters
+    ----------
+    
+    handle_negative : 
+        'repair' (default): returns a nearby distribution with positive variance
+        'ignore': can return a distribution with negative variance
+        'error': throws a ValueError if negative variances are producted
     '''
-    MVG_check(M1,P1)
-    MVG_check(M2,P2)
+    MVG_check(M1,P1,eps=eps)
+    MVG_check(M2,P2,eps=eps)
     P = P1 - P2
+    w,v = real_eig(P)
+    if any(w<eps):
+        if handle_negative=='repair':
+            w[w<eps]=eps
+            P = v.dot(diag(w)).dot(v.T)
+            if verbose:
+                print('Warning: non-positive precision in Gaussian division')
+        elif handle_negative=='ignore':
+            pass
+        elif handle_negative=='error':
+            raise ValueError('Distribution resulting from division has non-positive precision!')
+        else:
+            raise ValueError('Argument handle_negative must be "repair", "ignore", or "error"')
     M = scipy.linalg.lstsq(P,P1.dot(M1) - P2.dot(M2))[0]
+    MVG_check(M,P,eps=eps)
     return M,P
 
 def MVG_projection(M,C,A):
@@ -191,11 +166,9 @@ def MVG_projection(M,C,A):
     A : KxN projection of the vector space (should be unitary?)
     '''
     MVG_check(M,C)
-    
     M = A.dot(M)
-    #C = A.dot(C).dot(A.T)
-    #C = A.dot(C).dot(pinv(A))
     C = scipy.linalg.lstsq(A.T,C.dot(A.T))[0].T
+    MVG_check(M,C)
     return M,C
 
 def MVG_entropy(M,P=None,C=None):
@@ -216,7 +189,7 @@ def MVG_entropy(M,P=None,C=None):
         MVG_check(M,P)
         return 0.5*(k*log(2*pi)+k-logdet(P))
     
-def MGV_DKL(M0,P0,M1,P1):
+def MVG_DKL(M0,P0,M1,P1):
     '''
     KL divergence between two Gaussians
     
@@ -231,7 +204,27 @@ def MGV_DKL(M0,P0,M1,P1):
     MVG_check(M1,P1)
     N = len(M0)
     M1M0 = M1-M0
-    return 0.5*(np.sum(np.diag(P1.dot(np.linalg.pinv(P0))))+logdet(P0)-logdet(P1)-N+M1M0.T.dot(P1).dot(M1M0))
+    return 0.5*(np.sum(P1*pinv(P0))+logdet(P0)-logdet(P1)-N+M1M0.T.dot(P1).dot(M1M0))
+    #return 0.5*(np.sum(np.diag(P1.dot(np.linalg.pinv(P0))))+logdet(P0)-logdet(P1)-N+M1M0.T.dot(P1).dot(M1M0))
+    
+def MVG_DKL_CP(M0,C0,M1,P1):
+    '''
+    KL divergence between two Gaussians
+    First one specified using covariance
+    Second one using precision
+    
+    Test
+    ----
+    M = randn(10)
+    Q = randn(N,N)
+    P = Q.dot(Q.T)
+    MGV_DKL(M,P,M,P)
+    '''
+    MVG_check(M0,C0)
+    MVG_check(M1,P1)
+    N = len(M0)
+    M1M0 = M1-M0
+    return 0.5*(sum(P1*C0)-logdet(C0)-logdet(P1) - N + sum(M1M0.T.dot(P1)*M1M0,axis=0))
 
 def MVG_conditional(M0,P0,M1,P1):
     '''
@@ -250,24 +243,76 @@ def MVG_kalman(M,C,A,Q):
     Performs a Kalman update with linear transform A and covariance Q
     Returns the posterior mean and covariance
     '''
+    MVG_check(M,C)
+    check_covmat(Q)
     M = A.dot(M)
     C = A.dot(C).dot(A.T) + Q
+    MVG_check(M,C)
     return M,C
+    
+def MVG_kalman_P_inverseA(M,P,A,invA,Q):
+    '''
+    Performs a Kalman update with linear transform A and covariance Q
+    Returns the posterior mean and covariance
+    
+    This one accepts and returns precision
+    This one needs the inverse of the forward state transition matrix
+    
+    C2 = ACA'+Q
+    P2 = inv[A inv(P) A' + Q]
+    P2 = inv[ A (inv(P) + inv(A) Q inv(A') ) A' ]
+    P2 = inv[ A inv(P) (1 + P inv(A) Q inv(A') ) A' ]
+    P2 = inv(A') inv(1 + P inv(A) Q inv(A')) P inv(A)
+    '''
+    MVG_check(M,P)
+    check_covmat(Q)
+    M = A.dot(M)
+    F = eye(len(M)) + P.dot(invA).dot(Q).dot(invA.T)
+    G = scipy.linalg.lstsq(F,P)[0]
+    P = invA.T.dot(G).dot(invA)
+    # re-symmetrizing of covariance matrix seems necessary
+    P = 0.5*(P+P.T)
+    MVG_check(M,P)
+    return M,P
 
-def MVG_kalman_joint(M,C,A,Q):
+def MVG_kalman_joint(M,C,A,Q,safe=0):
     '''
     Performs a Kalman update with linear transform A and covariance Q
     Keeps track of the joint distribution between the prior and posterior
     '''
-    MVG_check(M,C)
+    if safe: MVG_check(M,C)
+    if safe: check_covmat(Q)
     M1 = A.dot(M)
     AC = A.dot(C)
     C1 = AC.dot(A.T) + Q
-    MVG_check(M1,C1)
+    if safe: MVG_check(M1,C1)
     M2 = np.concatenate([M,M1])
-    C2 = np.array(np.bmat([[C,AC],[AC.T,C1]]))
-    MVG_check(M2,C2)
+    C2 = np.array(np.bmat([[C,AC.T],[AC,C1]]))
+    if safe: MVG_check(M2,C2)
     return M2,C2
 
-
+def MVG_kalman_joint_P(M,P,A,Q=None,W=None,safe=0):
+    '''
+    Performs a Kalman update with linear transform A and covariance Q
+    Keeps track of the joint distribution between the prior and posterior
+    Accepts and returns precision matrix
+    Q must be invertable
+    '''
+    if safe: check_covmat(P)
+    if Q is None and W is None:
+        raise ValueError("Please provide either noise covariance Q or its inverse W as arguments")
+    if safe: MVG_check(M,P)
+    if W is None:
+        # Invert noise matrix
+        if safe: check_covmat(Q)
+        W = pinv(Q)
+    # (else use provided inverse, but check it)
+    if safe: W = check_covmat(W)
+    M2  = np.concatenate([M,A.dot(M)])
+    nWA = -W.dot(A)
+    P2 = np.array(np.bmat([
+        [P-nWA.T.dot(A),nWA.T],
+        [nWA           , W]]))
+    if safe: MVG_check(M2,P2)
+    return M2,P2
 

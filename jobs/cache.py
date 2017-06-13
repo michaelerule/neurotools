@@ -208,7 +208,8 @@ def function_signature(f):
 def signature_to_file_string(f,sig,
     mode='repr',
     compressed=True,
-    base64encode=True):
+    base64encode=True,
+    truncate=True):
     '''
     Converts an argument signature to a string if possible. This can
     be used to store cached results in a human-readable format.
@@ -288,13 +289,21 @@ def signature_to_file_string(f,sig,
     filename = '%s.%s.%s'%(fname,hsh,key.decode())
     # If for some reason the path is too long, complain
     if len(filename)>255:
-        raise ValueError(\
-            'Argument specification exceeds maximum path length.\n'+
-            'Function probably accepts data as an argument,\n'+
-            'rather than a key to locate data. See Joblib for a\n'+
-            'caching framework that uses cryptographic hashes\n'+
-            'to solve this problem. For now, we skip the cache.\n\n'+
-            'The offending filename is '+filename)
+        if truncate:
+            # hash the key if it is too long and truncation is enabled
+            # TODO: probably should be a better hash function?
+            s  = key.decode()
+            kh = base64.urlsafe_b64encode(str(hash(s)).encode('UTF-8')).decode().replace('=','')
+            filename = '%s.%s.%s'%(fname,hsh,kh)
+            filename = filename[:255]
+        else:
+            raise ValueError(\
+                'Argument specification exceeds maximum path length.\n'+
+                'Function probably accepts data as an argument,\n'+
+                'rather than a key to locate data. See Joblib for a\n'+
+                'caching framework that uses cryptographic hashes\n'+
+                'to solve this problem. For now, we skip the cache.\n\n'+
+                'The offending filename is '+filename)
     check_filename(filename)
     return filename
 
@@ -502,7 +511,11 @@ def disk_cacher(
             except ValueError as exc:
                 print('Generating cache key has failed')
                 print('Skipping chaching entirely')
-                traceback.print_exc(sxc)
+                try:
+                    traceback.print_exc(exc)
+                except:
+                    print('Error occurred while printing traceback')
+                    print(repr(exc))
                 time,result = f(*args,**kwargs)
                 return result
             try:

@@ -62,6 +62,7 @@ from neurotools.functions           import *
 from neurotools.namespace           import *
 from neurotools.color               import *
 from neurotools.plot                import *
+from neurotools.matrix              import *
 
 from neurotools.models.lif               import *
 

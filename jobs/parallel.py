@@ -66,7 +66,7 @@ __N_CPU__ = cpu_count()
 
 reference_globals = globals()
 
-def parmap(f,problems,leavefree=1,debug=False,verbose=False):
+def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
     '''
     Parallel implmenetation of map using multiprocessing
 
@@ -94,18 +94,20 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False):
 
     enumerator = map(f,problems) if debug else mypool.imap(f,problems)
     results = {}
-    sys.stdout.write('\n')
+    if show_progress:
+        sys.stdout.write('\n')
     for i,result in enumerator:
-        sys.stdout.write('\rdone %0.1f%% '%((i+1)*100./njobs))
-        sys.stdout.flush()
+        if show_progress:
+            sys.stdout.write('\rdone %0.1f%% '%((i+1)*100./njobs))
+            sys.stdout.flush()
         # if it is a one element tuple, unpack it automatically
         if isinstance(result,tuple) and len(result)==1:
             result=result[0]
         results[i]=result
         if verbose and type(result) is RuntimeError:
             print('ERROR PROCESSING',problems[i])
-
-    sys.stdout.write('\r            \r')
+    if show_progress:
+        sys.stdout.write('\r            \r')
     return [results[i] if i in results else None \
         for i,k in enumerate(problems)]
 

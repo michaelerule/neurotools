@@ -19,6 +19,17 @@ from scipy.stats.stats         import describe
 from neurotools.jobs.decorator import *
 from scipy.io                  import loadmat
 
+import sys
+from numbers import Number
+from collections import Set, Mapping, deque
+
+try: # Python 2
+    zero_depth_bases = (basestring, Number, xrange, bytearray)
+    iteritems = 'iteritems'
+except NameError: # Python 3
+    zero_depth_bases = (str, bytes, Number, range, bytearray)
+    iteritems = 'items'
+
 # this line must come last if we want memoization
 #from neurotools.jobs.cache import *
 
@@ -205,14 +216,6 @@ def globalize(function,*args,**krgs):
     warn('globalized ' +' '.join(map(str,argnames)))
     return function(*newargs,**krgs)
 
-@robust_decorator
-def synonymize(fun):
-    '''
-    decorator to register likely name variant of a function with globals
-    not implemented.
-    will not shadow other globals
-    '''
-    assert 0
 
 # common aliases
 exists = varexists
@@ -346,16 +349,6 @@ def ensure_dir(dirname):
 
 # http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python
 
-import sys
-from numbers import Number
-from collections import Set, Mapping, deque
-
-try: # Python 2
-    zero_depth_bases = (basestring, Number, xrange, bytearray)
-    iteritems = 'iteritems'
-except NameError: # Python 3
-    zero_depth_bases = (str, bytes, Number, range, bytearray)
-    iteritems = 'items'
 
 def getsize(obj):
     """Recursively iterate to sum size of object & members."""

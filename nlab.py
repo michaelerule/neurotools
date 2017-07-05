@@ -60,6 +60,7 @@ from neurotools.tools               import *
 from neurotools.ntime               import *
 from neurotools.functions           import *
 from neurotools.namespace           import *
+from neurotools.operators           import *
 from neurotools.color               import *
 from neurotools.plot                import *
 from neurotools.matrix              import *

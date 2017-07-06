@@ -1,5 +1,5 @@
-neurotools\.signal\.savitskygolay module
-========================================
+neurotools.signal.savitskygolay module
+======================================
 
 .. automodule:: neurotools.signal.savitskygolay
     :members:

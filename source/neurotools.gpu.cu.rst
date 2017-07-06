@@ -1,5 +1,5 @@
-neurotools\.gpu\.cu package
-===========================
+neurotools.gpu.cu package
+=========================
 
 Submodules
 ----------

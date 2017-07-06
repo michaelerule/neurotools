@@ -1,5 +1,5 @@
-neurotools\.gpu\.cu\.function module
-====================================
+neurotools.gpu.cu.function module
+=================================
 
 .. automodule:: neurotools.gpu.cu.function
     :members:

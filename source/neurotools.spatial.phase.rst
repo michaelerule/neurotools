@@ -1,5 +1,5 @@
-neurotools\.spatial\.phase module
-=================================
+neurotools.spatial.phase module
+===============================
 
 .. automodule:: neurotools.spatial.phase
     :members:

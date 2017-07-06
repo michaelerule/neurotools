@@ -1,5 +1,5 @@
-neurotools\.spatial\.magickernel module
-=======================================
+neurotools.spatial.magickernel module
+=====================================
 
 .. automodule:: neurotools.spatial.magickernel
     :members:

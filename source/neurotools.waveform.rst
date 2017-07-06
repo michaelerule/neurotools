@@ -1,5 +1,5 @@
-neurotools\.waveform module
-===========================
+neurotools.waveform module
+==========================
 
 .. automodule:: neurotools.waveform
     :members:

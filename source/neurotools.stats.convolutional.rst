@@ -1,5 +1,5 @@
-neurotools\.stats\.convolutional module
-=======================================
+neurotools.stats.convolutional module
+=====================================
 
 .. automodule:: neurotools.stats.convolutional
     :members:

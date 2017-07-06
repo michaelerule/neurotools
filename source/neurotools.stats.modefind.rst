@@ -1,5 +1,5 @@
-neurotools\.stats\.modefind module
-==================================
+neurotools.stats.modefind module
+================================
 
 .. automodule:: neurotools.stats.modefind
     :members:

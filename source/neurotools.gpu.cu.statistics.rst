@@ -1,5 +1,5 @@
-neurotools\.gpu\.cu\.statistics module
-======================================
+neurotools.gpu.cu.statistics module
+===================================
 
 .. automodule:: neurotools.gpu.cu.statistics
     :members:

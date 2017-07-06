@@ -1,5 +1,5 @@
-neurotools\.clear module
-========================
+neurotools.clear module
+=======================
 
 .. automodule:: neurotools.clear
     :members:

@@ -1,5 +1,5 @@
-neurotools\.stats\.mvg module
-=============================
+neurotools.stats.mvg module
+===========================
 
 .. automodule:: neurotools.stats.mvg
     :members:

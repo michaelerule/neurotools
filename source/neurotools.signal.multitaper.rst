@@ -1,5 +1,5 @@
-neurotools\.signal\.multitaper module
-=====================================
+neurotools.signal.multitaper module
+===================================
 
 .. automodule:: neurotools.signal.multitaper
     :members:

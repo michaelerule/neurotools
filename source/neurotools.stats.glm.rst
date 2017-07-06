@@ -1,5 +1,5 @@
-neurotools\.stats\.glm module
-=============================
+neurotools.stats.glm module
+===========================
 
 .. automodule:: neurotools.stats.glm
     :members:

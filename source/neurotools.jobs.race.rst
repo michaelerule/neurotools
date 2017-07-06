@@ -1,5 +1,5 @@
-neurotools\.jobs\.race module
-=============================
+neurotools.jobs.race module
+===========================
 
 .. automodule:: neurotools.jobs.race
     :members:

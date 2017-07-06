@@ -1,5 +1,5 @@
-neurotools\.stats\.mixtures module
-==================================
+neurotools.stats.mixtures module
+================================
 
 .. automodule:: neurotools.stats.mixtures
     :members:

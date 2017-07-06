@@ -1,5 +1,5 @@
-neurotools\.gpu\.cu\.logic module
-=================================
+neurotools.gpu.cu.logic module
+==============================
 
 .. automodule:: neurotools.gpu.cu.logic
     :members:

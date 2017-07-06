@@ -1,5 +1,5 @@
-neurotools\.stats\.fast\_kde module
-===================================
+neurotools.stats.fast_kde module
+================================
 
 .. automodule:: neurotools.stats.fast_kde
     :members:

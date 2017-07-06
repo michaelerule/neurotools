@@ -1,5 +1,5 @@
-neurotools\.stats\.pvalues module
-=================================
+neurotools.stats.pvalues module
+===============================
 
 .. automodule:: neurotools.stats.pvalues
     :members:

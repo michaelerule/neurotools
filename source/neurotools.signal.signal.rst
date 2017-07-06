@@ -1,5 +1,5 @@
-neurotools\.signal\.signal module
-=================================
+neurotools.signal.signal module
+===============================
 
 .. automodule:: neurotools.signal.signal
     :members:

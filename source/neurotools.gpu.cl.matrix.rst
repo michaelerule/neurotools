@@ -1,5 +1,5 @@
-neurotools\.gpu\.cl\.matrix module
-==================================
+neurotools.gpu.cl.matrix module
+===============================
 
 .. automodule:: neurotools.gpu.cl.matrix
     :members:

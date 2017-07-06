@@ -1,5 +1,5 @@
-neurotools\.jobs\.decorator module
-==================================
+neurotools.jobs.decorator module
+================================
 
 .. automodule:: neurotools.jobs.decorator
     :members:

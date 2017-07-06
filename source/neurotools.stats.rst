@@ -1,5 +1,5 @@
-neurotools\.stats package
-=========================
+neurotools.stats package
+========================
 
 Submodules
 ----------

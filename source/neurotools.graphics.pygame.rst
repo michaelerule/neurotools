@@ -1,5 +1,5 @@
-neurotools\.graphics\.pygame module
-===================================
+neurotools.graphics.pygame module
+=================================
 
 .. automodule:: neurotools.graphics.pygame
     :members:

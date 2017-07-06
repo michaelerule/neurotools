@@ -1,5 +1,5 @@
-neurotools\.stats\.kent\_reimann module
-=======================================
+neurotools.stats.kent_reimann module
+====================================
 
 .. automodule:: neurotools.stats.kent_reimann
     :members:

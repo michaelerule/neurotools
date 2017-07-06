@@ -1,5 +1,5 @@
-neurotools\.signal\.conv module
-===============================
+neurotools.signal.conv module
+=============================
 
 .. automodule:: neurotools.signal.conv
     :members:

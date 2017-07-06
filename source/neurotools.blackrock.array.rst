@@ -1,5 +1,5 @@
-neurotools\.blackrock\.array module
-===================================
+neurotools.blackrock.array module
+=================================
 
 .. automodule:: neurotools.blackrock.array
     :members:

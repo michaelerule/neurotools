@@ -1,5 +1,5 @@
-neurotools\.stats\.circular module
-==================================
+neurotools.stats.circular module
+================================
 
 .. automodule:: neurotools.stats.circular
     :members:

@@ -1,5 +1,5 @@
-neurotools\.stats\.mcint module
-===============================
+neurotools.stats.mcint module
+=============================
 
 .. automodule:: neurotools.stats.mcint
     :members:

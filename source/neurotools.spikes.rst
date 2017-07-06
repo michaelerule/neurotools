@@ -1,5 +1,5 @@
-neurotools\.spikes module
-=========================
+neurotools.spikes module
+========================
 
 .. automodule:: neurotools.spikes
     :members:

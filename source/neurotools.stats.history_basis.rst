@@ -1,5 +1,5 @@
-neurotools\.stats\.history\_basis module
-========================================
+neurotools.stats.history_basis module
+=====================================
 
 .. automodule:: neurotools.stats.history_basis
     :members:

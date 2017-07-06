@@ -1,5 +1,5 @@
-neurotools\.spatial\.distance module
-====================================
+neurotools.spatial.distance module
+==================================
 
 .. automodule:: neurotools.spatial.distance
     :members:

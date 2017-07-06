@@ -1,5 +1,5 @@
-neurotools\.blackrock package
-=============================
+neurotools.blackrock package
+============================
 
 Submodules
 ----------

@@ -1,5 +1,5 @@
-neurotools\.matrix module
-=========================
+neurotools.matrix module
+========================
 
 .. automodule:: neurotools.matrix
     :members:

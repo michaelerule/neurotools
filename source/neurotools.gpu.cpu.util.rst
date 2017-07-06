@@ -1,5 +1,5 @@
-neurotools\.gpu\.cpu\.util module
-=================================
+neurotools.gpu.cpu.util module
+==============================
 
 .. automodule:: neurotools.gpu.cpu.util
     :members:

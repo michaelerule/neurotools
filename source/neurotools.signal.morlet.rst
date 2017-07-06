@@ -1,5 +1,5 @@
-neurotools\.signal\.morlet module
-=================================
+neurotools.signal.morlet module
+===============================
 
 .. automodule:: neurotools.signal.morlet
     :members:

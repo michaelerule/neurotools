@@ -1,5 +1,5 @@
-neurotools\.stats\.sde module
-=============================
+neurotools.stats.sde module
+===========================
 
 .. automodule:: neurotools.stats.sde
     :members:

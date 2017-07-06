@@ -1,5 +1,5 @@
-neurotools\.jobs\.thunk module
-==============================
+neurotools.jobs.thunk module
+============================
 
 .. automodule:: neurotools.jobs.thunk
     :members:

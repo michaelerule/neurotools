@@ -1,5 +1,5 @@
-neurotools\.gpu\.cu\.convolution module
-=======================================
+neurotools.gpu.cu.convolution module
+====================================
 
 .. automodule:: neurotools.gpu.cu.convolution
     :members:

@@ -1,5 +1,5 @@
-neurotools\.color module
-========================
+neurotools.color module
+=======================
 
 .. automodule:: neurotools.color
     :members:

@@ -1,5 +1,5 @@
-neurotools\.spatial\.kernels module
-===================================
+neurotools.spatial.kernels module
+=================================
 
 .. automodule:: neurotools.spatial.kernels
     :members:

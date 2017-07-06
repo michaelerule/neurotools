@@ -1,5 +1,5 @@
-neurotools\.jobs\.parallel module
-=================================
+neurotools.jobs.parallel module
+===============================
 
 .. automodule:: neurotools.jobs.parallel
     :members:

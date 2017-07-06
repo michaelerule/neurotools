@@ -1,5 +1,5 @@
-neurotools\.dependencies module
-===============================
+neurotools.dependencies module
+==============================
 
 .. automodule:: neurotools.dependencies
     :members:

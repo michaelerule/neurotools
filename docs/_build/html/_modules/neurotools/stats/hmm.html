@@ -583,10 +583,10 @@
 <span class="sd">        1D array of state observations</span>
 <span class="sd">    n_hid : </span>
 <span class="sd">        number of hidden statees</span>
-<span class="sd">    convergence = 1e-6 : </span>
+<span class="sd">    convergence : float, default 1e-6 </span>
 <span class="sd">        stop when the largest change in tranisition </span>
 <span class="sd">        or emission matrix parameters is less than this value</span>
-<span class="sd">    eps = 1e-8 : </span>
+<span class="sd">    eps : float, default 1e-8 </span>
 <span class="sd">        small uniform probability for regularization,</span>
 <span class="sd">        to avoid probability of any state or transition going to zero</span>
 <span class="sd">        </span>
@@ -678,11 +678,22 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Abstracted form of forward filtering algorithm</span>
 <span class="sd">    </span>
-<span class="sd">    y     : sequence of observations</span>
-<span class="sd">    B     : y → P(x), conditioning on observations P(x|y(t))</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y     : iterable of observations</span>
+<span class="sd">        sequence of observations</span>
+<span class="sd">    B     : y → P(x), </span>
+<span class="sd">        observation model conditioning on observations P(x|y(t))</span>
+<span class="sd">        should accept and observation, and return a function from </span>
+<span class="sd">        prior distribution to posterior distribution.</span>
 <span class="sd">    x0    : P(x)</span>
-<span class="sd">    T.fwd : P(x)→P(x); linear operator for the forward  pass</span>
-<span class="sd">    T.bwd : P(x)→P(x); linear operator for the backward pass</span>
+<span class="sd">        initial state estimate (distribution)</span>
+<span class="sd">    T.fwd : P(x)→P(x); </span>
+<span class="sd">        linear operator for the forward pass;</span>
+<span class="sd">        should be a function that accepts and returns a distribution</span>
+<span class="sd">    T.bwd : P(x)→P(x); </span>
+<span class="sd">        linear operator for the backward pass</span>
+<span class="sd">        should be a function that accepts and returns a distribution</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="c1"># forward part of the algorithm</span>
@@ -701,11 +712,22 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Abstracted form of backward filtering algorithm</span>
 <span class="sd">    </span>
-<span class="sd">    y     : sequence of observations</span>
-<span class="sd">    B     : y → P(x), conditioning on observations P(x|y(t))</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y     : iterable of observations</span>
+<span class="sd">        sequence of observations</span>
+<span class="sd">    B     : y → P(x), </span>
+<span class="sd">        observation model conditioning on observations P(x|y(t))</span>
+<span class="sd">        should accept and observation, and return a function from </span>
+<span class="sd">        prior distribution to posterior distribution.</span>
 <span class="sd">    x0    : P(x)</span>
-<span class="sd">    T.fwd : P(x)→P(x); linear operator for the forward  pass</span>
-<span class="sd">    T.bwd : P(x)→P(x); linear operator for the backward pass</span>
+<span class="sd">        initial state estimate (distribution)</span>
+<span class="sd">    T.fwd : P(x)→P(x); </span>
+<span class="sd">        linear operator for the forward pass;</span>
+<span class="sd">        should be a function that accepts and returns a distribution</span>
+<span class="sd">    T.bwd : P(x)→P(x); </span>
+<span class="sd">        linear operator for the backward pass</span>
+<span class="sd">        should be a function that accepts and returns a distribution</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="c1"># backward part of the algorithm</span>

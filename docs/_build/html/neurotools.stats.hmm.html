@@ -309,11 +309,25 @@ see: PoissonObservationApproximator</p>
 <dt id="neurotools.stats.hmm.backward_abstract">
 <code class="descclassname">neurotools.stats.hmm.</code><code class="descname">backward_abstract</code><span class="sig-paren">(</span><em>y</em>, <em>x0</em>, <em>T</em>, <em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#backward_abstract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.backward_abstract" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstracted form of backward filtering algorithm</p>
-<p>y     : sequence of observations
-B     : y → P(x), conditioning on observations P(x|y(t))
-x0    : P(x)
-T.fwd : P(x)→P(x); linear operator for the forward  pass
-T.bwd : P(x)→P(x); linear operator for the backward pass</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>y</strong> (<em>iterable of observations</em>) – sequence of observations</li>
+<li><strong>B</strong> (<em>y → P</em><em>(</em><em>x</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
+should accept and observation, and return a function from
+prior distribution to posterior distribution.</li>
+<li><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – initial state estimate (distribution)</li>
+<li><strong>T.fwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the forward pass;
+should be a function that accepts and returns a distribution</li>
+<li><strong>T.bwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the backward pass
+should be a function that accepts and returns a distribution</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -330,9 +344,9 @@ a hidden markov model.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>y</strong> – 1D array of state observations</li>
 <li><strong>n_hid</strong> – number of hidden statees</li>
-<li><strong>= 1e-6</strong> (<em>convergence</em>) – stop when the largest change in tranisition
+<li><strong>convergence</strong> (<em>float</em><em>, </em><em>default 1e-6</em>) – stop when the largest change in tranisition
 or emission matrix parameters is less than this value</li>
-<li><strong>= 1e-8</strong> (<em>eps</em>) – small uniform probability for regularization,
+<li><strong>eps</strong> (<em>float</em><em>, </em><em>default 1e-8</em>) – small uniform probability for regularization,
 to avoid probability of any state or transition going to zero</li>
 </ul>
 </td>
@@ -357,11 +371,25 @@ to avoid probability of any state or transition going to zero</li>
 <dt id="neurotools.stats.hmm.forward_abstract">
 <code class="descclassname">neurotools.stats.hmm.</code><code class="descname">forward_abstract</code><span class="sig-paren">(</span><em>y</em>, <em>x0</em>, <em>T</em>, <em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#forward_abstract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.forward_abstract" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstracted form of forward filtering algorithm</p>
-<p>y     : sequence of observations
-B     : y → P(x), conditioning on observations P(x|y(t))
-x0    : P(x)
-T.fwd : P(x)→P(x); linear operator for the forward  pass
-T.bwd : P(x)→P(x); linear operator for the backward pass</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>y</strong> (<em>iterable of observations</em>) – sequence of observations</li>
+<li><strong>B</strong> (<em>y → P</em><em>(</em><em>x</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
+should accept and observation, and return a function from
+prior distribution to posterior distribution.</li>
+<li><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – initial state estimate (distribution)</li>
+<li><strong>T.fwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the forward pass;
+should be a function that accepts and returns a distribution</li>
+<li><strong>T.bwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the backward pass
+should be a function that accepts and returns a distribution</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

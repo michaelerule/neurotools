@@ -428,10 +428,10 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4, miniter=10):
         1D array of state observations
     n_hid : 
         number of hidden statees
-    convergence = 1e-6 : 
+    convergence : float, default 1e-6 
         stop when the largest change in tranisition 
         or emission matrix parameters is less than this value
-    eps = 1e-8 : 
+    eps : float, default 1e-8 
         small uniform probability for regularization,
         to avoid probability of any state or transition going to zero
         
@@ -523,11 +523,22 @@ def forward_abstract(y, x0, T, B):
     '''
     Abstracted form of forward filtering algorithm
     
-    y     : sequence of observations
-    B     : y → P(x), conditioning on observations P(x|y(t))
+    Parameters
+    ----------
+    y     : iterable of observations
+        sequence of observations
+    B     : y → P(x), 
+        observation model conditioning on observations P(x|y(t))
+        should accept and observation, and return a function from 
+        prior distribution to posterior distribution.
     x0    : P(x)
-    T.fwd : P(x)→P(x); linear operator for the forward  pass
-    T.bwd : P(x)→P(x); linear operator for the backward pass
+        initial state estimate (distribution)
+    T.fwd : P(x)→P(x); 
+        linear operator for the forward pass;
+        should be a function that accepts and returns a distribution
+    T.bwd : P(x)→P(x); 
+        linear operator for the backward pass
+        should be a function that accepts and returns a distribution
     '''
     L = len(y)
     # forward part of the algorithm
@@ -546,11 +557,22 @@ def backward_abstract(y, x0, T, B):
     '''
     Abstracted form of backward filtering algorithm
     
-    y     : sequence of observations
-    B     : y → P(x), conditioning on observations P(x|y(t))
+    Parameters
+    ----------
+    y     : iterable of observations
+        sequence of observations
+    B     : y → P(x), 
+        observation model conditioning on observations P(x|y(t))
+        should accept and observation, and return a function from 
+        prior distribution to posterior distribution.
     x0    : P(x)
-    T.fwd : P(x)→P(x); linear operator for the forward  pass
-    T.bwd : P(x)→P(x); linear operator for the backward pass
+        initial state estimate (distribution)
+    T.fwd : P(x)→P(x); 
+        linear operator for the forward pass;
+        should be a function that accepts and returns a distribution
+    T.bwd : P(x)→P(x); 
+        linear operator for the backward pass
+        should be a function that accepts and returns a distribution
     '''
     L = len(y)
     # backward part of the algorithm

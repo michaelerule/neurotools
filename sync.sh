@@ -12,10 +12,12 @@
 
 shopt -s extglob
 
-#!/usr/bin/env bash
-## echo running autodoc
-## sphinx-apidoc -fe -o ./source .
-## make clean
+echo running autodoc
+cd ./docs
+sphinx-apidoc -fe -o . ../
+make clean html
+cd ../
+
 #ISSUES
 #make html 2>&1 | grep "ImportError: No module named " | awk '{ print $5 }' | sort | uniq | tee ./source/missing_modules
 ## grep -rh --include="*.py" "^from" ../ | grep "import" | awk '{ print $2 }' | sort -d | uniq | tee -a ./source/missing_modules_

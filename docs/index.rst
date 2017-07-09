@@ -19,7 +19,7 @@ This project depends on several scientific Python packages including `numpy
 <http://www.statsmodels.org/stable/index.html>`_, `pandas
 <http://pandas.pydata.org/>`_, and `nipy
 <http://nipy.org/nitime/>`_. This project is not to be confused with the (much better organized) `Neurotools project for neural simulation
-<http://neuralensemble.org/NeuroTools/>_. For the most part the routines here do not duplicate the functionality of these packages. There is a focus on spatiotemporal modeling of multi-electrode array datasets, stochastic models of population dynamics, and some routines to explore population synchrony. There are also several playful or exploratory modules that probably aren't all that useful but are available nevertheless. The project source can be browsed or downloaded from `github
+<http://neuralensemble.org/NeuroTools/>`_. For the most part the routines here do not duplicate the functionality of these packages. There is a focus on spatiotemporal modeling of multi-electrode array datasets, stochastic models of population dynamics, and some routines to explore population synchrony. There are also several playful or exploratory modules that probably aren't all that useful but are available nevertheless. The project source can be browsed or downloaded from `github
 <https://github.com/michaelerule/neurotools>`_.
 
 This project is published in the spirit (but not the letter) of the `tongue-and-cheek CRAPL license for academic code

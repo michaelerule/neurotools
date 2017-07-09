@@ -69,32 +69,36 @@ def fast_kde(x, y, gridsize=(400, 400), extents=None, weights=None,
     This function is typically several orders of magnitude faster than
     scipy.stats.kde.gaussian_kde for large (>1e7) numbers of points and
     produces an essentially identical result.
-    Input:
-        x: array-like
-            The x-coords of the input data points
-        y: array-like
-            The y-coords of the input data points
-        gridsize: tuple, optional
-            An (nx,ny) tuple of the size of the output
-            grid. Defaults to (400, 400).
-        extents: tuple, optional
-            A (xmin, xmax, ymin, ymax) tuple of the extents of output grid.
-            Defaults to min/max of x & y input.
-        weights: array-like or None, optional
-            An array of the same shape as x & y that weighs each sample (x_i,
-            y_i) by each value in weights (w_i).  Defaults to an array of ones
-            the same size as x & y.
-        sample: boolean
-            Whether or not to return the estimated density at each location.
-            Defaults to False
-    Output:
-        density : 2D array of shape *gridsize*
-            The estimated probability distribution function on a regular grid
-        extents : tuple
-            xmin, xmax, ymin, ymax
-        sampled_density : 1D array of len(*x*)
-            Only returned if *sample* is True.  The estimated density at each
-            point.
+    
+    Parameters
+    ----------
+    x: array-like
+        The x-coords of the input data points
+    y: array-like
+        The y-coords of the input data points
+    gridsize: tuple, optional
+        An (nx,ny) tuple of the size of the output
+        grid. Defaults to (400, 400).
+    extents: tuple, optional
+        A (xmin, xmax, ymin, ymax) tuple of the extents of output grid.
+        Defaults to min/max of x & y input.
+    weights: array-like or None, optional
+        An array of the same shape as x & y that weighs each sample (x_i,
+        y_i) by each value in weights (w_i).  Defaults to an array of ones
+        the same size as x & y.
+    sample: boolean
+        Whether or not to return the estimated density at each location.
+        Defaults to False
+
+    Returns
+    -------
+    density : 2D array of shape *gridsize*
+        The estimated probability distribution function on a regular grid
+    extents : tuple
+        xmin, xmax, ymin, ymax
+    sampled_density : 1D array of len(*x*)
+        Only returned if *sample* is True.  The estimated density at each
+        point.
     """
     #---- Setup --------------------------------------------------------------
     x, y = np.atleast_1d([x, y])

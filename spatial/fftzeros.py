@@ -9,8 +9,10 @@ from __future__ import print_function
 '''
 Code for identifying critical points in phase gradient maps.
 '''
-from neurotools.spatial.dct import *
-from neurotools.plot import *
+
+# TODO: fix imports below
+#from neurotools.spatial.dct import *
+#from neurotools.plot import *
 
 def plot_phase_gradient(dz):
     cla()

@@ -1,0 +1,1120 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>neurotools.stats.hmm &#8212; Neurotools 2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.stats.hmm</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># more py2/3 compat</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Routines concerning discrete time hidden markov models</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">neurotools.functions</span> <span class="k">import</span> <span class="n">slog</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.distributions</span> <span class="k">import</span> <span class="n">poisson_logpdf</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+
+<div class="viewcode-block" id="poisson_parameter_guess"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.poisson_parameter_guess">[docs]</a><span class="k">def</span> <span class="nf">poisson_parameter_guess</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Based on a sequence of inferred states X, estimate the log of</span>
+<span class="sd">    the transition matrix A, the prior vector P, and the state</span>
+<span class="sd">    probability matrix B.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarary</span>
+<span class="sd">        1D integer array of hidden states with values in 0..N-1</span>
+<span class="sd">    Y : ndarary</span>
+<span class="sd">        1D integer array of observations</span>
+<span class="sd">    N : positive integer</span>
+<span class="sd">        Number of states</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Estimate model parameters from best-guess X</span>
+    <span class="n">p1</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">p01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">==</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">p10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">==</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">X</span><span class="o">==</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">mu1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">X</span><span class="o">==</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p01</span><span class="p">,</span><span class="n">p10</span><span class="p">,</span><span class="n">mu0</span><span class="p">,</span><span class="n">mu1</span><span class="p">)</span>
+
+    <span class="c1"># Prior for state at first observation</span>
+    <span class="n">logP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1</span><span class="p">),</span><span class="n">slog</span><span class="p">(</span><span class="n">p1</span><span class="p">)])</span>
+    <span class="c1"># State transition array</span>
+    <span class="n">logA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p01</span><span class="p">),</span> <span class="n">slog</span><span class="p">(</span><span class="n">p01</span><span class="p">)],</span>
+        <span class="p">[</span><span class="n">slog</span><span class="p">(</span><span class="n">p10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p10</span><span class="p">)]],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="c1"># Poisson process rates</span>
+    <span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>      <span class="c1"># List of available states</span>
+    <span class="n">logB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">poisson_logpdf</span><span class="p">(</span><span class="n">O</span><span class="p">,</span> <span class="n">mu0</span><span class="p">),</span>
+        <span class="n">poisson_logpdf</span><span class="p">(</span><span class="n">O</span><span class="p">,</span> <span class="n">mu1</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">params</span></div>
+
+<div class="viewcode-block" id="poisson_baum_welch"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.poisson_baum_welch">[docs]</a><span class="k">def</span> <span class="nf">poisson_baum_welch</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fit Hidden Markov Model using Expectation Maximization. For now</span>
+<span class="sd">    it is limited to two latent states.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Y : ndarray</span>
+<span class="sd">        One dimension array of integer count-process observations</span>
+<span class="sd">        Must have states ranging form 0 to N</span>
+<span class="sd">    initial : ndarray</span>
+<span class="sd">        Optional parameter initializing the guess for the hidden</span>
+<span class="sd">        states. If none is provided, we will use a 2 distribution</span>
+<span class="sd">        Poisson mixture model fit with EM. Please note that this</span>
+<span class="sd">        procedure fails when the frequency of latent states is</span>
+<span class="sd">        asymmetric, so you may want to provide different initial</span>
+<span class="sd">        conditions.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>  <span class="c1"># Number of observation states</span>
+    <span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="c1"># List of available states</span>
+
+    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">Y</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">initial</span>
+
+    <span class="c1"># Start with the density-based heuristic</span>
+    <span class="n">new_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="c1"># Start with random state</span>
+    <span class="c1"># new_X = np.array(urand(size=(len(counts),))&lt;0.5,&#39;float&#39;)</span>
+    <span class="n">X</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">new_X</span><span class="p">),</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">X</span><span class="o">==</span><span class="n">new_X</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new_X</span>
+        <span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">params</span> <span class="o">=</span> <span class="n">poisson_parameter_guess</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">new_X</span> <span class="o">=</span> <span class="n">viterbi_log</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">hasNaN</span><span class="p">,(</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">X</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;NaN encountered&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">params</span></div>
+
+<div class="viewcode-block" id="viterbi"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.viterbi">[docs]</a><span class="k">def</span> <span class="nf">viterbi</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    See https://en.wikipedia.org/wiki/Viterbi_algorithm</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Y : 1D array</span>
+<span class="sd">        Observations (integer states)</span>
+<span class="sd">    P : array shape = (nStates ,)</span>
+<span class="sd">        1D array of priors for initial state</span>
+<span class="sd">    A : array (nStates,nStates)</span>
+<span class="sd">        State transition matrix </span>
+<span class="sd">    B : ndarray K x N</span>
+<span class="sd">        conditional probability matrix (emission/observation)</span>
+<span class="sd">        probabilty of each observation given each state</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">logP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">logA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">logB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">viterbi_log</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="viterbi_log"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.viterbi_log">[docs]</a><span class="k">def</span> <span class="nf">viterbi_log</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    See https://en.wikipedia.org/wiki/Viterbi_algorithm</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Y : 1D array</span>
+<span class="sd">        Observations (integer states)</span>
+<span class="sd">    logP : array shape = (nStates ,)</span>
+<span class="sd">        1D array of priors for initial state</span>
+<span class="sd">        given in log probability</span>
+<span class="sd">    logA : array (nStates,nStates)</span>
+<span class="sd">        State transition matrix given in log probability</span>
+<span class="sd">    logB : ndarray K x N</span>
+<span class="sd">        conditional probability matrix</span>
+<span class="sd">        log probabilty of each observation given each state</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">logP</span><span class="p">)</span>         <span class="c1"># Number of states</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>            <span class="c1"># Number of observations</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">logB</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Number of states</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">logA</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">logB</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># The initial guess for the first state is initialized as the</span>
+    <span class="c1"># probability of observing the first observation given said </span>
+    <span class="c1"># state, multiplied by the prior for that state.</span>
+    <span class="n">logT1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">K</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="s1">&#39;float&#39;</span><span class="p">)</span> <span class="c1"># Store probability of most likely path</span>
+    <span class="n">logT1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">logP</span> <span class="o">+</span> <span class="n">logB</span><span class="p">[:,</span><span class="n">Y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="c1"># Store estimated most likely path</span>
+    <span class="n">T2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">K</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+
+    <span class="c1"># iterate over all observations from left to right</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+        <span class="c1"># iterate over states 1..K (or 0..K-1 with zero-indexing)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+            <span class="c1"># The likelihood of a new state is the likelihood of </span>
+            <span class="c1"># transitioning from either of the previous states.</span>
+            <span class="c1"># We incorporate a multiplication by the prior here</span>
+            <span class="n">log_filtered_likelihood</span> <span class="o">=</span> <span class="n">logT1</span><span class="p">[:,</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">logA</span><span class="p">[:,</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">logB</span><span class="p">[</span><span class="n">s</span><span class="p">,</span><span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">log_filtered_likelihood</span><span class="p">)</span>
+            <span class="n">logT1</span><span class="p">[</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_filtered_likelihood</span><span class="p">[</span><span class="n">best</span><span class="p">]</span>
+            <span class="c1"># We save which state was the most likely</span>
+            <span class="n">T2</span><span class="p">[</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">best</span>
+
+    <span class="c1"># At the end, choose the most likely state, then</span>
+    <span class="c1"># Iterate backwards over the data and fill in the state estimate</span>
+    <span class="n">X</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,)</span> <span class="p">,</span><span class="s1">&#39;int&#39;</span>  <span class="p">)</span> <span class="c1"># Store our inferred hidden states</span>
+    <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logT1</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">T</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">T2</span><span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">X</span></div>
+
+<div class="viewcode-block" id="hasNaN"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.hasNaN">[docs]</a><span class="k">def</span> <span class="nf">hasNaN</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Faster way to test if array contains NaN</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="poisson_viterbi_state_infer"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.poisson_viterbi_state_infer">[docs]</a><span class="k">def</span> <span class="nf">poisson_viterbi_state_infer</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fit Hidden Markov Model using np.expectation Maximization. For now</span>
+<span class="sd">    it is limited to two latent states. The Viterbi algorithm is</span>
+<span class="sd">    used to assign the most likely overall trajectory in the </span>
+<span class="sd">    np.expectation maximization. This is different from the Baum-Welch</span>
+<span class="sd">    algorithm which uses the forward-backward algoirthm to infer</span>
+<span class="sd">    distributions over states rather than the single most likely</span>
+<span class="sd">    trajectory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Y : ndarray</span>
+<span class="sd">        One dimension array of integer count-process observations</span>
+<span class="sd">        Must have states ranging form 0 to N</span>
+<span class="sd">    initial : ndarray</span>
+<span class="sd">        Optional parameter initializing the guess for the hidden</span>
+<span class="sd">        states. If none is provided, we will use a 2 distribution</span>
+<span class="sd">        Poisson mixture model fit with EM. Please note that this</span>
+<span class="sd">        procedure fails when the frequency of latent states is</span>
+<span class="sd">        asymmetric, so you may want to provide different initial</span>
+<span class="sd">        conditions.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>  <span class="c1"># Number of observation states</span>
+    <span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="c1"># List of available states</span>
+
+    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">Y</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">initial</span>
+
+    <span class="c1"># Start with the density-based heuristic</span>
+    <span class="n">new_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="c1"># Start with random state</span>
+    <span class="c1"># new_X = np.array(urand(size=(len(counts),))&lt;0.5,&#39;float&#39;)</span>
+    <span class="n">X</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">new_X</span><span class="p">),</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">X</span><span class="o">==</span><span class="n">new_X</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new_X</span>
+        <span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">params</span> <span class="o">=</span> <span class="n">poisson_parameter_guess</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">new_X</span> <span class="o">=</span> <span class="n">viterbi_log</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">hasNaN</span><span class="p">,(</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">X</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;NaN encountered&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">params</span></div>
+
+
+<div class="viewcode-block" id="forward_backward"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.forward_backward">[docs]</a><span class="k">def</span> <span class="nf">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    forward_backward(y, x_0, T, B)</span>
+<span class="sd">    </span>
+<span class="sd">    Compute distribution of hidden states conditioned on all time</span>
+<span class="sd">    points using the forward-backward algorithm.    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : ndarray </span>
+<span class="sd">        An n_timepoints long vector of state observations</span>
+<span class="sd">    x_0: ndarray</span>
+<span class="sd">        An n_hidden_states long vector of initial state prior</span>
+<span class="sd">    T : ndarray</span>
+<span class="sd">        An n_hidden_states x n_hidden_states transition matrix</span>
+<span class="sd">    B : </span>
+<span class="sd">        An n_hidden_states x n_observable_stated observation</span>
+<span class="sd">        (emission) matrix</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    f:forward inference</span>
+<span class="sd">    b:backward inference</span>
+<span class="sd">    pr:posterior estimate</span>
+
+<span class="sd">    Example</span>
+<span class="sd">        # Initialize model</span>
+<span class="sd">        n_states = 2</span>
+<span class="sd">        x_0 = array([ 0.6,  0.4])</span>
+<span class="sd">        T   = array([</span>
+<span class="sd">               [ 0.69,  0.3 ],</span>
+<span class="sd">               [ 0.4 ,  0.59]])</span>
+<span class="sd">        B   = array([</span>
+<span class="sd">               [ 0.5,  0.4,  0.1],</span>
+<span class="sd">               [ 0.1,  0.3,  0.6]])</span>
+
+<span class="sd">        # Initialize example states</span>
+<span class="sd">        y  = array([0, 1, 2, 0, 0])</span>
+<span class="sd">        fwd, bwd, posterior = forward_backward(y,x_0,T,B)</span>
+<span class="sd">        print(posterior)</span>
+
+<span class="sd">        # Verify that it works with a large number of observations</span>
+<span class="sd">        y = randint(0,n_states,(10000,))</span>
+<span class="sd">        fwd, bwd, posterior = forward_backward(y,x_0,T,B)</span>
+<span class="sd">        print(posterior)</span>
+<span class="sd">    &#39;&#39;&#39;</span>   
+    
+    <span class="n">n_times</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">n_states</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+    <span class="n">n_observe</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Argument verification    </span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_states</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_states</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">y</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">y</span><span class="o">&lt;</span><span class="n">n_observe</span><span class="p">))</span> 
+    
+    <span class="c1"># forward part of the algorithm</span>
+    <span class="c1"># Compute conditional probability for each state</span>
+    <span class="c1"># based on all previous observations</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_times</span><span class="p">,</span><span class="n">n_states</span><span class="p">))</span>
+    <span class="c1"># initial state conditioned on first observation</span>
+    <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">x_0</span> 
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n_times</span><span class="p">):</span>
+        <span class="c1"># condition on transition from previous state</span>
+        <span class="c1"># and current observation</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">T</span><span class="p">)</span> 
+        <span class="c1"># normalize for numerical stability</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/=</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="c1"># backward part of the algorithm</span>
+    <span class="c1"># compute conditional probabilities of subsequent</span>
+    <span class="c1"># chain from each state at each time-point</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_times</span><span class="p">,</span><span class="n">n_states</span><span class="p">))</span>
+    <span class="c1"># final state is fiexd with probability 1</span>
+    <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n_times</span><span class="p">):</span>             
+        <span class="c1"># combine next observation, and likelihood</span>
+        <span class="c1"># of state based on all subsequent, weighted</span>
+        <span class="c1"># according to transition matrix</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">[:,</span><span class="n">y</span><span class="p">[</span><span class="n">n_times</span><span class="o">-</span><span class="n">i</span><span class="p">]]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># normalize for numerical stability</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="c1"># put the backward inferences in forward order</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Merge the forward and backward inferences</span>
+    <span class="n">pr</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">b</span>
+    <span class="c1"># Normalize the get a proper density</span>
+    <span class="n">pr</span> <span class="o">/=</span> <span class="n">pr</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">pr</span></div>
+
+<div class="viewcode-block" id="jump"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.jump">[docs]</a><span class="k">def</span> <span class="nf">jump</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Markov jump function: pick a state according to probabilities</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    probabilities : vector of probabilities, must sum to 1.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">sum</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">))</span>
+    <span class="n">cumulative</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">pr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cumulative</span><span class="o">+</span><span class="n">pr</span><span class="o">&gt;=</span><span class="n">r</span><span class="p">:</span> <span class="k">return</span> <span class="n">i</span>
+        <span class="n">cumulative</span> <span class="o">+=</span> <span class="n">pr</span>
+    <span class="k">assert</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="sample"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.sample">[docs]</a><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">x0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    x,y = sample(L,T,B,x0)</span>
+<span class="sd">    Sample from a discrete hidden markov model.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    L : number of samples to draw</span>
+<span class="sd">    T : state transition matrix</span>
+<span class="sd">    B : observation (emission) matrix</span>
+<span class="sd">    x0: initial conditions</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Prepare to sample a path for the latent state</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">L</span><span class="p">,),</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">x0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">jump</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="c1"># Prepare observations from sample path</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">L</span><span class="p">,),</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">jump</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span></div>
+
+<div class="viewcode-block" id="log_likelihood"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">x0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Likelihood of hidden (x) and observed (y) state sequence for</span>
+<span class="sd">    hidden markov model with hidden-state transition probabilities T</span>
+<span class="sd">    and emission probabilities B, and initial state x0. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns the log likelihood, which is more numerically stable</span>
+<span class="sd">    and avoids overflow</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">L</span><span class="p">,</span><span class="n">n_hid</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">n_obs</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span>
+    
+    <span class="c1"># Validate arguments</span>
+    <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">L</span>
+    <span class="k">assert</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_hid</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span><span class="o">==</span><span class="n">n_hid</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">y</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">y</span><span class="o">&lt;</span><span class="n">n_obs</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">B</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">T</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x0</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-9</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-9</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-9</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-9</span> 
+    
+    <span class="n">log_likelihood</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># likelihood of observations</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+        <span class="n">log_likelihood</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">B</span><span class="p">)[</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    
+    <span class="c1"># likelihood of transitions</span>
+    <span class="c1"># for each current state</span>
+    <span class="c1">#     take probability of current state</span>
+    <span class="c1">#     for each following state</span>
+    <span class="c1">#         weighted by density in this state</span>
+    <span class="c1">#         take probability of transitioning to this state</span>
+    <span class="c1"># In other words</span>
+    <span class="c1">#</span>
+    <span class="c1"># sum(T*x[i][:,None]*x[i+1][None,:])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">log_likelihood</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="kc">None</span><span class="p">,:]))</span>
+        
+    <span class="k">return</span> <span class="n">log_likelihood</span></div>
+    
+
+<div class="viewcode-block" id="baum_welch"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.baum_welch">[docs]</a><span class="k">def</span> <span class="nf">baum_welch</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">n_hid</span><span class="p">,</span><span class="n">convergence</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">miniter</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    That,Bhat,X0hat,f,b,p,llikelihood = baum_welch(y,n_hid,convergence = 1e-6, eps = 1e-4)</span>
+<span class="sd">    </span>
+<span class="sd">    Baum-Welch algorithm</span>
+<span class="sd">    </span>
+<span class="sd">    Use np.expectation maximization to find locally optimal parameters for</span>
+<span class="sd">    a hidden markov model.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    y : </span>
+<span class="sd">        1D array of state observations</span>
+<span class="sd">    n_hid : </span>
+<span class="sd">        number of hidden statees</span>
+<span class="sd">    convergence = 1e-6 : </span>
+<span class="sd">        stop when the largest change in tranisition </span>
+<span class="sd">        or emission matrix parameters is less than this value</span>
+<span class="sd">    eps = 1e-8 : </span>
+<span class="sd">        small uniform probability for regularization,</span>
+<span class="sd">        to avoid probability of any state or transition going to zero</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    That : estimated transition matrix</span>
+<span class="sd">    Bhat : estimated observation matrix</span>
+<span class="sd">    X0hat : estimated initial state</span>
+<span class="sd">    f : forward filter of observations with estimated model</span>
+<span class="sd">    b : backward filter of observations with estimated model</span>
+<span class="sd">    p : smoothing estimation of latent state using estimated model</span>
+<span class="sd">    llikelihood : likelihood of data given model</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Verify arguments</span>
+    <span class="n">ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">n_obs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">n_hid</span><span class="o">&gt;</span><span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">n_obs</span><span class="o">&gt;</span><span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> hidden and </span><span class="si">%d</span><span class="s1"> observed states&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_obs</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="o">==</span><span class="n">n_obs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;There are more state IDs than there are distinct states&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please reformat data so that states map to 0..N and every state is represented&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="o">==</span><span class="n">n_obs</span>
+
+    <span class="c1"># Initialize random guess</span>
+    <span class="c1"># Estimated transition operator between hidden states</span>
+    <span class="c1"># Initialize to the identity</span>
+    <span class="n">That</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_hid</span><span class="p">)</span><span class="o">*.</span><span class="mi">9</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_hid</span><span class="p">))</span><span class="o">*.</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">n_hid</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Estimated transition operator between observed states</span>
+    <span class="c1"># Initialize to uniform distribution</span>
+    <span class="n">Bhat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_obs</span><span class="p">))</span><span class="o">/</span><span class="n">n_obs</span>
+    <span class="c1"># Estimated initial conditions</span>
+    <span class="c1"># Initialize to uniform distribution</span>
+    <span class="n">X0hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_hid</span><span class="p">)</span><span class="o">/</span><span class="n">n_hid</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+        <span class="c1"># Infer hidden states using current estimated parameters</span>
+        <span class="n">fwd</span><span class="p">,</span><span class="n">bwd</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X0hat</span><span class="p">,</span><span class="n">That</span><span class="p">,</span><span class="n">Bhat</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">fwd</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bwd</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+        <span class="c1"># Construct new state estimates</span>
+
+        <span class="c1"># Get the joint density of sucessive states x_n x_n+1</span>
+        <span class="c1"># conditioned on the data</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_hid</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ntime</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">fwd</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">That</span><span class="o">*</span><span class="p">(</span><span class="n">bwd</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Bhat</span><span class="p">[:,</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]])[</span><span class="kc">None</span><span class="p">,:]</span>
+            <span class="n">E</span> <span class="o">+=</span> <span class="p">(</span><span class="n">tr</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
+        <span class="c1"># Divide this by the marginal density of states to get</span>
+        <span class="c1"># the conditional density of x_n+1 based on x_n</span>
+        <span class="n">nThat</span>  <span class="o">=</span> <span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">])</span> <span class="o">+</span> <span class="n">eps</span>
+        <span class="n">nThat</span> <span class="o">/=</span> <span class="n">nThat</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span>
+
+        <span class="c1"># Initial condition is often easy to infer, and </span>
+        <span class="c1"># converges quickly.</span>
+        <span class="c1"># But if we allow probability of any state to </span>
+        <span class="c1"># get too small, it causes numerical precision issues</span>
+        <span class="n">nX0hat</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">eps</span>
+        <span class="n">nX0hat</span><span class="o">/=</span> <span class="n">nX0hat</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">nBhat</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Bhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_obs</span><span class="p">):</span>
+            <span class="n">nBhat</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">nThat</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">nX0hat</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">nBhat</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">nBhat</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">nThat</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">nX0hat</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">delta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">That</span><span class="o">-</span><span class="n">nThat</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="nb">abs</span><span class="p">(</span><span class="n">nBhat</span><span class="o">-</span><span class="n">Bhat</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="n">That</span>  <span class="o">=</span> <span class="n">nThat</span>
+        <span class="n">Bhat</span>  <span class="o">=</span> <span class="n">nBhat</span>
+        <span class="n">X0hat</span> <span class="o">=</span> <span class="n">nX0hat</span>
+        <span class="n">llikelihood</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">That</span><span class="p">,</span><span class="n">Bhat</span><span class="p">,</span><span class="n">X0hat</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ii</span><span class="o">%</span><span class="mi">1</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">delta=&#39;</span><span class="p">,</span><span class="n">delta</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">llike=&#39;</span><span class="p">,</span><span class="n">llikelihood</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ii</span><span class="o">&gt;</span><span class="n">miniter</span> <span class="ow">and</span> <span class="n">delta</span><span class="o">&lt;</span><span class="n">convergence</span><span class="p">:</span> <span class="k">break</span>
+    <span class="c1">#</span>
+    <span class="n">fwd</span><span class="p">,</span><span class="n">bwd</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">X0hat</span><span class="p">,</span><span class="n">That</span><span class="p">,</span><span class="n">Bhat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">That</span><span class="p">,</span><span class="n">Bhat</span><span class="p">,</span><span class="n">X0hat</span><span class="p">,</span><span class="n">fwd</span><span class="p">,</span><span class="n">bwd</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">llikelihood</span></div>
+
+
+<div class="viewcode-block" id="forward_abstract"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.forward_abstract">[docs]</a><span class="k">def</span> <span class="nf">forward_abstract</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Abstracted form of forward filtering algorithm</span>
+<span class="sd">    </span>
+<span class="sd">    y     : sequence of observations</span>
+<span class="sd">    B     : y → P(x), conditioning on observations P(x|y(t))</span>
+<span class="sd">    x0    : P(x)</span>
+<span class="sd">    T.fwd : P(x)→P(x); linear operator for the forward  pass</span>
+<span class="sd">    T.bwd : P(x)→P(x); linear operator for the backward pass</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># forward part of the algorithm</span>
+    <span class="c1"># Compute conditional probability for each state</span>
+    <span class="c1"># based on all previous observations</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># initial state conditioned on first observation</span>
+    <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">x0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+        <span class="c1"># condition on transition from previous state and current observation</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">T</span><span class="o">.</span><span class="n">fwd</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="backward_abstract"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.backward_abstract">[docs]</a><span class="k">def</span> <span class="nf">backward_abstract</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Abstracted form of backward filtering algorithm</span>
+<span class="sd">    </span>
+<span class="sd">    y     : sequence of observations</span>
+<span class="sd">    B     : y → P(x), conditioning on observations P(x|y(t))</span>
+<span class="sd">    x0    : P(x)</span>
+<span class="sd">    T.fwd : P(x)→P(x); linear operator for the forward  pass</span>
+<span class="sd">    T.bwd : P(x)→P(x); linear operator for the backward pass</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># backward part of the algorithm</span>
+    <span class="c1"># compute conditional probabilities of subsequent</span>
+    <span class="c1"># chain from each state at each time-point</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># final state is fixed with probability 1</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="c1"># combine next observation, and likelihood</span>
+        <span class="c1"># of state based on all subsequent, weighted</span>
+        <span class="c1"># according to transition matrix</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">bwd</span><span class="p">(</span><span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># Clean up the dictionary representations used for notational clarity above</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="forward_backward_abstract"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.forward_backward_abstract">[docs]</a><span class="k">def</span> <span class="nf">forward_backward_abstract</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Abstracted form of forward-backward algorithm</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : iterable</span>
+<span class="sd">        sequence of observations</span>
+<span class="sd">    B : y→P(x)</span>
+<span class="sd">        conditioning on observations P(x|y(t))</span>
+<span class="sd">    x0 : P(x)</span>
+<span class="sd">        Initial condition</span>
+<span class="sd">    T.fwd : P(x)→P(x) </span>
+<span class="sd">        Operator for the forward  pass</span>
+<span class="sd">    T.bwd : P(x)→P(x)</span>
+<span class="sd">        Operator for the backward pass</span>
+<span class="sd">    prior : Optional, P(x) </span>
+<span class="sd">        Prior to be multiplied with the latent state on every time-step</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># forward part of the algorithm</span>
+    <span class="c1"># Compute conditional probability for each state</span>
+    <span class="c1"># based on all previous observations</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># initial state conditioned on first observation</span>
+    <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">x0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+        <span class="c1"># condition on transition from previous state and current observation</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">fwd</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">prior</span><span class="p">)</span>
+    <span class="c1"># backward part of the algorithm</span>
+    <span class="c1"># compute conditional probabilities of subsequent</span>
+    <span class="c1"># chain from each state at each time-point</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># final state is fixed with probability 1</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="c1"># combine next observation, and likelihood</span>
+        <span class="c1"># of state based on all subsequent, weighted</span>
+        <span class="c1"># according to transition matrix</span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">bwd</span><span class="p">(</span><span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">prior</span><span class="p">))</span>
+    <span class="c1"># Merge the forward and backward inferences</span>
+    <span class="n">pr</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+    <span class="c1"># Clean up the dictionary representations used for notational clarity above</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gaussian_quadrature"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.gaussian_quadrature">[docs]</a><span class="k">def</span> <span class="nf">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">domain</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Treat f as a density and estimate it&#39;s mean and precision</span>
+<span class="sd">    over the domain</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">domain</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">domain</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="k">return</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gaussian_quadrature_logarithmic"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.gaussian_quadrature_logarithmic">[docs]</a><span class="k">def</span> <span class="nf">gaussian_quadrature_logarithmic</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span><span class="n">domain</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    logp is (proportional to) a 1D density</span>
+<span class="sd">    estimate it&#39;s mean and precision over the domain</span>
+<span class="sd">    NOT IMPLEMENTED</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+    <span class="n">normalization</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">domain</span><span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="n">normalization</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">domain</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">/</span><span class="n">normalization</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="k">return</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Gaussian model to use in abstracted forward-backward</span>
+<span class="sd">    Supports multiplication of Gaussians</span>
+
+<span class="sd">    m: mean </span>
+<span class="sd">    t: precision (reciprocal of variance)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span><span class="n">t</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">Gaussian</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-16</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">m</span>        
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># propagating normalization factors for forward-backward</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">Gaussian</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-16</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">m</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># propagating normalization factors for forward-backward</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="n">__div__</span>  <span class="o">=</span> <span class="fm">__truediv__</span>
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="fm">__str__</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s1">&#39;m=</span><span class="si">%0.4f</span><span class="s1">, t=</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DiffusionGaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.DiffusionGaussian">[docs]</a><span class="k">class</span> <span class="nc">DiffusionGaussian</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Diffusion operator to use in abstracted forward-backward</span>
+<span class="sd">    Operates on Gaussian densities</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        d should be the variance of the process</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>
+<div class="viewcode-block" id="DiffusionGaussian.fwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.DiffusionGaussian.fwd">[docs]</a>    <span class="k">def</span> <span class="nf">fwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="o">.</span><span class="n">t</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+    <span class="n">bwd</span> <span class="o">=</span> <span class="n">fwd</span>
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">fwd</span>
+    <span class="fm">__mul__</span> <span class="o">=</span> <span class="n">fwd</span></div>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">factorial</span> <span class="k">as</span> <span class="n">fact</span>
+
+
+<div class="viewcode-block" id="PoissonObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.PoissonObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">PoissonObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Approximate Gaussian distribution to use in abstracted forward-</span>
+<span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
+<span class="sd">    observations. Uses 1D integration (quadrature) to estimate </span>
+<span class="sd">    posterior moments. Assumes log λ = a*x+b.</span>
+<span class="sd">    </span>
+<span class="sd">    a: log-rate gain parameter</span>
+<span class="sd">    b: log-rate bias parameter</span>
+<span class="sd">    y: The observed count (non-negative integer)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="c1"># Estimate integration limits</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
+            <span class="c1"># No information about the state yet.</span>
+            <span class="c1"># We aren&#39;t sure over what domain to perform the integration</span>
+            <span class="c1"># Use a Laplace approximation of p(x|y) to get appx bounds</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">t0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use the prior on x to guess integration limits</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># Integrate within ±4σ of the mean of the prior</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">m0</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span><span class="c1">#</span>
+        
+        <span class="c1"># Poisson distribution</span>
+        <span class="c1"># Best when rate is large and counts are frequenty &gt;1</span>
+        <span class="c1"># Get the conditional probability of state given this observation</span>
+        <span class="c1"># this is poisson in lambda = np.exp(ax+b)</span>
+        <span class="n">pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">))</span><span class="o">/</span><span class="n">fact</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        
+        <span class="c1"># Bernoilli: stable when rate is very low</span>
+        <span class="c1"># pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))</span>
+                
+        <span class="c1"># Multiply pxy by distribution o, </span>
+        <span class="c1"># handling identity as special case</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pxy</span><span class="o">*</span><span class="p">(</span><span class="n">o</span> <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1">#Hmm</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+        
+        <span class="c1"># Estimate mean and variance of posterior</span>
+        <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PoissonObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.PoissonObservationModel">[docs]</a><span class="k">class</span> <span class="nc">PoissonObservationModel</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Poisson observation model</span>
+<span class="sd">    Returns a density that, when multiplied by a Gaussian,</span>
+<span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
+<span class="sd">    see: PoissonObservationApproximator</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">PoissonObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BernoulliObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.BernoulliObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">BernoulliObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Approximate Gaussian distribution to use in abstracted forward-</span>
+<span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
+<span class="sd">    observations</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="c1"># Estimate integration limits</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
+            <span class="c1"># No information about the state yet.</span>
+            <span class="c1"># We aren&#39;t sure over what domain to perform the integration</span>
+            <span class="c1"># Use a Laplace approximation of p(x|y) to get appx bounds</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">t0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use the prior on x to guess integration limits</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># Integrate within ±4σ of the mean of the prior</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">m0</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span><span class="c1">#</span>
+        <span class="c1"># Get the conditional probability of state given this observation</span>
+        <span class="c1"># Bernoilli may also be a little more stable sometime</span>
+        <span class="n">pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+        <span class="c1"># Multiply pxy by distribution o, </span>
+        <span class="c1"># handling identity as special case</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pxy</span><span class="o">*</span><span class="p">(</span><span class="n">o</span> <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+<div class="viewcode-block" id="BernoulliObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.BernoulliObservationModel">[docs]</a><span class="k">class</span> <span class="nc">BernoulliObservationModel</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Bernoulli observation model</span>
+<span class="sd">    Returns a density that, when multiplied by a Gaussian,</span>
+<span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
+<span class="sd">    see: BernoulliObservationApproximator</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">BernoulliObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TruncatedPoissonObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedPoissonObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">TruncatedPoissonObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Approximate Gaussian distribution to use in abstracted forward-</span>
+<span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
+<span class="sd">    observations</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="c1"># Estimate integration limits</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
+            <span class="c1"># No information about the state yet.</span>
+            <span class="c1"># We aren&#39;t sure over what domain to perform the integration</span>
+            <span class="c1"># Use a Laplace approximation of p(x|y) to get appx bounds</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">t0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use the prior on x to guess integration limits</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># Integrate within ±4σ of the mean of the prior</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">m0</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span><span class="c1">#</span>
+        <span class="c1"># Get the conditional probability of state given this observation</span>
+        <span class="c1"># this is poisson in lambda = np.exp(ax+b)</span>
+        <span class="c1">#pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/fact(s.y)</span>
+        <span class="c1"># Bernoilli may also be a little more stable sometime</span>
+        <span class="c1">#pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))</span>
+        <span class="c1"># Truncated Poisson</span>
+        <span class="n">ll</span>  <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> 
+        <span class="n">l</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">ll</span><span class="p">)</span>
+        <span class="n">pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">ll</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">l</span><span class="o">+</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span><span class="o">*.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="c1"># Multiply pxy by distribution o, </span>
+        <span class="c1"># handling identity as special case</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pxy</span><span class="o">*</span><span class="p">(</span><span class="n">o</span> <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+<div class="viewcode-block" id="TruncatedPoissonObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedPoissonObservationModel">[docs]</a><span class="k">class</span> <span class="nc">TruncatedPoissonObservationModel</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Poisson observation model</span>
+<span class="sd">    Returns a density that, when multiplied by a Gaussian,</span>
+<span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
+<span class="sd">    see: PoissonObservationApproximator</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">TruncatedPoissonObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">solve</span>
+
+<div class="viewcode-block" id="MVGaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGaussian">[docs]</a><span class="k">class</span> <span class="nc">MVGaussian</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Multivariate Gaussian model to use in abstracted forward-backward</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">TM</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        M vector of means</span>
+<span class="sd">        T precision matrix</span>
+<span class="sd">        TM (optional) precomputed product of precision and mean</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">M</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">M</span><span class="p">,</span><span class="n">T</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">TM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">M</span><span class="p">)</span> <span class="k">if</span> <span class="n">TM</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">TM</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+        <span class="c1"># Precision matricies add</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">T</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">T</span>
+        <span class="c1"># Linearly combine means weighted by precision</span>
+        <span class="n">TM</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">TM</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">TM</span>
+        <span class="c1"># Recover mean vector via linear system solver</span>
+        <span class="c1"># M=np.dot(np.linalg.inv(T),TM) ==&gt; T*M=TM</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">T</span><span class="p">))</span><span class="o">&lt;</span><span class="mf">1e-20</span><span class="p">:</span>
+            <span class="c1"># Singular?</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MVGaussian: singular precision matrix!&#39;</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">TM</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">TM</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">TM</span><span class="p">)</span>
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MVGUpdate"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGUpdate">[docs]</a><span class="k">class</span> <span class="nc">MVGUpdate</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A: linear system transition matrix. Means evolve as X = AX</span>
+<span class="sd">    sigma: linear system covariance transition. it is a matrix.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+<div class="viewcode-block" id="MVGUpdate.fwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGUpdate.fwd">[docs]</a>    <span class="k">def</span> <span class="nf">fwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">))</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">)</span></div>
+<div class="viewcode-block" id="MVGUpdate.bwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGUpdate.bwd">[docs]</a>    <span class="k">def</span> <span class="nf">bwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="lgcp_observation_minimizer"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.lgcp_observation_minimizer">[docs]</a><span class="k">def</span> <span class="nf">lgcp_observation_minimizer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">px</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">lograte</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lograte</span><span class="p">)</span>
+        <span class="n">x_mu</span> <span class="o">=</span> <span class="n">x</span><span class="o">-</span><span class="n">px</span><span class="o">.</span><span class="n">M</span>
+        <span class="n">lgpr</span> <span class="o">=</span> <span class="n">y</span><span class="o">*</span><span class="n">lograte</span> <span class="o">-</span> <span class="n">rate</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x_mu</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">px</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x_mu</span><span class="p">))</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">lgpr</span>
+    <span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">px</span><span class="o">.</span><span class="n">M</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">px</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">-</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+    <span class="k">def</span> <span class="nf">hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">px</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">fun</span><span class="p">,</span><span class="n">jac</span><span class="p">,</span><span class="n">hess</span></div>
+    
+<div class="viewcode-block" id="MVPoissonObservation"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVPoissonObservation">[docs]</a><span class="k">class</span> <span class="nc">MVPoissonObservation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    y: binary observations</span>
+<span class="sd">    B: projection vector from multivariate system to log-rate</span>
+<span class="sd">    </span>
+<span class="sd">    Uses Laplace approximation for covariance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="MVPoissonObservation.MVPoissonApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVPoissonObservation.MVPoissonApproximator">[docs]</a>    <span class="k">class</span> <span class="nc">MVPoissonApproximator</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="n">B</span><span class="p">,</span><span class="n">y</span>
+        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+            <span class="c1"># Get mode and covariance</span>
+            <span class="n">fun</span><span class="p">,</span><span class="n">jac</span><span class="p">,</span><span class="n">hess</span> <span class="o">=</span> <span class="n">lgcp_observation_minimizer</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">o</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
+            <span class="n">mode</span>  <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="n">jac</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="n">hess</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">hess</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">x</span><span class="p">))</span></div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">B</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">MVPoissonApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OUGaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.OUGaussian">[docs]</a><span class="k">class</span> <span class="nc">OUGaussian</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="n">regularize</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">regularize</span> <span class="o">=</span> <span class="n">regularize</span>
+<div class="viewcode-block" id="OUGaussian.fwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.OUGaussian.fwd">[docs]</a>    <span class="k">def</span> <span class="nf">fwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">params</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dt</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="o">/</span><span class="n">p</span><span class="o">.</span><span class="n">t</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">regularize</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+<div class="viewcode-block" id="OUGaussian.bwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.OUGaussian.bwd">[docs]</a>    <span class="k">def</span> <span class="nf">bwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">params</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dt</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
+        <span class="c1"># Needed for regularization, a must stay close to 1 for stability</span>
+        <span class="n">a</span> <span class="o">+=</span> <span class="n">s</span><span class="o">.</span><span class="n">regularize</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">m</span><span class="o">/</span><span class="n">a</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">var</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+<div class="viewcode-block" id="MVGOUUpdate"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGOUUpdate">[docs]</a><span class="k">class</span> <span class="nc">MVGOUUpdate</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A: linear system transition matrix. Means evolve as X = AX</span>
+<span class="sd">    sigma: linear system covariance transition. it is a matrix.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">regularize</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span> 
+        <span class="n">A</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)</span><span class="o">*</span><span class="n">regularize</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">regularize</span> <span class="o">=</span> <span class="n">regularize</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
+<div class="viewcode-block" id="MVGOUUpdate.fwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGOUUpdate.fwd">[docs]</a>    <span class="k">def</span> <span class="nf">fwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">))</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">)</span></div>
+<div class="viewcode-block" id="MVGOUUpdate.bwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGOUUpdate.bwd">[docs]</a>    <span class="k">def</span> <span class="nf">bwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="p">)</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">)</span></div></div>
+        
+        
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, M Rule.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

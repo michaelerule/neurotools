@@ -67,12 +67,6 @@ def convolve2dct(x,k):
     x = convolve2d(x,k,'same')
     return x[:h,:w]
 
-def FTWMirrorConvolve(x,k):
-    '''
-    FFT convolve using FTW library. Real data. Mirrored boundaries.
-    '''
-    pass
-
 def separable2d(X,k,k2=None):
     h,w = np.shape(X)
     X = mirror2d(X)
@@ -93,26 +87,4 @@ def gausskern1d(sigma,size):
     x = float32(arange(-k,k+1))
     kern = npdf(0,sigma,x)
     return kern / sum(kern)
-
-def padKern(k,N):
-    '''
-    NOT IMPLEMENTED
-    '''
-    l = len(k)
-    #middle =
-    pass
-
-def sepConv2dFTW(x,k):
-    '''
-    NOT IMPLEMENTED USE np.convolve2d or fftconvolve
-    reflection padded separable convoltuion
-    using FFT
-    :param x:
-    :param y:
-        -- pad kernel to height / width
-        -- perform 1D fft in x, multiply (invert?)
-        -- perform 1D fft in y, multiple, invert
-    '''
-    pass
-
 

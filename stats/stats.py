@@ -29,10 +29,16 @@ def crossvalidated_least_squares(a,b,K,regress=np.linalg.lstsq):
     '''
     predicts B from A in K-fold cross-validated blocks using linear
     least squares
-    returns
+    
+    Returns
+    -------
+    array-like:
         model coefficients x
+    array-like:
         predicted values of b under crossvalidation
+    number:
         correlation coefficient
+    number:
         root mean squared error
     '''
     N = len(b)
@@ -93,7 +99,7 @@ def outliers(x,percent=10,side='both'):
         from both the left and the right
     Returns
     -------
-    ndarray
+    ndarray:
         Boolean array of same shape as x indicating outliers
     '''
     N = len(x)

@@ -1,24 +1,34 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+from neurotools.system import *
+
+'''
+Functions related to SDEs
+Experimental / under construction
+'''
 
 import os
 import traceback
 import inspect
 import numpy as np
 
-from itertools   import *
-from collections import *
-from numpy       import *
+# TODO: avoid import *
+#from itertools   import *
+#from collections import *
+#from numpy       import *
 
 from matplotlib.cbook          import flatten
 from scipy.stats.stats         import describe
 from neurotools.jobs.decorator import *
 from scipy.io                  import loadmat
-
 import sys
 from numbers import Number
 from collections import Set, Mapping, deque
@@ -47,6 +57,8 @@ except Exception as e:
     print('hopefully at least one of those works')
 
 def varexists(varname):
+    '''
+    '''
     if varname in vars():
         return vars()[varname]!=None
     if varname in globals():
@@ -54,52 +66,82 @@ def varexists(varname):
     return False
 
 def nowarn():
+    '''
+    TODO: merge warning control with something more standard
+    '''
     global SUPPRESS_WARNINGS
     SUPPRESS_WARNINGS=True
 
 def okwarn():
+    '''
+    TODO: merge warning control with something more standard
+    '''
     global SUPPRESS_WARNINGS
     SUPPRESS_WARNINGS=False
 
 def dowarn(*a,**kw):
+    '''
+    TODO: merge warning control with something more standard
+    '''
     if varexists('SUPPRESS_WARNINGS'):
         return not SUPPRESS_WARNINGS
     else: return True
 
 def warn(*a,**kw):
+    '''
+    TODO: merge warning control with something more standard
+    '''
     if dowarn(*a,**kw): print(' '.join(map(str,a)))
 
 # todo: make these separate
+# TODO: is debug even used?
 debug = warn
 
 def wait(prompt='--- press enter to continue ---'):
+    '''
+    '''
     print(prompt)
     raw_input()
 
 def matlab(commands):
+    '''
+    Runs Matlab commands through the shell
+    TODO: make matlabpath configurable
+    '''
     commands = commands.replace('\n',' ')
     print(commands)
     os.system("""%s "identifyHost(); %s; exit" """%(matlabpath,commands))
     os.system('reset')
 
 def zeroslike(x):
-    return zeros(shape(x),dtype=x.dtype)
+    '''
+    Create numpy array of zeros the same shape and type as x
+    '''
+    return zeros(x.shape,dtype=x.dtype)
 
 def oneslike(x):
-    return ones(shape(x),dtype=x.dtype)
-
-def ensuredir(d):
-    os.system('mkdir %s'%d)
+    '''
+    Create numpy array of ones the same shape and type as x
+    '''
+    return ones(x.shape,dtype=x.dtype)
 
 def history(n):
+    '''
+    Return last n lines of shell history
+    '''
     print('\n'.join(In[-n:]))
 
 def p2c(p):
+    '''
+    Convert a point in terms of a length-2 iterable into a complex number
+    '''
     return p[0]+1j*p[1]
 
 def c2p(z):
-    ''' converts complex point to tuple'''
-    return arr([real(z),imag(z)])
+    ''' 
+    Convert complex point to tuple
+    '''
+    return arr([z.real,z.imag])
 
 class emitter():
     '''
@@ -108,8 +150,12 @@ class emitter():
     operator "|" will apply the callable as a side effect before
     returning the original value of the expression. The default side
     effect is printing the object value.
-    emit = emitter()
-    emit | cos(10)
+    '''
+    '''
+    :Example:
+    >>> emit = emitter()
+    >>> emit | cos(10)
+    
     '''
     def __init__(self,operation=None):
         if operation is None:
@@ -126,21 +172,20 @@ class emitter():
 
 class piper():
     '''
-    Piper does some unusual things to the python language. It extends
-    callables such that they can be called by using various infix operators.
-    this is slightly dangerous, due to the complexity of operator precedence
-    and the nuances of whether the operator definition of the left or right
-    operand is used.
-
-    #piper test
-    def foo(x):
-        return x+1
-    pip = piper(foo)
-    1 + 1 | pip
-    @piper
-    def zscore(x):
-        return (x-mean(x,0))/std(x,0)
-    zscore < rand(10)
+    Piper extends callables such that they can be called by using 
+    infix operators. This is dangerous. Do not use it.
+    '''
+    '''
+    :Example:
+    >>> def foo(x):
+    >>>     return x+1
+    >>> pip = piper(foo)
+    >>> 1 + 1 | pip
+    >>> @piper
+    >>> def zscore(x):
+    >>>     return (x-mean(x,0))/std(x,0)
+    >>> zscore < rand(10)
+    
     '''
     def __init__(self,operation):
         self.operation=operation
@@ -164,29 +209,34 @@ class piper():
 def globalize(function,*args,**krgs):
     '''
     globalize allows the positional argument list of a python to be
-    truncated. missing arguments will be filled in by name from the
+    truncated. 
+    
+    Missing arguments will be filled in by name from the
     globals dictionary. This is actually very handy for the functions
     that reference data by session and area. Arguments can be omitted to
     these functions if the session and area are defined in global scope.
 
-    # globalizer test
-    @globalize
-    def fun(r,something='no'):
-        print r,something
-    r=8
-    fun()
+    This is dangerous. Do not use it.
+    
+    '''
+    '''
+    :Example:
+    >>> @globalize
+    >>> def fun(r,something='no'):
+    >>>     print r,something
+    >>> r=8
+    >>> fun()
+    
     '''
     warn('GLOBALIZE DECORATOR BROKE WHEN MOVING TO @decorator VERSION')
     argsp = inspect.getargspec(function)
     # we dont handle these right now. How to handle?
     # we can't auto-fill *args because we won't know their names
     # we also can't auto-fill kwargs
-    # but we can forward them?
-    # we won't know how.
-    # so basically it's just args that we tweak.
+    # but we can forward them.
+    # so it's just args that we tweak.
     # kwargs will be forwarded
-    # print argsp
-    assert argsp.varargs   is None
+    assert argsp.varargs  is None
     assert argsp.keywords is None
     argkeys  = argsp.args
     ndefault = 0 if argsp.defaults is None else len(argsp.defaults)
@@ -225,19 +275,34 @@ concat = np.concatenate
 
 @piper
 def en(x):
+    '''
+    `en | foo` is shorthand for `enumerate(foo)`
+
+    This is dangerous. Do not use it.
+    '''
     if type(x) is dict: x=x.iteritems()
     return enumerate(x)
 
+''' z-score operator; TODO: remove! '''
 zc = piper(lambda x: (x-mean(x,0))/std(x,0))
 
 @piper
 def ar(x):
+    '''
+    TODO: remove!
+    '''
     return array(x)
 
 def enlist(iterable):
+    '''
+    TODO: remove!
+    '''
     print('\n'.join(map(str,iterable)))
 
 def scat(*args,**kwargs):
+    '''
+    TODO: remove!
+    '''
     if 's' in kwargs:
         return kwargs['s'].join(map(str,args))
     return ' '.join(map(str,args))
@@ -332,8 +397,6 @@ class description:
                 result.append('%s:%s '%(abbreviations[stat],shortscientific(value)))
         return ' '.join(result)
 
-
-
 def ensure_dir(dirname):
     """
     Ensure that a named directory exists; if it does not, attempt to create it.
@@ -343,15 +406,13 @@ def ensure_dir(dirname):
         os.makedirs(dirname)
     except OSError as e:
         if e.errno != errno.EEXIST:
-            pass#raise
-
-
-
-# http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python
-
+            pass
 
 def getsize(obj):
-    """Recursively iterate to sum size of object & members."""
+    """
+    Recursively iterate to sum size of object & members.
+    http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python    
+    """
     def inner(obj, _seen_ids = set()):
         obj_id = id(obj)
         if obj_id in _seen_ids:

@@ -120,18 +120,22 @@ def population_synchrony_linear(population):
 
 def population_phase_coherence(data):
     '''
-    Data is K x N
-    K channels
-    N timepoints
-    no other shapes for now
     Extracts median frequency. Uses this to unwrap array phases.
     Applies a per-channel phase shift to zero mean phase. 
-    Test code
-    s,a,tr = ('SPK120918', 'M1', 16)
-    lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
-    data = lfp[:,500:600]
-    
-    sliding = arr([population_phase_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
+
+    Parameters
+    ----------
+    data : array-like
+        K x N
+        K = No. of channels
+        N = No. of timepoints
+
+    Example
+    -------
+        s,a,tr = ('SPK120918', 'M1', 16)
+        lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
+        data = lfp[:,500:600]
+        sliding = arr([population_phase_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
     '''
     h = angle(data)
     dfdt = (diff(h,axis=-1)+pi)%(2*pi)-pi
@@ -146,18 +150,22 @@ def mirrorpad(data,amount):
 
 def analytic_signal_coherence(data,window=np.hanning):
     '''
-    Data is K x N
-    K channels
-    N timepoints
-    no other shapes for now
     Extracts median frequency. Uses this to unwrap array phases.
     Applies a per-channel phase shift to zero mean phase. 
-    Test code
-    s,a,tr = ('SPK120918', 'M1', 16)
-    lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
-    data = lfp[:,500:600]
-    
-    sliding = arr([population_signal_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
+
+    Parameters
+    ----------
+    data : array-like
+        K x N
+        K = No. of channels
+        N = No. of timepoints
+
+    Example
+    -------
+        s,a,tr = ('SPK120918', 'M1', 16)
+        lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
+        data = lfp[:,500:600]
+        sliding = arr([population_signal_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
     '''
     assert len(shape(data))==2
     N = shape(data)[-1]
@@ -171,15 +179,15 @@ def analytic_signal_coherence(data,window=np.hanning):
 
 def population_sliding_signal_coherence(data,L=100,window=np.hanning):
     '''
-    Data is K x N
-    K channels
-    N timepoints
-    no other shapes for now
     Extracts median frequency. Uses this to unwrap array phases.
     Applies a per-channel phase shift to zero mean phase. 
-    Test code
-    s,a,tr = ('SPK120918', 'M1', 16)
-    lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
+
+    Parameters
+    ----------
+    data : array-like
+        K x N
+        K = No. of channels
+        N = No. of timepoints
     '''
     assert len(shape(data))==2
     N       = shape(data)[-1]
@@ -200,17 +208,15 @@ sliding_population_signal_coherence = population_sliding_signal_coherence
 
 def population_normalized_sliding_signal_coherence(data,L=100,window=np.hanning):
     '''
-    Data is K x N
-    K channels
-    N timepoints
-    no other shapes for now
     Extracts median frequency. Uses this to unwrap array phases.
     Applies a per-channel phase shift to zero mean phase. 
-    Test code
-    s,a,tr = ('SPK120918', 'M1', 16)
-    lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
-    Adding modification:
-        compute the standard deviation of dfdt / dfdt_median
+
+    Parameters
+    ----------
+    data : array-like
+        K x N
+        K = No. of channels
+        N = No. of timepoints
     '''
     assert len(shape(data))==2
     N       = shape(data)[-1]
@@ -232,12 +238,12 @@ def population_phase_relative_sliding_kuromoto(data,L=100,window=np.hanning):
     '''
     Uses the phase of each channel in the middle of each block as a
     reference point. Can separate coherent wave activity from synchrony.
-    kuromoto order = <z/|z|>
-    onpopdata(population_phase_relative_sliding_kuromoto)
     
-    Basically, assumes constant phase velocity, and a constant per-channel
+    $\textrm{kuromoto order} = \left\langle z/|z| \right\rangle$
+    
+    Assumes constant phase velocity, and a constant per-channel
     phase shift, and then computes the order. This is a notion of 
-    "relative phase stability"
+    relative phase stability.
     
     '''
     assert len(shape(data))==2

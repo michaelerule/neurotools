@@ -3,8 +3,16 @@ Contains statistical routines. All routines assume float32 arrays as the
 underlying datatype.
 '''
 
-import pycuda.gpuarray
-from orix.cu.gpufun import *
+try:
+    import pycuda.gpuarray
+    from pycuda.elementwise import ElementwiseKernel
+except:
+    print('PyCuda is missing; please install it to use CUDA routines')
+    pycuda = cuda = None
+    def ElementwiseKernel(*args,**kwargs):
+        print('PyCuda is missing; please install it to use CUDA routines')
+
+from neurotools.gpu.cu.gpufun import *
 from math import *
 import numpy
 
@@ -237,8 +245,13 @@ __global__ void bin(float *source, int *dest, int N, int bins, float min, float 
 }
 """
 
-gpu_bin = (pycuda.compiler.SourceModule(bin_code)).get_function("bin")
-gpu_bin.prepare([numpy.intp,numpy.intp,numpy.int32,numpy.int32,numpy.float32,numpy.float32],(256,1,1))
+try:
+    gpu_bin = (pycuda.compiler.SourceModule(bin_code)).get_function("bin")
+    gpu_bin.prepare([numpy.intp,numpy.intp,numpy.int32,numpy.int32,numpy.float32,numpy.float32],(256,1,1))
+except Exception as exc:
+    import traceback
+    traceback.print_exc(exc)
+    print('PyCuda may not be installed, could not initialize')
 
 def gpu_histogram(data,min,max,bins):
     dest    = gpuarray.to_gpu(numpy.zeros((bins,),dtype=numpy.int32))

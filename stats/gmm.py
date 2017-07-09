@@ -10,9 +10,9 @@ import numpy as np
 
 def GMM(PCA,NCLASS=2):
     '''
-    PDF = Pr(G) (2pi)^(k/2)|S|^(-1/2)exp[-1/2 (x-mu)' S^(-1) (x-mu)]
-    logPDF = logPr(G) k/2 log(2pi)-1/2log(|S|)-1/2(x-mu)'S^(-1)(x-mu)
-    Pr is inverse monotonic with logPr(G)-log(|S|)-(x-mu)'S^(-1)(x-mu)
+    \[ PDF = Pr(G) (2pi)^(k/2)|S|^(-1/2)exp[-1/2 (x-mu)' S^(-1) (x-mu)] \]
+    \[ logPDF = logPr(G) k/2 log(2pi)-1/2log(|S|)-1/2(x-mu)'S^(-1)(x-mu) \]
+    Pr is inverse monotonic with $logPr(G)-log(|S|)-(x-mu)'S^(-1)(x-mu)$
     '''
     N          = PCA.shape()[1]
     initsize   = N/NCLASS

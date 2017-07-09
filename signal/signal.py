@@ -3,17 +3,21 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+from neurotools.system import *
 
-from numpy.random import *
 import numpy as np
-
-from neurotools.tools   import *
-from matplotlib.mlab    import *
-from neurotools.getfftw import *
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
+
+# TODO: replace with more specific imports
+#from numpy.random import *
+#from neurotools.tools   import *
+#from matplotlib.mlab    import *
+#from neurotools.getfftw import *
 
 def gaussian_kernel(sigma):
     '''
@@ -23,8 +27,8 @@ def gaussian_kernel(sigma):
     assert sigma>0
     K = np.ceil(sigma)
     N = K*2+1
-    K = exp( - (arange(N)-K)**2 / (2*sigma**2) )
-    K *= 1./sum(K)
+    K = np.exp( - (np.arange(N)-K)**2 / (2*sigma**2) )
+    K *= 1./np.sum(K)
     return K
 
 def gaussian_smooth(x,sigma):
@@ -35,7 +39,7 @@ def gaussian_smooth(x,sigma):
     x: 1D array-like signal
     '''
     K = gaussian_kernel(sigma)
-    return convolve(x,K,'same')
+    return np.convolve(x,K,'same')
 
 def zscore(x,axis=0,regularization=1e-30):
     '''
@@ -46,14 +50,14 @@ def zscore(x,axis=0,regularization=1e-30):
     x: NDarray
     axis: axis to zscore; default 0
     '''
-    ss = std(x,axis=axis)+regularization
-    return (x-mean(x,axis=axis))/ss
+    ss = np.std(x,axis=axis)+regularization
+    return (x-np.mean(x,axis=axis))/ss
 
 def local_maxima(x):
    '''
    Returns signal index and values at those indecies
    '''
-   t = find(diff(sign(diff(x)))<0)+1
+   t = find(np.diff(np.sign(np.diff(x)))<0)+1
    return t,x[t]
 
 def local_minima(x):
@@ -78,11 +82,11 @@ def getsnips(signal,times,window):
     '''
     times = times[times>window]
     times = times[times<len(signal)-window-1]
-    snips = array([signal[t-window:t+window+1] for t in times])
+    snips = np.array([signal[t-window:t+window+1] for t in times])
     return snips
 
 def triggeredaverage(signal,times,window):
-    return mean(getsnips(signal,times,window),0)
+    return np.mean(getsnips(signal,times,window),0)
 
 def gettriggeredstats(signal,times,window):
     '''
@@ -90,7 +94,7 @@ def gettriggeredstats(signal,times,window):
     times.
     '''
     s = getsnips(signal,times,window)
-    return mean(s,0),std(s,0),std(s,0)/sqrt(len(times))*1.96
+    return np.mean(s,0),np.std(s,0),np.std(s,0)/np.sqrt(len(times))*1.96
 
 def padout(data):
     '''
@@ -102,7 +106,7 @@ def padout(data):
     Use the function "padin" to strip the padding
     '''
     N = len(data)
-    assert len(shape(data))==1
+    assert len(data.shape)==1
     padded = zeros(2*N,dtype=data.dtype)
     padded[N//2  :N//2+N]=data
     padded[     :N//2  ]=data[N//2:0    :-1]
@@ -114,7 +118,7 @@ def padin(data):
     See padout
     '''
     N = len(data)
-    assert len(shape(data))==1
+    assert len(data.shape)==1
     return data[N//2:N//2+N]
 
 def nonnegative_bandpass_filter(data,fa=None,fb=None,
@@ -164,16 +168,16 @@ def bandpass_filter(data,fa=None,fb=None,
         zerophase (boolean): Use forward-backward filtering? (true)
         bandstop (boolean): Do band-stop rather than band-pass
     '''
-    N = shape(data)[-1]
-    padded = zeros(shape(data)[:-1]+(2*N,),dtype=data.dtype)
+    N = data.shape[-1]
+    padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
     padded[...,N//2  :N//2+N] = data
     padded[...,     :N//2  ] = data[...,N//2:0    :-1]
     padded[...,N//2+N:     ] = data[...,-1 :N//2-1:-1]
     if not fa is None and not fb is None:
         if bandstop:
-            b,a = butter(order,array([fa,fb])/(0.5*Fs),btype='bandstop')
+            b,a = butter(order,np.array([fa,fb])/(0.5*Fs),btype='bandstop')
         else:
-            b,a = butter(order,array([fa,fb])/(0.5*Fs),btype='bandpass')
+            b,a = butter(order,np.array([fa,fb])/(0.5*Fs),btype='bandpass')
     elif not fa==None:
         # high pass
         b,a  = butter(order,fa/(0.5*Fs),btype='high')
@@ -195,12 +199,12 @@ def box_filter(data,smoothat):
     provide smoothat in units of frames i.e. samples (not ms or seconds)
     '''
     N = len(data)
-    assert len(shape(data))==1
-    padded = zeros(2*N,dtype=data.dtype)
+    assert len(data.shape)==1
+    padded = np.zeros(2*N,dtype=data.dtype)
     padded[N//2:N//2+N]=data
     padded[:N//2]=data[N//2:0:-1]
     padded[N//2+N:]=data[-1:N//2-1:-1]
-    smoothed = fftconvolve(padded,ones(smoothat)/float(smoothat),'same')
+    smoothed = fftconvolve(padded,np.ones(smoothat)/float(smoothat),'same')
     return smoothed[N//2:N//2+N]
 
 def median_filter(x,window=100,mode='same'):
@@ -216,15 +220,15 @@ def median_filter(x,window=100,mode='same'):
         is available
 
     '''
-    n = shape(x)[0]
+    n = x.shape[0]
     if mode=='valid':
-        filtered = [median(x[i:i+window]) for i in range(n-window)]
+        filtered = [np.median(x[i:i+window]) for i in range(n-window)]
         return array(filtered)
     if mode=='same':
         warn('EDGE VALUES WILL BE BAD')
         w = window / 2
-        filtered = [median(x[max(0,i-w):min(n,i+w)]) for i in range(n)]
-        return array(filtered)
+        filtered = [np.median(x[max(0,i-w):min(n,i+w)]) for i in range(n)]
+        return np.array(filtered)
     assert 0
 
 def rewrap(x):
@@ -232,7 +236,7 @@ def rewrap(x):
     Used to handle wraparound when getting phase derivatives.
     See pdiff.
     '''
-    x = array(x)
+    x = np.array(x)
     return (x+pi)%(2*pi)-pi
 
 def pdiff(x):
@@ -241,15 +245,15 @@ def pdiff(x):
     Times when this derivative wraps around form 0 to 2*pi are correctly
     handeled.
     '''
-    x = array(x)
-    return rewrap(diff(x))
+    x = np.array(x)
+    return rewrap(np.diff(x))
 
 def pghilbert(x):
     '''
     Extract phase gradient using the hilbert transform. See also pdiff.
     '''
-    x = array(x)
-    return pdiff(angle(hilbert(x)))
+    x = np.array(x)
+    return pdiff(np.angle(np.hilbert(x)))
 
 def fudge_derivative(x):
     '''
@@ -261,7 +265,7 @@ def fudge_derivative(x):
     original.
     '''
     n = len(x)+1
-    result = zeros(n)
+    result = np.zeros(n)
     result[1:]   += x
     result[:-1]  += x
     result[1:-1] *= 0.5
@@ -271,9 +275,14 @@ def ifreq(x,Fs=1000,mode='pad'):
     '''
     Extract the instantaneous frequency from a narrow-band signal using
     the Hilbert transform.
-    Fs defaults to 1000
-    mode 'pad' will return a signal of the original length
-    mode 'valid' will return a signal 1 sample shorter, with derivative
+    
+    Parameters
+    ----------
+    Fs : int
+        defaults to 1000
+    mode : str
+        'pad' will return a signal of the original length
+        'valid' will return a signal 1 sample shorter, with derivative
         computed between each pair od points in the original signal.
     '''
     pg = pghilbert(x)
@@ -290,20 +299,20 @@ def unwrap(h):
     ranging from 0 to 2*pi, the values increase (or decrease) continuously.
     '''
     d = fudgeDerivative(pdiff(h))
-    return cumsum(d)
+    return np.cumsum(d)
 
 def ang(x):
     '''
     Uses the Hilbert transform to extract the phase of x. X should be
     narrow-band. The signal is not padded, so be wary of boundary effects.
     '''
-    return angle(hilbert(x))
+    return np.angle(np.hilbert(x))
 
 def randband(N,fa=None,fb=None,Fs=1000):
     '''
     Returns Gaussian random noise band-pass filtered between fa and fb.
     '''
-    return zscore(bandfilter(randn(N*2),fa=fa,fb=fb,Fs=Fs))[N//2:N//2+N]
+    return zscore(bandfilter(np.random.randn(N*2),fa=fa,fb=fb,Fs=Fs))[N//2:N//2+N]
 
 def arenear(b,K=5):
     '''
@@ -347,7 +356,7 @@ def set_edges(edges,N):
     array which is 1 for any time between a [start,stop)
     edge info outsize [0,N] results in undefined behavior
     '''
-    x = zeros(shape=(N,),dtype=np.int32)
+    x = np.zeros(shape=(N,),dtype=np.int32)
     for (a,b) in edges:
         x[a:b]=1
     return x
@@ -358,7 +367,7 @@ def phase_rotate(s,f,Fs=1000.):
     See resonantDrive
     '''
     theta = f*2*pi/Fs
-    s *= exp(1j*theta)
+    s *= np.exp(1j*theta)
     return s
 
 def fm_mod(freq):
@@ -366,7 +375,7 @@ def fm_mod(freq):
     signal = [1]
     for i in range(N):
         signal.append(phaseRotate(signal[-1],freq[i]))
-    return array(signal)[1:]
+    return np.array(signal)[1:]
 
 def pieces(x,thr=4):
     dd = diff(x)
@@ -384,26 +393,26 @@ def median_block(data,N=100):
     blocks data by median over last axis
     '''
     N = int(N)
-    L = shape(data)[-1]
+    L = data.shape[-1]
     B = L/N
     D = B*N
     if D!=N: warn('DROPPING LAST BIT, NOT ENOUGH FOR A BLOCK')
     data = data[...,:D]
-    data = reshape(data,shape(data)[:-1]+(B,N))
-    return median(data,axis=-1)
+    data = np.reshape(data,shape(data)[:-1]+(B,N))
+    return np.median(data,axis=-1)
 
 def mean_block(data,N=100):
     '''
     blocks data by mean over last axis
     '''
     N = int(N)
-    L = shape(data)[-1]
+    L = data.shape[-1]
     B = L/N
     D = B*N
     if D!=N: warn('DROPPING LAST BIT, NOT ENOUGH FOR A BLOCK')
     data = data[...,:D]
-    data = reshape(data,shape(data)[:-1]+(B,N))
-    return mean(data,axis=-1)
+    data = reshape(data,data.shape[:-1]+(B,N))
+    return np.mean(data,axis=-1)
 
 def phase_randomize(signal):
     '''
@@ -411,25 +420,25 @@ def phase_randomize(signal):
     angle. Negative frequencies are rotated in the opposite direction.
     The nyquist frequency, if present, has it's sign randomly flipped.
     '''
-    assert 1==len(shape(signal))
+    assert 1==len(signam.shape)
     N = len(signal)
     if N%2==1:
         # signal length is odd.
         # ft will have one DC component then symmetric frequency components
-        randomize  = exp(1j*rand((N-1)/2))
-        conjugates = conj(randomize)[::-1]
-        randomize  = append(randomize,conjugates)
+        randomize  = np.exp(1j*np.random.rand((N-1)/2))
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,conjugates)
     else:
         # signal length is even
         # will have one single value at the nyquist frequency
         # which will be real and can be sign flipped but not rotated
         flip = 1 if rand(1)<0.5 else -1
-        randomize  = exp(1j*rand((N-2)/2))
-        conjugates = conj(randomize)[::-1]
-        randomize  = append(randomize,flip)
-        randomize  = append(randomize,conjugates)
+        randomize  = np.exp(1j*rand((N-2)/2))
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,flip)
+        randomize  = np.append(randomize,conjugates)
     # the DC component is not randomized
-    randomize = append(1,randomize)
+    randomize = np.append(1,randomize)
     # take FFT and apply phase randomization
     ff = fft(signal)*randomize
     # take inverse
@@ -442,16 +451,16 @@ def phase_randomize_from_amplitudes(amplitudes):
     treats input amplitudes as amplitudes of fourier components
     '''
     N = len(amplitudes)
-    x = complex128(amplitudes) # need to make a copy
+    x = np.complex128(amplitudes) # need to make a copy
     if N%2==0: # N is even
-        rephase = exp(1j*2*pi*rand((N-2)/2))
-        rephase = concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
+        rephase = np.exp(1j*2*pi*rand((N-2)/2))
+        rephase = np.concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
     else: # N is odd
-        rephase = exp(1j*2*pi*rand((N-1)/2))
-        rephase = append(rephase,conj(rephase[::-1]))
-    rephase = append([1],rephase)
+        rephase = np.exp(1j*2*pi*rand((N-1)/2))
+        rephase = np.append(rephase,np.conj(rephase[::-1]))
+    rephase = np.append([1],rephase)
     x *= rephase
-    return real(ifft(x))
+    return np.real(ifft(x))
 
 def estimate_padding(fa,fb,Fs=1000):
     '''
@@ -496,14 +505,14 @@ def killSpikes(x,threshold=1):
     should be smooth, but motion tracking errors can cause sharp spikes
     in the signal.
     '''
-    x = array(x)
+    x = np.array(x)
     y = zscore(highpassFilter(x))
     x[abs(y)>threshold] = nan
     for s,e in zip(*get_edges(isnan(x))):
         a = x[s-1]
         b = x[e+1]
         print(s,e,a,b)
-        x[s:e+2] = linspace(a,b,e-s+2)
+        x[s:e+2] = np.linspace(a,b,e-s+2)
     return x
 
 def peak_within(freqs,spectrum,fa,fb):
@@ -512,11 +521,11 @@ def peak_within(freqs,spectrum,fa,fb):
     '''
     # clean up arguments
     order    = argsort(freqs)
-    freqs    = array(freqs)[order]
-    spectrum = array(spectrum)[order]
+    freqs    = np.array(freqs)[order]
+    spectrum = np.array(spectrum)[order]
     start = find(freqs>=fa)[0]
     stop  = find(freqs<=fb)[-1]+1
-    index = argmax(spectrum[start:stop]) + start
+    index = np.argmax(spectrum[start:stop]) + start
     return freqs[index], spectrum[index]
 
 def local_peak_within(freqs,cc,fa,fb):
@@ -534,7 +543,7 @@ def zeromean(x,axis=None):
     '''
     Remove the mean trend from data
     '''
-    return x-mean(x,axis=axis)
+    return x-np.mean(x,axis=axis)
 
 def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     '''
@@ -551,13 +560,13 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
 
     analytic_signal = zscore(analytic_signal)
 
-    phase      = angle(analytic_signal)
-    amplitude  = abs(analytic_signal)
+    phase      = np.angle(analytic_signal)
+    amplitude  = np.abs(analytic_signal)
 
     phase_derivative     = fudge_derivative(pdiff(phase))
-    phase_curvature      = fudge_derivative(diff(phase_derivative))
-    amplitude_derivative = fudge_derivative(diff(amplitude))
-    amplitude_curvature  = fudge_derivative(diff(amplitude_derivative))
+    phase_curvature      = fudge_derivative(np.diff(phase_derivative))
+    amplitude_derivative = fudge_derivative(np.diff(amplitude))
+    amplitude_curvature  = fudge_derivative(np.diff(amplitude_derivative))
 
     amplitude_candidates = find( (amplitude_curvature >= 0.05) & (amplitude < 0.6) )
     amplitude_exclude    = find( (amplitude_curvature <  0.01) | (amplitude > 0.8) )
@@ -572,12 +581,12 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
         ((set(pminima)|set(pminima-1)|set(pmaxima)|set(pmaxima-1)) -\
           set(phase_exclude))
 
-    minima = array(list(minima))
+    minima = np.array(list(minima))
     minima = minima[diff(list(minima))!=1]
 
-    edges = zeros(shape(analytic_signal),dtype=np.int32)
+    edges = np.zeros(np.shape(analytic_signal),dtype=np.int32)
     edges[list(minima)] = 1
-    sign = cumsum(edges)%2*2-1
+    sign = np.cumsum(edges)%2*2-1
 
     demodulated = amplitude*sign
 
@@ -681,11 +690,11 @@ def upsample(x,factor=4):
     assert type(factor) is int
     assert factor>1
     N = len(x)
-    dc = mean(x)
+    dc = np.mean(x)
     x -= dc
-    dx = mean(diff(x))
-    x -= arange(N)*dx
-    y = zeros(2*N,dtype=float64)
+    dx = np.mean(np.diff(x))
+    x -= np.arange(N)*dx
+    y = np.zeros(2*N,dtype=float64)
     y[:N]=x
     y[N:]=x[::-1]
     ft = fft(y)
@@ -695,11 +704,11 @@ def upsample(x,factor=4):
     # If there is only one nyquist coefficient, it will be real-values,
     # so it will be it's own complex conjugate, so it's fine if we
     # double it.
-    up = zeros(N*2*factor,dtype=float64)
+    up = np.zeros(N*2*factor,dtype=float64)
     up[:N//2+1]=ft[:N//2+1]
     up[-N//2:] =ft[-N//2:]
     x = (ifft(up).real)[:N*factor]*factor
-    x += dx*arange(N*factor)/float(factor)
+    x += dx*np.arange(N*factor)/float(factor)
     x += dc
     return x
 

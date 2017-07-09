@@ -20,30 +20,32 @@ def laplace_kernel():
 def laplacian(x):
     '''
     Graph laplacian of a 2D mesh with absorbing boundary
-    
-    In the middle
-    
-     0  1  0
-     1 -4  1
-     0  1  0
-    
-    At edges
-    
-     1  0
-    -3  1
-     1  0
-    
-    At corners
-    
-    -2  1
-     1  0
-     
-    Test code:
-    
+
+    Example
+    -------
     >>> test = np.zeros((5,11),'float32')
     >>> test[2,5] = 1
     >>> showim(test)
     >>> showim(laplacian(test))
+    '''
+    '''
+        
+    In the middle
+        
+        0  1  0
+        1 -4  1
+        0  1  0
+    
+    At edges
+        
+         1  0
+        -3  1
+         1  0
+    
+    At corners
+        
+        -2  1
+         1  0
     '''
     n,m = x.shape
     

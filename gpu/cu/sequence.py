@@ -1,3 +1,14 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
 '''
 This library contains a collection of kernels that I have found useful when
 looking for repeating sequences in data
@@ -5,15 +16,6 @@ looking for repeating sequences in data
 
 def GPUSequenceAutoDetect(distances,t,thresh):
     '''
-    f( data, t, limit, out)
-    for all time points, for all time points
-        s=0
-        l=0
-        starting t=0, up to limit
-            s+= distance(A,B)
-            l++
-            if (s/l) is bigger than limit stop
-        save l
     '''
     out = gpuint(np.zeros(t*t))
     kernel('float *distances, int t, float thresh, int *out',
@@ -44,12 +46,13 @@ def GPUSequenceAutoDetect(distances,t,thresh):
 
 def GPUPointAutoDistance(t,k,n,data):
     '''
-    t=length of data in time
-    k=number of time bins to use
-    n=size of vector datapoints
-    data=t*n data matrix, n is inner dimension
-    
     limit to 5-13k timestep for 256x256 sim
+    
+    Args:
+        t (int):length of data in time
+        k (int):number of time bins to use
+        n (int):size of vector datapoints
+        data (int):t*n data matrix, n is inner dimension
     '''
     w=t-k+1
     kern1=kernel('float *data, int n, int t, float *out',
@@ -83,12 +86,13 @@ def GPUPointAutoDistance(t,k,n,data):
 
 def GPUAutometric(t,n,data):
     '''
-    t=length of data in time
-    k=number of time bins to use
-    n=size of vector datapoints
-    data=t*n data matrix, n is inner dimension
-    
     limit to 5-13k timestep for 256x256 sim
+    
+    Args:
+        t (int):length of data in time
+        k (int):number of time bins to use
+        n (int):size of vector datapoints
+        data (int):t*n data matrix, n is inner dimension
     '''
     kern=kernel('float *data, int n, int t, float *out',
         '''
@@ -109,12 +113,13 @@ def GPUAutometric(t,n,data):
 
 def GPUMagmetric(t,n,data):
     '''
-    t=length of data in time
-    k=number of time bins to use
-    n=size of vector datapoints
-    data=t*n data matrix, n is inner dimension
-    
     limit to 5-13k timestep for 256x256 sim
+    
+    Args:
+        t (int):length of data in time
+        k (int):number of time bins to use
+        n (int):size of vector datapoints
+        data (int):t*n data matrix, n is inner dimension
     '''
     kern=kernel('float *data, int n, int t, float *out',
         '''
@@ -130,12 +135,13 @@ def GPUMagmetric(t,n,data):
 
 def GPUDotmetric(t,n,data):
     '''
-    t=length of data in time
-    k=number of time bins to use
-    n=size of vector datapoints
-    data=t*n data matrix, n is inner dimension
-    
     limit to 5-13k timestep for 256x256 sim
+    
+    Args:
+        t (int):length of data in time
+        k (int):number of time bins to use
+        n (int):size of vector datapoints
+        data (int):t*n data matrix, n is inner dimension
     '''
     kern=kernel('float *data, int n, int t, float *out',
         '''
@@ -212,10 +218,7 @@ def mulmag(t,data):
     
 def FrameEater(filename,maxframes=None):
     '''
-    I parse files in a directory representing sequence frames
-    or maybe I load one big text file of numbers, that
-    seems like a better idea. 
-    then I make a np.array, yes
+    TODO: document
     
     file format : list of float images
     width height frames \n
@@ -241,7 +244,7 @@ def FrameEater(filename,maxframes=None):
             frames=frames+1
             dataline=castfloat(line.split())
             data.extend(dataline)   
-            print 'read frame %s'%frames        
+            print('read frame %s'%frames)
         if maxframes==None or frames>=maxframes:
             break 
     f.close()
@@ -292,7 +295,7 @@ def fitgaussbimodal(gpupoints,steps):
         mb,sb,kb=gpusubsetgfit(isinb,n)
         if (oldll!=None):
             if ll<=oldll:
-                print 'bailed on iteration %s'%i
+                print('bailed on iteration %s'%i)
                 return ((ma,sa,ka,isina),(mb,sb,kb,isinb))  
         oldll=ll
     return ((ma,sa,ka,isina),(mb,sb,kb,isinb))

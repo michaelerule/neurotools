@@ -19,7 +19,6 @@ except:
 
 from neurotools.tools import memoize
 
-
 # from plottools import *
 ############################################################################
 # Configure the beta band complex morlet transform
@@ -90,19 +89,17 @@ def population_coherence_spectrum(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
 
 def population_eigencoherence(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     '''
+    not implemented.
+    
     Uses the eigenvalue spectrum of the pairwise coherence matrix.
     In the case of wavelets, each time-frequency point has one
     complex value.
 
-    The matrix we build will be I think |z_i z_j|
-
-    ... this will involve a lot of computation.
-    ... let's not do it.
+    The matrix we build: $|z_i z_j|$
 
     See ramirez et al
     A GENERALIZATION OF THE MAGNITUDE SQUARED COHERENCE SPECTRUM FOR
     MORE THAN TWO SIGNALS: DEFINITION, PROPERTIES AND ESTIMATION
-
     '''
     assert 0
 

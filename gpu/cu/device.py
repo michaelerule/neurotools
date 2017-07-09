@@ -1,8 +1,20 @@
 '''Module orix.device contains functions that deal with things associated with
 the physical graphics card device that I usually don't want to think about.'''
 
-import pycuda.driver as cuda
-from orix.cu.cpuutil import *
+
+try:
+    import pycuda.driver as cuda
+except:
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+            print('Please locate and install the pycuda GPU library')
+        else:
+            raise ValueError('Please locate and install pycuda GPU library')
+    # TODO: shadow missing function with the above, which raises an error?
+    
+  
+from neurotools.gpu.cpu.util import *
 
 def estimateThreadsPerBlock(cudamodule):
     '''

@@ -3,19 +3,27 @@ Contains higher order functions to make creation of GPU functions more
 succinct and compact. Also contains generic routines for manipulating CUDA 
 source objects.
 '''
-
-import pycuda.gpuarray as gpuarray
-import pycuda.cumath as cumath
-from pycuda.elementwise import ElementwiseKernel
-from pycuda.compiler import SourceModule
-
+try:
+    import pycuda.gpuarray as gpuarray
+    import pycuda.cumath as cumath
+    from pycuda.elementwise import ElementwiseKernel
+    from pycuda.compiler import SourceModule
+except:
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+            print('Please locate and install the pycuda GPU library')
+        else:
+            raise ValueError('Please locate and install pycuda GPU library')
+    # TODO: shadow missing function with the above, which raises an error?
+    
 from pytools import memoize
 from math import log
 import re
 import numpy as np 
 
-from orix.cpu.util import *
-from orix.cu.device import *
+from neurotools.gpu.cpu.util import *
+from neurotools.gpu.cu.device import *
 
 ##############################################################################
 # Source Code Utility Functions
@@ -79,13 +87,15 @@ gpuscalar=gpubin
     
 @memoize
 def gpumap(exp):
-    '''This is a small wrapper to simplify creation of b[i] = f(a[i]) map 
+    '''
+    This is a small wrapper to simplify creation of b[i] = f(a[i]) map 
     kernels. The map function is passed in as a string representing a CUDA 
     expression. The dollar sign $ should denote the argument variable. A 
-    return array is automatically constructed. For example, gpumap('$') 
-    creates a clone or idenitiy kernel, so A = gpumap('$')(B) will assign a 
+    return array is automatically constructed. For example, `gpumap('$')` 
+    creates a clone or idenitiy kernel, so `A=gpumap('$')(B)` will assign a 
     copy of B to A. As a nontrivial example, a nonlinear map might function 
-    could be created as gpumap('1/(1+exp(-$))')'''
+    could be created as `gpumap('1/(1+exp(-$))')`
+    '''
     exp = "z[i]="+expsub(exp)
     map_kern = lambda:ElementwiseKernel("float *x, float *z",exp,"map_kern")
     def f(v):
@@ -146,15 +156,17 @@ def gpuparametermap(exp):
 
 @memoize  
 def gpubinaryeq(exp):
-    '''This wrapper simplified the creation of kernels executing operators
-    like {'+=','-=','*=','/='}. That is, binary operators that assign the
+    '''
+    This wrapper simplified the creation of kernels executing operators
+    like `{'+=','-=','*=','/='}`. That is, binary operators that assign the
     result to the left operator. This is to suppliment the functionality of
     PyCUDA GPUArrays, which support binary operations but always allocate a 
     new array to hold the result. This wrapper allows you to efficiently 
     execute binary operations that assign the result to one of the argument
-    arrays. For example, implement the GPU equivalent of '+=' as 
-    gpubinaryeq('$x+$y')(x,y). The result will automatically be assigned to
-    the first argument, x.'''
+    arrays. For example, implement the GPU equivalent of `+=` as 
+    `gpubinaryeq('$x+$y')(x,y)`. The result will automatically be assigned to
+    the first argument, x.
+    '''
     exp = "$x="+exp
     exp = (lambda exp:re.compile(r'\$x').sub(r'x[i]',exp))(exp)
     exp = (lambda exp:re.compile(r'\$y').sub(r'y[i]',exp))(exp)

@@ -1,3 +1,14 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
 '''
 Contains higher order functions to make creation of GPU functions more 
 succinct and compact. Also contains generic routines for manipulating Cl 
@@ -5,7 +16,7 @@ source objects.
 '''
 
 import pyopencl
-from orix.cl import *
+from neurotools.gpu.cl import *   
 from pytools import memoize
 from math import log,ceil
 import re
@@ -13,7 +24,8 @@ import numpy as np
 
 def format(code):
     '''
-    This is a kernel source auto-formatter. It mostly just does auto-indent
+    This is a kernel source auto-formatter. 
+    It mostly just does auto-indent
     '''
     code = re.compile(r'//').sub(r'@',code)
     code = re.compile(r'^([^@\n]*)@([\n]*)\n').sub(r'@\2\n\1\n',code)
@@ -50,7 +62,7 @@ def printKernel(code):
     labeldigits = ceil(log(len(code))/log(10))
     formatstring = "%0"+str(labeldigits)+"d %s"
     for i,line in enumerate(code):
-        print formatstring%(i+2,line)
+        print(formatstring%(i+2,line))
     
 def guessGPUType(arg):
     '''At the moment, this returns numpy.float32 for Python floats and 
@@ -120,7 +132,7 @@ def elemental(header, code):
     #return execkern
 
 def gpumap(source):
-    print "gpumap under construction"
+    print("gpumap under construction")
 
 '''
 def duckern(header,code):
@@ -131,7 +143,7 @@ def duckern(header,code):
             return None
     def duck(*args):
         types = map(args,get_type_string)
-        print types
+        print(types)
         
 _assign_op = lambda t:lambda s:lambda a,b:elemental("%(T)sa,%(T)sb"%{T:t+" *"},"a%s=b;"%s)(len(a))(a,b)
 _assign_op_float = _assign_op('float')

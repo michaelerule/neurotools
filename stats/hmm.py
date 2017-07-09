@@ -11,8 +11,6 @@ from __future__ import print_function
 import sys
 # more py2/3 compat
 from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
 # END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 
@@ -101,7 +99,6 @@ def poisson_baum_welch(Y,initial=None):
         if any(map(hasNaN,(logP,logA,logB,X))):
             raise RuntimeError('NaN encountered')
     return X,params
-
 
 def viterbi(Y,P,A,B):
     '''
@@ -572,12 +569,20 @@ def forward_backward_abstract(y, x0, T, B, prior=1):
     '''
     Abstracted form of forward-backward algorithm
     
-    y     : sequence of observations
-    B     : y → P(x), conditioning on observations P(x|y(t))
-    x0    : P(x)
-    T.fwd : P(x)→P(x); operator for the forward  pass
-    T.bwd : P(x)→P(x); operator for the backward pass
-    prior : Optional, P(x) multiplied with the latent state on every time-step
+    Parameters
+    ----------
+    y : iterable
+        sequence of observations
+    B : y→P(x)
+        conditioning on observations P(x|y(t))
+    x0 : P(x)
+        Initial condition
+    T.fwd : P(x)→P(x) 
+        Operator for the forward  pass
+    T.bwd : P(x)→P(x)
+        Operator for the backward pass
+    prior : Optional, P(x) 
+        Prior to be multiplied with the latent state on every time-step
     '''
     L = len(y)
     # forward part of the algorithm

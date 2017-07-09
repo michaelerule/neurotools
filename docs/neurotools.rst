@@ -1,0 +1,45 @@
+neurotools package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    neurotools.gpu
+    neurotools.graphics
+    neurotools.jobs
+    neurotools.models
+    neurotools.signal
+    neurotools.spatial
+    neurotools.stats
+
+Submodules
+----------
+
+.. toctree::
+
+   neurotools.clear
+   neurotools.color
+   neurotools.dependencies
+   neurotools.functions
+   neurotools.getfftw
+   neurotools.image
+   neurotools.matrix
+   neurotools.namespace
+   neurotools.nlab
+   neurotools.ntime
+   neurotools.operators
+   neurotools.plot
+   neurotools.spikes
+   neurotools.system
+   neurotools.tools
+   neurotools.waveform
+
+Module contents
+---------------
+
+.. automodule:: neurotools
+    :members:
+    :undoc-members:
+    :show-inheritance:

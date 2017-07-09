@@ -1,0 +1,168 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>neurotools.stats.fast_kde module &#8212; Neurotools 2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.stats.fast_kde">
+<span id="neurotools-stats-fast-kde-module"></span><h1>neurotools.stats.fast_kde module<a class="headerlink" href="#module-neurotools.stats.fast_kde" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.stats.fast_kde.fast_kde">
+<code class="descclassname">neurotools.stats.fast_kde.</code><code class="descname">fast_kde</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>gridsize=(400</em>, <em>400)</em>, <em>extents=None</em>, <em>weights=None</em>, <em>sample=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/fast_kde.html#fast_kde"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.fast_kde.fast_kde" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a gaussian kernel density estimate over a regular grid using a
+convolution of the gaussian kernel with a 2D histogram of the data.
+This function is typically several orders of magnitude faster than
+scipy.stats.kde.gaussian_kde for large (&gt;1e7) numbers of points and
+produces an essentially identical result.
+Input:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>x: array-like</dt>
+<dd>The x-coords of the input data points</dd>
+<dt>y: array-like</dt>
+<dd>The y-coords of the input data points</dd>
+<dt>gridsize: tuple, optional</dt>
+<dd>An (nx,ny) tuple of the size of the output
+grid. Defaults to (400, 400).</dd>
+<dt>extents: tuple, optional</dt>
+<dd>A (xmin, xmax, ymin, ymax) tuple of the extents of output grid.
+Defaults to min/max of x &amp; y input.</dd>
+<dt>weights: array-like or None, optional</dt>
+<dd>An array of the same shape as x &amp; y that weighs each sample (x_i,
+y_i) by each value in weights (w_i).  Defaults to an array of ones
+the same size as x &amp; y.</dd>
+<dt>sample: boolean</dt>
+<dd>Whether or not to return the estimated density at each location.
+Defaults to False</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Output:</dt>
+<dd><dl class="first last docutils">
+<dt>density <span class="classifier-delimiter">:</span> <span class="classifier">2D array of shape <em>gridsize</em></span></dt>
+<dd>The estimated probability distribution function on a regular grid</dd>
+<dt>extents <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd>xmin, xmax, ymin, ymax</dd>
+<dt>sampled_density <span class="classifier-delimiter">:</span> <span class="classifier">1D array of len(<em>x</em>)</span></dt>
+<dd>Only returned if <em>sample</em> is True.  The estimated density at each
+point.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.fast_kde.generate_data">
+<code class="descclassname">neurotools.stats.fast_kde.</code><code class="descname">generate_data</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/fast_kde.html#generate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.fast_kde.generate_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.fast_kde.image_cov">
+<code class="descclassname">neurotools.stats.fast_kde.</code><code class="descname">image_cov</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/fast_kde.html#image_cov"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.fast_kde.image_cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Efficiently calculate the cov matrix of an image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.fast_kde.image_example">
+<code class="descclassname">neurotools.stats.fast_kde.</code><code class="descname">image_example</code><span class="sig-paren">(</span><em>grid</em>, <em>extents</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/fast_kde.html#image_example"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.fast_kde.image_example" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.fast_kde.main">
+<code class="descclassname">neurotools.stats.fast_kde.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/fast_kde.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.fast_kde.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.fast_kde.scatter_example">
+<code class="descclassname">neurotools.stats.fast_kde.</code><code class="descname">scatter_example</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>density</em>, <em>num_points=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/fast_kde.html#scatter_example"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.fast_kde.scatter_example" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.stats.fast_kde.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, M Rule.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/neurotools.stats.fast_kde.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

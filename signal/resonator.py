@@ -1,9 +1,18 @@
-#execfile(expanduser('~/Dropbox/bin/signaltools.py'))
-from nsignaltools import *
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
 
-print 'DONT USE THIS LIBRARY UNTIL YOU UNDERSTAND THE PHASE DISTORTION'
-print 'STOPPING NOW'
-assert 0
+'''
+Very simple demonstration of driving damped oscillators
+'''
 
 def resonantDrive(s,f,tau,x,Fs=1000):
     '''
@@ -45,7 +54,7 @@ def resonantFilter(x,f,tau,Fs=1000):
     '''
     N = len(x)
     M = len(f)
-    print N,M
+    print(N,M)
     assert N==M
     dt = 1./Fs
     s = complex(0)
@@ -72,7 +81,7 @@ def resonantFiltfilt(x,f,tau,order=1):
 def resonantFilter(x,f,tau,Fs=1000):
     N = len(x)
     M = len(f)
-    print N,M
+    print(N,M)
     assert N==M
     dt = 1./Fs
     s = complex(x[0])

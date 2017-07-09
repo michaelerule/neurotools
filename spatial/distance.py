@@ -3,38 +3,44 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+from neurotools.system import *
 
 '''
 Routines for computing statistics from multielectrode arrays
 that are sensitive to distances between channels.
 
 Test code
+---------
 
-session='SPK120925'
-area='M1'
-am = get_array_map(session,area)
-print(am)
+    session='SPK120925'
+    area='M1'
+    am = get_array_map(session,area)
+    print(am)
 
-for ch1 in get_good_channels(session,area):
-    for ch2 in get_good_channels(session,area):
-        print(ch1,ch2,get_pair_distance(session,area,ch1,ch2))
+    for ch1 in get_good_channels(session,area):
+        for ch2 in get_good_channels(session,area):
+            print(ch1,ch2,get_pair_distance(session,area,ch1,ch2))
 
-trial = get_good_trials(session,area)[0]
-epoch = 6,-1000,6000
+    trial = get_good_trials(session,area)[0]
+    epoch = 6,-1000,6000
 
-cohere_pairs()
+    cohere_pairs()
+'''
+'''
 *X* is a *numSamples* * *numCols* array
 *ij* is a list of tuples.  Each tuple is a pair of indexes into
 the columns of X for which you want to compute coherence.  For
 example, if *X* has 64 columns, and you want to compute all
 nonredundant pairs, define *ij* as::
-
-
 '''
-from matplotlib.mlab import *
-from collections import *
+
+# TODO: fix imports
+#from matplotlib.mlab import *
+#from collections import *
 
 xr = xrange
 
@@ -124,7 +130,11 @@ def get_length_constant_trial(session,area,trial,epoch):
 
 def get_average_synchrony_length_constant_parallel(session,area,epoch):
     '''
+    TODO: move this to the CGID project or modify to be more general  
+    '''
+    '''
     Test code
+    ---------
     session='SPK120925'
     session='RUS120518'
     area='PMv'
@@ -203,11 +213,9 @@ def get_average_synchrony_length_constant_parallel(session,area,epoch):
 
 def synchrony_length_constant_areas_summary(session,trial,epoch):
     '''
-    This is descended from a one-off plotting script, that's why i'ts weird
-    and messy.
-
-    test code
-
+    TODO: move this to the CGID project or modify to be more general
+    '''
+    '''
     session = 'SPK120924'
     synchrony_length_constant_areas_summary(session,good_trials(session)[0],None)
     '''

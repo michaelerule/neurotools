@@ -1,45 +1,56 @@
-from neurotools.jobs.parallel import *
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
 import statsmodels
 import numpy as np
 from numpy import random
-from numpy import *
 from matplotlib.mlab import find
+
+#TODO: fix imports
+#from neurotools.jobs.parallel import *
+#from numpy import *
+
 
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''
-    # derived from the following matlab code from Wilson Truccolo
-    
-    function [pID,pN] = fdr(p,q)
-    % FORMAT pt = fdr(p,q)
-    % 
-    % p   - vector of p-values
-    % q   - False Discovery Rate level
-    %
-    % pID - p-value threshold based on independence or positive dependence
-    % pN  - Nonparametric p-value threshold
-    %
-    % This function takes a vector of p-values and a False Discovery Rate
-    % (FDR). It returns two p-value thresholds, one based on an assumption of
-    % independence or positive dependence, and one that makes no assumptions
-    % about how the tests are correlated. For imaging data, an assumption of
-    % positive dependence is reasonable, so it should be OK to use the first
-    % (more sensitive) threshold.
-    % 
-    % Reference: Benjamini and Hochberg, J Royal Statistical Society. Series B
-    % (Methodological), V 57, No. 1 (1995), pp. 289-300.
-    % _____________________________________________________________________________
-    % @(#)fdr.m 1.3 Tom Nichols 02/01/18
-    % Wilson Truccolo: modified 10/19/2007
+    Derived from the following matlab code (c) Wilson Truccolo
+        function [pID,pN] = fdr(p,q)
+        % FORMAT pt = fdr(p,q)
+        % 
+        % p   - vector of p-values
+        % q   - False Discovery Rate level
+        %
+        % pID - p-value threshold based on independence or positive dependence
+        % pN  - Nonparametric p-value threshold
+        %
+        % This function takes a vector of p-values and a False Discovery Rate
+        % (FDR). It returns two p-value thresholds, one based on an assumption of
+        % independence or positive dependence, and one that makes no assumptions
+        % about how the tests are correlated. For imaging data, an assumption of
+        % positive dependence is reasonable, so it should be OK to use the first
+        % (more sensitive) threshold.
+        % 
+        % Reference: Benjamini and Hochberg, J Royal Statistical Society. Series B
+        % (Methodological), V 57, No. 1 (1995), pp. 289-300.
+        % _____________________________________________________________________________
+        % @(#)fdr.m 1.3 Tom Nichols 02/01/18
+        % Wilson Truccolo: modified 10/19/2007
 
-    p = sort(p(:));
-    V = length(p);
-    I = (1:V)';
-     
-    cVID = 1;
-    cVN = sum(1./(1:V));
-
-    pID = p(max(find(p<=I/V*q/cVID)));
-    pN = p(max(find(p<=I/V*q/cVN)));
+        p = sort(p(:));
+        V = length(p);
+        I = (1:V)';
+        cVID = 1;
+        cVN = sum(1./(1:V));
+        pID = p(max(find(p<=I/V*q/cVID)));
+        pN = p(max(find(p<=I/V*q/cVN)));
     '''
     pvalues = sorted(ravel(pvalues))
     V = len(pvalues)
@@ -49,36 +60,49 @@ def benjamini_hochberg_positive_correlations(pvalues,alpha):
     pID  = pvalues[pID[-1]] if len(pID)>0 else 0#pvalues[0]
     pN   = find( pvalues<=X/cVN )
     pN   = pvalues[pN [-1]] if len(pN )>0 else 0#pvalues[0]
-    print pID, pN
+    print(pID, pN)
     return pID, pN
 
-def correct_pvalues_positive_dependent(pvalue_dictionary):
+def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0):
     '''
-    Accepts dictionary 
-        label -> pvalue
-    Returns Benjamini-Hochberg corrected dictionary 
-    assuming positive correlations
-        label -> pvalue, reject
+    Parameters
+    ----------
+    pvalue_dictionary : dict 
+        `label -> pvalue`
+    
+    Returns
+    -------
+    dict:
+        Benjamini-Hochberg corrected dictionary assuming positive 
+        correlations, entries as `label -> pvalue, reject`
     '''
     labels, pvals = zip(*pvalue_dictionary.iteritems())
     p_threshold = max(*benjamini_hochberg_positive_correlations(pvals,0.05))
     reject = array(pvals)<p_threshold
-    #print 'BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject)))
+    if verbose:
+        print('BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject))))
     corrected = dict(zip(labels,zip(pvals,reject)))
     return corrected
 
 
-def correct_pvalues(pvalue_dictionary):
+def correct_pvalues(pvalue_dictionary,verbose=0):
     '''
-    Accepts dictionary 
-        label -> pvalue
-    Returns Benjamini-Hochberg corrected dictionary 
-        label -> pvalue, reject
+    Parameters
+    ----------
+    pvalue_dictionary : dict 
+        `label -> pvalue`
+    
+    Returns
+    -------
+    dict:
+        Benjamini-Hochberg corrected dictionary 
+        correlations, entries as `label -> pvalue, reject`
     '''
     labels, pvals = zip(*pvalue_dictionary.iteritems())
     reject, pvals_corrected, alphacSidak, alphacBonf = \
       statsmodels.sandbox.stats.multicomp.multipletests(pvals, alpha=0.05, method='fdr_bh')
-    print 'BENJAMINI-HOCHBERG\n\t','\n\t'.join(map(str,zip(labels,pvals_corrected,reject)))
+    if verbose:
+        print('BENJAMINI-HOCHBERG\n\t','\n\t'.join(map(str,zip(labels,pvals_corrected,reject))))
     corrected = dict(zip(labels,zip(pvals_corrected,reject)))
     return corrected
 

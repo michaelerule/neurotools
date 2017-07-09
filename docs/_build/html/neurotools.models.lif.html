@@ -1,0 +1,199 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>neurotools.models.lif module &#8212; Neurotools 2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.models.lif">
+<span id="neurotools-models-lif-module"></span><h1>neurotools.models.lif module<a class="headerlink" href="#module-neurotools.models.lif" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.models.lif.euler_integrate_LIF">
+<code class="descclassname">neurotools.models.lif.</code><code class="descname">euler_integrate_LIF</code><span class="sig-paren">(</span><em>x</em>, <em>C=1.0</em>, <em>g_L=0.1</em>, <em>g_E=0.00074</em>, <em>E_E=0.0</em>, <em>E_L=-70.0</em>, <em>Thr=-60.0</em>, <em>tau=1.0</em>, <em>Fs=2000</em>, <em>g_S=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/models/lif.html#euler_integrate_LIF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.models.lif.euler_integrate_LIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modeled after the LIF implementation in Baker Pinches Lemon 2003
+This one uses Euler integration though – it appears similar</p>
+<p>C dV/dt = g_L (E_L - V) + g_E (E_E - V)</p>
+<p>x is synaptic input in units of “counts” for synaptic activation
+events.
+C   = 1       uF/cm^2  membrane capacitance
+g_L = 0.1     mS/cm^2  leak conductance
+E_L = -70     mV       resting potential
+g_E = 0.00074 mS/cm^2  excitatory conductance
+E_E = 0       mV
+Thr = -60     mV       spiking threshold
+tau = 1.0     ms       synaptic time constant in seconds
+Fs  = 2000    Hz       sampling rate and integration frequency
+V   =         mV       membrane potential</p>
+<p>Note: Expected membrane time constant is 10ms
+Tau = RC = C/g_L = 1 uF / 0.1 mS = 10 ms. Checks out.
+Note: Expected EPSP is 100 microvolts (0.1mV)
+Emperically this checks out</p>
+<p>Unit check.
+Farad Volt / Second = Ampere = Siemen * Volt = Volt / Ohm
+uF * mV / ms = mS * mV
+1 millisiemen * 1 millivolt = 1 microamp
+1 microamp / 1 microfarad * 1 millisecond = 1 millivolt</p>
+<p># Test code: single EPSP
+x = zeros(2000)
+x[100] = 1
+time, V, spikes, current = euler_integrate_LIF(x)
+clf()
+plot(time,V)
+plot(time,current)
+plot(time,x)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.models.lif.exponential_integrate_LIF">
+<code class="descclassname">neurotools.models.lif.</code><code class="descname">exponential_integrate_LIF</code><span class="sig-paren">(</span><em>x</em>, <em>C=1.0</em>, <em>g_L=0.1</em>, <em>g_E=0.00074</em>, <em>E_E=0.0</em>, <em>E_L=-70.0</em>, <em>Thr=-60.0</em>, <em>tau=1.0</em>, <em>Fs=2000.0</em>, <em>g_S=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/models/lif.html#exponential_integrate_LIF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.models.lif.exponential_integrate_LIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modeled after the LIF implementation in Baker Pinches Lemon 2003</p>
+<p>C dV/dt = g_L (E_L - V) + g_E (E_E - V)</p>
+<p>x is synaptic input in units of “counts” for synaptic activation
+events.
+C   = 1       uF/cm^2  membrane capacitance
+g_L = 0.1     mS/cm^2  leak conductance
+E_L = -70     mV       resting potential
+g_E = 0.00074 mS/cm^2  excitatory conductance
+E_E = 0       mV
+Thr = -60     mV       spiking threshold
+tau = 1.0     ms       synaptic time constant in seconds
+Fs  = 2000    Hz       sampling rate and integration frequency
+V   =         mV       membrane potential</p>
+<p>Note: Expected membrane time constant is 10ms
+Tau = RC = C/g_L = 1 uF / 0.1 mS = 10 ms. Checks out.
+Note: Expected EPSP is 100 microvolts (0.1mV)
+Emperically this checks out</p>
+<p>Unit check.
+Farad Volt / Second = Ampere = Siemen * Volt = Volt / Ohm
+uF * mV / ms = mS * mV
+1 millisiemen * 1 millivolt = 1 microamp
+1 microamp / 1 microfarad * 1 millisecond = 1 millivolt</p>
+<p># Test code: single EPSP and check against Euler integrator
+x = zeros(2000)
+x[100] = 1
+time, V, spikes, current = euler_integrate_LIF(x)
+clf()
+plot(time,V)
+plot(time,current)
+plot(time,x)
+time, V, spikes, current = exponential_integrate_LIF(x)
+plot(time,V)
+plot(time,current)
+plot(time,x)
+# they appear to match</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.models.lif.exponential_moving_average">
+<code class="descclassname">neurotools.models.lif.</code><code class="descname">exponential_moving_average</code><span class="sig-paren">(</span><em>x</em>, <em>tau</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/models/lif.html#exponential_moving_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.models.lif.exponential_moving_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>x   : data
+tau : time constant in seconds
+Fs  : sampling rate of x in samples per second</p>
+<p>Implement exponential moving average as
+Y_{n+1} = (1-alpha) Y_n + alpha X_n</p>
+<p>This relates to convolving signal x with decaying exponential
+Y = X * [H(t) exp(-t/tau)]
+Where t is in seconds and H is the heaviside step function</p>
+<p>Alpha and tau may be related by considering the differential equation</p>
+<p>tau dY/dT = X-Y</p>
+<p>And both solving it as a linear equation and also re-writing it as a
+discrete difference equation</p>
+<p>DY = (X-Y) DT/tau
+[Y_{n+1}-Y] = (X-Y) DT/tau
+Y_{n+1} = (X-Y) DT/tau + Y
+Y_{n+1} = (1 - DT/tau) Y + DT/tau X</p>
+<p>and we find that alpha = DT/tau for the discrete update</p>
+<p>The exact solution to an impulse in X would be</p>
+<p>tau dY/dT = -Y, Y_0 = 1</p>
+<p>Y(t) = exp(-t/tau) * H(t)
+or Y(t) = H(t) exp(-t*alpha/DT)</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.models.lif.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, M Rule.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/neurotools.models.lif.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

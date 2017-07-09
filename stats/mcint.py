@@ -1,3 +1,15 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
 '''
 Routines for monte-carlo integration
 '''
@@ -17,14 +29,19 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     
     Parameters
     ----------
-    f : function that returns array_like.
-    maxiter : maximum number of samples to draw
-    converge : maximum absolute error tolerated
+    f : 
+        function that returns array_like.
+    maxiter : 
+        maximum number of samples to draw
+    converge : 
+        maximum absolute error tolerated
     
     Returns
     -------
-    Estimate of the mean of f
-    
+    number or array-like:
+        Estimate of the mean of f
+    '''
+    '''
     Test code
     ---------
     >>> def f():
@@ -72,7 +89,7 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
 
 
 def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
-    '''
+    ''' 
     x = monte_carlo_expectation(f,maxiter,converge)
     
     Evaluate expectation of f using Monte-Carlo integration.
@@ -90,7 +107,8 @@ def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     Returns
     -------
     Estimate of the mean and second moment of f
-    
+    '''
+    '''
     Test code
     ---------
     >>> def f():

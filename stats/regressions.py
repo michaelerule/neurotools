@@ -4,12 +4,15 @@ from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
+'''
+Routines to regress spatiotemporal wave shapes to data
+'''
 
 '''
-I need to regress on the following model for synchrony
+Regress on the following model for synchrony
 synchrony(x) = cos(wx)*exp(-x/tau)+b
 
-which means that the angular synchrony cos(theta_x1-theta_x2) should
+angular synchrony cos(theta_x1-theta_x2) should
 decay as a damped cosine, with some constant offset b. Note that
 a nonzero constant offset may not indicate uniform synchrony, for
 example, the direction of constant phase in a plane wave will contribute
@@ -153,22 +156,28 @@ from scipy.optimize import minimize
 
 def damped_cosine(X,Y,W):
     '''
-    X: List of distances
-    W: List of weights
-    Y: List of average pairwise distances
-
-    todo: constrain b, L to be positive
+    Todo: constrain b, L to be positive
 
 
-    # simple test
-    X = 0.4*arange(9)
-    Y = exp(-X/4+1)*cos(X)
-    Z = Y+randn(*shape(X))
-    W = ones(shape(X))
-    w,L,b = damped_cosine(X,Z,W).x
-    plot(X,Y)
-    plot(X,Z)
-    plot(X,cos(w*X)*exp(-X/L+b))
+    Parameters
+    ----------
+    X: 
+        List of distances
+    W: 
+        List of weights
+    Y: 
+        List of average pairwise distances
+
+    Example
+    -------
+        X = 0.4*arange(9)
+        Y = exp(-X/4+1)*cos(X)
+        Z = Y+randn(*shape(X))
+        W = ones(shape(X))
+        w,L,b = damped_cosine(X,Z,W).x
+        plot(X,Y)
+        plot(X,Z)
+        plot(X,cos(w*X)*exp(-X/L+b))
     '''
     def objective(wLb):
         (w,L,b) = wLb
@@ -190,6 +199,8 @@ def damped_cosine(X,Y,W):
 from scipy.stats import linregress
 def weighted_least_squares(X,Y,W):
     '''
+    '''
+    '''
     Was using this one to initialize power law fit
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
@@ -207,16 +218,11 @@ def power_law(X,Y,W):
     '''
     Fit a power law, but with error terms computed by r^2 in
     the original space.
+    '''
+    '''
+    power law form is `log(y)=a*log(x)+b` or `y = b*x^a`
 
-    power law form is
-
-    log(y)  = a*log(x)+b
-    or
-    y = b*x^a
-
-    initial best guess using linear regression
-
-    minimize failing, just stick to weighted log-log linear regress
+    initial best guess using linear regression.
 
     result = power_law(X,Y,1/X**16)
     a,b = result.x
@@ -231,7 +237,6 @@ def power_law(X,Y,W):
     X,Y = ravel(f),ravel(y[:,i])
     a,b = power_law(X,Y,1/X**2)
     plot(sorted(X),b*arr(sorted(X))**a)
-
     '''
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
@@ -251,8 +256,9 @@ def power_law(X,Y,W):
 
 def gaussian_function(X,Y):
     '''
-    X: List of distances
-    Y: List of amplitudes
+    Args:
+        X: List of distances
+        Y: List of amplitudes
     '''
     def objective(theta):
         (mu,sigma,scale,dc) = theta
@@ -268,8 +274,9 @@ from neurotools.functions import npdf
 
 def half_gaussian_function(X,Y):
     '''
-    X: List of distances
-    Y: List of amplitudes
+    Args:
+        X: List of distances
+        Y: List of amplitudes
     '''
     def objective(theta):
         (sigma,scale,dc) = theta
@@ -283,8 +290,9 @@ def half_gaussian_function(X,Y):
 
 def exponential_decay(X,Y):
     '''
-    X: List of distances
-    Y: List of amplitudes
+    Args:
+        X: List of distances
+        Y: List of amplitudes
     '''
     def objective(theta):
         (lamb,scale,dc) = theta

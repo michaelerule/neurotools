@@ -1,5 +1,4 @@
 # depends on pylab
-
 '''
 In a paper in PLoS computational biology, April 2015, titled "Quantifying Spike
 Train Oscillations: Biases, Distortions and Solutions", Ayala Matzner and Izhar 
@@ -8,7 +7,9 @@ underlying rate function that is the sum of a sinusoidal and constant term.
 They use this to quantify the spectral content of the point process in a way
 that is not biased by firing rate or the problematic power spectral properties
 of point processes.
+'''
 
+'''
 Matzner and Bar-Gad use the model
 lambda(t) = Ro ( 1 + m cos(2pi f t) )
 
@@ -30,6 +31,7 @@ mean rate is higher than the power. Can we re-do it in log-power?
 
 
 '''
+
 if __name__=='__main__':
     from os.path import *
     #execfile(expanduser('~/Dropbox/bin/multitapertools.py'))

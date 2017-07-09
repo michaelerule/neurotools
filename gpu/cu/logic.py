@@ -3,7 +3,9 @@ These functions very much need work, since they basically use
 Iverson's convention, but with floats, such that 0.0f = false, 1.0f=true.
 Nevertheless I have found these little functions quite useful in their
 present form in some circumstances'''
-from orix.cu.function import *
+
+from neurotools.gpu.cu.function import *
+
 gpult    = lambda x:gpumap("$<%f?1:0"%x)
 '''lambda x:gpumap("$<%f?1:0"%x)'''
 gpugt    = lambda x:gpumap("$>%f?1:0"%x)

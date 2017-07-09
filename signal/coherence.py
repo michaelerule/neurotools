@@ -50,7 +50,7 @@ def population_eigencoherence(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     Uses the eigenvalue spectrum of the pairwise coherence matrix.
     In the case of wavelets, each time-frequency point has one
     complex value.
-    The matrix we build will be I think |z_i z_j|
+    The matrix we build will be I think $|z_i z_j|$
     ... this will involve a lot of computation.
     ... let's not do it.
     See ramirez et al

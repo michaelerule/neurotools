@@ -1,5 +1,16 @@
-'''Some day we might implement a full features Matrix library, but I hope
-someone else does it first.
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
+'''
+Matrix routines
 
 This class collects routines that operate on lists of lists. Typically,
 arguments are in the form of a row-major ordered matrix, as well as 
@@ -15,8 +26,10 @@ of the data.
 TODO : check correlation matrix funcions, look wrong
 '''
 
-from orix.cpu.util import *
-from orix.cl.function import *
+# These libraries are missing!
+from neurotools.gpu.cpu.util import *
+from neurotools.gpu.cl.function import *
+    
 from pytools import memoize
 
 gputranspose = lambda(rows,cols):gpumap('x[(i%'+str(rows)+')*'+str(cols)+'+(i/'+str(rows)+')]')

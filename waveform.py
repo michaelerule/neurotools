@@ -3,39 +3,48 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+from neurotools.system import *
 
+"""TODO: title here
+
+TODO: module description here
+"""
 
 import os, sys, pickle
-
-from collections import *
-from itertools   import *
-
-from pylab       import *
-
-from scipy.io    import *
-from scipy.stats import *
 from scipy import signal
-
 import numpy as np
-
 import matplotlib
 import matplotlib.pyplot as plt
 from   mpl_toolkits.mplot3d import Axes3D
-from   matplotlib.colors import *
-
-from neurotools.stats.gmm import *
 from neurotools.signal.signal import upsample
+
+'''
+TODO: update code to make these specific imports
+( as-is this is breaking sphinx autodoc / apidoc )
+'''
+'''
+from collections import *
+from itertools   import *
+from pylab       import *
+from scipy.io    import *
+from scipy.stats import *
+from   matplotlib.colors import *
+from neurotools.stats.gmm import *
+'''
 
 def realign(snip):
     '''
     Realign waveforms to peak
     '''
-    i = argmin(snip)
+    i = np.argmin(snip)
     n = len(snip)
     m = n/2
     shiftback = i-m
-    result = zeros(shape(snip))
+    result = np.zeros(snip.shape)
     if shiftback==0:  result=snip
     elif shiftback>0: result[0:-shiftback]=snip[shiftback:]
     else:             result[-shiftback:] =snip[0:shiftback]
@@ -47,12 +56,12 @@ def realign_special(snip):
     '''
     #expect length 240
     #min should be set at 87
-    i = argmin(snip)
+    i = np.argmin(snip)
     n = len(snip)
     assert n==240
     m = 87
     shiftback = i-m
-    result = zeros(shape(snip))
+    result = np.zeros(np.shape(snip))
     if shiftback==0:  result=snip
     elif shiftback>0:
         result[0:-shiftback]=snip[shiftback:]
@@ -69,9 +78,9 @@ def getFWHM(wf):
     m = np.min(wf)
     x = 0.0# np.max(wf)
     h = (m+x)/2.
-    ok = int32(wf<=h)
-    start = find(diff(ok)==1)
-    stop  = find(diff(ok)==-1)
+    ok = np.int32(wf<=h)
+    start = find(np.diff(ok)==1)
+    stop  = find(np.diff(ok)==-1)
     if len(start)!=1: return NaN
     if len(stop) !=1: return NaN
     start = start[0]
@@ -83,18 +92,18 @@ def getPVT(wf):
     '''
     peak to valley time
     '''
-    a = argmin(wf)
-    return argmax(wf[a:])
+    a = np.argmin(wf)
+    return np.argmax(wf[a:])
 
 def getWAHP(wf):
     '''
     Width at half peak
     '''
-    x     = np.max(wf[argmin(wf):])
+    x     = np.max(wf[np.argmin(wf):])
     h     = x*0.5
     m     = np.argmin(wf)
-    ok    = int32(wf>=h)
-    edge  = diff(ok)
+    ok    = np.int32(wf>=h)
+    edge  = np.diff(ok)
     start = find(edge==1)
     stop  = find(edge==-1)
     start = [s for s in start if s>m]
@@ -110,19 +119,19 @@ def getPT(wf):
     '''
     Peak-trough duration
     '''
-    m  = argmin(wf)
+    m  = np.argmin(wf)
     wf = wf[m::-1]
-    k  = argmax(wf)
+    k  = np.argmax(wf)
     return k
 
 def getPTHW(wf):
-    m  = argmin(wf)
+    m  = np.argmin(wf)
     wf = wf[m::-1]
     h  = 0.5*max(wf)
-    ok    = int32(wf>=h)
-    edge  = diff(ok)
-    start = find(edge==1)
-    stop  = find(edge==-1)
+    ok    = np.int32(wf>=h)
+    edge  = np.diff(ok)
+    start = np.find(edge==1)
+    stop  = np.find(edge==-1)
     if len(start)==0: return NaN
     if len(stop) ==0: return NaN
     a = start[0]
@@ -131,7 +140,7 @@ def getPTHW(wf):
     return b-a
 
 def getPHP(wf):
-    m  = argmin(wf)
+    m  = np.argmin(wf)
     x  = np.min(wf)
     wf = wf[m::-1]
     h  = max(wf)
@@ -139,7 +148,9 @@ def getPHP(wf):
 
 
 def minmax(wf):
-    ''' Normalize waveform based on extrema '''
+    ''' 
+    Normalize waveform based on extrema 
+    '''
     a = np.min(wf)
     b = np.max(wf)
     wf -= a
@@ -175,6 +186,8 @@ def is_thin_pvt(wf,thr=52.0349055393):
 def process((i,f)):
     '''
     Get high-dimensional feature description of data.
+    TODO: remove; how did this even get here?
+    '''
     '''
     sys.stderr.write('\r'+'\t'*8+f+' loading..')
     sys.stderr.flush()
@@ -198,7 +211,7 @@ def process((i,f)):
     pthw = getPTHW(mwf)/4.0
     php  = getPHP (mwf)
     return i,f,wf,ahpw,pvt,fwhm,pt,pthw,php,mwf
-
+    '''
 
 
 

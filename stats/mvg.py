@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,12 +7,7 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 '''
 Routines for manipulating multivariate Gaussians.
@@ -25,7 +19,9 @@ import scipy.linalg
 import numpy.random
 from numpy.random import randn
 from numpy import pi
-from neurotools.matric import *
+
+# TODO fix imports
+#from neurotools.matrix import *
 
 def MVG_check(M,C,eps=1e-6):
     check_finite_real(M)
@@ -33,20 +29,20 @@ def MVG_check(M,C,eps=1e-6):
 
 def MVG_logPDF(X,M,P=None,C=None):
     '''
-    X : KxN vector of samples for which to compute the PDF
-    M : N mean vector
-    P : NxN precision matrix OR
-    C : NxN covariance matirx
+    Args:
+        X : KxN vector of samples for which to compute the PDF
+        M : N mean vector
+        P : NxN precision matrix OR
+        C : NxN covariance matirx
     
-    Test
-    ----
-    N = 10
-    K = 100
-    M = randn(10)
-    Q = randn(N,N)
-    C = Q.dot(Q.T)
-    X = randn(K,N)
-    MVG_logPDF(X,M,C=C) - MVG_logPDF(X,M,P=np.linalg.pinv(C))
+    Example:
+        N = 10
+        K = 100
+        M = randn(10)
+        Q = randn(N,N)
+        C = Q.dot(Q.T)
+        X = randn(K,N)
+        MVG_logPDF(X,M,C=C) - MVG_logPDF(X,M,P=np.linalg.pinv(C))
     '''
     N = len(M)
     if (P is None and C is None):
@@ -70,10 +66,11 @@ def MVG_logPDF(X,M,P=None,C=None):
 
 def MVG_PDF(X,M,P=None,C=None):
     '''
-    X : NxK vector of samples for which to compute the PDF
-    M : N mean vector
-    P : NxN precision matrix OR
-    C : NxN covariance matirx
+    Args:
+        X : NxK vector of samples for which to compute the PDF
+        M : N mean vector
+        P : NxN precision matrix OR
+        C : NxN covariance matirx
     '''
     logP = MVG_logPDF(X,M,P=P,C=C)
     P = exp(logP)
@@ -85,8 +82,9 @@ def MVG_sample(M,P=None,C=None,N=1):
     '''
     Sample from multivariate Gaussian
     
-    M : vector mean
-    C : covariance matrix
+    Args:
+        M : vector mean
+        C : covariance matrix
     '''
     if (P is None and C is None):
         raise ValueError("Either a Covariance or Precision matrix is needed")
@@ -131,7 +129,6 @@ def MVG_divide(M1,P1,M2,P2,eps=1e-6,handle_negative='repair',verbose=0):
     
     Parameters
     ----------
-    
     handle_negative : 
         'repair' (default): returns a nearby distribution with positive variance
         'ignore': can return a distribution with negative variance
@@ -161,9 +158,10 @@ def MVG_projection(M,C,A):
     '''
     Compute a new multi-variate gaussian reflecting distribution of a projection A
     
-    M : length N vector of the mean
-    C : NxN covariance matrix
-    A : KxN projection of the vector space (should be unitary?)
+    Args:
+        M : length N vector of the mean
+        C : NxN covariance matrix
+        A : KxN projection of the vector space (should be unitary?)
     '''
     MVG_check(M,C)
     M = A.dot(M)
@@ -193,12 +191,12 @@ def MVG_DKL(M0,P0,M1,P1):
     '''
     KL divergence between two Gaussians
     
-    Test
-    ----
-    M = randn(10)
-    Q = randn(N,N)
-    P = Q.dot(Q.T)
-    MGV_DKL(M,P,M,P)
+    Example
+    -------
+        M = randn(10)
+        Q = randn(N,N)
+        P = Q.dot(Q.T)
+        MGV_DKL(M,P,M,P)
     '''
     MVG_check(M0,P0)
     MVG_check(M1,P1)
@@ -213,12 +211,12 @@ def MVG_DKL_CP(M0,C0,M1,P1):
     First one specified using covariance
     Second one using precision
     
-    Test
-    ----
-    M = randn(10)
-    Q = randn(N,N)
-    P = Q.dot(Q.T)
-    MGV_DKL(M,P,M,P)
+    Example
+    -------
+        M = randn(10)
+        Q = randn(N,N)
+        P = Q.dot(Q.T)
+        MGV_DKL(M,P,M,P)
     '''
     MVG_check(M0,C0)
     MVG_check(M1,P1)
@@ -258,11 +256,13 @@ def MVG_kalman_P_inverseA(M,P,A,invA,Q):
     This one accepts and returns precision
     This one needs the inverse of the forward state transition matrix
     
-    C2 = ACA'+Q
-    P2 = inv[A inv(P) A' + Q]
-    P2 = inv[ A (inv(P) + inv(A) Q inv(A') ) A' ]
-    P2 = inv[ A inv(P) (1 + P inv(A) Q inv(A') ) A' ]
-    P2 = inv(A') inv(1 + P inv(A) Q inv(A')) P inv(A)
+    Example
+    -------
+        C2 = ACA'+Q
+        P2 = inv[A inv(P) A' + Q]
+        P2 = inv[ A (inv(P) + inv(A) Q inv(A') ) A' ]
+        P2 = inv[ A inv(P) (1 + P inv(A) Q inv(A') ) A' ]
+        P2 = inv(A') inv(1 + P inv(A) Q inv(A')) P inv(A)
     '''
     MVG_check(M,P)
     check_covmat(Q)

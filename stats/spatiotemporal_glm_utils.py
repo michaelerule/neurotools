@@ -1,3 +1,17 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+# more py2/3 compat
+from neurotools.system import *
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 '''
 Miscellaneous utilities used for fitting spatiotemporal GLMs to 
 spiking data. 
@@ -7,15 +21,12 @@ UNDER CONSTRUCTION
 
 from neurotools.stats.glm import gradientglmfit
 from neurotools.spatial.magickernel import derive_log_cosine_basis
-
 import scipy
 import numpy as np
 import matplotlib 
 import matplotlib.pyplot as plt
 from matplotlib.mlab import find
-
 from neurotools.stats.stats import pca
-
 
 def orthogonalize(B):
     '''

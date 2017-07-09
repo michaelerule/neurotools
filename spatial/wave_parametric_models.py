@@ -70,11 +70,10 @@ def makeLSQminimizerPolar(xy,time,neuraldata):
     neuraldata:
         experimental observations to which to fit the model
         a Ntimes x NElectrode filtered neural data snippit
-        
 
     Returns
     -------
-    getResiduals : function
+    function
         An objective function that can be used with the Numpy leastsq 
         optimizer function
     '''
@@ -117,10 +116,9 @@ def makeLSQminimizerStanding(xy,time,neuraldata):
         experimental observations to which to fit the model
         a Ntimes x NElectrode filtered neural data snippit
         
-
     Returns
     -------
-    getResiduals : function
+    function
         An objective function that can be used with the Numpy leastsq 
         optimizer function
     '''
@@ -164,10 +162,9 @@ def makeLSQminimizerSynchronous(xy,time,neuraldata):
         experimental observations to which to fit the model
         a Ntimes x NElectrode filtered neural data snippit
         
-
     Returns
     -------
-    getResiduals : function
+    function
         An objective function that can be used with the Numpy leastsq 
         optimizer function
     '''
@@ -207,7 +204,7 @@ def makeLSQminimizerPlane(xy,time,neuraldata):
 
     Returns
     -------
-    getResiduals : function
+    function
         An objective function that can be used with the Numpy leastsq 
         optimizer function
     '''
@@ -247,7 +244,7 @@ def makeLSQminimizerDoublePlane(xy,time,neuraldata):
 
     Returns
     -------
-    getResiduals : function
+    function
         An objective function that can be used with the Numpy leastsq 
         optimizer function
     '''
@@ -295,7 +292,7 @@ def heuristic_B_polar(data,xys,times):
 
     Returns
     -------
-    model : tuple
+    tuple
         Amplitude, ?, ?, ?, frequency
     ''' 
     amplitude_guess = np.max(abs(data))
@@ -319,7 +316,7 @@ def heuristic_B_planar(data,xys,times):
 
     Returns
     -------
-    model : tuple
+    tuple
         Amplitude, ?, ?, ?, frequency
     ''' 
     amplitude_guess = np.max(abs(data))
@@ -342,7 +339,7 @@ def heuristic_B_standing(data,xys,times):
 
     Returns
     -------
-    model : tuple
+    tuple
         Amplitude, ?, ?, ?,  ?, ?, frequency
     ''' 
     amplitude_guess = np.max(abs(data))
@@ -365,7 +362,7 @@ def heuristic_B_synchronous(data,xys,times):
 
     Returns
     -------
-    model : tuple
+    tuple
         Amplitude, ?, frequency
     '''
     amplitude_guess = np.max(abs(data))
@@ -388,7 +385,7 @@ def heuristic_B_double_planar(data,xys,times):
 
     Returns
     -------
-    model : tuple
+    tuple
         Amplitude, ?, ?, ?, frequency, ? , ampltiude2, 0.1, -0.1, frequency2
     ''' 
     amplitude_guess = np.max(abs(data))
@@ -533,12 +530,12 @@ def heuristic_solver_standing((i,xys,times,data)):
 
     Returns
     -------
-    i : 
+    int
         job index for tracking parallel jobs
-    result[0] : 
+    object 
         first element of tuple returned from leastsq. presumably the model
         parameters?
-    error : 
+    float 
         norm of the residuals divided by the norm of the data
     '''
     objective = makeLSQminimizerStanding(xys,times,real(data))
@@ -565,12 +562,12 @@ def heuristic_solver_planar((i,xys,times,data)):
 
     Returns
     -------
-    i : 
+    int
         job index for tracking parallel jobs
-    result[0] : 
+    object 
         first element of tuple returned from leastsq. presumably the model
         parameters?
-    error : 
+    float 
         norm of the residuals divided by the norm of the data
     '''
     objective = makeLSQminimizerPlane(xys,times,real(data))
@@ -598,12 +595,12 @@ def heuristic_solver_polar((i,xys,times,data)):
 
     Returns
     -------
-    i : 
+    int
         job index for tracking parallel jobs
-    result[0] : 
+    object 
         first element of tuple returned from leastsq. presumably the model
         parameters?
-    error : 
+    float 
         norm of the residuals divided by the norm of the data
     '''
     objective = makeLSQminimizerPolar(xys,times,real(data))
@@ -630,12 +627,12 @@ def heuristic_solver_synchronous((i,xys,times,data)):
 
     Returns
     -------
-    i : 
+    int
         job index for tracking parallel jobs
-    result[0] : 
+    object 
         first element of tuple returned from leastsq. presumably the model
         parameters?
-    error : 
+    float 
         norm of the residuals divided by the norm of the data
     '''
     objective = makeLSQminimizerSynchronous(xys,times,real(data))

@@ -1,0 +1,297 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>neurotools.models.lif &#8212; Neurotools 2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for neurotools.models.lif</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="euler_integrate_LIF"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.euler_integrate_LIF">[docs]</a><span class="k">def</span> <span class="nf">euler_integrate_LIF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">g_L</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">g_E</span><span class="o">=</span><span class="mf">0.00074</span><span class="p">,</span><span class="n">E_E</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">E_L</span><span class="o">=-</span><span class="mf">70.0</span><span class="p">,</span><span class="n">Thr</span><span class="o">=-</span><span class="mf">60.0</span><span class="p">,</span><span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">g_S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Modeled after the LIF implementation in Baker Pinches Lemon 2003</span>
+<span class="sd">    This one uses Euler integration though -- it appears similar</span>
+<span class="sd">    </span>
+<span class="sd">    C dV/dt = g_L (E_L - V) + g_E (E_E - V)</span>
+<span class="sd">    </span>
+<span class="sd">    x is synaptic input in units of &quot;counts&quot; for synaptic activation</span>
+<span class="sd">    events.</span>
+<span class="sd">    C   = 1       uF/cm^2  membrane capacitance</span>
+<span class="sd">    g_L = 0.1     mS/cm^2  leak conductance</span>
+<span class="sd">    E_L = -70     mV       resting potential</span>
+<span class="sd">    g_E = 0.00074 mS/cm^2  excitatory conductance</span>
+<span class="sd">    E_E = 0       mV  </span>
+<span class="sd">    Thr = -60     mV       spiking threshold</span>
+<span class="sd">    tau = 1.0     ms       synaptic time constant in seconds</span>
+<span class="sd">    Fs  = 2000    Hz       sampling rate and integration frequency</span>
+<span class="sd">    V   =         mV       membrane potential</span>
+<span class="sd">    </span>
+<span class="sd">    Note: Expected membrane time constant is 10ms</span>
+<span class="sd">    Tau = RC = C/g_L = 1 uF / 0.1 mS = 10 ms. Checks out.</span>
+<span class="sd">    Note: Expected EPSP is 100 microvolts (0.1mV)</span>
+<span class="sd">    Emperically this checks out</span>
+<span class="sd">    </span>
+<span class="sd">    Unit check. </span>
+<span class="sd">    Farad Volt / Second = Ampere = Siemen * Volt = Volt / Ohm </span>
+<span class="sd">    uF * mV / ms = mS * mV</span>
+<span class="sd">    1 millisiemen * 1 millivolt = 1 microamp</span>
+<span class="sd">    1 microamp / 1 microfarad * 1 millisecond = 1 millivolt</span>
+<span class="sd">       </span>
+<span class="sd">    # Test code: single EPSP</span>
+<span class="sd">    x = zeros(2000)</span>
+<span class="sd">    x[100] = 1</span>
+<span class="sd">    time, V, spikes, current = euler_integrate_LIF(x)</span>
+<span class="sd">    clf()</span>
+<span class="sd">    plot(time,V)</span>
+<span class="sd">    plot(time,current)</span>
+<span class="sd">    plot(time,x)</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dt</span>        <span class="o">=</span> <span class="mf">1000.0</span><span class="o">/</span><span class="n">Fs</span>         <span class="c1"># millisecond</span>
+    <span class="n">timescale</span> <span class="o">=</span> <span class="n">dt</span><span class="o">/</span><span class="n">C</span>              <span class="c1"># kiloohm or 1/microsiemen</span>
+    <span class="n">alpha</span>     <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">tau</span>           <span class="c1"># 1/millisecond</span>
+    <span class="k">if</span> <span class="n">g_S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">time</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
+        <span class="n">t</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">tau</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>
+        <span class="n">alpha_function</span> <span class="o">=</span> <span class="n">t</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">g_S</span> <span class="o">=</span> <span class="n">g_E</span> <span class="o">*</span> <span class="n">alpha_function</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">alpha_function</span><span class="p">)</span> 
+        <span class="n">g_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">g_S</span><span class="p">,</span><span class="s1">&#39;full&#39;</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g_S</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">g_S</span><span class="p">)</span>
+        <span class="n">time</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>
+    <span class="c1"># precomputing all expressions that can be precomputed</span>
+    <span class="c1"># this may speed things up</span>
+    <span class="n">g_L_E_L</span> <span class="o">=</span> <span class="n">g_L</span><span class="o">*</span><span class="n">E_L</span>
+    <span class="n">E_E_g_S</span> <span class="o">=</span> <span class="n">E_E</span><span class="o">*</span><span class="n">g_S</span>
+    <span class="n">g_L_g_S</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_L</span><span class="o">+</span><span class="n">g_S</span><span class="p">)</span> <span class="o">*</span> <span class="n">timescale</span>
+    <span class="n">g_L_E_L_E_E_g_S</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_L_E_L</span><span class="o">+</span><span class="n">E_E_g_S</span><span class="p">)</span> <span class="o">*</span> <span class="n">timescale</span>
+    <span class="n">I_g_L_g_S</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">g_L_g_S</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        v = V[i-1]</span>
+<span class="sd">        I_leak = g_L   *(E_L-v) # mV*mS = mV/Kohm = uA</span>
+<span class="sd">        I_syn  = g_S[i]*(E_E-v) # mV*mS = mV/Kohm = uA</span>
+<span class="sd">        I      = I_leak + I_syn      # uA</span>
+<span class="sd">        dV     = I / C * dt          # uA/uF*ms = mV </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">g_L_E_L_E_E_g_S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">I_g_L_g_S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">&gt;</span><span class="n">Thr</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">=</span><span class="n">E_L</span>
+            <span class="n">spikes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spikes</span><span class="p">,</span> <span class="n">g_S</span></div>
+
+
+
+<div class="viewcode-block" id="exponential_integrate_LIF"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.exponential_integrate_LIF">[docs]</a><span class="k">def</span> <span class="nf">exponential_integrate_LIF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">g_L</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">g_E</span><span class="o">=</span><span class="mf">0.00074</span><span class="p">,</span><span class="n">E_E</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">E_L</span><span class="o">=-</span><span class="mf">70.0</span><span class="p">,</span><span class="n">Thr</span><span class="o">=-</span><span class="mf">60.0</span><span class="p">,</span><span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span><span class="n">g_S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Modeled after the LIF implementation in Baker Pinches Lemon 2003</span>
+<span class="sd">    </span>
+<span class="sd">    C dV/dt = g_L (E_L - V) + g_E (E_E - V)</span>
+<span class="sd">    </span>
+<span class="sd">    x is synaptic input in units of &quot;counts&quot; for synaptic activation</span>
+<span class="sd">    events.</span>
+<span class="sd">    C   = 1       uF/cm^2  membrane capacitance</span>
+<span class="sd">    g_L = 0.1     mS/cm^2  leak conductance</span>
+<span class="sd">    E_L = -70     mV       resting potential</span>
+<span class="sd">    g_E = 0.00074 mS/cm^2  excitatory conductance</span>
+<span class="sd">    E_E = 0       mV  </span>
+<span class="sd">    Thr = -60     mV       spiking threshold</span>
+<span class="sd">    tau = 1.0     ms       synaptic time constant in seconds</span>
+<span class="sd">    Fs  = 2000    Hz       sampling rate and integration frequency</span>
+<span class="sd">    V   =         mV       membrane potential</span>
+<span class="sd">    </span>
+<span class="sd">    Note: Expected membrane time constant is 10ms</span>
+<span class="sd">    Tau = RC = C/g_L = 1 uF / 0.1 mS = 10 ms. Checks out.</span>
+<span class="sd">    Note: Expected EPSP is 100 microvolts (0.1mV)</span>
+<span class="sd">    Emperically this checks out</span>
+<span class="sd">    </span>
+<span class="sd">    Unit check. </span>
+<span class="sd">    Farad Volt / Second = Ampere = Siemen * Volt = Volt / Ohm </span>
+<span class="sd">    uF * mV / ms = mS * mV</span>
+<span class="sd">    1 millisiemen * 1 millivolt = 1 microamp</span>
+<span class="sd">    1 microamp / 1 microfarad * 1 millisecond = 1 millivolt</span>
+<span class="sd">       </span>
+<span class="sd">    # Test code: single EPSP and check against Euler integrator</span>
+<span class="sd">    x = zeros(2000)</span>
+<span class="sd">    x[100] = 1</span>
+<span class="sd">    time, V, spikes, current = euler_integrate_LIF(x)</span>
+<span class="sd">    clf()</span>
+<span class="sd">    plot(time,V)</span>
+<span class="sd">    plot(time,current)</span>
+<span class="sd">    plot(time,x)</span>
+<span class="sd">    time, V, spikes, current = exponential_integrate_LIF(x)</span>
+<span class="sd">    plot(time,V)</span>
+<span class="sd">    plot(time,current)</span>
+<span class="sd">    plot(time,x)</span>
+<span class="sd">    # they appear to match</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dt</span>        <span class="o">=</span> <span class="mf">1000.0</span><span class="o">/</span><span class="n">Fs</span>         <span class="c1"># millisecond</span>
+    <span class="n">alpha</span>     <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">tau</span>           <span class="c1"># 1/millisecond</span>
+    <span class="k">if</span> <span class="n">g_S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">time</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
+        <span class="n">t</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">tau</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>
+        <span class="n">alpha_function</span> <span class="o">=</span> <span class="n">t</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">g_S</span> <span class="o">=</span> <span class="n">g_E</span> <span class="o">*</span> <span class="n">alpha_function</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">alpha_function</span><span class="p">)</span> 
+        <span class="n">g_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">g_S</span><span class="p">,</span><span class="s1">&#39;full&#39;</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g_S</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">g_S</span><span class="p">)</span>
+        <span class="n">time</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+        <span class="c1"># exponential integrator</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">g_L</span><span class="o">*</span><span class="n">E_L</span> <span class="o">+</span> <span class="n">g_S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">E_E</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">g_L</span> <span class="o">+</span> <span class="n">g_S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">A</span><span class="o">/</span><span class="n">B</span>
+        <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">D</span><span class="p">)</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">B</span><span class="o">/</span><span class="n">C</span><span class="o">*</span><span class="n">dt</span><span class="p">)</span><span class="o">+</span><span class="n">D</span>
+        <span class="k">if</span> <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;</span><span class="n">Thr</span><span class="p">:</span>
+            <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">E_L</span>
+            <span class="n">spikes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spikes</span><span class="p">,</span> <span class="n">g_S</span></div>
+
+
+
+
+
+
+
+    
+<div class="viewcode-block" id="exponential_moving_average"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.exponential_moving_average">[docs]</a><span class="k">def</span> <span class="nf">exponential_moving_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    exponential_moving_average(x,tau,Fs=1000)</span>
+<span class="sd">    x   : data</span>
+<span class="sd">    tau : time constant in seconds</span>
+<span class="sd">    Fs  : sampling rate of x in samples per second</span>
+<span class="sd">    </span>
+<span class="sd">    Implement exponential moving average as</span>
+<span class="sd">    Y_{n+1} = (1-alpha) Y_n + alpha X_n</span>
+<span class="sd">    </span>
+<span class="sd">    This relates to convolving signal x with decaying exponential</span>
+<span class="sd">    Y = X * [H(t) exp(-t/tau)]</span>
+<span class="sd">    Where t is in seconds and H is the heaviside step function</span>
+<span class="sd">    </span>
+<span class="sd">    Alpha and tau may be related by considering the differential equation</span>
+
+<span class="sd">    tau dY/dT = X-Y</span>
+<span class="sd">    </span>
+<span class="sd">    And both solving it as a linear equation and also re-writing it as a</span>
+<span class="sd">    discrete difference equation</span>
+<span class="sd">    </span>
+<span class="sd">    DY = (X-Y) DT/tau</span>
+<span class="sd">    [Y_{n+1}-Y] = (X-Y) DT/tau</span>
+<span class="sd">    Y_{n+1} = (X-Y) DT/tau + Y</span>
+<span class="sd">    Y_{n+1} = (1 - DT/tau) Y + DT/tau X</span>
+<span class="sd">    </span>
+<span class="sd">    and we find that alpha = DT/tau for the discrete update</span>
+<span class="sd">    </span>
+<span class="sd">    The exact solution to an impulse in X would be</span>
+<span class="sd">    </span>
+<span class="sd">    tau dY/dT = -Y, Y_0 = 1</span>
+<span class="sd">    </span>
+<span class="sd">    Y(t) = exp(-t/tau) * H(t)</span>
+<span class="sd">    or Y(t) = H(t) exp(-t*alpha/DT)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="c1"># I feel like this is broken</span>
+    <span class="n">DT</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">DT</span><span class="o">/</span><span class="n">tau</span>
+    <span class="c1"># a bit of a hack here: python intreprets negative indecies as indexing</span>
+    <span class="c1"># from the end. We exploit this to set the initial conditions by </span>
+    <span class="c1"># placing a value in the last position of the output array y</span>
+    <span class="c1"># this value will eventually be overwritten.</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="c1">#x[0]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">y</span></div>
+    
+    
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, M Rule.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

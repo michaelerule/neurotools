@@ -3,12 +3,23 @@ This module contains generically useful GPU clones of several simple functions. 
 overloaded operators for gpuarrays and are not duplicated here. Much of this is somewhat useless wrapping of GPUArray and pycuda.cumath into other syntax without adding new functionality.
 '''
 
-import pycuda
-import pycuda.gpuarray as gpuarray
-from orix.cu.function import *
-from orix.cpu.util import *
+try:
+    import pycuda
+    import pycuda.gpuarray as gpuarray
+    import pycuda.curandom
+except:
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+            print('Please locate and install the pycuda GPU library')
+        else:
+            raise ValueError('Please locate and install pycuda GPU library')
+    # TODO: shadow missing function with the above, which raises an error?
+
+from neurotools.gpu.cu.function import *
+from neurotools.gpu.cpu.util import *
+
 import numpy as np 
-import pycuda.curandom
 
 ##############################################################################
 # GPU functions

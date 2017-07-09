@@ -8,8 +8,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
@@ -119,7 +117,7 @@ def function_hash_with_subroutines(f):
     behavior that result from changes in global variables or mutable scope
     that has been closed over.
     '''
-    raise NotImplementedError("This is actually impossible due to dynamic typing and late binding, can't do it, plain and simple")
+    raise NotImplementedError("This is actually impossible due to dynamic typing and late binding")
 
     # repeatedly expand list of subroutines
     to_expand = {f}
@@ -211,42 +209,44 @@ def signature_to_file_string(f,sig,
     base64encode=True,
     truncate=True):
     '''
-    Converts an argument signature to a string if possible. This can
+    Converts an argument signature to a string if possible. 
+    
+    This can
     be used to store cached results in a human-readable format.
     Alternatively, we may want to simply encode the value of the
     argument signature in a string that is compatible with most file
-    systems. We'd still need to perform verification on the object to
+    systems. We'd still need to perform verification on the object.
 
     No more than 4096 characters in path string
     No more than 255 characters in file string
     For windows compatibility try to limit it to 260 character total pathlen
 
     For compatibility, these characters should be avoided in paths:
-        \/<>:"|?*,@#={}'&`!%$. ASCII 0..31
+        `\/<>:"|?*,@#={}'&`!%$. ASCII 0..31`
 
     The easiest way to avoid problematic characters without restricting the
     input is to re-encode as base 64.
 
     The following modes are supported.
 
-    repr:
-        Uses repr and ast.literal_eval(node_or_string) to serialize the
-        argument signature. This is save, but restricts the types permitted
-        as paramteters.
+        repr:
+            Uses repr and ast.literal_eval(node_or_string) to serialize the
+            argument signature. This is save, but restricts the types permitted
+            as paramteters.
 
-    json:
-        Uses json to serialize the argument signature. Argument signatures
-        cannot be uniquely recovered, because tuples and lists both map to
-        lists in the json representation. Restricting the types used in
-        the argument signature may circumvent this.
+        json:
+            Uses json to serialize the argument signature. Argument signatures
+            cannot be uniquely recovered, because tuples and lists both map to
+            lists in the json representation. Restricting the types used in
+            the argument signature may circumvent this.
 
-    pickle:
-        Uses pickle to serialize argument signature. This should uniquely
-        store argument signatures that can be recovered, but takes more
-        space.
+        pickle:
+            Uses pickle to serialize argument signature. This should uniquely
+            store argument signatures that can be recovered, but takes more
+            space.
 
-    human:
-        Attempts a human-readable format. Eperimental.
+        human:
+            Attempts a human-readable format. Eperimental.
 
     Compression is on by defaut
     Signatures are base64 encoded by default
@@ -393,8 +393,10 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
 def validate_for_matfile(x):
     '''
     Numpy types: these should be compatible
-
-    bool_ 	    Boolean (True or False) stored as a byte
+    ==========  ================================================================================
+    Type        Description
+    ==========  ================================================================================
+    bool\_ 	    Boolean (True or False) stored as a byte
     int8 	    Byte (-128 to 127)
     int16 	    Integer (-32768 to 32767)
     int32 	    Integer (-2147483648 to 2147483647)
@@ -408,6 +410,7 @@ def validate_for_matfile(x):
     float64 	Double precision float: sign bit, 11 bits exponent, 52 bits mantissa
     complex64 	Complex number, represented by two 32-bit floats (real and imaginary components)
     complex128 	Complex number, represented by two 64-bit floats (real and imaginary components)
+    ==========  ================================================================================
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
@@ -427,8 +430,10 @@ def validate_for_matfile(x):
 def validate_for_numpy(x):
     '''
     Numpy types: these should be compatible
-
-    bool_ 	    Boolean (True or False) stored as a byte
+    ==========  ================================================================================
+    Type        Description
+    ==========  ================================================================================
+    bool\_ 	    Boolean (True or False) stored as a byte
     int8 	    Byte (-128 to 127)
     int16 	    Integer (-32768 to 32767)
     int32 	    Integer (-2147483648 to 2147483647)
@@ -442,6 +447,7 @@ def validate_for_numpy(x):
     float64 	Double precision float: sign bit, 11 bits exponent, 52 bits mantissa
     complex64 	Complex number, represented by two 32-bit floats (real and imaginary components)
     complex128 	Complex number, represented by two 64-bit floats (real and imaginary components)
+    ==========  ================================================================================
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,

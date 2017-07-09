@@ -1,6 +1,15 @@
 '''Very rarely, I will want to accelerate a computation for plotting'''
 
-from pycuda.elementwise import ElementwiseKernel
+try:
+    from pycuda.elementwise import ElementwiseKernel
+except:
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+                print('Please locate and install PyCuda')
+        else:
+            raise ValueError('Please locate and install PyCuda')
+    ElementwiseKernel = missing
 
 ##############################################################################
 # A plotting helper

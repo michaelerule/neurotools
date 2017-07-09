@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -45,18 +48,24 @@ else:
     range = xrange
     
 
-
 def query_yes_no(question, default="yes"):
     """
     Ask a yes/no question via raw_input() and return their answer.
     https://stackoverflow.com/questions/3041986/apt-command-line-interface-like-yes-no-input
 
-    "question" is a string that is presented to the user.
-    "default" is the presumed answer if the user just hits <Enter>.
+    Parameters
+    ----------
+    question : string
+        is a string that is presented to the user.
+    default : string
+        is the presumed answer if the user just hits <Enter>.
         It must be "yes" (the default), "no" or None (meaning
         an answer is required of the user).
 
-    The "answer" return value is True for "yes" or False for "no".
+    Returns
+    -------
+    string:
+        The "answer" return value is True for "yes" or False for "no".
     """
     valid = {"yes": True, "y": True, "ye": True,
              "no": False, "n": False}

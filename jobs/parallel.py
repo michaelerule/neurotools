@@ -146,13 +146,13 @@ def parmap_indirect_helper(args):
     Multiprocessing doesn't work on functions that weren't accessible from
     the global namespace at the time that the multiprocessing pool was
     created.
-
+    
     However, it is possible to send a subset of "safe" functions to
     worker processes. This can be done either by telling the worker
     where to find the function in system-wide libraries, or by sending
     over the function source code in the event that it does not depend on
     or close over mutable state.
-
+    
     Multiprocessing can already map top level functions by name, but it only
     supports passing iterables to the map functions, which limit functions
     to one argument. This wrapper merely unpacks the argument list.
@@ -197,15 +197,14 @@ def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
     child processes have access to the function definitions. However, under
     some restricted circumstances it may be possible to specify a function
     more dynamically, at runtime. This may be the case if:
-        1   A function is part of a system-wide installed module
-        2   A function can be "regenerated" from source code
+    
+        1.   A function is part of a system-wide installed module
+        2.   A function can be "regenerated" from source code
     '''
     # don't allow closing over state that is likely to mutate
     # this isn't 100% safe, mutable globals remain an issue.
     neurotools.jobs.closure.verify_function_closure(f)
-
     name = f.func_name
-
     if f.__module__ != '__main__':
         # can say where to locate function.
         information = f.__module__,name

@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>neurotools.gpu.cu.matrix module &#8212; Neurotools 2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.gpu.cu.matrix">
+<span id="neurotools-gpu-cu-matrix-module"></span><h1>neurotools.gpu.cu.matrix module<a class="headerlink" href="#module-neurotools.gpu.cu.matrix" title="Permalink to this headline">¶</a></h1>
+<p>Some day we might implement a full features Matrix library, but I hope
+someone else does it first.</p>
+<p>This class collects routines that operate on lists of lists. Typically,
+arguments are in the form of a row-major ordered matrix, as well as
+the number of rows and number of elements in each row. These algorithms
+tend to parallelise over rows, but not within rows. Typical algorithms
+will have complexity proportional to the complexity of the corresponsing
+serial algorithm operating on a single row.</p>
+<p>In interest of fixing convention, GPU matricies shall be accepted as a
+tuple of (data,cols). The number of rows is inferred from the length
+of the data.</p>
+<p>TODO : check correlation matrix funcions, look wrong</p>
+<dl class="class">
+<dt id="neurotools.gpu.cu.matrix.GPUMatrix">
+<em class="property">class </em><code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">GPUMatrix</code><span class="sig-paren">(</span><em>data</em>, <em>rows</em>, <em>cols</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/matrix.html#GPUMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.matrix.GPUMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a shallow wrapper of GPUArray. A GPUMatrix is simply a
+GPUArray containing the matrix in row major order, as well as the
+dimensions of the matrix. GPUArray might even already have this
+functionality</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.convertToZScores">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">convertToZScores</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.convertToZScores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent to mean centering then normalization. This function does
+not return a value, but replaces the contents of the given data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.correlation">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">correlation</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.correlation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes mean centered correlation matrix from a list of vectors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.correlation2">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">correlation2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.correlation2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the uncentered correlation matrix from a list of vectors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.dotproducts">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">dotproducts</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.dotproducts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Also known as : a matrix times its transpose. Input data is not
+altered</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.gputranspose">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">gputranspose</code><span class="sig-paren">(</span><em>(rows</em>, <em>cols)</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.gputranspose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares a map kernel that transposed a row-major packed float matrix
+Eg: <cite>gputranspose(rows,cols)(data)</cite> will transpose data.
+Creates a new, memoized, kernel for each array dimension</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.magnitudes">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">magnitudes</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.magnitudes" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return the magnitude of each row</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.matkern">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">matkern</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/matrix.html#matkern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.matrix.matkern" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a higher order function to simplify row-parallelized
+matrix kernel creation. We assume that we have a kernel that accepts
+data, cols. We create a function that accepts data,cols,
+as either two arguments or a single tuple. We execute the kernel,
+assuming that the return data is placed in the argument array. We
+return a tuple of the now modified data and the row length</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.matouter">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">matouter</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/matrix.html#matouter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.matrix.matouter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.matscalar">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">matscalar</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/matrix.html#matscalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.matrix.matscalar" title="Permalink to this definition">¶</a></dt>
+<dd><p>For creation of matrix kernels that compute scalar results.
+Accepts source. Returns a function from (data,cols)-&gt;(scalars).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.meanCenter">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">meanCenter</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.meanCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will subtract the mean from each row. This function modifies its
+arguments, replacing them with return values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.means">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">means</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.means" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return the population mean for each row</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.normalize">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">normalize</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will normalize each row of a matrix on parallel on the GPU</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.samplevariances">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">samplevariances</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.samplevariances" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return the sample variance for each row</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.stds">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">stds</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.stds" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return the sample standard deviation for each row</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.sums">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">sums</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.sums" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return the sum of each row</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.transpose">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">transpose</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a list datatype wrapper to gputranspose. It accepts a matrix as a list of lists, and returns the same form</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.gpu.cu.matrix.variances">
+<code class="descclassname">neurotools.gpu.cu.matrix.</code><code class="descname">variances</code><span class="sig-paren">(</span><em>data</em>, <em>cols=None</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.matrix.variances" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return the population variance for each row</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.gpu.cu.matrix.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, M Rule.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/neurotools.gpu.cu.matrix.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

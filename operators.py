@@ -6,7 +6,9 @@ from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from pylab import *
+#TODO fix imports
+#from pylab import *
+
 import numpy as np
 import numpy.linalg
 import scipy

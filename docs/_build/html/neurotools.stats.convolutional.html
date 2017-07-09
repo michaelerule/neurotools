@@ -1,0 +1,184 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>neurotools.stats.convolutional module &#8212; Neurotools 2 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-neurotools.stats.convolutional">
+<span id="neurotools-stats-convolutional-module"></span><h1>neurotools.stats.convolutional module<a class="headerlink" href="#module-neurotools.stats.convolutional" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.stats.convolutional.blockccm">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">blockccm</code><span class="sig-paren">(</span><em>k</em>, <em>spikes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#blockccm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.blockccm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate covariance matrix for linear least squares. It is a block
+matrix of all pairwise cross-correlation matrices
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.blocksta">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">blocksta</code><span class="sig-paren">(</span><em>k</em>, <em>spikes</em>, <em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#blocksta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.blocksta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block spike-triggered average vector for time-domain least squares
+filter
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.ccm">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">ccm</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em>, <em>spikes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#ccm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.ccm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct size k cross-correlation matrix.
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.ccor">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">ccor</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>spikes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#ccor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.ccor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross correlate spikes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.construct_lowpass_operator">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">construct_lowpass_operator</code><span class="sig-paren">(</span><em>fb</em>, <em>k</em>, <em>Fs=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#construct_lowpass_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.construct_lowpass_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a low-pass regularization operator
+Get the impulse response of a low-pass filter first
+Then copy it into the matrix.
+This really only makes sense in the time domain.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.create_spectral_model">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">create_spectral_model</code><span class="sig-paren">(</span><em>spikes</em>, <em>lfp</em>, <em>shrinkage=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#create_spectral_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.create_spectral_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.cspect">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">cspect</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>spikes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#cspect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.cspect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get cross-spectral density as FT of cross-correlation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.cspectm">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">cspectm</code><span class="sig-paren">(</span><em>spikes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#cspectm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.cspectm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all pairs cross spectral matrix
+NTrials,NNeurons,NSamples = shape(spikes)
+This is doing much more work than is needed, should change it to
+frequency domain.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.reconstruct">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">reconstruct</code><span class="sig-paren">(</span><em>k</em>, <em>B</em>, <em>spikes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#reconstruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.reconstruct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstructs LFP from spikes
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.spectreconstruct">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">spectreconstruct</code><span class="sig-paren">(</span><em>k</em>, <em>B</em>, <em>spikes=None</em>, <em>fftspikes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#spectreconstruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.spectreconstruct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstructs LFP from spikes using cross-spectral matrix.
+Can optionally pass the fts if they are already available
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.spike_lfp_filters">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">spike_lfp_filters</code><span class="sig-paren">(</span><em>spikes</em>, <em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#spike_lfp_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.spike_lfp_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross-spectral densities between spikes and LFP
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.convolutional.sta">
+<code class="descclassname">neurotools.stats.convolutional.</code><code class="descname">sta</code><span class="sig-paren">(</span><em>i</em>, <em>spikes</em>, <em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/convolutional.html#sta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.convolutional.sta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct size k STA
+NTrials,NNeurons,NSamples = shape(spikes)</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neurotools.stats.convolutional.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, M Rule.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/neurotools.stats.convolutional.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -16,6 +16,8 @@ poorly documented. Certain individual modules are somewhat more
 stable and useful. Please refer to specific modules 
 (see Module Index) for further documentation. 
 
+This project depends on several scientific Python packages including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [statsmodels](http://www.statsmodels.org/stable/index.html), [pandas](http://pandas.pydata.org/), and [nipy](http://nipy.org/nitime/). For the most part the routines here do not duplicate the functionality of these packages. There is a focus on spatiotemporal modeling of multi-electrode array datasets, stochastic models of population dynamics, and some routines to explore population synchrony. There are also several playful or exploratory modules that probably aren't all that useful but are available nevertheless.
+
 Indices and tables
 ==================
 

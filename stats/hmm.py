@@ -248,12 +248,17 @@ def forward_backward(y, x_0, T, B):
 
     Returns
     -------
-    
-    f:forward inference
-    b:backward inference
-    pr:posterior estimate
+    iterable f:
+        forward inference results
+    iterable b:
+        backward inference results
+    iterable pr:
+        posterior inference results (forward * backward)
 
     Example
+    -------
+    ::
+    
         # Initialize model
         n_states = 2
         x_0 = array([ 0.6,  0.4])
@@ -263,12 +268,10 @@ def forward_backward(y, x_0, T, B):
         B   = array([
                [ 0.5,  0.4,  0.1],
                [ 0.1,  0.3,  0.6]])
-
         # Initialize example states
         y  = array([0, 1, 2, 0, 0])
         fwd, bwd, posterior = forward_backward(y,x_0,T,B)
         print(posterior)
-
         # Verify that it works with a large number of observations
         y = randint(0,n_states,(10000,))
         fwd, bwd, posterior = forward_backward(y,x_0,T,B)

@@ -382,42 +382,36 @@ points using the forward-backward algorithm.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
-<li><p class="first"><strong>f</strong> (<em>forward inference</em>)</p>
-</li>
-<li><p class="first"><strong>b</strong> (<em>backward inference</em>)</p>
-</li>
-<li><p class="first"><strong>pr</strong> (<em>posterior estimate</em>)</p>
-</li>
-<li><p class="first"><em>Example</em> – # Initialize model
-n_states = 2
-x_0 = array([ 0.6,  0.4])
-T   = array([</p>
-<blockquote>
-<div><p>[ 0.69,  0.3 ],
-[ 0.4 ,  0.59]])</p>
-</div></blockquote>
-<dl class="docutils">
-<dt>B   = array([</dt>
-<dd><p class="first last">[ 0.5,  0.4,  0.1],
-[ 0.1,  0.3,  0.6]])</p>
-</dd>
-</dl>
-<p># Initialize example states
-y  = array([0, 1, 2, 0, 0])
-fwd, bwd, posterior = forward_backward(y,x_0,T,B)
-print(posterior)</p>
-<p># Verify that it works with a large number of observations
-y = randint(0,n_states,(10000,))
-fwd, bwd, posterior = forward_backward(y,x_0,T,B)
-print(posterior)</p>
-</li>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>iterable f</em> – forward inference results</li>
+<li><em>iterable b</em> – backward inference results</li>
+<li><em>iterable pr</em> – posterior inference results (forward * backward)</li>
 </ul>
 </p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Initialize model</span>
+<span class="n">n_states</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">])</span>
+<span class="n">T</span>   <span class="o">=</span> <span class="n">array</span><span class="p">([</span>
+       <span class="p">[</span> <span class="mf">0.69</span><span class="p">,</span>  <span class="mf">0.3</span> <span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.4</span> <span class="p">,</span>  <span class="mf">0.59</span><span class="p">]])</span>
+<span class="n">B</span>   <span class="o">=</span> <span class="n">array</span><span class="p">([</span>
+       <span class="p">[</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="mf">0.3</span><span class="p">,</span>  <span class="mf">0.6</span><span class="p">]])</span>
+<span class="c1"># Initialize example states</span>
+<span class="n">y</span>  <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">fwd</span><span class="p">,</span> <span class="n">bwd</span><span class="p">,</span> <span class="n">posterior</span> <span class="o">=</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x_0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="c1"># Verify that it works with a large number of observations</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n_states</span><span class="p">,(</span><span class="mi">10000</span><span class="p">,))</span>
+<span class="n">fwd</span><span class="p">,</span> <span class="n">bwd</span><span class="p">,</span> <span class="n">posterior</span> <span class="o">=</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x_0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">

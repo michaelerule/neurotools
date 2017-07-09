@@ -403,12 +403,17 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    </span>
-<span class="sd">    f:forward inference</span>
-<span class="sd">    b:backward inference</span>
-<span class="sd">    pr:posterior estimate</span>
+<span class="sd">    iterable f:</span>
+<span class="sd">        forward inference results</span>
+<span class="sd">    iterable b:</span>
+<span class="sd">        backward inference results</span>
+<span class="sd">    iterable pr:</span>
+<span class="sd">        posterior inference results (forward * backward)</span>
 
 <span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+<span class="sd">    </span>
 <span class="sd">        # Initialize model</span>
 <span class="sd">        n_states = 2</span>
 <span class="sd">        x_0 = array([ 0.6,  0.4])</span>
@@ -418,12 +423,10 @@
 <span class="sd">        B   = array([</span>
 <span class="sd">               [ 0.5,  0.4,  0.1],</span>
 <span class="sd">               [ 0.1,  0.3,  0.6]])</span>
-
 <span class="sd">        # Initialize example states</span>
 <span class="sd">        y  = array([0, 1, 2, 0, 0])</span>
 <span class="sd">        fwd, bwd, posterior = forward_backward(y,x_0,T,B)</span>
 <span class="sd">        print(posterior)</span>
-
 <span class="sd">        # Verify that it works with a large number of observations</span>
 <span class="sd">        y = randint(0,n_states,(10000,))</span>
 <span class="sd">        fwd, bwd, posterior = forward_backward(y,x_0,T,B)</span>

@@ -1,5 +1,5 @@
-neurotools\.jobs\.cache module
-==============================
+neurotools.jobs.cache module
+============================
 
 .. automodule:: neurotools.jobs.cache
     :members:

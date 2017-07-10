@@ -1,5 +1,5 @@
-neurotools\.signal\.linenoise module
-====================================
+neurotools.signal.linenoise module
+==================================
 
 .. automodule:: neurotools.signal.linenoise
     :members:

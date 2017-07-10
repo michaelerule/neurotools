@@ -1,5 +1,5 @@
-neurotools\.signal\.coherence module
-====================================
+neurotools.signal.coherence module
+==================================
 
 .. automodule:: neurotools.signal.coherence
     :members:

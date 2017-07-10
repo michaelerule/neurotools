@@ -1,5 +1,5 @@
-neurotools\.spatial\.spatialPSD module
-======================================
+neurotools.spatial.spatialPSD module
+====================================
 
 .. automodule:: neurotools.spatial.spatialPSD
     :members:

@@ -1,5 +1,5 @@
-neurotools\.ntime module
-========================
+neurotools.ntime module
+=======================
 
 .. automodule:: neurotools.ntime
     :members:

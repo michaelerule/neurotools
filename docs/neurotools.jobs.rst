@@ -1,5 +1,5 @@
-neurotools\.jobs package
-========================
+neurotools.jobs package
+=======================
 
 Submodules
 ----------

@@ -1,5 +1,5 @@
-neurotools\.stats\.entropy module
-=================================
+neurotools.stats.entropy module
+===============================
 
 .. automodule:: neurotools.stats.entropy
     :members:

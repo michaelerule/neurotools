@@ -1,5 +1,5 @@
-neurotools\.gpu\.cl\.function module
-====================================
+neurotools.gpu.cl.function module
+=================================
 
 .. automodule:: neurotools.gpu.cl.function
     :members:

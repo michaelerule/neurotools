@@ -1,5 +1,5 @@
-neurotools\.spatial\.array module
-=================================
+neurotools.spatial.array module
+===============================
 
 .. automodule:: neurotools.spatial.array
     :members:

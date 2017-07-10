@@ -1,5 +1,5 @@
-neurotools\.getfftw module
-==========================
+neurotools.getfftw module
+=========================
 
 .. automodule:: neurotools.getfftw
     :members:

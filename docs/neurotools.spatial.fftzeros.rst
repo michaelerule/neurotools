@@ -1,5 +1,5 @@
-neurotools\.spatial\.fftzeros module
-====================================
+neurotools.spatial.fftzeros module
+==================================
 
 .. automodule:: neurotools.spatial.fftzeros
     :members:

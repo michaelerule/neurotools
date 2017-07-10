@@ -1,5 +1,5 @@
-neurotools\.plot module
-=======================
+neurotools.plot module
+======================
 
 .. automodule:: neurotools.plot
     :members:

@@ -1,5 +1,5 @@
-neurotools\.stats\.spatiotemporal\_glm\_utils module
-====================================================
+neurotools.stats.spatiotemporal_glm_utils module
+================================================
 
 .. automodule:: neurotools.stats.spatiotemporal_glm_utils
     :members:

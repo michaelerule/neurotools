@@ -142,12 +142,6 @@ def population_phase_coherence(data):
     mdf = median(dfdt,axis=0)
     return mean(cos(dfdt-mdf),axis=0)
 
-def mirrorpad(data,amount):
-    '''
-    reflected padding of data
-    '''
-    assert 0
-
 def analytic_signal_coherence(data,window=np.hanning):
     '''
     Extracts median frequency. Uses this to unwrap array phases.

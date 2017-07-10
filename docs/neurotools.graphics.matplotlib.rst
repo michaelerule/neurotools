@@ -1,5 +1,5 @@
-neurotools\.graphics\.matplotlib module
-=======================================
+neurotools.graphics.matplotlib module
+=====================================
 
 .. automodule:: neurotools.graphics.matplotlib
     :members:

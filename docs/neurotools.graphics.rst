@@ -1,5 +1,5 @@
-neurotools\.graphics package
-============================
+neurotools.graphics package
+===========================
 
 Submodules
 ----------

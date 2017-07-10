@@ -1,5 +1,5 @@
-neurotools\.namespace module
-============================
+neurotools.namespace module
+===========================
 
 .. automodule:: neurotools.namespace
     :members:

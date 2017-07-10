@@ -1,5 +1,5 @@
-neurotools\.signal package
-==========================
+neurotools.signal package
+=========================
 
 Submodules
 ----------

@@ -1,5 +1,5 @@
-neurotools\.stats\.distributions module
-=======================================
+neurotools.stats.distributions module
+=====================================
 
 .. automodule:: neurotools.stats.distributions
     :members:

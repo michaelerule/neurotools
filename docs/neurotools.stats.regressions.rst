@@ -1,5 +1,5 @@
-neurotools\.stats\.regressions module
-=====================================
+neurotools.stats.regressions module
+===================================
 
 .. automodule:: neurotools.stats.regressions
     :members:

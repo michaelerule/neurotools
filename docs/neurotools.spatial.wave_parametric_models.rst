@@ -1,5 +1,5 @@
-neurotools\.spatial\.wave\_parametric\_models module
-====================================================
+neurotools.spatial.wave_parametric_models module
+================================================
 
 .. automodule:: neurotools.spatial.wave_parametric_models
     :members:

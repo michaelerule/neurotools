@@ -1,5 +1,5 @@
-neurotools\.stats\.GLMFit module
-================================
+neurotools.stats.GLMFit module
+==============================
 
 .. automodule:: neurotools.stats.GLMFit
     :members:

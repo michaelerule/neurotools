@@ -42,8 +42,6 @@ nonredundant pairs, define *ij* as::
 #from matplotlib.mlab import *
 #from collections import *
 
-xr = xrange
-
 def get_electrode_locations(session,area):
     assert 0 # not implemented
     warn('returns a dictionary indexed by channel ID (1-indexed)')
@@ -78,8 +76,8 @@ def distance_angular_deviation(session,area,trial,epoch,threads=1):
     h = angle(cwt)
     results  = defaultdict(list)
     channels = get_good_channels(session,area)
-    for i,ch1 in en|channels:
-        for j,ch2 in en|channels:
+    for i,ch1 in enumerate(channels):
+        for j,ch2 in enumerate(channels):
             if i>=j: continue
             hd = cos(h[i,:,:]-h[j,:,:])
             x = get_pair_distance(session,area,ch1,ch2)
@@ -96,8 +94,8 @@ def get_averaged_angular_distance(args):
     channels = get_good_channels(session,area)
     sums   = {}
     counts = {}
-    for i,ch1 in en|channels:
-        for j,ch2 in en|channels:
+    for i,ch1 in enumerate(channels):
+        for j,ch2 in enumerate(channels):
             if i>=j: continue
             x = abs(cos(h[i,:,:]-h[j,:,:]))
             k = get_pair_distance(session,area,ch1,ch2)

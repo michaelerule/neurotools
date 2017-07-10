@@ -1,5 +1,5 @@
-neurotools\.spatial package
-===========================
+neurotools.spatial package
+==========================
 
 Submodules
 ----------

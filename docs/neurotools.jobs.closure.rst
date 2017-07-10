@@ -1,5 +1,5 @@
-neurotools\.jobs\.closure module
-================================
+neurotools.jobs.closure module
+==============================
 
 .. automodule:: neurotools.jobs.closure
     :members:

@@ -1,5 +1,5 @@
-neurotools\.models package
-==========================
+neurotools.models package
+=========================
 
 Submodules
 ----------

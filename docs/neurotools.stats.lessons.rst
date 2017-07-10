@@ -1,5 +1,5 @@
-neurotools\.stats\.lessons module
-=================================
+neurotools.stats.lessons module
+===============================
 
 .. automodule:: neurotools.stats.lessons
     :members:

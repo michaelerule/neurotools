@@ -1,5 +1,5 @@
-neurotools\.tools module
-========================
+neurotools.tools module
+=======================
 
 .. automodule:: neurotools.tools
     :members:

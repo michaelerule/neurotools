@@ -1,5 +1,5 @@
-neurotools\.spatial\.dct module
-===============================
+neurotools.spatial.dct module
+=============================
 
 .. automodule:: neurotools.spatial.dct
     :members:

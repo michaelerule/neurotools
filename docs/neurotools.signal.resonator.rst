@@ -1,5 +1,5 @@
-neurotools\.signal\.resonator module
-====================================
+neurotools.signal.resonator module
+==================================
 
 .. automodule:: neurotools.signal.resonator
     :members:

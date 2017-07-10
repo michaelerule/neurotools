@@ -1,5 +1,5 @@
-neurotools\.models\.lif module
-==============================
+neurotools.models.lif module
+============================
 
 .. automodule:: neurotools.models.lif
     :members:

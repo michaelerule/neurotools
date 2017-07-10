@@ -1,5 +1,5 @@
-neurotools\.gpu\.cu\.graph module
-=================================
+neurotools.gpu.cu.graph module
+==============================
 
 .. automodule:: neurotools.gpu.cu.graph
     :members:

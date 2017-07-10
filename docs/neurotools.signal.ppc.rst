@@ -1,5 +1,5 @@
-neurotools\.signal\.ppc module
-==============================
+neurotools.signal.ppc module
+============================
 
 .. automodule:: neurotools.signal.ppc
     :members:

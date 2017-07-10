@@ -298,8 +298,6 @@ def array_wavelength_upper(frame):
     warn('using something other than mean may make this less sensitive to outliers and noise')
     return 1/array_phasegradient_lower(frame)
 
-
-
 def array_synchrony_pgd(frame):
     '''
     The phase gradient directionality measure from Rubinto et al 2009 is

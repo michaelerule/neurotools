@@ -1,5 +1,5 @@
-neurotools\.gpu\.cl\.device module
-==================================
+neurotools.gpu.cl.device module
+===============================
 
 .. automodule:: neurotools.gpu.cl.device
     :members:

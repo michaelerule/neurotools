@@ -1,5 +1,5 @@
-neurotools\.stats\.matzner\_bar\-gad\_PLoS\_2015 module
-=======================================================
+neurotools.stats.matzner_bar-gad_PLoS_2015 module
+=================================================
 
 .. automodule:: neurotools.stats.matzner_bar-gad_PLoS_2015
     :members:

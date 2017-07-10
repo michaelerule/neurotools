@@ -1,5 +1,5 @@
-neurotools\.stats\.hmm module
-=============================
+neurotools.stats.hmm module
+===========================
 
 .. automodule:: neurotools.stats.hmm
     :members:

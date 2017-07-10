@@ -1,5 +1,5 @@
-neurotools\.nlab module
-=======================
+neurotools.nlab module
+======================
 
 .. automodule:: neurotools.nlab
     :members:

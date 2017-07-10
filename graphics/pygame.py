@@ -21,7 +21,13 @@ backend stuff, so you get a common interface for multiple platforms.
 
 import sys
 import numpy as np
-import pygame as pg
+
+try:
+    import pygame as pg
+except:
+    print('pygame package is missing; it is obsolete so this is not unusual')
+    print('pygame graphics will not work')
+    pg = None
 
 def enable_vsync():
     if sys.platform != 'darwin':

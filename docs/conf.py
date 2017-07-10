@@ -25,7 +25,7 @@
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+#needs_sphinx = '4.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -36,14 +36,55 @@ extensions = [
     #'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
-    'sphinxcontrib.fulltoc',
-    #'sphinx.ext.doctest',
-    #'sphinx.ext.ifconfig',
     'sphinx.ext.napoleon',
-    #'numpydoc' causes errors if enabled
     ]
-    
+
+# special code to handle different versions of sphinx gracefully
+import sys
+assert 'sphinx' in sys.modules
+
+# due to potential weirdness that may arise with python 
+# environments, it's not clear that the imported version will 
+# always match the one reported via pip. For this reason, we
+# actually do the import and try to read the version name from 
+# the package itself. This doesn't always work, so we use pip
+# as a fallback
+mod = __import__('sphinx')
+potential_version_variable_names = ['__version__','__VERSION__','VERSION','version','version_info']
+loaded_version = None
+if loaded_version is None:
+    for vname in potential_version_variable_names:
+        if vname in mod.__dict__:
+            # try to find version information, 
+            # just hope and pray it's a string if it exists
+            # take only the first line if multiple lines exist
+            loaded_version = mod.__dict__[vname]
+            break
+if loaded_version is None:
+    try:
+        loaded_version = pkg_resources.get_distribution(package).version
+    except:
+        pass
+if loaded_version is None:
+    if package in installed_via_pip:
+        p = installed_via_pip[package]
+        if p.has_version:
+            loaded_version = p.version
+if loaded_version is None:
+    sys.stdout.write('\tNo sphinx version information found.')
+else:
+    loaded_version = loaded_version.split('\n')[0]
+    loaded_version = tuple(map(int,loaded_version.split('.')))
+    sys.stdout.write('\tSphinx version '+str(loaded_version)+'\n')
+    if loaded_version>=(1,4):
+        extensions += [
+        'sphinxcontrib.fulltoc',
+        'sphinx.ext.githubpages',]
+        sys.stdout.write('\tAdding github pages module\n')
+    else:
+        sys.stdout.write('\tPlease update Sphinx to use the github pages module\n')
+
+
 # fix some sphinx warnings?
 #napoleon_use_param = False
 

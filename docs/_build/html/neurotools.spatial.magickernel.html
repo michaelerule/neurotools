@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.spatial.magickernel module &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Neurotools 2 documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Neurotools</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="simple">
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Neurotools</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>neurotools.spatial.magickernel module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/neurotools.spatial.magickernel.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-neurotools.spatial.magickernel">
+<span id="neurotools-spatial-magickernel-module"></span><h1>neurotools.spatial.magickernel module<a class="headerlink" href="#module-neurotools.spatial.magickernel" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.continuum_kernel">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">continuum_kernel</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#continuum_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.continuum_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>limit of continuum magic kernel
+as a piecewise function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.cosine_kernel">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">cosine_kernel</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#cosine_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.cosine_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>raised cosine basis kernel, normalized such that it integrates to 1
+centered at zero. Time is rescaled so that the kernel spans from
+-2 to 2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.derive_log_cosine_basis">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">derive_log_cosine_basis</code><span class="sig-paren">(</span><em>N</em>, <em>L</em>, <em>min_interval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#derive_log_cosine_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.derive_log_cosine_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build N logarightmically spaced cosine basis functions
+spanning L samples, with a peak resolution of min_interval</p>
+<p># Solve for a time basis with these constraints
+# t[0] = 0
+# t[min_interval] = 1
+# log(L)/log(b) = n_basis+1
+# log(b) = log(L)/(n_basis+1)
+# b = exp(log(L)/(n_basis+1))</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>B</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array, Basis with n_elements x n_times shape</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.diffusion_basis">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">diffusion_basis</code><span class="sig-paren">(</span><em>N=[1, 2, 3, 4, 5], t=array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,        34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,        51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,        68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,        85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#diffusion_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.diffusion_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Note: conceptually similar to other basis functions in this file
+with base=2 and offset=1
+repeatly convolves exponential with itself to generate basis</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.exponential_basis">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">exponential_basis</code><span class="sig-paren">(</span><em>N=[1, 2, 3, 4, 5], t=array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,        34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,        51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,        68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,        85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]), base=2, offset=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#exponential_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.exponential_basis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.iterative_orthogonalize_basis">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">iterative_orthogonalize_basis</code><span class="sig-paren">(</span><em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#iterative_orthogonalize_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.iterative_orthogonalize_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>iterated orthogonalization to try to help maintain locality?
+as opposed to multiplying by inverse square root B B&#8217;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.log_cosine_basis">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">log_cosine_basis</code><span class="sig-paren">(</span><em>N=[1, 2, 3, 4, 5], t=array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,        34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,        51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,        68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,        85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]), base=2, offset=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#log_cosine_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.log_cosine_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate overlapping log-cosine basis elements</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>N</strong> (<em>array of wave quarter-phases</em>) &#8211; </li>
+<li><strong>t</strong> (<em>time base</em>) &#8211; </li>
+<li><strong>base</strong> (<em>exponent base</em>) &#8211; </li>
+<li><strong>offset</strong> (<em>leave this set to 1 (default)</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>B</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array, Basis with n_elements x n_times shape</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.magickernel.log_spline_basis">
+<code class="descclassname">neurotools.spatial.magickernel.</code><code class="descname">log_spline_basis</code><span class="sig-paren">(</span><em>N=[1, 2, 3, 4, 5], t=array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,        34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,        51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,        68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,        85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]), base=2, offset=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/magickernel.html#log_spline_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.magickernel.log_spline_basis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

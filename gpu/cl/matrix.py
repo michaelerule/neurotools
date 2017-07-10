@@ -30,7 +30,12 @@ TODO : check correlation matrix funcions, look wrong
 from neurotools.gpu.cpu.util import *
 from neurotools.gpu.cl.function import *
     
-from pytools import memoize
+try:
+    from pytools import memoize
+except:
+    print('Please install the pytools module')
+    print('Attempting fallback to neurotools')
+    from neurotools.tools import memoize
 
 gputranspose = lambda(rows,cols):gpumap('x[(i%'+str(rows)+')*'+str(cols)+'+(i/'+str(rows)+')]')
 '''Prepares a map kernel that transposed a row-major packed float matrix/ Eg gputranspose(rows,cols)(data) will transpose data. Creates a new, memoized, kernel for each array dimension'''

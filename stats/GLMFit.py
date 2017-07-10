@@ -24,7 +24,7 @@ try:
         matrix Y
 
         Parameters
-        -----------
+        ----------
         X : array-like
             A nobs x k array where `nobs` is the number of observations and `k`
             is the number of regressors. An intercept is not included by default

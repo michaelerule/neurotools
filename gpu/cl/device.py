@@ -10,11 +10,22 @@ from __future__ import print_function
 from neurotools.system import *
 
 import numpy as np
-import pyopencl as cl
 
-#from orix.cl import *
-#from orix.cl.function import *
-#zero_device = elemental("int *d","d=0")
+try:
+    import pyopencl as cl
+except:
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+            print('Please locate and install the pyOpenCL GPU library')
+        else:
+            raise ValueError('Please locate and install pyOpenCL GPU library')
+    # TODO: shadow missing function with the above, which raises an error?
+    cl = None
+
+from neurotools.gpu.cl import *
+from neurotools.gpu.cl.function import *
+zero_device = elemental("int *d","d=0")
 
 def zeros_float(N):
     arr = np.zeros(N);

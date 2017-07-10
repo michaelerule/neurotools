@@ -682,6 +682,8 @@ elif myhost in ('RobotFortress','petra'):
     ssd_cache_location = '/Users/mrule'
 else:
     print('New System. Cache Locations will need configuring.')
+    print('TODO: clean this up somehow! hard-coded configurations are not acceptable in public code')
+    ramdisk_location = ssd_cache_location = hdd_cache_location = None
 
 
 disk_cache_hierarchy = (

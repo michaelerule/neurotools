@@ -27,9 +27,7 @@ from collections import defaultdict
 import inspect, ast, types
 import warnings, traceback, errno
 import pickle, json, base64, zlib
-
 import numpy as np
-
 
 try:
     import decorator
@@ -120,12 +118,14 @@ def argument_signature(function,*args,**kwargs):
     named = sanitize(named)
 
     available = list(zip(named,args))
-    nargs     = len(available)
-    ndefault  = len(defaults)   if not defaults is None else 0
-    nnamed    = len(named)      if not named    is None else 0
+    nargs     = 1 if type(available) is str else 0 if available is None else len(available)
+    ndefault  = 1 if type(defaults)  is str else 0 if defaults  is None else len(defaults)
+    nnamed    = 1 if type(named)     is str else 0 if named     is None else len(named)
     # All positional arguments must be filled
     nmandatory = nnamed - ndefault
-    if nargs<nmandatory: raise ValueError('Not enough positional arguments')
+    if nargs<nmandatory: 
+        details = "%s %s %s %s %s %s %s"%(available,nargs,nnamed,named,ndefault,defaults,nmandatory)
+        raise ValueError('Not enough positional arguments\n'+details)
     # Assign available positional arguments to names
     for k,v in available:
         if k in named_store: raise ValueError('Duplicate argument',k)

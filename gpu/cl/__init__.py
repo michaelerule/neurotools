@@ -17,7 +17,13 @@ import numpy
 try:
     import pyopencl
 except:
-    print('pyopencl is not installed!')
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+            print('Please locate and install the pyOpenCL GPU library')
+        else:
+            raise ValueError('Please locate and install pyOpenCL GPU library')
+    # TODO: shadow missing function with the above, which raises an error?
     pyopencl = None
 
 if pyopencl:

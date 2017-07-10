@@ -16,8 +16,14 @@ except:
         else:
             raise ValueError('Please locate and install pycuda GPU library')
     # TODO: shadow missing function with the above, which raises an error?
-    
-from pytools import memoize
+
+try:
+    from pytools import memoize
+except:
+    print('Please install the pytools module')
+    print('Attempting fallback to neurotools')
+    from neurotools.tools import memoize
+
 from math import log
 import re
 import numpy as np 

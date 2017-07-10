@@ -18,7 +18,13 @@ TODO : check correlation matrix funcions, look wrong
 
 from neurotools.gpu.cpu.util import *
 from neurotools.gpu.cu.function import *
-from pytools import memoize
+
+try:
+    from pytools import memoize
+except:
+    print('Please install the pytools module')
+    print('Attempting fallback to neurotools')
+    from neurotools.tools import memoize
 
 gputranspose = lambda(rows,cols):gpumap('x[(i%'+str(rows)+')*'+str(cols)+'+(i/'+str(rows)+')]')
 '''

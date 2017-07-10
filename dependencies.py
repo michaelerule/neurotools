@@ -99,6 +99,13 @@ DEPENDENCIES = [
  ('pyfftw', '0.9.2'),           # optional, can use numpy fallback, in PYPI
  ('spectrum', '0.6.0'),         # required, in PYPI
  ('sklearn', '0.15.2'),         # required, in PYPI
+ ('pygame','0.0.0'), #TODO version?
+ ('decorator','0.0.0'), #TODO version?
+ ('typedecorator','0.0.0'), #TODO version?
+ ('pytools','0.0.0'), #TODO version?
+ ('fftw','0.0.0'), #TODO version? same as pyfftw?
+ ('h5py','0.0.0'), #TODO version?
+ ('spectrum','0.0.0'), #TODO version?
  # Numpy and scipy seem to not reliably install over pip/easy_install
  # Possibly due to missing build dependencies? 
  # These will just need to be handled as a special case.
@@ -220,8 +227,13 @@ try:
     import pip
 except:
     pip = None
+try:
+    import conda.cli as ccli
+except:
+    ccli = None
 
-if easy_install==None and pip==None:
+
+if easy_install==None and pip==None and ccli==None:
     print('Neither pip nor easy_install is available, so I will not try to install missing packages.')
     print('Please install the following packages manually')
     print('\t'+'\n\t'.join(missing))
@@ -239,12 +251,16 @@ else:
             print('Please search online and follow installation instructions for your platform')
             continue
         if ask('Package %s is missing, should I try to install it'%package):
-            if not pip==None:
+            if not pip is None:
                 pip.main(['install', package])
-            else:
+            elif not easy_install is None:
                 print('pip is missing, I will try easy_install')
                 easy_install.main( ["-U",package] )
-
+                easy_install.main( [package] )
+            else:
+                print('neither pip nor easy_install are available')
+                print('possibly a conda environment in osx')
+                ccli.main('conda', 'install',  '-y', package)
     
 
 

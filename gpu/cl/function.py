@@ -15,9 +15,27 @@ succinct and compact. Also contains generic routines for manipulating Cl
 source objects.
 '''
 
-import pyopencl
+try:
+    import pyopencl
+except:
+    import sys
+    def missing(*args,**kwargs):
+        if 'sphinx' in sys.modules:
+            print('Please locate and install the pyOpenCL GPU library')
+        else:
+            raise ValueError('Please locate and install pyOpenCL GPU library')
+    # TODO: shadow missing function with the above, which raises an error?
+    pyopencl = None
+
 from neurotools.gpu.cl import *   
-from pytools import memoize
+
+try:
+    from pytools import memoize
+except:
+    print('Please install the pytools module')
+    print('Attempting fallback to neurotools')
+    from neurotools.tools import memoize
+
 from math import log,ceil
 import re
 import numpy as np 

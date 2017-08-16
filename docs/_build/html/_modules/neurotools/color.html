@@ -158,7 +158,7 @@
 <span class="c">######################################################################</span>
 <span class="c"># Hue / Saturation / Luminance color space code</span>
 
-<div class="viewcode-block" id="hsv2rgb"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.hsv2rgb">[docs]</a><span class="k">def</span> <span class="nf">hsv2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="hsv2rgb"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.hsv2rgb">[docs]</a><span class="k">def</span> <span class="nf">hsv2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    h: hue 0 to 360</span>
 <span class="sd">    s: saturation 0 to 1</span>
@@ -178,10 +178,10 @@
     <span class="n">q</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="n">q</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">((</span><span class="n">v</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">p</span><span class="p">),(</span><span class="n">q</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">p</span><span class="p">),(</span><span class="n">p</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">t</span><span class="p">),(</span><span class="n">p</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">v</span><span class="p">),(</span><span class="n">t</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">v</span><span class="p">),(</span><span class="n">v</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">q</span><span class="p">))[</span><span class="n">hi</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="lightness"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.lightness">[docs]</a><span class="k">def</span> <span class="nf">lightness</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;lightness&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="lightness"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.lightness">[docs]</a><span class="k">def</span> <span class="nf">lightness</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;lightness&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">luminance_matrix</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="luminance_matrix"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.luminance_matrix">[docs]</a><span class="k">def</span> <span class="nf">luminance_matrix</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;perceived&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="luminance_matrix"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.luminance_matrix">[docs]</a><span class="k">def</span> <span class="nf">luminance_matrix</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;perceived&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Method &#39;perceived&#39; .299*R + .587*G + .114*B</span>
 <span class="sd">    Method &#39;standard&#39;  .2126*R + .7152*G + .0722*B</span>
@@ -205,7 +205,7 @@
     <span class="n">LRGB</span> <span class="o">=</span> <span class="n">LRGB</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">LRGB</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">LRGB</span>
 </div>
-<div class="viewcode-block" id="match_luminance"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.match_luminance">[docs]</a><span class="k">def</span> <span class="nf">match_luminance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="n">color</span><span class="p">,</span>
+<div class="viewcode-block" id="match_luminance"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.match_luminance">[docs]</a><span class="k">def</span> <span class="nf">match_luminance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="n">color</span><span class="p">,</span>
     <span class="n">THRESHOLD</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">squared</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;perceived&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Adjust color to match luminosity of target</span>
@@ -236,7 +236,7 @@
             <span class="n">source</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">LRGB</span><span class="p">,</span><span class="n">color</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">color</span>
 </div>
-<div class="viewcode-block" id="rotate"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.rotate">[docs]</a><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="n">th</span><span class="p">):</span>
+<div class="viewcode-block" id="rotate"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.rotate">[docs]</a><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="n">th</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Rotate a list of rgb colors by angle theta</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -255,7 +255,7 @@
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">results</span>
 </div>
-<div class="viewcode-block" id="RGBtoHCL"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.RGBtoHCL">[docs]</a><span class="k">def</span> <span class="nf">RGBtoHCL</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;perceived&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="RGBtoHCL"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.RGBtoHCL">[docs]</a><span class="k">def</span> <span class="nf">RGBtoHCL</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;perceived&#39;</span><span class="p">):</span>
     <span class="n">alpha</span>  <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">r</span><span class="o">-</span><span class="n">g</span><span class="o">-</span><span class="n">b</span><span class="p">)</span>
     <span class="n">beta</span>   <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="n">b</span><span class="p">)</span>
     <span class="n">hue</span>    <span class="o">=</span> <span class="n">arctan2</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span><span class="n">alpha</span><span class="p">)</span>
@@ -263,7 +263,7 @@
     <span class="n">L</span> <span class="o">=</span> <span class="n">lightness</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">hue</span><span class="p">,</span><span class="n">chroma</span><span class="p">,</span><span class="n">L</span>
 </div>
-<div class="viewcode-block" id="hue_angle"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.hue_angle">[docs]</a><span class="k">def</span> <span class="nf">hue_angle</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">):</span>
+<div class="viewcode-block" id="hue_angle"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.hue_angle">[docs]</a><span class="k">def</span> <span class="nf">hue_angle</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculates the angular difference in hue between two colors</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -271,7 +271,7 @@
     <span class="n">H2</span> <span class="o">=</span> <span class="n">RGBtoHCL</span><span class="p">(</span><span class="o">*</span><span class="n">c2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">H2</span><span class="o">-</span><span class="n">H1</span>
 </div>
-<div class="viewcode-block" id="hcl2rgb"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.hcl2rgb">[docs]</a><span class="k">def</span> <span class="nf">hcl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">target</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;standard&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="hcl2rgb"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.hcl2rgb">[docs]</a><span class="k">def</span> <span class="nf">hcl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">target</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;standard&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    h: hue</span>
 <span class="sd">    c: chroma</span>
@@ -299,7 +299,7 @@
     <span class="n">RGB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">B</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">RGB</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="circularly_smooth_colormap"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.circularly_smooth_colormap">[docs]</a><span class="k">def</span> <span class="nf">circularly_smooth_colormap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="circularly_smooth_colormap"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.circularly_smooth_colormap">[docs]</a><span class="k">def</span> <span class="nf">circularly_smooth_colormap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth a colormap with cirular boundary conditions</span>
 
@@ -317,28 +317,28 @@
     <span class="n">RGB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">B</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">RGB</span><span class="p">[</span><span class="n">N</span><span class="p">:</span><span class="n">N</span><span class="o">*</span><span class="mi">2</span><span class="p">,:]</span>
 </div>
-<div class="viewcode-block" id="isoluminance1"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.isoluminance1">[docs]</a><span class="k">def</span> <span class="nf">isoluminance1</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="o">=.</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="isoluminance1"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.isoluminance1">[docs]</a><span class="k">def</span> <span class="nf">isoluminance1</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="o">=.</span><span class="mi">5</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">hcl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="isoluminance2"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.isoluminance2">[docs]</a><span class="k">def</span> <span class="nf">isoluminance2</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+<div class="viewcode-block" id="isoluminance2"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.isoluminance2">[docs]</a><span class="k">def</span> <span class="nf">isoluminance2</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">hcl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">target</span><span class="o">=.</span><span class="mi">5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">h</span><span class="o">%</span><span class="mi">5</span><span class="p">))</span><span class="o">/</span><span class="mi">5</span>
 </div>
-<div class="viewcode-block" id="isoluminance3"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.isoluminance3">[docs]</a><span class="k">def</span> <span class="nf">isoluminance3</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+<div class="viewcode-block" id="isoluminance3"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.isoluminance3">[docs]</a><span class="k">def</span> <span class="nf">isoluminance3</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">hcl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">target</span><span class="o">=.</span><span class="mi">5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">h</span><span class="o">%</span><span class="mi">15</span><span class="p">))</span><span class="o">/</span><span class="mi">15</span>
 </div>
-<div class="viewcode-block" id="isoluminance4"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.isoluminance4">[docs]</a><span class="k">def</span> <span class="nf">isoluminance4</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+<div class="viewcode-block" id="isoluminance4"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.isoluminance4">[docs]</a><span class="k">def</span> <span class="nf">isoluminance4</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">hcl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">target</span><span class="o">=.</span><span class="mi">5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">h</span><span class="o">%</span><span class="mi">60</span><span class="p">))</span><span class="o">/</span><span class="mi">60</span>
 </div>
-<div class="viewcode-block" id="lighthues"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.lighthues">[docs]</a><span class="k">def</span> <span class="nf">lighthues</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
+<div class="viewcode-block" id="lighthues"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.lighthues">[docs]</a><span class="k">def</span> <span class="nf">lighthues</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">isoluminance1</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">360</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 </div>
-<div class="viewcode-block" id="darkhues"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.darkhues">[docs]</a><span class="k">def</span> <span class="nf">darkhues</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<div class="viewcode-block" id="darkhues"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.darkhues">[docs]</a><span class="k">def</span> <span class="nf">darkhues</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">isoluminance1</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">360</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 </div>
-<div class="viewcode-block" id="medhues"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.medhues">[docs]</a><span class="k">def</span> <span class="nf">medhues</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
+<div class="viewcode-block" id="medhues"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.medhues">[docs]</a><span class="k">def</span> <span class="nf">medhues</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">isoluminance1</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">360</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 </div>
-<div class="viewcode-block" id="radl2rgb"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.radl2rgb">[docs]</a><span class="k">def</span> <span class="nf">radl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="radl2rgb"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.radl2rgb">[docs]</a><span class="k">def</span> <span class="nf">radl2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Slightly more optimized HSL conversion routine.</span>
 <span class="sd">    Saturation fixed at 1</span>
@@ -374,14 +374,14 @@
 <span class="k">except</span><span class="p">:</span>
     <span class="k">pass</span>
 
-<div class="viewcode-block" id="radl2rgbLUT"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.radl2rgbLUT">[docs]</a><span class="k">def</span> <span class="nf">radl2rgbLUT</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="radl2rgbLUT"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.radl2rgbLUT">[docs]</a><span class="k">def</span> <span class="nf">radl2rgbLUT</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    radl2rgb backed with a limited resolution lookup table</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">__N_HL_LUT__</span>
     <span class="k">return</span> <span class="n">__HL_LUT__</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span><span class="o">%</span><span class="n">N</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))]</span>
 </div>
-<div class="viewcode-block" id="complexHLArr2RGB"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.complexHLArr2RGB">[docs]</a><span class="k">def</span> <span class="nf">complexHLArr2RGB</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="complexHLArr2RGB"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.complexHLArr2RGB">[docs]</a><span class="k">def</span> <span class="nf">complexHLArr2RGB</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Performs bulk LUT for complex numbers, avoids loops&#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">__N_HL_LUT__</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span><span class="o">%</span><span class="n">N</span><span class="p">)</span>
@@ -393,7 +393,7 @@
 
 <span class="c">####################################################################### Matplotlib extensions</span>
 </div>
-<div class="viewcode-block" id="color_boxplot"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.color_boxplot">[docs]</a><span class="k">def</span> <span class="nf">color_boxplot</span><span class="p">(</span><span class="n">bp</span><span class="p">,</span><span class="n">COLOR</span><span class="p">):</span>
+<div class="viewcode-block" id="color_boxplot"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.color_boxplot">[docs]</a><span class="k">def</span> <span class="nf">color_boxplot</span><span class="p">(</span><span class="n">bp</span><span class="p">,</span><span class="n">COLOR</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The Boxplot defaults are awful.</span>
 <span class="sd">    This is a little better</span>
@@ -724,7 +724,7 @@
 <span class="c">######################################################################</span>
 <span class="c"># Bit-packed color fiddling</span>
 
-<div class="viewcode-block" id="hex_pack_BGR"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.hex_pack_BGR">[docs]</a><span class="k">def</span> <span class="nf">hex_pack_BGR</span><span class="p">(</span><span class="n">RGB</span><span class="p">):</span>
+<div class="viewcode-block" id="hex_pack_BGR"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.hex_pack_BGR">[docs]</a><span class="k">def</span> <span class="nf">hex_pack_BGR</span><span class="p">(</span><span class="n">RGB</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Packs RGB colors data in hexadecimal BGR format for fast rendering to</span>
 <span class="sd">    Javascript canvas.</span>
@@ -733,7 +733,7 @@
     <span class="n">RGB</span> <span class="o">=</span> <span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">RGB</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="s">&#39;0x</span><span class="si">%2x%2x%2x</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">B</span><span class="o">*</span><span class="mi">255</span><span class="p">,</span><span class="n">G</span><span class="o">*</span><span class="mi">255</span><span class="p">,</span><span class="n">R</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">B</span><span class="p">)</span> <span class="ow">in</span> <span class="n">RGB</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="code_to_16bit"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.code_to_16bit">[docs]</a><span class="k">def</span> <span class="nf">code_to_16bit</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<div class="viewcode-block" id="code_to_16bit"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.code_to_16bit">[docs]</a><span class="k">def</span> <span class="nf">code_to_16bit</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts a #RRGGBB hex code into a 16-bit packed 565 BRG integer form</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -748,7 +748,7 @@
     <span class="n">B</span> <span class="o">=</span> <span class="n">B</span> <span class="o">&amp;</span> <span class="mh">0xF8</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">G</span><span class="o">&lt;&lt;</span><span class="mi">3</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">B</span><span class="o">&gt;&gt;</span><span class="mi">3</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="bit16_RGB_to_tuple"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.bit16_RGB_to_tuple">[docs]</a><span class="k">def</span> <span class="nf">bit16_RGB_to_tuple</span><span class="p">(</span><span class="n">RGB</span><span class="p">):</span>
+<div class="viewcode-block" id="bit16_RGB_to_tuple"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.bit16_RGB_to_tuple">[docs]</a><span class="k">def</span> <span class="nf">bit16_RGB_to_tuple</span><span class="p">(</span><span class="n">RGB</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts 16-bit RRRRR GGGGGG BBBBB into (R,G,B) tuple form</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -757,7 +757,7 @@
     <span class="n">B</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mb">0b11111</span>  <span class="o">&amp;</span> <span class="p">(</span><span class="n">RGB</span><span class="p">)</span>    <span class="p">)</span><span class="o">/</span><span class="mb">0b11111</span>
     <span class="k">return</span> <span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">B</span>
 </div>
-<div class="viewcode-block" id="enumerate_fast_colors"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.enumerate_fast_colors">[docs]</a><span class="k">def</span> <span class="nf">enumerate_fast_colors</span><span class="p">():</span>
+<div class="viewcode-block" id="enumerate_fast_colors"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.enumerate_fast_colors">[docs]</a><span class="k">def</span> <span class="nf">enumerate_fast_colors</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Enumerates colors that can be rendered over a 16 bit bus</span>
 <span class="sd">    using two identical bytes, skipping the lowest two bits of</span>
@@ -769,7 +769,7 @@
     <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">bit16_RGB_to_tuple</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="mi">256</span><span class="o">|</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">colors</span>
 </div>
-<div class="viewcode-block" id="tuple_to_bit16"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.tuple_to_bit16">[docs]</a><span class="k">def</span> <span class="nf">tuple_to_bit16</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<div class="viewcode-block" id="tuple_to_bit16"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.tuple_to_bit16">[docs]</a><span class="k">def</span> <span class="nf">tuple_to_bit16</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    convert RGB float tuple in 565 bit packed RGB format</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -780,7 +780,7 @@
     <span class="n">RGB</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="o">&lt;&lt;</span><span class="mi">11</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">G</span><span class="o">&lt;&lt;</span><span class="mi">5</span><span class="p">)</span><span class="o">|</span><span class="n">B</span>
     <span class="k">return</span> <span class="n">RGB</span>
 </div>
-<div class="viewcode-block" id="tuple_to_bit24"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.tuple_to_bit24">[docs]</a><span class="k">def</span> <span class="nf">tuple_to_bit24</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<div class="viewcode-block" id="tuple_to_bit24"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.tuple_to_bit24">[docs]</a><span class="k">def</span> <span class="nf">tuple_to_bit24</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    convert RGB float tuple in 565 bit packed RGB format</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -791,13 +791,13 @@
     <span class="n">RGB</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="o">&lt;&lt;</span><span class="mi">16</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">G</span><span class="o">&lt;&lt;</span><span class="mi">8</span><span class="p">)</span><span class="o">|</span><span class="n">B</span>
     <span class="k">return</span> <span class="n">RGB</span>
 </div>
-<div class="viewcode-block" id="bit16_print_color"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.bit16_print_color">[docs]</a><span class="k">def</span> <span class="nf">bit16_print_color</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<div class="viewcode-block" id="bit16_print_color"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.bit16_print_color">[docs]</a><span class="k">def</span> <span class="nf">bit16_print_color</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert RGB tuple to 16 bit 565 RGB formt as a binary string literal</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">tuple_to_bit16</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="show_fast_pallet"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.show_fast_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_fast_pallet</span><span class="p">():</span>
+<div class="viewcode-block" id="show_fast_pallet"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.show_fast_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_fast_pallet</span><span class="p">():</span>
     <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
     <span class="n">subplots_adjust</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -815,7 +815,7 @@
             <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%06x</span><span class="s">&#39;</span><span class="o">%</span><span class="n">tuple_to_bit24</span><span class="p">(</span><span class="n">cA</span><span class="p">))</span>
     <span class="n">draw</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="show_complete_fast_pallet"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.show_complete_fast_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_complete_fast_pallet</span><span class="p">():</span>
+<div class="viewcode-block" id="show_complete_fast_pallet"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.show_complete_fast_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_complete_fast_pallet</span><span class="p">():</span>
     <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
     <span class="n">subplots_adjust</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -833,7 +833,7 @@
             <span class="k">print</span><span class="p">(</span><span class="s">&#39;#</span><span class="si">%06x</span><span class="s">&#39;</span><span class="o">%</span><span class="n">tuple_to_bit24</span><span class="p">(</span><span class="n">cA</span><span class="p">))</span>
     <span class="n">draw</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="show_complete_fastest_pallet"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.show_complete_fastest_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_complete_fastest_pallet</span><span class="p">():</span>
+<div class="viewcode-block" id="show_complete_fastest_pallet"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.show_complete_fastest_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_complete_fastest_pallet</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    16 bit RGB 565 but don&#39;t even write the lower byte</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -855,7 +855,7 @@
             <span class="k">print</span><span class="p">(</span><span class="s">&quot;&#39;#</span><span class="si">%06x</span><span class="s">&#39;,&quot;</span><span class="o">%</span><span class="n">tuple_to_bit24</span><span class="p">(</span><span class="n">cA</span><span class="p">),)</span>
     <span class="n">draw</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="show_hex_pallet"><a class="viewcode-back" href="../../neurotools.color (Michael Rule's conflicted copy 2017-08-11).html#neurotools.color.show_hex_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_hex_pallet</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
+<div class="viewcode-block" id="show_hex_pallet"><a class="viewcode-back" href="../../neurotools.color.html#neurotools.color.show_hex_pallet">[docs]</a><span class="k">def</span> <span class="nf">show_hex_pallet</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
     <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
     <span class="n">subplots_adjust</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>

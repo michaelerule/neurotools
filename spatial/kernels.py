@@ -13,6 +13,10 @@ import numpy as np
 from scipy.signal import convolve2d
 
 def laplace_kernel():
+    '''
+    Returns a 3x3 laplacian kernel that is as radially 
+    symmetric as possible
+    '''
     return np.array([[  0.5,   2. ,   0.5],
        [  2. , -10. ,   2. ],
        [  0.5,   2. ,   0.5]])/3.
@@ -86,6 +90,10 @@ def gaussian_2D_kernel(sigma):
     return kernel
 
 def absorbing_gaussian(x,sigma):
+    '''
+    Applies a gaussian convolution to 2d array `x` with absorbing
+    boundary conditions.
+    '''
     support = 1+sigma*6
     normalization = np.zeros(x.shape,'double')
     result = np.zeros(x.shape,'double')

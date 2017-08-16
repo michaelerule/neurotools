@@ -102,16 +102,24 @@
 <span id="neurotools-stats-gmm-module"></span><h1>neurotools.stats.gmm module<a class="headerlink" href="#module-neurotools.stats.gmm" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="neurotools.stats.gmm.GMM">
-<code class="descclassname">neurotools.stats.gmm.</code><code class="descname">GMM</code><span class="sig-paren">(</span><em>PCA</em>, <em>NCLASS=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/gmm.html#GMM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.gmm.GMM" title="Permalink to this definition">¶</a></dt>
-<dd><p>$ PDF = Pr(G) (2pi)^(k/2)operatorname{det}(S)^{-1/2}exp[-1/2 (x-mu)^T S^{-1} (x-mu)] $
+<code class="descclassname">neurotools.stats.gmm.</code><code class="descname">GMM</code><span class="sig-paren">(</span><em>points</em>, <em>NCLASS=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/gmm.html#GMM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.gmm.GMM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a ND Gaussian mixture model</p>
+<p>$ PDF = Pr(G) (2pi)^(k/2)operatorname{det}(S)^{-1/2}exp[-1/2 (x-mu)^T S^{-1} (x-mu)] $
 $ logPDF = logPr(G) k/2 log(2pi)-1/2log(operatorname{det}(S))-1/2(x-mu)^T S^{-1}(x-mu)$
 Pr is inverse monotonic with $logPr(G)-log(operatorname{det}(S))-(x-mu)^T S^{-1}(x-mu)$</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="neurotools.stats.gmm.GMM1D">
-<code class="descclassname">neurotools.stats.gmm.</code><code class="descname">GMM1D</code><span class="sig-paren">(</span><em>PCA</em>, <em>NCLASS=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/gmm.html#GMM1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.gmm.GMM1D" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">neurotools.stats.gmm.</code><code class="descname">GMM1D</code><span class="sig-paren">(</span><em>points</em>, <em>NCLASS=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/gmm.html#GMM1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.gmm.GMM1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a 1D Gaussian mixture model</p>
+<p># Example: find group of small values
+flag,pr   = GMM1D(array(points))
+smallf    = argmin(points.dot(flag)/sum(flag,0))
+aresmall  = flag[:,smallf]&gt;flag[:,1-smallf]
+aresmall <a href="#id1"><span class="problematic" id="id2">|</span></a>= points&lt;mean(edgelen[aresmall])
+small = points[aresmall]</p>
+</dd></dl>
 
 </div>
 

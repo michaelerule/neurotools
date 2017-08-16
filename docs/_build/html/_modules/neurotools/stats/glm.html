@@ -105,8 +105,12 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="c"># more py2/3 compat</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Tutorial in Poisson generalized linear point-process models for neural</span>
@@ -172,7 +176,7 @@
 
 <span class="c">#############################################################################</span>
 
-<div class="viewcode-block" id="GLMPenaltyL2"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyL2">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">penalties</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GLMPenaltyL2"><a class="viewcode-back" href="../../../neurotools.stats.glm (Michael Rule's conflicted copy 2017-08-11).html#neurotools.stats.glm.GLMPenaltyL2">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">penalties</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates objective, gradient, and hessian functions for the penalized</span>
 <span class="sd">    L2 regularized poisson GLM for design matrix X and spike observations Y.</span>
@@ -229,7 +233,7 @@
         <span class="k">return</span> <span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
     <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span>
 </div>
-<div class="viewcode-block" id="ppglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.ppglmfit">[docs]</a><span class="k">def</span> <span class="nf">ppglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="ppglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm (Michael Rule's conflicted copy 2017-08-11).html#neurotools.stats.glm.ppglmfit">[docs]</a><span class="k">def</span> <span class="nf">ppglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The GLM solver in statsmodels is very general. It accepts any link</span>
 <span class="sd">    function and expects that, if you want a constant term in your model,</span>
@@ -257,7 +261,7 @@
     <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
 </div>
-<div class="viewcode-block" id="fitGLM"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.fitGLM">[docs]</a><span class="k">def</span> <span class="nf">fitGLM</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="fitGLM"><a class="viewcode-back" href="../../../neurotools.stats.glm (Michael Rule's conflicted copy 2017-08-11).html#neurotools.stats.glm.fitGLM">[docs]</a><span class="k">def</span> <span class="nf">fitGLM</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
     <span class="c"># Fit the model using gradient descent with hessian</span>
     <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
     <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -267,7 +271,7 @@
     <span class="k">return</span> <span class="n">mu</span><span class="p">,</span><span class="n">B</span>
 </div>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">permutation</span>
-<div class="viewcode-block" id="crossvalidatedAUC"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.crossvalidatedAUC">[docs]</a><span class="k">def</span> <span class="nf">crossvalidatedAUC</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">NXVAL</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="crossvalidatedAUC"><a class="viewcode-back" href="../../../neurotools.stats.glm (Michael Rule's conflicted copy 2017-08-11).html#neurotools.stats.glm.crossvalidatedAUC">[docs]</a><span class="k">def</span> <span class="nf">crossvalidatedAUC</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">NXVAL</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">permutation</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">P</span><span class="p">,:]</span>
@@ -399,7 +403,7 @@
 
 
 
-<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm (Michael Rule's conflicted copy 2017-08-11).html#neurotools.stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)</span>
 <span class="sd">    </span>

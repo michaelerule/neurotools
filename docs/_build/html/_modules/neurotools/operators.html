@@ -116,7 +116,7 @@
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span>
 
-<div class="viewcode-block" id="laplaceop"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.laplaceop">[docs]</a><span class="k">def</span> <span class="nf">laplaceop</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="laplaceop"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.laplaceop">[docs]</a><span class="k">def</span> <span class="nf">laplaceop</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">precision</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="mi">2</span>
@@ -127,19 +127,19 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
 </div>
-<div class="viewcode-block" id="wienerop"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.wienerop">[docs]</a><span class="k">def</span> <span class="nf">wienerop</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="wienerop"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.wienerop">[docs]</a><span class="k">def</span> <span class="nf">wienerop</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">laplaceop</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">x</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-5</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">sqrtcov</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sqrtcov</span>
 </div>
-<div class="viewcode-block" id="diffuseop"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.diffuseop">[docs]</a><span class="k">def</span> <span class="nf">diffuseop</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="diffuseop"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.diffuseop">[docs]</a><span class="k">def</span> <span class="nf">diffuseop</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-.</span><span class="mi">5</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">kernel</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 </div>
-<div class="viewcode-block" id="flatcov"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.flatcov">[docs]</a><span class="k">def</span> <span class="nf">flatcov</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
+<div class="viewcode-block" id="flatcov"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.flatcov">[docs]</a><span class="k">def</span> <span class="nf">flatcov</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
     <span class="c"># Assuming time-independence, get covariance in time</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -147,7 +147,7 @@
         <span class="n">sums</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">covariance</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="o">-</span><span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sums</span> <span class="o">/</span> <span class="n">N</span>
 </div>
-<div class="viewcode-block" id="delta"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.delta">[docs]</a><span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="delta"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.delta">[docs]</a><span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="c"># Get discrete delta but make it even</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
@@ -157,7 +157,7 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
 </div>
-<div class="viewcode-block" id="differentiator"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.differentiator">[docs]</a><span class="k">def</span> <span class="nf">differentiator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="differentiator"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.differentiator">[docs]</a><span class="k">def</span> <span class="nf">differentiator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="c"># Fourier space discrete differentiaion</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span>
@@ -165,26 +165,26 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
 </div>
-<div class="viewcode-block" id="integrator"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.integrator">[docs]</a><span class="k">def</span> <span class="nf">integrator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="integrator"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.integrator">[docs]</a><span class="k">def</span> <span class="nf">integrator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="c"># Fourier space discrete differentiaion</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">differentiator</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">delta</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-10</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">delta</span>
 </div>
-<div class="viewcode-block" id="covfrom"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.covfrom">[docs]</a><span class="k">def</span> <span class="nf">covfrom</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
+<div class="viewcode-block" id="covfrom"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.covfrom">[docs]</a><span class="k">def</span> <span class="nf">covfrom</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
     <span class="n">covmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
         <span class="n">covmat</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">covmat</span>
 </div>
-<div class="viewcode-block" id="oucov"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.oucov">[docs]</a><span class="k">def</span> <span class="nf">oucov</span><span class="p">(</span><span class="n">ssvar</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+<div class="viewcode-block" id="oucov"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.oucov">[docs]</a><span class="k">def</span> <span class="nf">oucov</span><span class="p">(</span><span class="n">ssvar</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
     <span class="c"># Get covariance structure of process</span>
     <span class="n">covariance</span> <span class="o">=</span> <span class="n">ssvar</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">-</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
     <span class="n">covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">covariance</span>
 </div>
-<div class="viewcode-block" id="gaussian1DblurOperator"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.gaussian1DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian1DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian1DblurOperator"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.gaussian1DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian1DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns a 1D Gaussan blur operator of size n</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -202,7 +202,7 @@
     <span class="n">op</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">op</span>
 </div>
-<div class="viewcode-block" id="gaussian2DblurOperator"><a class="viewcode-back" href="../../neurotools.operators.html#neurotools.operators.gaussian2DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian2DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian2DblurOperator"><a class="viewcode-back" href="../../neurotools.operators (Michael Rule's conflicted copy 2017-08-11).html#neurotools.operators.gaussian2DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian2DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns a 2D Gaussan blur operator for a n x n sized domain</span>
 <span class="sd">    Constructed as a tensor product of two 1d blurs of size n</span>

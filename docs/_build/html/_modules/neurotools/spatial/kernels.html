@@ -115,11 +115,15 @@
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">convolve2d</span>
 
 <span class="k">def</span> <span class="nf">laplace_kernel</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns a 3x3 laplacian kernel that is as radially </span>
+<span class="sd">    symmetric as possible</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>  <span class="mf">0.5</span><span class="p">,</span>   <span class="mf">2.</span> <span class="p">,</span>   <span class="mf">0.5</span><span class="p">],</span>
        <span class="p">[</span>  <span class="mf">2.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">10.</span> <span class="p">,</span>   <span class="mf">2.</span> <span class="p">],</span>
        <span class="p">[</span>  <span class="mf">0.5</span><span class="p">,</span>   <span class="mf">2.</span> <span class="p">,</span>   <span class="mf">0.5</span><span class="p">]])</span><span class="o">/</span><span class="mf">3.</span>
 
-<div class="viewcode-block" id="laplacian"><a class="viewcode-back" href="../../../neurotools.spatial.kernels.html#neurotools.spatial.kernels.laplacian">[docs]</a><span class="k">def</span> <span class="nf">laplacian</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="laplacian"><a class="viewcode-back" href="../../../neurotools.spatial.kernels (Michael Rule's conflicted copy 2017-08-11).html#neurotools.spatial.kernels.laplacian">[docs]</a><span class="k">def</span> <span class="nf">laplacian</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Graph laplacian of a 2D mesh with absorbing boundary</span>
 
@@ -174,7 +178,7 @@
     
     <span class="k">return</span> <span class="n">result</span>
 </div>
-<div class="viewcode-block" id="gaussian_2D_kernel"><a class="viewcode-back" href="../../../neurotools.spatial.kernels.html#neurotools.spatial.kernels.gaussian_2D_kernel">[docs]</a><span class="k">def</span> <span class="nf">gaussian_2D_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian_2D_kernel"><a class="viewcode-back" href="../../../neurotools.spatial.kernels (Michael Rule's conflicted copy 2017-08-11).html#neurotools.spatial.kernels.gaussian_2D_kernel">[docs]</a><span class="k">def</span> <span class="nf">gaussian_2D_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate 2D Gaussian kernel as product of 2 1D kernels</span>
 <span class="sd">    </span>
@@ -187,19 +191,23 @@
     <span class="n">kernel</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">kernel</span>
 </div>
-<div class="viewcode-block" id="absorbing_gaussian"><a class="viewcode-back" href="../../../neurotools.spatial.kernels.html#neurotools.spatial.kernels.absorbing_gaussian">[docs]</a><span class="k">def</span> <span class="nf">absorbing_gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="absorbing_gaussian"><a class="viewcode-back" href="../../../neurotools.spatial.kernels (Michael Rule's conflicted copy 2017-08-11).html#neurotools.spatial.kernels.absorbing_gaussian">[docs]</a><span class="k">def</span> <span class="nf">absorbing_gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Applies a gaussian convolution to 2d array `x` with absorbing</span>
+<span class="sd">    boundary conditions.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">support</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">sigma</span><span class="o">*</span><span class="mi">6</span>
     <span class="n">normalization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="s">&#39;double&#39;</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="s">&#39;double&#39;</span><span class="p">)</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">gaussian_2D_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">convolve2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;same&#39;</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s">&#39;symm&#39;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="laplace_kernel"><a class="viewcode-back" href="../../../neurotools.spatial.kernels.html#neurotools.spatial.kernels.laplace_kernel">[docs]</a><span class="k">def</span> <span class="nf">laplace_kernel</span><span class="p">():</span>
+<div class="viewcode-block" id="laplace_kernel"><a class="viewcode-back" href="../../../neurotools.spatial.kernels (Michael Rule's conflicted copy 2017-08-11).html#neurotools.spatial.kernels.laplace_kernel">[docs]</a><span class="k">def</span> <span class="nf">laplace_kernel</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>  <span class="mf">0.5</span><span class="p">,</span>   <span class="mf">2.</span> <span class="p">,</span>   <span class="mf">0.5</span><span class="p">],</span>
        <span class="p">[</span>  <span class="mf">2.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">10.</span> <span class="p">,</span>   <span class="mf">2.</span> <span class="p">],</span>
        <span class="p">[</span>  <span class="mf">0.5</span><span class="p">,</span>   <span class="mf">2.</span> <span class="p">,</span>   <span class="mf">0.5</span><span class="p">]])</span><span class="o">/</span><span class="mf">3.</span>
 </div>
-<div class="viewcode-block" id="absorbing_laplacian"><a class="viewcode-back" href="../../../neurotools.spatial.kernels.html#neurotools.spatial.kernels.absorbing_laplacian">[docs]</a><span class="k">def</span> <span class="nf">absorbing_laplacian</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="absorbing_laplacian"><a class="viewcode-back" href="../../../neurotools.spatial.kernels (Michael Rule's conflicted copy 2017-08-11).html#neurotools.spatial.kernels.absorbing_laplacian">[docs]</a><span class="k">def</span> <span class="nf">absorbing_laplacian</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">laplace_kernel</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">convolve2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;same&#39;</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s">&#39;symm&#39;</span><span class="p">)</span>
     

@@ -201,6 +201,9 @@ for entry in DEPENDENCIES:
 
 
 def ask(msg,default=True):
+    '''
+    Yes/no user prompt with defaults
+    '''
     no_answer = True
     answer = None
     while no_answer:

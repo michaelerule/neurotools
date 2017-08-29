@@ -15,6 +15,7 @@ available in pylab
 from matplotlib.mlab import find
 import neurotools.stats.modefind as modefind
 import numpy as np
+import scipy
 
 def weighted_avg_and_std(values, weights):
     """
@@ -149,6 +150,18 @@ def pca(x,n_keep=None):
     '''
     w,v = pca(x,n_keep=None)
     Performs PCA on data x, keeping the first n_keep dimensions
+    
+    Parameters
+    ----------
+    x: ndarray
+        Nsamples x Nfeatures array on which to perform PCA
+    n_keep : int
+        Number of principle components to retain
+        
+    Returns
+    -------
+    w : weights (eigenvalues)
+    v : eigenvector (principal components)
     '''
     assert x.shape[1]<=x.shape[0]
     cov = x.T.dot(x)

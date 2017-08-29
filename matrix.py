@@ -113,9 +113,15 @@ def row(x):
     return x.reshape((1,x.shape[0]))
 
 def rcond(x):
+    '''
+    Reciprocal condition number
+    '''
     return 1./np.linalg.cond(x)
 
 def check_finite_real(M):
+    '''
+    Check that all entries in array M are finite and real-valued
+    '''
     if np.any(~np.isreal(M)):
         raise ValueError("Complex value encountered for real vector")
     if np.any(~np.isfinite(M)):
@@ -198,8 +204,6 @@ def check_covmat_fast(C,N=None,eps=1e-6):
             C = C + np.eye(N)*(eps-mine)
     C = 0.5*(C+C.T)
     return C
-
-
 
 def real_eig(M,eps=1e-9):
     '''

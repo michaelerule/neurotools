@@ -17,13 +17,21 @@ import numpy as np
 import scipy
 import scipy.linalg
 import numpy.random
-from numpy.random import randn
-from numpy import pi
+from   numpy.random import randn
+from   numpy import pi
+
+from neurotools.matrix import check_covmat, check_covmat_fast, check_finite_real
 
 # TODO fix imports
 #from neurotools.matrix import *
 
 def MVG_check(M,C,eps=1e-6):
+    '''
+    Checks that a mean and covariance (or precision) represented a
+    valid multivariate Gaussian distribution. The mean must be finite
+    and real-valued. The covariance (or precision) matrix must be
+    symmetric positive definite.
+    '''
     check_finite_real(M)
     check_covmat(C,len(M),eps=eps)
 
@@ -78,7 +86,7 @@ def MVG_PDF(X,M,P=None,C=None):
         raise ValueError("Invalid probability; something is wrong?")
     return P
 
-def MVG_sample(M,P=None,C=None,N=1):
+def MVG_sample(M,P=None,C=None,N=1,safe=1):
     '''
     Sample from multivariate Gaussian
     
@@ -90,36 +98,41 @@ def MVG_sample(M,P=None,C=None,N=1):
         raise ValueError("Either a Covariance or Precision matrix is needed")
     if P is None:
         # Use covariance
-        MVG_check(M,C)
+        if safe:
+            MVG_check(M,C)
         w,v = real_eig(C)
         Q   = v.dot(diag(sqrt(w*(w>0)))).dot(v.T)
         return M[:,None]+Q.dot(randn(len(M),N))
     if C is None:
         # Use precision
-        MVG_check(M,P)
+        if safe:
+            MVG_check(M,P)
         w,v = real_eig(P)
         Q   = v.dot(diag((w*(w>0))**-0.5)).dot(v.T)
         return M[:,None]+Q.dot(randn(len(M),N))
 
-def MVG_multiply(M1,P1,M2,P2):
+def MVG_multiply(M1,P1,M2,P2,safe=1):
     '''
     Multiply two multivariate Gaussians based on precision
     '''
-    MVG_check(M1,P1)
-    MVG_check(M2,P2)
+    if safe:
+        MVG_check(M1,P1)
+        MVG_check(M2,P2)
     P = P1 + P2
     M = scipy.linalg.lstsq(P,np.squeeze(P1.dot(M1)+P2.dot(M2)))[0]
-    MVG_check(M,P)
+    if safe:
+        MVG_check(M,P)
     return M,P
 
 
-def MVG_multiply_C(M1,C1,M2,C2):
+def MVG_multiply_C(M1,C1,M2,C2,safe=1):
     '''
     Multiply two multivariate Gaussians based on covariance
     not implemented
     '''
-    MVG_check(M1,C1)
-    MVG_check(M2,C2)
+    if safe:
+        MVG_check(M1,C1)
+        MVG_check(M2,C2)
     assert 0 
     
 
@@ -280,15 +293,18 @@ def MVG_kalman_joint(M,C,A,Q,safe=0):
     Performs a Kalman update with linear transform A and covariance Q
     Keeps track of the joint distribution between the prior and posterior
     '''
-    if safe: MVG_check(M,C)
-    if safe: check_covmat(Q)
+    if safe: 
+        MVG_check(M,C)
+        check_covmat(Q)
     M1 = A.dot(M)
     AC = A.dot(C)
     C1 = AC.dot(A.T) + Q
-    if safe: MVG_check(M1,C1)
+    if safe: 
+        MVG_check(M1,C1)
     M2 = np.concatenate([M,M1])
     C2 = np.array(np.bmat([[C,AC.T],[AC,C1]]))
-    if safe: MVG_check(M2,C2)
+    if safe: 
+        MVG_check(M2,C2)
     return M2,C2
 
 def MVG_kalman_joint_P(M,P,A,Q=None,W=None,safe=0):
@@ -298,21 +314,26 @@ def MVG_kalman_joint_P(M,P,A,Q=None,W=None,safe=0):
     Accepts and returns precision matrix
     Q must be invertable
     '''
-    if safe: check_covmat(P)
+    if safe: 
+        check_covmat(P)
     if Q is None and W is None:
         raise ValueError("Please provide either noise covariance Q or its inverse W as arguments")
-    if safe: MVG_check(M,P)
+    if safe: 
+        MVG_check(M,P)
     if W is None:
         # Invert noise matrix
-        if safe: check_covmat(Q)
+        if safe: 
+            check_covmat(Q)
         W = pinv(Q)
     # (else use provided inverse, but check it)
-    if safe: W = check_covmat(W)
+    if safe: 
+        W = check_covmat(W)
     M2  = np.concatenate([M,A.dot(M)])
     nWA = -W.dot(A)
     P2 = np.array(np.bmat([
         [P-nWA.T.dot(A),nWA.T],
         [nWA           , W]]))
-    if safe: MVG_check(M2,P2)
+    if safe: 
+        MVG_check(M2,P2)
     return M2,P2
 

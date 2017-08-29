@@ -20,11 +20,13 @@ __PYTHON_2__ = sys.version_info<(3, 0)
 
 if __IS_PY3__:
     # Add some functionality to python 3
-    # that 
+    # 
     def execfile(filepath, globals=None, locals=None):
         '''
         http://stackoverflow.com/questions/
         436198/what-is-an-alternative-to-execfile-in-python-3
+        
+        Note: this doesn't seem to work with ipython notebooks
         '''
         if globals is None:
             globals = {}

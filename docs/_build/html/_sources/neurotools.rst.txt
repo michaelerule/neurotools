@@ -19,6 +19,7 @@ Submodules
 
 .. toctree::
 
+   neurotools.Gaussian
    neurotools.clear
    neurotools.color
    neurotools.dependencies
@@ -29,6 +30,7 @@ Submodules
    neurotools.namespace
    neurotools.nlab
    neurotools.ntime
+   neurotools.operators (Michael Rule's conflicted copy 2017-09-06)
    neurotools.operators
    neurotools.opto
    neurotools.plot

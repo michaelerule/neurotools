@@ -7,17 +7,14 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+
 from neurotools.system import *
 
 import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
 
-# TODO: replace with more specific imports
-#from numpy.random import *
-#from neurotools.tools   import *
-#from matplotlib.mlab    import *
-#from neurotools.getfftw import *
+from   pylab import find
 
 def gaussian_kernel(sigma):
     '''
@@ -712,4 +709,33 @@ def upsample(x,factor=4):
     x += dc
     return x
 
-
+def linfilter(A,C,x,initial=None):
+    '''
+    Linear response filter on data $x$ for system
+    
+    $$
+    \partial_t z = A z + C x(t)
+    $$
+    
+    Parameters
+    ----------
+    A : matrix
+        K x K matrix defining linear syste,
+    C : matrix
+        K x N matrix defining projection from signal $x$ to linear system
+    x : vector or matrix
+        T x N sequence of states to filter
+    initial : vector
+        Optional length N vector of initial filter conditions. Set to 0
+        by default
+    '''
+    # initial state for filters (no response)
+    L = len(x)
+    K = A.shape[0]
+    z = np.zeros((K,1)) if initial is None else initial
+    filtered = []
+    for t in range(L):
+        dz = A.dot(z) + C.dot([[x[t]]])
+        z += dz
+        filtered.append(z.copy())
+    return np.squeeze(np.array(filtered))

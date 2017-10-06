@@ -53,7 +53,17 @@ def log_factorial(k):
 
 def slog(x,eps=1e-6):
     '''
+    Safe natural logarithm
     Natural logarithm that truncats inputs to small positive value
     epsilon (eps, default 1e-6) to avoid underflow in the output.
     '''
     return np.log(np.maximum(eps,x))
+    
+
+emax = np.sqrt(np.log(np.float32(3.402823e38)))
+def safeexp(x):
+    '''
+    Safe exponential
+    '''
+    return np.exp(np.minimum(emax,x))
+

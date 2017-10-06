@@ -26,30 +26,21 @@ def today():
 
 #crude versions of tic and toc from Matlab
 #stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
-
 __GLOBAL_TIC_TIME__ = None
-
 def tic(st=''):
-    '''
-    Similar to Matlab tic
-    '''
+    ''' Similar to Matlab tic '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
     try:
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
             print('t=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
-        else:
-            print("timing...")
-    except:
-        print("timing...")
+        else: print("timing...")
+    except: print("timing...")
     __GLOBAL_TIC_TIME__ = current_milli_time()
     return t
-
 def toc(st=''):
-    '''
-    Similar to Matlab toc
-    '''
+    ''' Similar to Matlab toc '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
     try:
@@ -57,9 +48,8 @@ def toc(st=''):
         if not __GLOBAL_TIC_TIME__ is None:
             print('dt=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
         else:
-            print("you didn't call tic")
-    except:
-        print("you didn't call tic")
+            print("havn't called tic yet?")
+    except: print("havn't called tic yet?")
     return t
 
 def waitfor(t):

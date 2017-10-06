@@ -21,7 +21,7 @@ from   numpy.random import randn
 from   numpy import pi
 
 from neurotools.matrix import check_covmat, check_covmat_fast, check_finite_real
-
+from neurotools.stats.Gaussian import *
 # TODO fix imports
 #from neurotools.matrix import *
 
@@ -242,6 +242,8 @@ def MVG_conditional(M0,P0,M1,P1):
     If M0,P0 is a multivariate Gaussian
     and M1,P1 is a conditional multivariate Gaussian
     This function returns the joint density
+    
+    NOT IMPLEMENTED
     '''
     MVG_check(M0,P0)
     MVG_check(M1,P1)

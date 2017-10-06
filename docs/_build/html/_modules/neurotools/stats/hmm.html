@@ -155,7 +155,6 @@
   <h1>Source code for neurotools.stats.hmm</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
@@ -166,8 +165,8 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="c1"># more py2/3 compat</span>
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
-<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
 
+<span class="kn">from</span> <span class="nn">neurotools.stats.Gaussian</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Routines concerning discrete time hidden markov models</span>
@@ -452,7 +451,7 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n_times</span><span class="p">):</span>
         <span class="c1"># condition on transition from previous state</span>
         <span class="c1"># and current observation</span>
-        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">T</span><span class="p">)</span> 
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">T</span><span class="p">))</span>
         <span class="c1"># normalize for numerical stability</span>
         <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/=</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
@@ -486,7 +485,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    probabilities : vector of probabilities, must sum to 1.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">sum</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">))</span>
+    <span class="n">pobabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">))</span>
     <span class="n">cumulative</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">pr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pobabilities</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">cumulative</span><span class="o">+</span><span class="n">pr</span><span class="o">&gt;=</span><span class="n">r</span><span class="p">:</span> <span class="k">return</span> <span class="n">i</span>
@@ -823,49 +823,6 @@
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mi">0</span>
     <span class="k">return</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Gaussian model to use in abstracted forward-backward</span>
-<span class="sd">    Supports multiplication of Gaussians</span>
-
-<span class="sd">    m: mean </span>
-<span class="sd">    t: precision (reciprocal of variance)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span><span class="n">t</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">Gaussian</span><span class="p">)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">t</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-16</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">m</span>        
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
-        <span class="c1"># propagating normalization factors for forward-backward</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">lognorm</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span>
-        <span class="k">return</span> <span class="n">result</span>
-    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">Gaussian</span><span class="p">)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">t</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-16</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">m</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
-        <span class="c1"># propagating normalization factors for forward-backward</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">lognorm</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span>
-        <span class="k">return</span> <span class="n">result</span>
-    <span class="n">__div__</span>  <span class="o">=</span> <span class="fm">__truediv__</span>
-    <span class="fm">__call__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-    <span class="fm">__str__</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s1">&#39;m=</span><span class="si">%0.4f</span><span class="s1">, t=</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DiffusionGaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.DiffusionGaussian">[docs]</a><span class="k">class</span> <span class="nc">DiffusionGaussian</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>

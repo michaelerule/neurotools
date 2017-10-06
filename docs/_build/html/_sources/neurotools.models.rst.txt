@@ -6,6 +6,7 @@ Submodules
 
 .. toctree::
 
+   neurotools.models.izh
    neurotools.models.lif
 
 Module contents

@@ -28,8 +28,8 @@ http://statsmodels.sourceforge.net/devel/install.html
 See also 
 '''
 
-from neurotools.tools import varexists
-from neurotools.ntime import *
+#from neurotools.tools import varexists
+#from neurotools.ntime import *
 
 #############################################################################
 # Imports
@@ -160,7 +160,18 @@ def ppglmfit(X,Y):
 
 
 def fitGLM(X,Y,L2Penalty=0.0):
-    # Fit the model using gradient descent with hessian
+    '''
+    Fit the model using gradient descent with hessian
+    
+    Parameters
+    ----------
+    X : matrix
+        design matrix
+    Y : vector
+        binary spike observations
+    L2Penalty : scalar
+        optional L2 penalty on features, defaults to 0
+    '''
     objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
     initial = np.zeros(X.shape[1]+1)
     M = minimize(objective,initial,
@@ -189,15 +200,141 @@ def crossvalidatedAUC(X,Y,NXVAL=4):
         predicted.append(mu + X[a:b,:].dot(B))
     return auc(Y,concatenate(predicted))
 
+def gradientglmfit(X,Y,L2Penalty=0.0):
+    '''
+    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)
+    
+    Fit Poisson GLM using gradient descent with hessian
+    '''
+    objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
+    initial = np.zeros(X.shape[1]+1)
+    M = minimize(objective, initial,
+        jac   =gradient,
+        hess  =hessian,
+        method='Newton-CG')['x']
+    mu_hat,B_hat = M[0],M[1:]
+    return mu_hat, B_hat
+    
+def cosine_kernel(x):
+    '''
+    Raised cosine basis kernel, normalized such that it integrates to 1
+    centered at zero. Time is rescaled so that the kernel spans from
+    -2 to 2
+    
+    Parameters
+    ----------
+    x : vector
+    
+    Returns
+    -------
+    vector
+        $\\tfrac 1 4 + \\tfrac 1 2 cos(x)$ if $x\in[-\pi,\pi]$, otherwise 0.
+    '''
+    x = np.float64(np.abs(x))/2.0*np.pi
+    return np.piecewise(x,[x<=np.pi],[lambda x:(np.cos(x)+1)/4.0])
+
+def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1,normalize=True):
+    '''
+    Generate overlapping log-cosine basis elements
+    
+    Parameters
+    ----------
+    N : array 
+        Array of wave quarter-phases
+    t : array
+        times
+    base : scalar
+        exponent base
+    offset : scalar
+        leave this set to 1 (default)
+    
+    Returns
+    -------
+    B : array
+        Basis with n_elements x n_times shape
+    '''
+    s = np.log(t+offset)/np.log(base)
+    kernels = np.array([cosine_kernel(s-k) for k in N]) # evenly spaced in log-time
+    if normalize:
+        kernels = kernels/np.log(base)/(offset+t) # correction for change of variables, kernels integrate to 1 now
+    return kernels
+
+def make_cosine_basis(N,L,min_interval,normalize=True):
+    '''
+    Build N logarightmically spaced cosine basis functions
+    spanning L samples, with a peak resolution of min_interval
+    
+    # Solve for a time basis with these constraints
+    # t[0] = 0
+    # t[min_interval] = 1
+    # log(L)/log(b) = n_basis+1
+    # log(b) = log(L)/(n_basis+1)
+    # b = exp(log(L)/(n_basis+1))
+    
+    Parameters
+    ----------
+    N : int
+        Number of basis functions
+    L : int
+        Number of time-bins
+    min_interval : scalar
+        Number of bins between the two shortes basis elements. That is,
+        minimum time separation between basis functions.
+        
+    Returns
+    -------
+    B : array
+        Basis with n_elements x n_times shape
+    '''
+    t = np.arange(L)/min_interval+1
+    b = np.exp(np.log(t[-1])/(N+1))
+    B = log_cosine_basis(np.arange(N),t,base=b,offset=0,normalize=normalize)
+    return B
+    
 
 #############################################################################
 
-if __name__=='__MAIN__':
+if __name__=='__MAIN__' or __name__=='__main__':
+
+    import datetime
+    import time as systime
+
+    def current_milli_time():
+        return int(round(systime.time() * 1000))
+    
+    #stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
+    __GLOBAL_TIC_TIME__ = None
+    
+    def tic(st=''):
+        ''' Similar to Matlab tic '''
+        global __GLOBAL_TIC_TIME__
+        t = current_milli_time()
+        try:
+            __GLOBAL_TIC_TIME__
+            if not __GLOBAL_TIC_TIME__ is None:
+                print('t=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
+            else: print("timing...")
+        except: print("timing...")
+        __GLOBAL_TIC_TIME__ = current_milli_time()
+        return t
+        
+    def toc(st=''):
+        ''' Similar to Matlab toc '''
+        global __GLOBAL_TIC_TIME__
+        t = current_milli_time()
+        try:
+            __GLOBAL_TIC_TIME__
+            if not __GLOBAL_TIC_TIME__ is None:
+                print('dt=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
+            else:
+                print("havn't called tic yet?")
+        except: print("havn't called tic yet?")
+        return t
 
     Fs = 1000  # Sampling rate ( Hz )
     dt = 1./Fs # bin width ( seconds )
     T  = 450.  # Time duration ( seconds )
-    N  = T*Fs  # number of time bins
+    N  = int(T*Fs)  # number of time bins
 
     '''
     Simple model: K Gaussian features
@@ -205,11 +342,11 @@ if __name__=='__MAIN__':
     ln(λ(y)) =      μ + BX
     '''
     mu = -6
-    K  = 4                # number of features
-    B  = np.randn(K)         # draw randomly model weights
-    X  = np.randn(N,K)       # simulate covariate data
+    K  = 4                   # number of features
+    B  = np.random.randn(K)         # draw randomly model weights
+    X  = np.random.randn(N,K)       # simulate covariate data
     L  = np.exp(mu+X.dot(B)) # simulat conditional intensities
-    Y  = np.rand(N)<L        # draw spike train from conditional intensity
+    Y  = np.random.rand(N)<L        # draw spike train from conditional intensity
     print('Simulated',T,'seconds')
     print(np.sum(Y),'spikes at a rate of',np.sum(Y)/T,'Hz')
 
@@ -236,7 +373,7 @@ if __name__=='__MAIN__':
     print('\nFitting using conjugate gradient (no Hessian)')
     tic()
     objective, gradient, hessian = GLMPenaltyL2(X_train,Y_train,0)
-    M = minimize(objective, zeros(len(B)+1), jac=gradient)['x']
+    M = minimize(objective, np.zeros(len(B)+1), jac=gradient)['x']
     mu_hat,B_hat = M[0],M[1:]
     toc()
     L_hat = np.exp(X.dot(B_hat)+mu_hat)
@@ -251,7 +388,7 @@ if __name__=='__MAIN__':
     print('\nFitting using conjugate gradient with Hessian')
     tic()
     objective, gradient, hessian = GLMPenaltyL2(X_train,Y_train,0)
-    initial = zeros(len(B)+1)
+    initial = np.zeros(len(B)+1)
     M = minimize(objective, initial,
         jac=gradient,
         hess=hessian,
@@ -273,14 +410,14 @@ if __name__=='__MAIN__':
     # just printing one significant figure for now, to reduce clutter
     np.set_printoptions(precision=1)
     mu = -4
-    B  = randn(5)
-    X  = randn(N,5)
-    L  = exp(mu+X.dot(B))
-    Y  = rand(N)<L
+    B  = np.random.randn(5)
+    X  = np.random.randn(N,5)
+    L  = np.exp(mu+X.dot(B))
+    Y  = np.random.rand(N)<L
     objective, gradient, hessian = GLMPenaltyL2(X,Y,10)
-    p = randn(len(B)+1)
+    p = np.random.randn(len(B)+1)
     delta = 0.01
-    numeric_gradient = zeros(len(p))
+    numeric_gradient = np.zeros(len(p))
     for i in range(len(p)):
         q = np.array(p)
         q[i] += delta
@@ -300,33 +437,6 @@ if __name__=='__MAIN__':
     print('numeric  Δ² of -loglike at',p,'is\n',numeric_hessian)
 
 
-
-def gradientglmfit(X,Y,L2Penalty=0.0):
-    '''
-    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)
-    
-    Fit Poisson GLM using gradient descent with hessian
-    '''
-    objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
-    initial = np.zeros(X.shape[1]+1)
-    M = minimize(objective, initial,
-        jac   =gradient,
-        hess  =hessian,
-        method='Newton-CG')['x']
-    mu_hat,B_hat = M[0],M[1:]
-    return mu_hat, B_hat
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

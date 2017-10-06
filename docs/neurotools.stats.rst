@@ -7,6 +7,7 @@ Submodules
 .. toctree::
 
    neurotools.stats.GLMFit
+   neurotools.stats.Gaussian
    neurotools.stats.circular
    neurotools.stats.convolutional
    neurotools.stats.density

@@ -183,8 +183,8 @@
 <span class="sd">See also </span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="k">import</span> <span class="n">varexists</span>
-<span class="kn">from</span> <span class="nn">neurotools.ntime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1">#from neurotools.tools import varexists</span>
+<span class="c1">#from neurotools.ntime import *</span>
 
 <span class="c1">#############################################################################</span>
 <span class="c1"># Imports</span>
@@ -315,7 +315,18 @@
 
 
 <div class="viewcode-block" id="fitGLM"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.fitGLM">[docs]</a><span class="k">def</span> <span class="nf">fitGLM</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-    <span class="c1"># Fit the model using gradient descent with hessian</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fit the model using gradient descent with hessian</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : matrix</span>
+<span class="sd">        design matrix</span>
+<span class="sd">    Y : vector</span>
+<span class="sd">        binary spike observations</span>
+<span class="sd">    L2Penalty : scalar</span>
+<span class="sd">        optional L2 penalty on features, defaults to 0</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
     <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">initial</span><span class="p">,</span>
@@ -344,15 +355,141 @@
         <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mu</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">,:]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">auc</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">concatenate</span><span class="p">(</span><span class="n">predicted</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)</span>
+<span class="sd">    </span>
+<span class="sd">    Fit Poisson GLM using gradient descent with hessian</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span>
+        <span class="n">jac</span>   <span class="o">=</span><span class="n">gradient</span><span class="p">,</span>
+        <span class="n">hess</span>  <span class="o">=</span><span class="n">hessian</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">mu_hat</span><span class="p">,</span> <span class="n">B_hat</span></div>
+    
+<div class="viewcode-block" id="cosine_kernel"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.cosine_kernel">[docs]</a><span class="k">def</span> <span class="nf">cosine_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Raised cosine basis kernel, normalized such that it integrates to 1</span>
+<span class="sd">    centered at zero. Time is rescaled so that the kernel spans from</span>
+<span class="sd">    -2 to 2</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : vector</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vector</span>
+<span class="sd">        $\\tfrac 1 4 + \\tfrac 1 2 cos(x)$ if $x\in[-\pi,\pi]$, otherwise 0.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">piecewise</span><span class="p">(</span><span class="n">x</span><span class="p">,[</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">],[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="log_cosine_basis"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.log_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">log_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generate overlapping log-cosine basis elements</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : array </span>
+<span class="sd">        Array of wave quarter-phases</span>
+<span class="sd">    t : array</span>
+<span class="sd">        times</span>
+<span class="sd">    base : scalar</span>
+<span class="sd">        exponent base</span>
+<span class="sd">    offset : scalar</span>
+<span class="sd">        leave this set to 1 (default)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    B : array</span>
+<span class="sd">        Basis with n_elements x n_times shape</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="n">offset</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">kernels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cosine_kernel</span><span class="p">(</span><span class="n">s</span><span class="o">-</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">N</span><span class="p">])</span> <span class="c1"># evenly spaced in log-time</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">kernels</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">offset</span><span class="o">+</span><span class="n">t</span><span class="p">)</span> <span class="c1"># correction for change of variables, kernels integrate to 1 now</span>
+    <span class="k">return</span> <span class="n">kernels</span></div>
+
+<div class="viewcode-block" id="make_cosine_basis"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.make_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">make_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">min_interval</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Build N logarightmically spaced cosine basis functions</span>
+<span class="sd">    spanning L samples, with a peak resolution of min_interval</span>
+<span class="sd">    </span>
+<span class="sd">    # Solve for a time basis with these constraints</span>
+<span class="sd">    # t[0] = 0</span>
+<span class="sd">    # t[min_interval] = 1</span>
+<span class="sd">    # log(L)/log(b) = n_basis+1</span>
+<span class="sd">    # log(b) = log(L)/(n_basis+1)</span>
+<span class="sd">    # b = exp(log(L)/(n_basis+1))</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Number of basis functions</span>
+<span class="sd">    L : int</span>
+<span class="sd">        Number of time-bins</span>
+<span class="sd">    min_interval : scalar</span>
+<span class="sd">        Number of bins between the two shortes basis elements. That is,</span>
+<span class="sd">        minimum time separation between basis functions.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    B : array</span>
+<span class="sd">        Basis with n_elements x n_times shape</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">/</span><span class="n">min_interval</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">log_cosine_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">t</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+    
 
 <span class="c1">#############################################################################</span>
 
-<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__MAIN__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__MAIN__&#39;</span> <span class="ow">or</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">systime</span>
+
+    <span class="k">def</span> <span class="nf">current_milli_time</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+    
+    <span class="c1">#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</span>
+    <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">tic</span><span class="p">(</span><span class="n">st</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Similar to Matlab tic &#39;&#39;&#39;</span>
+        <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">__GLOBAL_TIC_TIME__</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">__GLOBAL_TIC_TIME__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t=</span><span class="si">%d</span><span class="s1">ms&#39;</span><span class="o">%</span><span class="p">((</span><span class="n">t</span><span class="o">-</span><span class="n">__GLOBAL_TIC_TIME__</span><span class="p">)),</span><span class="n">st</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timing...&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timing...&quot;</span><span class="p">)</span>
+        <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">t</span>
+        
+    <span class="k">def</span> <span class="nf">toc</span><span class="p">(</span><span class="n">st</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Similar to Matlab toc &#39;&#39;&#39;</span>
+        <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">__GLOBAL_TIC_TIME__</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">__GLOBAL_TIC_TIME__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;dt=</span><span class="si">%d</span><span class="s1">ms&#39;</span><span class="o">%</span><span class="p">((</span><span class="n">t</span><span class="o">-</span><span class="n">__GLOBAL_TIC_TIME__</span><span class="p">)),</span><span class="n">st</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;havn&#39;t called tic yet?&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;havn&#39;t called tic yet?&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span>
 
     <span class="n">Fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Sampling rate ( Hz )</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span> <span class="c1"># bin width ( seconds )</span>
     <span class="n">T</span>  <span class="o">=</span> <span class="mf">450.</span>  <span class="c1"># Time duration ( seconds )</span>
-    <span class="n">N</span>  <span class="o">=</span> <span class="n">T</span><span class="o">*</span><span class="n">Fs</span>  <span class="c1"># number of time bins</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">Fs</span><span class="p">)</span>  <span class="c1"># number of time bins</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Simple model: K Gaussian features</span>
@@ -360,11 +497,11 @@
 <span class="sd">    ln(λ(y)) =      μ + BX</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">mu</span> <span class="o">=</span> <span class="o">-</span><span class="mi">6</span>
-    <span class="n">K</span>  <span class="o">=</span> <span class="mi">4</span>                <span class="c1"># number of features</span>
-    <span class="n">B</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>         <span class="c1"># draw randomly model weights</span>
-    <span class="n">X</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>       <span class="c1"># simulate covariate data</span>
+    <span class="n">K</span>  <span class="o">=</span> <span class="mi">4</span>                   <span class="c1"># number of features</span>
+    <span class="n">B</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>         <span class="c1"># draw randomly model weights</span>
+    <span class="n">X</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>       <span class="c1"># simulate covariate data</span>
     <span class="n">L</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span> <span class="c1"># simulat conditional intensities</span>
-    <span class="n">Y</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&lt;</span><span class="n">L</span>        <span class="c1"># draw spike train from conditional intensity</span>
+    <span class="n">Y</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&lt;</span><span class="n">L</span>        <span class="c1"># draw spike train from conditional intensity</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Simulated&#39;</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span><span class="s1">&#39;spikes at a rate of&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="n">T</span><span class="p">,</span><span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
 
@@ -391,7 +528,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Fitting using conjugate gradient (no Hessian)&#39;</span><span class="p">)</span>
     <span class="n">tic</span><span class="p">()</span>
     <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
     <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">toc</span><span class="p">()</span>
     <span class="n">L_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B_hat</span><span class="p">)</span><span class="o">+</span><span class="n">mu_hat</span><span class="p">)</span>
@@ -406,7 +543,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Fitting using conjugate gradient with Hessian&#39;</span><span class="p">)</span>
     <span class="n">tic</span><span class="p">()</span>
     <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">initial</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span>
         <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">,</span>
         <span class="n">hess</span><span class="o">=</span><span class="n">hessian</span><span class="p">,</span>
@@ -428,14 +565,14 @@
     <span class="c1"># just printing one significant figure for now, to reduce clutter</span>
     <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">mu</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>
-    <span class="n">B</span>  <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">X</span>  <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">L</span>  <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
-    <span class="n">Y</span>  <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&lt;</span><span class="n">L</span>
+    <span class="n">B</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">X</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">L</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+    <span class="n">Y</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&lt;</span><span class="n">L</span>
     <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.01</span>
-    <span class="n">numeric_gradient</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="n">numeric_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
@@ -455,33 +592,6 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;numeric  Δ² of -loglike at&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;is</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">numeric_hessian</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)</span>
-<span class="sd">    </span>
-<span class="sd">    Fit Poisson GLM using gradient descent with hessian</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
-    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span>
-        <span class="n">jac</span>   <span class="o">=</span><span class="n">gradient</span><span class="p">,</span>
-        <span class="n">hess</span>  <span class="o">=</span><span class="n">hessian</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-    <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="n">mu_hat</span><span class="p">,</span> <span class="n">B_hat</span></div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

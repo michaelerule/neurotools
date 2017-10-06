@@ -196,6 +196,14 @@
 
 <div class="viewcode-block" id="gaussian_pdf"><a class="viewcode-back" href="../../../neurotools.stats.distributions.html#neurotools.stats.distributions.gaussian_pdf">[docs]</a><span class="k">def</span> <span class="nf">gaussian_pdf</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gaussian_logpdf</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">x</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="explogpdf"><a class="viewcode-back" href="../../../neurotools.stats.distributions.html#neurotools.stats.distributions.explogpdf">[docs]</a><span class="k">def</span> <span class="nf">explogpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">dx</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert log-pdf to normalized pdf, integrating to get normalization constant</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span><span class="o">/</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

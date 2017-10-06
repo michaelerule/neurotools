@@ -41,3 +41,11 @@ def gaussian_logpdf(mu,sigma,x):
 
 def gaussian_pdf(mu,sigma,x):
     return np.exp(gaussian_logpdf(mu,sigma,x))
+    
+def explogpdf(x,dx=1):
+    '''
+    Convert log-pdf to normalized pdf, integrating to get normalization constant
+    '''
+    x -= np.mean(x)
+    p = np.exp(x)
+    return p/(sum(p)*dx)

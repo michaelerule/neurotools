@@ -61,7 +61,7 @@ def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
     kernels = kernels/log(base)/(offset+t) # correction for change of variables, kernels integrate to 1 now
     return kernels
 
-def derive_log_cosine_basis(N,L,min_interval):
+def make_cosine_basis(N,L,min_interval):
     '''
     Build N logarightmically spaced cosine basis functions
     spanning L samples, with a peak resolution of min_interval

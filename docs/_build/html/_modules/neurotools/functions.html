@@ -208,10 +208,20 @@
 
 <div class="viewcode-block" id="slog"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.slog">[docs]</a><span class="k">def</span> <span class="nf">slog</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Safe natural logarithm</span>
 <span class="sd">    Natural logarithm that truncats inputs to small positive value</span>
 <span class="sd">    epsilon (eps, default 1e-6) to avoid underflow in the output.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="n">x</span><span class="p">))</span></div>
+    
+
+<span class="n">emax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">3.402823e38</span><span class="p">)))</span>
+<div class="viewcode-block" id="safeexp"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.safeexp">[docs]</a><span class="k">def</span> <span class="nf">safeexp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Safe exponential</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">emax</span><span class="p">,</span><span class="n">x</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

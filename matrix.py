@@ -341,3 +341,23 @@ def cholupdate_eye(R):
         q[i]=1
         R = cholupdate(R,q)
     return R
+    
+    
+def cartesian_product(*arrays):
+    '''
+    https://stackoverflow.com/questions/11144513/
+    numpy-cartesian-product-of-x-and-y-array-points-into-single-array-of-2d-points
+    '''
+    la = len(arrays)
+    dtype = numpy.result_type(*arrays)
+    arr = numpy.empty([len(a) for a in arrays] + [la], dtype=dtype)
+    for i, a in enumerate(numpy.ix_(*arrays)):
+        arr[...,i] = a
+    return arr.reshape(-1, la)
+    
+def cinv(X):
+    '''
+    Invert positive matrix X using cholesky
+    '''
+    ch = pinv(chol(X))
+    return ch.dot(ch.T)

@@ -1,8 +1,21 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
+from neurotools.system import *
 
 from scipy.stats import gaussian_kde
-from numpy import *
-import numpy as np
 from neurotools.signal.signal import get_edges
+
+import numpy as np
+from   pylab import find
+
 
 def kdepeak(x, x_grid=None):
     if x_grid==None:
@@ -10,11 +23,11 @@ def kdepeak(x, x_grid=None):
     kde = gaussian_kde(x)
     return x_grid,kde.evaluate(x_grid)
 
-
-def knn_1d_density(x,k=10,eps=0.01):
+def knn_1d_density(x,k=10,eps=0.01,pad=100,final=None):
     '''
     Uses local K nearest neighbors to estimate a density and center of
-    mass at each point in a distribution. Returns a local density estimator in units of 1/input_units. For example, if a sequence
+    mass at each point in a distribution. Returns a local density estimator 
+    in units of 1/input_units. For example, if a sequence
     of times in seconds is provided, the result is an estimate of
     the continuous time intensity function in units of Hz.
 
@@ -27,6 +40,11 @@ def knn_1d_density(x,k=10,eps=0.01):
         Default is 10
     eps : number
         Small correction factor to avoid division by zero
+    pad : positive int, default 100
+        Number of time-points to reflect for padding
+    final: scalar
+        Last time-point for which to estimate density. Defaults to none,
+        in which case the time of the last spike will be used.
 
     Returns
     -------
@@ -36,6 +54,16 @@ def knn_1d_density(x,k=10,eps=0.01):
         Density values at locations of centers
     '''
     x=np.float64(np.sort(x))
+
+    if final is None:
+        final = np.max(x)
+    
+    # reflected boundary conditions
+    pad  = min(pad,len(x))
+    pre  = (x[0] - x[1:pad])[::-1]
+    post = (2*x[-1] - x[-pad:-1])
+    x    = np.concatenate([pre,x,post])
+    
     # Handle duplicates by dithering
     duplicates = get_edges(np.diff(x)==0.)+1
     duplicates[duplicates>=len(x)-1]=len(x)-2
@@ -53,7 +81,10 @@ def knn_1d_density(x,k=10,eps=0.01):
     kernel   /=sum(kernel)
     intervals = np.convolve(intervals,kernel,'same')
     density = (eps+1.0)/(eps+intervals)
-    return centers,density
+    
+    ok = (centers>=0)&(centers<=final)
+    
+    return centers[ok],density[ok]
 
 def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None):
     '''

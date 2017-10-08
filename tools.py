@@ -10,20 +10,13 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
 
-'''
-Functions related to SDEs
-Experimental / under construction
-'''
-
 import os
 import traceback
 import inspect
 import numpy as np
-
-# TODO: avoid import *
-#from itertools   import *
-#from collections import *
-#from numpy       import *
+import datetime
+import time as systime
+import sys
 
 from matplotlib.cbook          import flatten
 from scipy.stats.stats         import describe
@@ -434,3 +427,106 @@ def getsize(obj):
                 size += inner(attr)
         return size
     return inner(obj)
+    
+
+'''
+Having unused variables floating around the global namespace can be a source
+of bugs.
+
+In MATLAB, it is idiomatic to call "close all; clear all;" at the beginning
+of a script, to ensure that previously defined globals don't cuase
+surprising behaviour.
+
+This stack overflow post addresses this problem
+
+http://stackoverflow.com/questions/3543833/
+how-do-i-clear-all-variables-in-the-middle-of-a-python-script
+
+This module defines the functions saveContext (aliased as clear) and
+restoreContext that can be used to restore the interpreter to a state
+closer to initialization.
+
+this has not been thoroughly tested.
+
+'''
+
+__saved_context__ = {}
+def saveContext():
+    __saved_context__.update(sys.modules[__name__].__dict__)
+clear = saveContext
+def restoreContext():
+    names = sys.modules[__name__].__dict__.keys()
+    for n in names:
+        if n not in __saved_context__:
+            del sys.modules[__name__].__dict__[n]
+
+def camel2underscore(s):
+    '''
+    http://stackoverflow.com/questions/1175208/
+    elegant-python-function-to-convert-camelcase-to-camel-case
+    '''
+    import re
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+def underscore2camel(s):
+    '''
+    http://stackoverflow.com/questions/4303492/
+    how-can-i-simplify-this-conversion-from-underscore-to-camelcase-in-python
+    '''
+    def camelcase():
+        yield str.lower
+        while True:
+            yield str.capitalize
+    c = camelcase()
+    return "".join(c.next()(x) if x else '_' for x in s.split("_"))
+
+def current_milli_time():
+    '''
+    Returns the time in milliseconds
+    '''
+    return int(round(systime.time() * 1000))
+
+now = current_milli_time
+
+def today():
+    '''
+    Returns the date in YYMMDD format
+    '''
+    return datetime.date.today().strftime('%Y%m%d')
+
+#crude versions of tic and toc from Matlab
+#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
+__GLOBAL_TIC_TIME__ = None
+def tic(st=''):
+    ''' Similar to Matlab tic '''
+    global __GLOBAL_TIC_TIME__
+    t = current_milli_time()
+    try:
+        __GLOBAL_TIC_TIME__
+        if not __GLOBAL_TIC_TIME__ is None:
+            print('t=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
+        else: print("timing...")
+    except: print("timing...")
+    __GLOBAL_TIC_TIME__ = current_milli_time()
+    return t
+def toc(st=''):
+    ''' Similar to Matlab toc '''
+    global __GLOBAL_TIC_TIME__
+    t = current_milli_time()
+    try:
+        __GLOBAL_TIC_TIME__
+        if not __GLOBAL_TIC_TIME__ is None:
+            print('dt=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
+        else:
+            print("havn't called tic yet?")
+    except: print("havn't called tic yet?")
+    return t
+
+def waitfor(t):
+    '''
+    Wait for t milliseconds
+    '''
+    while current_milli_time()<t:
+        pass
+    return current_milli_time()

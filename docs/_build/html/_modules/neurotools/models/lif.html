@@ -5,7 +5,6 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>neurotools.models.lif &mdash; Neurotools 2 documentation</title>
@@ -13,10 +12,9 @@
 
   
   
-  
-  
 
   
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -32,45 +30,25 @@
   
 
   
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
     <link rel="top" title="Neurotools 2 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
-  <script src="../../../_static/js/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                2
-              </div>
-            
-          
-
-          
+      <div class="wy-side-nav-search">
+        
+          <a href="../../../index.html" class="fa fa-home"> Neurotools</a>
+        
+        
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -78,87 +56,55 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
-            
-          
-        </div>
       </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="simple">
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Neurotools</a>
-        
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">Neurotools</a>
       </nav>
 
 
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>neurotools.models.lif</li>
-    
-    
+      
+    <li>neurotools.models.lif</li>
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+          <div role="main" class="document">
             
   <h1>Source code for neurotools.models.lif</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="euler_integrate_LIF"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.euler_integrate_LIF">[docs]</a><span class="k">def</span> <span class="nf">euler_integrate_LIF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">g_L</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">g_E</span><span class="o">=</span><span class="mf">0.00074</span><span class="p">,</span><span class="n">E_E</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">E_L</span><span class="o">=-</span><span class="mf">70.0</span><span class="p">,</span><span class="n">Thr</span><span class="o">=-</span><span class="mf">60.0</span><span class="p">,</span><span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">g_S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">euler_integrate_LIF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">g_L</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">g_E</span><span class="o">=</span><span class="mf">0.00074</span><span class="p">,</span><span class="n">E_E</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">E_L</span><span class="o">=-</span><span class="mf">70.0</span><span class="p">,</span><span class="n">Thr</span><span class="o">=-</span><span class="mf">60.0</span><span class="p">,</span><span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">g_S</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="euler_integrate_LIF"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.euler_integrate_LIF">[docs]</a>    <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Modeled after the LIF implementation in Baker Pinches Lemon 2003</span>
 <span class="sd">    This one uses Euler integration though -- it appears similar</span>
 <span class="sd">    </span>
@@ -197,24 +143,24 @@
 <span class="sd">    plot(time,x)</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">dt</span>        <span class="o">=</span> <span class="mf">1000.0</span><span class="o">/</span><span class="n">Fs</span>         <span class="c1"># millisecond</span>
-    <span class="n">timescale</span> <span class="o">=</span> <span class="n">dt</span><span class="o">/</span><span class="n">C</span>              <span class="c1"># kiloohm or 1/microsiemen</span>
-    <span class="n">alpha</span>     <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">tau</span>           <span class="c1"># 1/millisecond</span>
-    <span class="k">if</span> <span class="n">g_S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">time</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
+    <span class="n">dt</span>        <span class="o">=</span> <span class="mf">1000.0</span><span class="o">/</span><span class="n">Fs</span>         <span class="c"># millisecond</span>
+    <span class="n">timescale</span> <span class="o">=</span> <span class="n">dt</span><span class="o">/</span><span class="n">C</span>              <span class="c"># kiloohm or 1/microsiemen</span>
+    <span class="n">alpha</span>     <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">tau</span>           <span class="c"># 1/millisecond</span>
+    <span class="k">if</span> <span class="n">g_S</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">time</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c"># millisecond</span>
         <span class="n">t</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">tau</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>
         <span class="n">alpha_function</span> <span class="o">=</span> <span class="n">t</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
         <span class="n">g_S</span> <span class="o">=</span> <span class="n">g_E</span> <span class="o">*</span> <span class="n">alpha_function</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">alpha_function</span><span class="p">)</span> 
-        <span class="n">g_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">g_S</span><span class="p">,</span><span class="s1">&#39;full&#39;</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
-        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">g_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">g_S</span><span class="p">,</span><span class="s">&#39;full&#39;</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      <span class="c"># millivolts</span>
         <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      
     <span class="k">else</span><span class="p">:</span>
         <span class="n">g_S</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">g_S</span><span class="p">)</span>
-        <span class="n">time</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
-        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">time</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c"># millisecond</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      <span class="c"># millivolts</span>
         <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>
-    <span class="c1"># precomputing all expressions that can be precomputed</span>
-    <span class="c1"># this may speed things up</span>
+    <span class="c"># precomputing all expressions that can be precomputed</span>
+    <span class="c"># this may speed things up</span>
     <span class="n">g_L_E_L</span> <span class="o">=</span> <span class="n">g_L</span><span class="o">*</span><span class="n">E_L</span>
     <span class="n">E_E_g_S</span> <span class="o">=</span> <span class="n">E_E</span><span class="o">*</span><span class="n">g_S</span>
     <span class="n">g_L_g_S</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_L</span><span class="o">+</span><span class="n">g_S</span><span class="p">)</span> <span class="o">*</span> <span class="n">timescale</span>
@@ -233,12 +179,12 @@
             <span class="n">v</span><span class="o">=</span><span class="n">E_L</span>
             <span class="n">spikes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
         <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spikes</span><span class="p">,</span> <span class="n">g_S</span></div>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spikes</span><span class="p">,</span> <span class="n">g_S</span>
 
 
 
-<div class="viewcode-block" id="exponential_integrate_LIF"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.exponential_integrate_LIF">[docs]</a><span class="k">def</span> <span class="nf">exponential_integrate_LIF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">g_L</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">g_E</span><span class="o">=</span><span class="mf">0.00074</span><span class="p">,</span><span class="n">E_E</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">E_L</span><span class="o">=-</span><span class="mf">70.0</span><span class="p">,</span><span class="n">Thr</span><span class="o">=-</span><span class="mf">60.0</span><span class="p">,</span><span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span><span class="n">g_S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">exponential_integrate_LIF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">g_L</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">g_E</span><span class="o">=</span><span class="mf">0.00074</span><span class="p">,</span><span class="n">E_E</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">E_L</span><span class="o">=-</span><span class="mf">70.0</span><span class="p">,</span><span class="n">Thr</span><span class="o">=-</span><span class="mf">60.0</span><span class="p">,</span><span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">2000.0</span><span class="p">,</span><span class="n">g_S</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+<div class="viewcode-block" id="exponential_integrate_LIF"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.exponential_integrate_LIF">[docs]</a>    <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Modeled after the LIF implementation in Baker Pinches Lemon 2003</span>
 <span class="sd">    </span>
 <span class="sd">    C dV/dt = g_L (E_L - V) + g_E (E_E - V)</span>
@@ -280,23 +226,23 @@
 <span class="sd">    plot(time,x)</span>
 <span class="sd">    # they appear to match</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">dt</span>        <span class="o">=</span> <span class="mf">1000.0</span><span class="o">/</span><span class="n">Fs</span>         <span class="c1"># millisecond</span>
-    <span class="n">alpha</span>     <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">tau</span>           <span class="c1"># 1/millisecond</span>
-    <span class="k">if</span> <span class="n">g_S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">time</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
+    <span class="n">dt</span>        <span class="o">=</span> <span class="mf">1000.0</span><span class="o">/</span><span class="n">Fs</span>         <span class="c"># millisecond</span>
+    <span class="n">alpha</span>     <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">tau</span>           <span class="c"># 1/millisecond</span>
+    <span class="k">if</span> <span class="n">g_S</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">time</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c"># millisecond</span>
         <span class="n">t</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">tau</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span>
         <span class="n">alpha_function</span> <span class="o">=</span> <span class="n">t</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
         <span class="n">g_S</span> <span class="o">=</span> <span class="n">g_E</span> <span class="o">*</span> <span class="n">alpha_function</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">alpha_function</span><span class="p">)</span> 
-        <span class="n">g_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">g_S</span><span class="p">,</span><span class="s1">&#39;full&#39;</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
-        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">g_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">g_S</span><span class="p">,</span><span class="s">&#39;full&#39;</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      <span class="c"># millivolts</span>
         <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>      
     <span class="k">else</span><span class="p">:</span>
         <span class="n">g_S</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">g_S</span><span class="p">)</span>
-        <span class="n">time</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c1"># millisecond</span>
-        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      <span class="c1"># millivolts</span>
+        <span class="n">time</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span><span class="o">*</span><span class="n">dt</span> <span class="c"># millisecond</span>
+        <span class="n">V</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      <span class="c"># millivolts</span>
         <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">g_S</span><span class="p">))</span>      
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
-        <span class="c1"># exponential integrator</span>
+        <span class="c"># exponential integrator</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">g_L</span><span class="o">*</span><span class="n">E_L</span> <span class="o">+</span> <span class="n">g_S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">E_E</span>
         <span class="n">B</span> <span class="o">=</span> <span class="n">g_L</span> <span class="o">+</span> <span class="n">g_S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">D</span> <span class="o">=</span> <span class="n">A</span><span class="o">/</span><span class="n">B</span>
@@ -304,7 +250,7 @@
         <span class="k">if</span> <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;</span><span class="n">Thr</span><span class="p">:</span>
             <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">E_L</span>
             <span class="n">spikes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
-    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spikes</span><span class="p">,</span> <span class="n">g_S</span></div>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spikes</span><span class="p">,</span> <span class="n">g_S</span>
 
 
 
@@ -313,8 +259,8 @@
 
 
     
-<div class="viewcode-block" id="exponential_moving_average"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.exponential_moving_average">[docs]</a><span class="k">def</span> <span class="nf">exponential_moving_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">exponential_moving_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span></div>
+<div class="viewcode-block" id="exponential_moving_average"><a class="viewcode-back" href="../../../neurotools.models.lif.html#neurotools.models.lif.exponential_moving_average">[docs]</a>    <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    exponential_moving_average(x,tau,Fs=1000)</span>
 <span class="sd">    x   : data</span>
 <span class="sd">    tau : time constant in seconds</span>
@@ -348,27 +294,23 @@
 <span class="sd">    Y(t) = exp(-t/tau) * H(t)</span>
 <span class="sd">    or Y(t) = H(t) exp(-t*alpha/DT)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">assert</span> <span class="mi">0</span> <span class="c1"># I feel like this is broken</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="c"># I feel like this is broken</span>
     <span class="n">DT</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">DT</span><span class="o">/</span><span class="n">tau</span>
-    <span class="c1"># a bit of a hack here: python intreprets negative indecies as indexing</span>
-    <span class="c1"># from the end. We exploit this to set the initial conditions by </span>
-    <span class="c1"># placing a value in the last position of the output array y</span>
-    <span class="c1"># this value will eventually be overwritten.</span>
+    <span class="c"># a bit of a hack here: python intreprets negative indecies as indexing</span>
+    <span class="c"># from the end. We exploit this to set the initial conditions by </span>
+    <span class="c"># placing a value in the last position of the output array y</span>
+    <span class="c"># this value will eventually be overwritten.</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="c1">#x[0]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+    <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="c">#x[0]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
         <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">y</span></div>
+    <span class="k">return</span> <span class="n">y</span>
     
     
     
-</pre></div>
+</pre></div></div>
 
-           </div>
-           <div class="articleComments">
-            
-           </div>
           </div>
           <footer>
   
@@ -378,13 +320,12 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, M Rule.
-
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
-
         </div>
       </div>
 
@@ -402,14 +343,13 @@
             VERSION:'2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

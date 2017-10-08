@@ -19,15 +19,11 @@ Submodules
 
 .. toctree::
 
-   neurotools.color
    neurotools.dependencies
    neurotools.functions
    neurotools.getfftw
-   neurotools.matrix
    neurotools.nlab
-   neurotools.operators
    neurotools.opto
-   neurotools.plot
    neurotools.system
    neurotools.tools
 

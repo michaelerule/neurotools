@@ -58,17 +58,17 @@ print matplotlib.pyplot.get_backend()
 '''
 
 print( 'Loading nlab namespace')
-from neurotools.spikes              import *
+from neurotools.spikes.spike        import *
+from neurotools.spikes.waveform     import *
 from neurotools.tools               import *
-from neurotools.ntime               import *
 from neurotools.functions           import *
-from neurotools.namespace           import *
-from neurotools.operators           import *
-from neurotools.color               import *
-from neurotools.plot                import *
-from neurotools.matrix              import *
+from neurotools.linalg.operators    import *
+from neurotools.graphics.color      import *
+from neurotools.graphocs.plot       import *
+from neurotools.linalg.matrix       import *
 
 from neurotools.models.lif               import *
+from neurotools.models.izh               import *
 
 from neurotools.spatial.dct              import *
 from neurotools.spatial.array            import *

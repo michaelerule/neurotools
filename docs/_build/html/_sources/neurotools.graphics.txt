@@ -6,8 +6,10 @@ Submodules
 
 .. toctree::
 
+   neurotools.graphics.color
    neurotools.graphics.image
    neurotools.graphics.matplotlib
+   neurotools.graphics.plot
    neurotools.graphics.pygame
 
 Module contents

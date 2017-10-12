@@ -12,6 +12,112 @@ paths, for example.
 CACHE_IDENTIFIER ='.__neurotools_cache__'
 VERBOSE_CACHING = 0
 
+
+
+######################################################################
+# Setup advanced memoization
+
+def purge_ram_cache():
+    '''
+    Deletes the ramdisk cache. USE WITH CAUTION. This depends on the
+    global confuration variable `ssd_cache_location` as well as
+    `CACHE_IDENTIFIER`.
+    
+    This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY
+    dangerous. It has been disabled and now raises `NotImplementedError`
+    '''
+    raise NotImplementedError('cache purging is too dangerous and has been disabled');
+    os.system('rm -rf ' + ramdisk_location + os.sep + CACHE_IDENTIFIER)
+
+def purge_ssd_cache():
+    '''
+    Deletes the SSD drive cache. USE WITH CAUTION. This depends on the
+    global confuration variable `ssd_cache_location` as well as
+    `CACHE_IDENTIFIER`.
+    
+    This will `rm -rf` the entire  `ssd_cache_location` and is EXTREMELY
+    dangerous. It has been disabled and now raises `NotImplementedError`
+    '''
+    raise NotImplementedError('cache purging is too dangerous and has been disabled');
+    os.system('rm -rf ' + ssd_cache_location + os.sep + CACHE_IDENTIFIER)
+
+def du(location):
+    '''
+    Returns the disk usave (`du`) of a file
+    
+    Parameters
+    ----------
+    location : string
+        Path on filesystem
+    
+    Returns
+    -------
+    du : integer
+        File size in bytes
+    '''
+    st = os.stat(location)
+    du = st.st_blocks * st.st_blksize
+    return du
+
+def reset_ramdisk():
+    '''
+    This will generate a 500GB ramdisk on debian linux. This allows in RAM 
+    inter-process communication using the filesystem metaphore. It should
+    be considered dangerous. It runs shell commands that
+    require `sudo` privileges.
+    '''
+    raise NotImplementedError('modifying system ramdisk too dangerous and has been disabled');
+    print('Initializing public ramdisk at %s'%ramdisk_location)
+    os.system('sudo mkdir -p '+ramdisk_location)
+    os.system('sudo umount %s/'%ramdisk_location)
+    os.system('sudo mount -t tmpfs -o size=500G tmpfs %s/'%ramdisk_location)
+    os.system('sudo chmod -R 777 %s'%ramdisk_location)
+
+def launch_cache_synchronizers():
+    '''
+    Inter-process communication is mediated via shared caches mapped onto
+    the file-system. If a collection of processes are distributed over
+    a large filesystem, they may need to share data. 
+    
+    This solution is very bad and has been depricated. It now raises a
+    `NotImplementedError`. 
+    
+    This solution originally spawned rsync jobs to keep a collection of
+    locations in the filesystem synchronized. This is bad for the following
+    reasons. Mis-configuration can lead to loss of data. Not all jobs
+    may need to share all cache values. It is far better to implement
+    some sort of lazy protocol. 
+    '''
+    raise NotImplementedError(
+    'cache synchronization can overwite files; it is too dangerous and has been disabled');
+    # write_back is disabled for the slow disk caches. To make these
+    # persistant, we need to run an rsync job to keep them synchronized.
+    disk_cache_hierarchy = (ramdisk_location,ssd_cache_location,hdd_cache_location)
+    for level in range(len(disk_cache_hierarchy)-1):
+        source       = disk_cache_hierarchy[level  ] + os.sep + CACHE_IDENTIFIER
+        destination  = disk_cache_hierarchy[level+1] + os.sep + CACHE_IDENTIFIER
+        destination + CACHE_IDENTIFIER
+        # quiet rsync command in update-archive mode
+        rsync = "rsync -aqu '%s/' '%s' "%(source,destination)
+        # Run the synchronization jobs at idle level
+        nice  = "ionice -c2 -n7 "
+        # loop every 30 seconds at most
+        watch = "watch -n60 "
+        # silence the output and run in background
+        # job   = ' 2>1 1>/dev/null'
+        # build command
+        command = watch + nice + rsync# + job
+        FNULL = open(os.devnull, 'w')
+        subprocess.Popen(command, shell=True, stdin=FNULL, stdout=FNULL, stderr=FNULL, close_fds=True)
+        print(command)
+        #os.system(command)
+        os.system('reset')
+    print('Launched background rsync processes')
+    print('You may want this command later:')
+    print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
+
+
+
 # Static initialization code
 # This should be run with caution
 # TODO: move all static initializers into a more appropriate 
@@ -65,3 +171,46 @@ old_memoize = neurotools.jobs.decorator.memoize
 new_memoize = leviathan
 memoize     = new_memoize
 neurotools.jobs.decorator.memoize = new_memoize
+
+
+
+
+# Testing code
+if __name__=="__main__":
+
+    # test encoding of function arguments as a string
+    def example_function(a,b,c=1,d=('ok',),*vargs,**kw):
+        ''' This docstring should be preserved by the decorator '''
+        e,f = vargs if (len(vargs)==2) else (None,None)
+        g = kw['k'] if 'k' in kw else None
+        print(a,b,c,d,e,f,g)
+    h = disk_cache(example_function)
+    print('Testing argument siganture encoding')
+    f   = example_function
+    sig = ((('a', 'a'), ('b', 'b'), ('c', 'c'), ('d', 'd')), None)
+    for mode in ['repr','json','pickle','human']:
+        print('\n',mode)
+        print('\t',function_signature(f))
+        print('\t',sig)
+        try:
+            fn  = signature_to_file_string(f,sig,mode=mode)
+            print('\t',fn)
+            s2  = file_string_to_signature(fn,mode=mode)
+            print('\t',s2)
+        except ValueError:
+            traceback.print_exc()
+
+    # test hierarchical cache
+    print('Testing hybrid caching')
+    print('Caution this is highly experimental')
+    fn = leviathan(example_function)
+    print('Testing leviathan ',fn.__name__)
+    val = 'gamma'
+    fn('a',val,'c','d')
+    fn('a',val,'c','d','e','f')
+    fn('a',val,c='c',d='d')
+    fn('a',val,**{'c':'c','d':'d'})
+    fn('a',val,*['c','d'])
+    fn('a',val,d='d',*['c'])
+    fn('a',val,*['c'],**{'d':'d'})
+    fn('a',val,'c','d','e','f')

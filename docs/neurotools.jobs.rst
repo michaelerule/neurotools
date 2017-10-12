@@ -9,6 +9,7 @@ Submodules
    neurotools.jobs.cache
    neurotools.jobs.closure
    neurotools.jobs.decorator
+   neurotools.jobs.filenames
    neurotools.jobs.initialize_system_cache
    neurotools.jobs.parallel
 

@@ -6,7 +6,7 @@ from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from neurotools.plot    import *
+from neurotools.graphics.plot    import *
 from neurotools.getfftw import *
 from neurotools.tools   import memoize
 from scipy.signal.wavelets import morlet

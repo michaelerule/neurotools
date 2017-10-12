@@ -20,7 +20,8 @@ Robust decorators are provided by the decorator package
     http://pythonhosted.org/decorator/documentation.html
 '''
 
-from neurotools.ntime import current_milli_time
+
+from neurotools import tools
 import os, sys
 from collections import defaultdict
 
@@ -170,9 +171,9 @@ def timed(f,*args,**kwargs):
     '''
     Timer decorator, modifies return type to include runtime
     '''
-    t0      = current_milli_time()
+    t0      = tools.current_milli_time()
     result  = f(*args,**kwargs)
-    t1      = current_milli_time()
+    t1      = tools.current_milli_time()
     return float(t1-t0), result
 
 def memoize(f):

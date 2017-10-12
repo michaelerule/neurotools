@@ -13,15 +13,14 @@ if sys.version_info<(3,):
     from itertools import imap as map
 # END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
-
 '''
 Explore log-polar gaussian distributions for representing analytic
 signal across the population.
 '''
 
 from matplotlib.pyplot import *
-from neurotools.plot import *
-from neurotools.color import *
+from neurotools.graphics.plot import *
+from neurotools.graphics.color import *
 import matplotlib.pyplot as mp
 import scipy.stats
 

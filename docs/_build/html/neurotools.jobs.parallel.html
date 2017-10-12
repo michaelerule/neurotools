@@ -151,8 +151,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="neurotools-jobs-parallel-module">
-<h1>neurotools.jobs.parallel module<a class="headerlink" href="#neurotools-jobs-parallel-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.jobs.parallel">
+<span id="neurotools-jobs-parallel-module"></span><h1>neurotools.jobs.parallel module<a class="headerlink" href="#module-neurotools.jobs.parallel" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.jobs.parallel.parallel_error_handling">
+<code class="descclassname">neurotools.jobs.parallel.</code><code class="descname">parallel_error_handling</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/parallel.html#parallel_error_handling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.parallel.parallel_error_handling" title="Permalink to this definition">¶</a></dt>
+<dd><p>We can’t really use exception handling in parallel calls.
+This is a wrapper to just catch errors to prevent them from
+propagating up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.parallel.parmap">
+<code class="descclassname">neurotools.jobs.parallel.</code><code class="descname">parmap</code><span class="sig-paren">(</span><em>f</em>, <em>problems</em>, <em>leavefree=1</em>, <em>debug=False</em>, <em>verbose=False</em>, <em>show_progress=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/parallel.html#parmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.parallel.parmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallel implmenetation of map using multiprocessing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>f</strong> (<em>function to apply</em><em>, </em><em>takes one argument and returns a tuple</em>) – (i,result) where i is the index into the problems</li>
+<li><strong>problems</strong> (<em>list of arguments to f to evaulate in parallel</em>) – </li>
+<li><strong>leavefree</strong> (<em>number of cores to leave open</em>) – </li>
+<li><strong>debug</strong> (<em>if True</em><em>, </em><em>will run on a single core so exceptions get</em>) – handeled correctly</li>
+<li><strong>verbose</strong> (<em>set to True to print out detailed logging information</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.parallel.parmap_dict">
+<code class="descclassname">neurotools.jobs.parallel.</code><code class="descname">parmap_dict</code><span class="sig-paren">(</span><em>f</em>, <em>problems</em>, <em>leavefree=1</em>, <em>debug=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/parallel.html#parmap_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.parallel.parmap_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.parallel.parmap_indirect">
+<code class="descclassname">neurotools.jobs.parallel.</code><code class="descname">parmap_indirect</code><span class="sig-paren">(</span><em>f</em>, <em>problems</em>, <em>leavefree=1</em>, <em>debug=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/parallel.html#parmap_indirect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.parallel.parmap_indirect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Functions cannot be pickled. Multiprocessing routines must be defined
+in the global namespace before the pool is initialized, so that the
+child processes have access to the function definitions. However, under
+some restricted circumstances it may be possible to specify a function
+more dynamically, at runtime. This may be the case if:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>A function is part of a system-wide installed module</li>
+<li>A function can be “regenerated” from source code</li>
+</ol>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.parallel.parmap_indirect_helper">
+<code class="descclassname">neurotools.jobs.parallel.</code><code class="descname">parmap_indirect_helper</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/parallel.html#parmap_indirect_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.parallel.parmap_indirect_helper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.parallel.reset_pool">
+<code class="descclassname">neurotools.jobs.parallel.</code><code class="descname">reset_pool</code><span class="sig-paren">(</span><em>leavefree=1</em>, <em>context=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/parallel.html#reset_pool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.parallel.reset_pool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 

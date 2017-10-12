@@ -13,11 +13,9 @@ if sys.version_info<(3,):
     from itertools import imap as map
 # END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
-
-from   neurotools.color   import *
+from   neurotools.graphics.color   import *
 from   neurotools.getfftw import *
 from   neurotools.tools   import *
-from   neurotools.ntime   import *
 
 import os
 import pickle

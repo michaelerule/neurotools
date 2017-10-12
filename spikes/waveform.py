@@ -183,12 +183,13 @@ def is_thin_pvt(wf,thr=52.0349055393):
     pvt = getPVT(normalized_waveform(wf))
     return pvt<thr
 
-def process((i,f)):
+def process(i_f):
     '''
     Get high-dimensional feature description of data.
     TODO: remove; how did this even get here?
     '''
     '''
+    (i,f) = i_f
     sys.stderr.write('\r'+'\t'*8+f+' loading..')
     sys.stderr.flush()
     data = loadmat('./extracted_ns5_spikes_nohighpass/'+f)
@@ -212,6 +213,7 @@ def process((i,f)):
     php  = getPHP (mwf)
     return i,f,wf,ahpw,pvt,fwhm,pt,pthw,php,mwf
     '''
+    pass
 
 
 

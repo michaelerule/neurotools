@@ -8,15 +8,10 @@ from __future__ import print_function
 '''
 Collected utilities for pygame
 
-It is, for some reason, difficult to blit pixels directly in python.
+It is difficult to write pixels directly in python.
 There's some way to get a framebuffer back from Tk, but it is 
 cumberosme. pygame has some support for sending pixel buffers, 
 which is wrapped for convneinece in this module.
-
-Another trick is to let Matplotlib do the heavy lifting for you.
-At the cost of reverse-engineering how to access pixels in a 
-Matplotlib plot, you have Matplotlib handle all th Tk/Qt/Agg 
-backend stuff, so you get a common interface for multiple platforms.
 '''
 
 import sys
@@ -74,7 +69,7 @@ def draw_array(screen,rgbdata):
         draw[...,0]=rgbdata
         draw[...,1]=rgbdata
         draw[...,2]=rgbdata
-        draw[...,3]=255 # alpha channel??
+        draw[...,3]=255 # alpha channel
     if d==3:
         draw[...,:3]=rgbdata[...,::-1]
         draw[...,-1]=255 # alpha channel

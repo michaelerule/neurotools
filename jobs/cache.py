@@ -31,7 +31,8 @@ import json
 import base64
 import zlib
 
-#something weird here. which pickle does multiprocessing use?
+# TODO: we should use the same pickle library as multiprocessing uses
+# for better comptability with parallelism and multiprocessing
 try:
     from cPickle import PicklingError
 except:
@@ -43,39 +44,7 @@ import neurotools.ntime
 
 from neurotools.jobs.closure import verify_function_closure
 
-CACHE_IDENTIFIER ='.__neurotools_cache__'
-
-VERBOSE_CACHING = 0#True
-
-def validate_argument_signature(sig):
-    '''
-    Determines whether a given argument signature can be used to cache
-    things to disk. The argument signature must be hashable. It must
-    consists of types that can be translated between python, numpy, and
-    matlab convenctions.
-    '''
-    pass
-
-def is_dangerous_filename(filename):
-    if len(filename)>255:
-        return True
-    if __PYTHON_2__ and type(filename) is unicode:
-        return True
-    if any([c in filename for c in "\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
-        return True
-    return False
-
-def check_filename(filename):
-    if len(filename)>255:
-        warnings.warn('FILE NAME MAY BE TOO LONG ON SOME SYSTEMS')
-    if __PYTHON_2__ and type(filename) is unicode:
-        warnings.warn('FILE NAME IS UNICODE')
-    if any([c in filename for c in "/?<>\:*|\"\n\t\b\r"]):
-        raise ValueError('Filename contains character forbidden on windows')
-    if any([c in filename for c in "\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
-        warnings.warn('FILE NAME CONTAINS CHARACTER THAT MAY CAUSE ISSUES IN SOME SOFTWARE')
-
-
+from neurotools.jobs.filenames import is_dangerous_filename,check_filename
 
 @neurotools.jobs.decorator.memoize
 def function_hash_with_subroutines(f):
@@ -133,6 +102,19 @@ def function_hash_with_subroutines(f):
 
 
 def get_source(f):
+    '''
+    Extracts and returns the source code of a function (if it exists). 
+    
+    Parameters
+    ----------
+    f : function
+        Function for which to extract source code (if possible)
+    
+    Returns
+    -------
+    string
+        String containing the source code of the passed function        
+    '''
     try:
         source    = inspect.getsource(neurotools.jobs.decorator.unwrap(f))
     except IOError as ioerr:
@@ -157,6 +139,18 @@ def function_hash_no_subroutines(f):
     Note that this function cannot detect changes in effective function
     behavior as a result of changes in subroutines, global variables, or
     mutable scope that has been closed over.
+    
+    Parameters
+    ----------
+    f : function
+        Function for which to generate a hash value
+    
+    Returns
+    -------
+    string
+        Hash value that depends on the function. Hash is constructed such
+        that changes in function source code and some dependencies will
+        also generate a different hash. 
     '''
     source    = get_source(f)
     docstring = inspect.getdoc(f)
@@ -359,7 +353,15 @@ def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=T
     return sig
 
 def human_encode(sig):
-    '''Formats the argument signature for saving as file name'''
+    '''
+    Formats the argument signature for saving as file name
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     sig = neurotools.sanitize(sig,mode='strict')
     named, vargs = sig
     if not vargs is None:
@@ -370,7 +372,15 @@ def human_encode(sig):
     return result
 
 def human_decode(key):
-    '''Formats the argument signature for saving as file name'''
+    '''
+    Formats the argument signature for saving as file name
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     params = [k.split('=') for k in key.split(',')]
     params = tuple((n,ast.literal_eval(v)) for n,v in params)
     sig = (params,None)
@@ -378,6 +388,14 @@ def human_decode(key):
     return sig
 
 def locate_cached(cache_root,f,method,*args,**kwargs):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     sig = neurotools.jobs.decorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
             mode        ='repr',
@@ -411,6 +429,13 @@ def validate_for_matfile(x):
     complex64 	Complex number, represented by two 32-bit floats (real and imaginary components)
     complex128 	Complex number, represented by two 64-bit floats (real and imaginary components)
     ==========  ================================================================================
+    
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
@@ -448,6 +473,13 @@ def validate_for_numpy(x):
     complex64 	Complex number, represented by two 32-bit floats (real and imaginary components)
     complex128 	Complex number, represented by two 64-bit floats (real and imaginary components)
     ==========  ================================================================================
+    
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
@@ -501,16 +533,38 @@ def disk_cacher(
             likely only work if the return value is a single numpy array?
 
       hdf5: Not supported. Will be implemented in the future
+      
+      
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     VALID_METHODS = ('pickle','mat','npy')
     assert method in VALID_METHODS
     cache_location = os.path.abspath(cache_location)+os.sep
     cache_root     = cache_location+CACHE_IDENTIFIER
     def cached(f):
+        '''
+        Parameters
+        ----------
+        
+        Returns
+        -------
+        '''
         if not allow_mutable_bindings:
             verify_function_closure(f)
         @neurotools.jobs.decorator.robust_decorator
         def wrapped(f,*args,**kwargs):
+            '''
+            Parameters
+            ----------
+            
+            Returns
+            -------
+            '''
             t0 = neurotools.ntime.current_milli_time()
             try:
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
@@ -612,6 +666,12 @@ def disk_cacher(
         def purge(*args,**kwargs):
             '''
             Delete cache entries matching arguments.
+    
+            Parameters
+            ----------
+            
+            Returns
+            -------
             '''
             for method in VALID_METHODS:
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
@@ -638,18 +698,54 @@ def hierarchical_cacher(
         verbose=VERBOSE_CACHING,
         allow_mutable_bindings=False):
     '''
-    Designed for constructing a hierarchy of disk caches.
+    Construct a filesystem cache defined in terms of a hierarchy from
+    faster to slower (fallback) caches.
+    
+    Parameters
+    ----------
+    fast_to_slow : tuple of strings
+        list of filesystem paths for disk caches in order from the fast
+        (default or main) cache to slower.
+    method: string, default 'npy'
+        cache storing method;
+    write_back : bool, default True
+        whether to automatically copy newly computed cache values to 
+        the slower caches
+    verbose : bool, defaults to global `VERBOSE_CACHING`
+        whether to print detailed logging iformation to standard out
+        when manipulating the cache
+    allow_mutable_bindings : bool, default False
+        If true, then "unsafe" namespace bindings, for example user-
+        defined functions, will be allowed in disk cached functions. 
+        If a cached function calls subroutines, and those subroutines
+        change, the disk cacher cannot detect the implementation different.
+        Consequentially, it cannot tell whether old cached values are 
+        invalid. 
+    
+    Returns
+    -------
+    hierarchical : decorator
+        A hierarchical disk-caching decorator that can be used to memoize
+        functions to the specified disk caching hierarchy. 
     '''
     slow_to_fast = fast_to_slow[::-1] # reverse it
     all_cachers  = []
     def hierarchical(f):
         # disable write-back on the slow caches
         for location in slow_to_fast[:-1]:
-            f = disk_cacher(location,method=method,write_back=write_back,verbose=verbose,allow_mutable_bindings=allow_mutable_bindings)(f)
+            f = disk_cacher(location,
+                method=method,
+                write_back=write_back,
+                verbose=verbose,
+                allow_mutable_bindings=allow_mutable_bindings)(f)
             all_cachers.append(f)
         # use write-back only on the fast cache
         location = slow_to_fast[-1]
-        f = disk_cacher(location,method=method,write_back=True,verbose=verbose,allow_mutable_bindings=allow_mutable_bindings)(f)
+        f = disk_cacher(location,
+            method=method,
+            write_back=True,
+            verbose=verbose,
+            allow_mutable_bindings=allow_mutable_bindings)(f)
         def purge(*args,**kwargs):
             '''
             Purge each of the constituent cachers
@@ -668,59 +764,79 @@ def hierarchical_cacher(
 ######################################################################
 # Setup advanced memoization
 
-import os
-myhost = os.uname()[1]
-if myhost in ('moonbase',):
-    ramdisk_location   = '/media/neurotools_ramdisk'
-    ssd_cache_location = '/ssd_1/mrule'
-    hdd_cache_location = '/ldisk_1/mrule'
-elif myhost in ('basecamp',):
-    ramdisk_location   = '/media/neurotools_ramdisk'
-    ssd_cache_location = '/home/mrule'
-elif myhost in ('RobotFortress','petra'):
-    ramdisk_location   = '/Users/mrule/neurotools_ramdisk'
-    ssd_cache_location = '/Users/mrule'
-else:
-    print('New System. Cache Locations will need configuring.')
-    print('TODO: clean this up somehow! hard-coded configurations are not acceptable in public code')
-    ramdisk_location = ssd_cache_location = hdd_cache_location = None
-
-
-disk_cache_hierarchy = (
-    ramdisk_location,
-    ssd_cache_location)
-
 def purge_ram_cache():
+    '''
+    Deletes the ramdisk cache. USE WITH CAUTION. This depends on the
+    global confuration variable `ssd_cache_location` as well as
+    `CACHE_IDENTIFIER`.
+    
+    This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY
+    dangerous. It has been disabled and now raises `NotImplementedError`
+    '''
+    raise NotImplementedError('cache purging is too dangerous and has been disabled');
     os.system('rm -rf ' + ramdisk_location + os.sep + CACHE_IDENTIFIER)
 
 def purge_ssd_cache():
+    '''
+    Deletes the SSD drive cache. USE WITH CAUTION. This depends on the
+    global confuration variable `ssd_cache_location` as well as
+    `CACHE_IDENTIFIER`.
+    
+    This will `rm -rf` the entire  `ssd_cache_location` and is EXTREMELY
+    dangerous. It has been disabled and now raises `NotImplementedError`
+    '''
+    raise NotImplementedError('cache purging is too dangerous and has been disabled');
     os.system('rm -rf ' + ssd_cache_location + os.sep + CACHE_IDENTIFIER)
 
 def du(location):
+    '''
+    Returns the disk usave (`du`) of a file
+    
+    Parameters
+    ----------
+    location : string
+        Path on filesystem
+    
+    Returns
+    -------
+    du : integer
+        File size in bytes
+    '''
     st = os.stat(location)
     du = st.st_blocks * st.st_blksize
     return du
 
 def reset_ramdisk():
+    '''
+    This will generate a 500GB ramdisk on debian linux. This allows in RAM 
+    inter-process communication using the filesystem metaphore. It should
+    be considered dangerous. It runs shell commands that
+    require `sudo` privileges.
+    '''
+    raise NotImplementedError('modifying system ramdisk too dangerous and has been disabled');
     print('Initializing public ramdisk at %s'%ramdisk_location)
     os.system('sudo mkdir -p '+ramdisk_location)
     os.system('sudo umount %s/'%ramdisk_location)
     os.system('sudo mount -t tmpfs -o size=500G tmpfs %s/'%ramdisk_location)
     os.system('sudo chmod -R 777 %s'%ramdisk_location)
-if not os.path.isdir(ramdisk_location): reset_ramdisk()
-
-disk_cached       = disk_cacher('.')
-leviathan         = hierarchical_cacher(disk_cache_hierarchy,method='npy')
-unsafe_disk_cache = hierarchical_cacher(disk_cache_hierarchy,method='npy',allow_mutable_bindings=True)
-pickle_cache      = hierarchical_cacher(disk_cache_hierarchy,method='pickle')
-
-old_memoize = neurotools.jobs.decorator.memoize
-new_memoize = leviathan
-memoize     = new_memoize
-neurotools.jobs.decorator.memoize = new_memoize
 
 def launch_cache_synchronizers():
-    assert(0)
+    '''
+    Inter-process communication is mediated via shared caches mapped onto
+    the file-system. If a collection of processes are distributed over
+    a large filesystem, they may need to share data. 
+    
+    This solution is very bad and has been depricated. It now raises a
+    `NotImplementedError`. 
+    
+    This solution originally spawned rsync jobs to keep a collection of
+    locations in the filesystem synchronized. This is bad for the following
+    reasons. Mis-configuration can lead to loss of data. Not all jobs
+    may need to share all cache values. It is far better to implement
+    some sort of lazy protocol. 
+    '''
+    raise NotImplementedError(
+    'cache synchronization can overwite files; it is too dangerous and has been disabled');
     # write_back is disabled for the slow disk caches. To make these
     # persistant, we need to run an rsync job to keep them synchronized.
     disk_cache_hierarchy = (ramdisk_location,ssd_cache_location,hdd_cache_location)
@@ -748,16 +864,7 @@ def launch_cache_synchronizers():
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
 
 
-
-
-
-
-
-
-
-
-
-
+# Testing code
 if __name__=="__main__":
 
     # test encoding of function arguments as a string

@@ -8,7 +8,7 @@ from __future__ import print_function
 '''
 Collected utilities for direct pixel rendering via matplotlib
 
-It is, for some reason, difficult to blit pixels directly in python.
+It is difficult to write pixels directly in python.
 
 One trick is to let Matplotlib do the heavy lifting for you.
 At the cost of reverse-engineering how to access pixels in a 

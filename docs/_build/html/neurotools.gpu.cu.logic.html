@@ -151,85 +151,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-neurotools.gpu.cu.logic">
-<span id="neurotools-gpu-cu-logic-module"></span><h1>neurotools.gpu.cu.logic module<a class="headerlink" href="#module-neurotools.gpu.cu.logic" title="Permalink to this headline">¶</a></h1>
-<p>This module contains GPU wrappers to perform boolean logic in parallel.
-These functions very much need work, since they basically use
-Iverson’s convention, but with floats, such that 0.0f = false, 1.0f=true.
-Nevertheless I have found these little functions quite useful in their
-present form in some circumstances</p>
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpuand">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpuand</code><span class="sig-paren">(</span><em>v</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpuand" title="Permalink to this definition">¶</a></dt>
-<dd><p>gpubinaryeq(‘($x+$y)&gt;=2.0f?1.0f:0.0f’)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpueq">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpueq</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpueq" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda x:gpumap(“$&gt;%f?1:0”%x)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpugt">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpugt</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpugt" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda x:gpumap(“$&gt;%f?1:0”%x)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpugteq">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpugteq</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpugteq" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda x:gpumap(“$&gt;=%f?1:0”%x)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpuhzero">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpuhzero</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpuhzero" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda a,b:gpumap(“$&gt;=%f&amp;&amp;$&lt;%d?$:0”%(a,b))</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpult">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpult</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpult" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda x:gpumap(“$&lt;%f?1:0”%x)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpulteq">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpulteq</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpulteq" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda x:gpumap(“$&lt;=%f?1:0”%x)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpuneq">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpuneq</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpuneq" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda x:gpumap(“$!=%f?1:0”%x)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpunor">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpunor</code><span class="sig-paren">(</span><em>v</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpunor" title="Permalink to this definition">¶</a></dt>
-<dd><p>gpubinaryeq(‘($x+$y)&lt;=0.0f?1.0f:0.0f’)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpunot">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpunot</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpunot" title="Permalink to this definition">¶</a></dt>
-<dd><p>gpumap(“$&lt;1.0f?1:0”)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpurange">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpurange</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpurange" title="Permalink to this definition">¶</a></dt>
-<dd><p>lambda a,b:gpumap(“$&gt;=%f&amp;&amp;$&lt;%d?1:0”%(a,b))</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.logic.gpuyes">
-<code class="descclassname">neurotools.gpu.cu.logic.</code><code class="descname">gpuyes</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.gpu.cu.logic.gpuyes" title="Permalink to this definition">¶</a></dt>
-<dd><p>gpumap(“$&lt;1.0f?0:1”)</p>
-</dd></dl>
-
+  <div class="section" id="neurotools-gpu-cu-logic-module">
+<h1>neurotools.gpu.cu.logic module<a class="headerlink" href="#neurotools-gpu-cu-logic-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

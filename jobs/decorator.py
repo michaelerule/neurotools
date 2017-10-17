@@ -21,7 +21,11 @@ Robust decorators are provided by the decorator package
 '''
 
 
-from neurotools import tools
+
+#from neurotools import tools
+
+import neurotools.tools
+
 import os, sys
 from collections import defaultdict
 
@@ -171,9 +175,9 @@ def timed(f,*args,**kwargs):
     '''
     Timer decorator, modifies return type to include runtime
     '''
-    t0      = tools.current_milli_time()
+    t0      = neurotools.tools.current_milli_time()
     result  = f(*args,**kwargs)
-    t1      = tools.current_milli_time()
+    t1      = neurotools.tools.current_milli_time()
     return float(t1-t0), result
 
 def memoize(f):

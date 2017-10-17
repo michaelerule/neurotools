@@ -151,8 +151,102 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="neurotools-signal-coherence-module">
-<h1>neurotools.signal.coherence module<a class="headerlink" href="#neurotools-signal-coherence-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.signal.coherence">
+<span id="neurotools-signal-coherence-module"></span><h1>neurotools.signal.coherence module<a class="headerlink" href="#module-neurotools.signal.coherence" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.signal.coherence.coherence_pvalue">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">coherence_pvalue</code><span class="sig-paren">(</span><em>C</em>, <em>NSample</em>, <em>beta=1.15</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#coherence_pvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.coherence_pvalue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jarvis &amp; Mitra (Neural Comp., 2001, p732)
+Pesaran et al. (Nature, 2008, supp info, p5)</p>
+<p>beta = 23/20. Jarvis &amp; Mitra suggest (Neural Comp., 2001, p732)
+Pesaran et al. suggest beta=1.5 (Nature, 2008, supp info, p5)</p>
+<p>citep{jarvis2001sampling, pesaran2008free}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.morlet_population_synchrony_spectrum">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">morlet_population_synchrony_spectrum</code><span class="sig-paren">(</span><em>lfp</em>, <em>fa</em>, <em>fb</em>, <em>w=4.0</em>, <em>resolution=0.1</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#morlet_population_synchrony_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.morlet_population_synchrony_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>First dimension is nchannels, second is time.
+Use morlet wavelets ( essentially bandpass filter bank ) to compute
+short-timescale synchrony.
+for each band: take morlet spectrum over time.
+take kuromoto or synchrony measure over complex vectors attained</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.multitaper_coherence">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">multitaper_coherence</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Fs=1000</em>, <em>BW=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#multitaper_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.multitaper_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>BW is the multitaper bandwidth
+returns freqs, cohere</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.multitaper_multitrial_coherence">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">multitaper_multitrial_coherence</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Fs=1000</em>, <em>NT=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#multitaper_multitrial_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.multitaper_multitrial_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes coherence over multiple tapers and multiple trials</p>
+<p>x: data. NVariables×NTrials×NTime</p>
+<p>NTapers: number of tapers, defaults to 5</p>
+<dl class="docutils">
+<dt>bootstrap: defaults to 100</dt>
+<dd>If bootstrap is a positive integer, we will perform bootstrap
+resampling and return this distribution along with the coherence
+result.</dd>
+<dt>unbiased: defaults to True</dt>
+<dd>If true it will apply the standard bias correction for averaging
+of circular data, which should remove sample-size dependence for
+the coherence values, at the cost of increasing estimator variance
+and occassionally generating strange (negative) coherence values.
+Bias correction for magnitude squared is (N|z|²-1)/(N-1)</dd>
+</dl>
+<p>Procedure:
+1   Z-score each trial (removes mean)
+2   Generate tapers
+3   Compute tapered FFTs for all trials and tapers
+4   Cross-spectral density</p>
+<p>return freqs, coherence, bootstrapped</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.population_coherence_matrix">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">population_coherence_matrix</code><span class="sig-paren">(</span><em>lfp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#population_coherence_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.population_coherence_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>lfp is a Nch×NTime matrix of data channels.
+ntapers is a positive integer.
+For each pair of channels compute multitaper coherence.
+take the product of each taper with each channel and take the FT</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.population_eigencoherence">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">population_eigencoherence</code><span class="sig-paren">(</span><em>lfp</em>, <em>fa</em>, <em>fb</em>, <em>w=4.0</em>, <em>resolution=0.1</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#population_eigencoherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.population_eigencoherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the eigenvalue spectrum of the pairwise coherence matrix.
+In the case of wavelets, each time-frequency point has one
+complex value.
+The matrix we build will be I think $|z_i z_j|$
+… this will involve a lot of computation.
+… let’s not do it.
+See ramirez et al
+A GENERALIZATION OF THE MAGNITUDE SQUARED COHERENCE SPECTRUM FOR
+MORE THAN TWO SIGNALS: DEFINITION, PROPERTIES AND ESTIMATION</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.sliding_multitaper_coherence">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">sliding_multitaper_coherence</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>window=500</em>, <em>step=100</em>, <em>Fs=1000</em>, <em>BW=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#sliding_multitaper_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.sliding_multitaper_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sliding multitaper coherence between x and y
+This is a somewhat strange implementation that is only preserved for
+legacy reasons.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.coherence.sliding_multitaper_coherence_parallel">
+<code class="descclassname">neurotools.signal.coherence.</code><code class="descname">sliding_multitaper_coherence_parallel</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>window=500</em>, <em>step=100</em>, <em>Fs=1000</em>, <em>BW=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/coherence.html#sliding_multitaper_coherence_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.coherence.sliding_multitaper_coherence_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sliding multitaper coherence between x and y
+Takes multiple samples over time, but estimates each sample using multi-taper
+See also multitaper_coherence
+This is a somewhat strange implementation that is only preserved for
+legacy reasons.</p>
+</dd></dl>
+
 </div>
 
 

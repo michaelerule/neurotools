@@ -354,10 +354,171 @@ def cartesian_product(*arrays):
     for i, a in enumerate(numpy.ix_(*arrays)):
         arr[...,i] = a
     return arr.reshape(-1, la)
+
+def _getAplus(A):
+    '''
+    Please see the documentation for nearPDHigham
+    '''
+    eigval, eigvec = np.linalg.eig(A)
+    Q = np.matrix(eigvec)
+    xdiag = np.matrix(np.diag(np.maximum(eigval, 0)))
+    return Q*xdiag*Q.T
+
+def _getPs(A, W=None):
+    '''
+    Please see the documentation for nearPDHigham
+    '''
+    W05 = np.matrix(W**.5)
+    return  W05.I * _getAplus(W05 * A * W05) * W05.I
+
+def _getPu(A, W=None):
+    '''
+    Please see the documentation for nearPDHigham
+    '''
+    Aret = np.array(A.copy())
+    Aret[W > 0] = np.array(W)[W > 0]
+    return np.matrix(Aret)
+
+def nearPDHigham(A, nit=10):
+    '''
+    Computes a positive definite matrix "close" to matrix $X$ using 
+    the algorithm of Higham (2000). 
     
-def cinv(X):
+    This is based on a 
+    [Stackoverflow answer](https://stackoverflow.com/a/10940283/900749),
+    and relevant intellectual property rights are retained by user
+    [sega sai](https://stackoverflow.com/users/1269140/sega-sai), 
+    [Stackoverflow](https://stackoverflow.com), or Higham (2000).
+    
+    Parameters
+    ----------
+    X : np.array
+        Square, real-valued matrix 
+
+    Returns
+    -------
+    np.array
+        Positive semi-definite matrix close to $X$
     '''
-    Invert positive matrix X using cholesky
+    n = A.shape[0]
+    W = np.identity(n) 
+    # W is the matrix used for the norm (assumed to be Identity matrix here)
+    # the algorithm should work for any diagonal W
+    deltaS = 0
+    Yk = A.copy()
+    for k in range(nit):
+        Rk = Yk - deltaS
+        Xk = _getPs(Rk, W=W)
+        deltaS = Xk - Rk
+        Yk = _getPu(Xk, W=W)
+    return Yk
+
+def nearPSDRebonatoJackel(A,epsilon=1e-10):
     '''
-    ch = pinv(chol(X))
-    return ch.dot(ch.T)
+    Computes a positive definite matrix "close" to matrix $X$ using 
+    the algorithm of Rebonato and Jackel (1999).
+    
+    This is based on a 
+    [Stackoverflow answer](https://stackoverflow.com/a/18542094/900749)
+    
+    Parameters
+    ----------
+    X : np.array
+        Square, real-valued matrix 
+    epsilon : non-negative scalar, default 1e-10
+        minimum eigenvalue
+
+    Returns
+    -------
+    np.array
+        Positive semi-definite matrix close to $X$
+    '''
+    n = A.shape[0]
+    eigval, eigvec = np.linalg.eig(A)
+    val = np.matrix(np.maximum(eigval,epsilon))
+    vec = np.matrix(eigvec)
+    T = 1/(np.multiply(vec,vec) * val.T)
+    T = np.matrix(np.sqrt(np.diag(np.array(T).reshape((n)) )))
+    B = T * vec * np.diag(np.array(np.sqrt(val)).reshape((n)))
+    return B*B.T
+
+def cinv(X,repair=False):
+    '''
+    Invert positive matrix $X$ using cholesky factorization. The function
+    `numpy.linalg.cholesky` is aliased as `chol` in this library, in 
+    analogy to matlab. `chol` returns a upper-triangular matrix such
+    that $L = \operatorname{chol}(X)$ and $X = L^T L$. The inverse of
+    $X$ is $X^{-1} = (L^T L)^{-1} = L^{-1} L^{-T}$. 
+    
+    This routine uses [LAPACK dtrtri](http://www.netlib.org/lapack/explore-html/da/dba/group__double_o_t_h_e_rcomputational_ga97c5ddb103f5f6bc2dc060886aaf2ffc.html#ga97c5ddb103f5f6bc2dc060886aaf2ffc)
+    . See also [scipy.linalg.lapack.dtrtri](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dtrtri.html#scipy.linalg.lapack.dtrtri).
+        
+    Parameters
+    ----------
+    X : np.array
+        Square, real-valued, symmetric positive definite matirx
+    repair : boolean, default is False
+        If true, and if $X$ is not positive definite, then this routine
+        will attempt to operate on a new positive matrix close to $X$
+    Returns
+    -------
+    matrix :
+        The inverse of $X$ computed using Cholesky factorization
+    '''
+    try:
+        ch = chol(X)
+    except numpy.linalg.LinAlgError:
+        if repair:
+            X = nearPSDRebonatoJackel(0.5*(X+X.T));
+            try:
+                ch = chol(X)
+            except numpy.linalg.LinAlgError:
+                raise ValueError("Repairing matrix to positive definite failed")         
+        else:
+            raise ValueError("Matrix is not positive-definite within machine precision")
+    # Should have lower-triangular factor ch
+    # X = ch.T.dot(ch)
+    # X^-1 = ch^-1 ch^-T
+    ich,info = scipy.linalg.lapack.dtrtri(ch)
+    if info!=0:
+        if info<0:
+            raise ValueError('lapack.dtrtri encountered illegal argument in position %d'%-info)
+        else:
+            raise ValueError('lapack.dtrtri encountered zero diagonal element at %d'%info)
+    return ich.dot(ich.T)
+
+def wheremax(a):
+    '''
+    Returns the indecies of the maximum element in a multi-dimensional 
+    array.
+    
+    Parameters
+    ----------
+    a : np.array
+        Numpy multi-dimensional array
+        
+    Returns
+    -------
+    tuple : 
+        Tuple of indecies indicating the maximum element
+    '''
+    return np.unravel_index(a.argmax(), a.shape)
+
+def wheremin(a):
+    '''
+    Returns the indecies of the minimum element in a multi-dimensional 
+    array.
+    
+    Parameters
+    ----------
+    a : np.array
+        Numpy multi-dimensional array
+        
+    Returns
+    -------
+    tuple : 
+        Tuple of indecies indicating the minimum element
+    '''
+    return np.unravel_index(a.argmin(), a.shape)
+    
+    

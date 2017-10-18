@@ -155,12 +155,16 @@
   <h1>Source code for neurotools.stats.stats</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="c1"># The above two lines should appear in all python source files!</span>
-<span class="c1"># It is good practice to include the lines below</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># more py2/3 compat</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Routines for computing commonly used summary statistics not otherwise</span>
@@ -171,6 +175,8 @@
 <span class="kn">import</span> <span class="nn">neurotools.stats.modefind</span> <span class="k">as</span> <span class="nn">modefind</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
 
 <div class="viewcode-block" id="weighted_avg_and_std"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.weighted_avg_and_std">[docs]</a><span class="k">def</span> <span class="nf">weighted_avg_and_std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

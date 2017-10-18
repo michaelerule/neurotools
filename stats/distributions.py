@@ -3,8 +3,13 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
 
 '''
 Functions for computing the log-PDF of common distributions.
@@ -15,6 +20,7 @@ scipy.stats by computing log-probability values using high precision
 
 import numpy as np
 from neurotools.functions import log_factorial, slog
+import random
 
 def poisson_logpdf(k,l):
     '''
@@ -49,3 +55,25 @@ def explogpdf(x,dx=1):
     x -= np.mean(x)
     p = np.exp(x)
     return p/(sum(p)*dx)
+    
+def sample_categorical(pobabilities):
+    '''
+    Pick a state according to probabilities
+
+    Parameters
+    ----------
+    probabilities : vector 
+        Vector of probabilities, must sum to 1.
+    
+    Returns
+    -------
+    i : int
+        integer between 0 and len(probabilities)-1
+    '''
+    pobabilities = np.ravel(pobabilities)
+    r = random.uniform(0,np.sum(pobabilities))
+    cumulative = 0.
+    for i,pr in enumerate(pobabilities):
+        if cumulative+pr>=r: return i
+        cumulative += pr
+    assert False

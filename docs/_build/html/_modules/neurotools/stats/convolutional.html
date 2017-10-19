@@ -165,6 +165,8 @@
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">TODO: fix imports here</span>
+
 <span class="sd">Examine spiking correlations. time-domain implementation</span>
 <span class="sd">build a correlation matrix out of cross-correlation estimates</span>
 <span class="sd">still slow and memory intensive, but not prohibitive</span>
@@ -183,15 +185,15 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>  <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>  <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="ccm"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.ccm">[docs]</a><span class="k">def</span> <span class="nf">ccm</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Construct size k cross-correlation matrix.</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -201,8 +203,8 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">midpoint</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">float64</span><span class="p">(</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">)))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
         <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">midpoint</span><span class="o">-</span><span class="n">i</span><span class="p">:</span><span class="n">midpoint</span><span class="o">+</span><span class="n">k</span><span class="o">-</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
@@ -210,7 +212,7 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate covariance matrix for linear least squares. It is a block</span>
 <span class="sd">    matrix of all pairwise cross-correlation matrices</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -218,12 +220,12 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">float64</span><span class="p">(</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">NNeurons</span><span class="p">,)</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
+    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">NNeurons</span><span class="p">,)</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
         <span class="c1"># handle autocorrelation as a special case</span>
         <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:,</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">,:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">ccm</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
             <span class="c1"># cross-correlations are related by transpose</span>
             <span class="n">cc</span> <span class="o">=</span> <span class="n">ccm</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
             <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:,</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">,:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc</span> 
@@ -233,7 +235,7 @@
 <div class="viewcode-block" id="sta"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.sta">[docs]</a><span class="k">def</span> <span class="nf">sta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Construct size k STA</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -243,16 +245,16 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">lfp</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;full&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;full&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="blocksta"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.blocksta">[docs]</a><span class="k">def</span> <span class="nf">blocksta</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Block spike-triggered average vector for time-domain least squares</span>
 <span class="sd">    filter</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -260,9 +262,9 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">NNeurons</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
+    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">NNeurons</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">sta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">)</span>
         <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">B</span></div>
@@ -270,7 +272,7 @@
 <div class="viewcode-block" id="reconstruct"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.reconstruct">[docs]</a><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reconstructs LFP from spikes</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -278,11 +280,11 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NTrials</span><span class="p">,</span><span class="n">NSamples</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
+    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NTrials</span><span class="p">,</span><span class="n">NSamples</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
         <span class="n">filt</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span>
-        <span class="n">result</span> <span class="o">+=</span> <span class="n">array</span><span class="p">([</span><span class="n">convolve</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="s1">&#39;same&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]])</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="s1">&#39;same&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]])</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 <span class="c1"># frequency domain solution -- confirm that this equals the time-domain</span>
@@ -302,12 +304,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="cspectm"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.cspectm">[docs]</a><span class="k">def</span> <span class="nf">cspectm</span><span class="p">(</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get all pairs cross spectral matrix</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    This is doing much more work than is needed, should change it to</span>
 <span class="sd">    frequency domain.</span>
 <span class="sd">    </span>
@@ -317,26 +319,26 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">window</span> <span class="o">=</span> <span class="n">hanning</span><span class="p">(</span><span class="n">NSamples</span><span class="p">)</span>
     <span class="c1"># precompute fourier transforms</span>
-    <span class="n">spikemean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">fts</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">fft</span><span class="p">(</span><span class="n">window</span><span class="o">*</span><span class="p">(</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">])))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">)]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)])</span>
+    <span class="n">spikemean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">fts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">fft</span><span class="p">(</span><span class="n">window</span><span class="o">*</span><span class="p">(</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">])))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">)]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)])</span>
     <span class="c1"># compute cross spectra</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NSamples</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">complex128</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
-        <span class="n">cs</span> <span class="o">=</span> <span class="n">mean</span><span class="p">([</span><span class="n">conj</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">fts</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NSamples</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
+        <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">fts</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">result</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-            <span class="n">cs</span> <span class="o">=</span> <span class="n">mean</span><span class="p">([</span><span class="n">conj</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">trial</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">fts</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">trial</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">fts</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">result</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span>
-            <span class="n">result</span><span class="p">[:,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[:,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="spike_lfp_filters"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.spike_lfp_filters">[docs]</a><span class="k">def</span> <span class="nf">spike_lfp_filters</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cross-spectral densities between spikes and LFP</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -344,23 +346,23 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="c1"># precomute lfp fft</span>
     <span class="n">window</span> <span class="o">=</span> <span class="n">hanning</span><span class="p">(</span><span class="n">NSamples</span><span class="p">)</span>
-    <span class="n">lfpmean</span>   <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
-    <span class="n">spikemean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">fftlfp</span>  <span class="o">=</span> <span class="p">[</span><span class="n">fft</span><span class="p">((</span><span class="n">lfp</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span><span class="o">*</span><span class="n">window</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NSamples</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">complex128</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
-        <span class="n">cspectra</span> <span class="o">=</span> <span class="p">[</span><span class="n">conj</span><span class="p">(</span><span class="n">fft</span><span class="p">((</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">,:]</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">,:]))</span><span class="o">*</span><span class="n">window</span><span class="p">))</span><span class="o">*</span><span class="n">fftlfp</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
-        <span class="n">result</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">cspectra</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lfpmean</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
+    <span class="n">spikemean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">fftlfp</span>  <span class="o">=</span> <span class="p">[</span><span class="n">fft</span><span class="p">((</span><span class="n">lfp</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span><span class="o">*</span><span class="n">window</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NSamples</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">):</span>
+        <span class="n">cspectra</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">fft</span><span class="p">((</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">,:]</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spikes</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">,:]))</span><span class="o">*</span><span class="n">window</span><span class="p">))</span><span class="o">*</span><span class="n">fftlfp</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
+        <span class="n">result</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cspectra</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
     
 <div class="viewcode-block" id="spectreconstruct"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.spectreconstruct">[docs]</a><span class="k">def</span> <span class="nf">spectreconstruct</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">spikes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fftspikes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reconstructs LFP from spikes using cross-spectral matrix.</span>
 <span class="sd">    Can optionally pass the fts if they are already available</span>
-<span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -369,13 +371,13 @@
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">spikes</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
-        <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+        <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">fftspikes</span><span class="p">)</span>
+        <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">fftspikes</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ffts</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">spikes</span><span class="o">!=</span><span class="kc">None</span>
-        <span class="n">fftspikes</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">fft</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">)]</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">spikes</span><span class="p">])</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">ifft</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">fftspikes</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
+        <span class="n">fftspikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">fft</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trial</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NNeurons</span><span class="p">)]</span> <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">spikes</span><span class="p">])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">ifft</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">fftspikes</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="create_spectral_model"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.create_spectral_model">[docs]</a><span class="k">def</span> <span class="nf">create_spectral_model</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">,</span><span class="n">shrinkage</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -389,9 +391,9 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">XTX</span> <span class="o">=</span> <span class="n">cspectm</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">XTY</span> <span class="o">=</span> <span class="n">spike_lfp_filters</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">)</span>
-    <span class="n">shrinkage</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">XTY</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">shrinkage</span>
-    <span class="n">shrinkage</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">shrinkage</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">shrinkage</span><span class="p">)</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">dot</span><span class="p">(</span><span class="n">inv</span><span class="p">(</span><span class="n">xtx</span><span class="o">+</span><span class="n">shrinkage</span><span class="p">),</span><span class="n">xty</span><span class="p">)</span> <span class="k">for</span> <span class="n">xtx</span><span class="p">,</span><span class="n">xty</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">XTX</span><span class="p">,</span><span class="n">XTY</span><span class="p">)])</span>
+    <span class="n">shrinkage</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">XTY</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">shrinkage</span>
+    <span class="n">shrinkage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">shrinkage</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">shrinkage</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">inv</span><span class="p">(</span><span class="n">xtx</span><span class="o">+</span><span class="n">shrinkage</span><span class="p">),</span><span class="n">xty</span><span class="p">)</span> <span class="k">for</span> <span class="n">xtx</span><span class="p">,</span><span class="n">xty</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">XTX</span><span class="p">,</span><span class="n">XTY</span><span class="p">)])</span>
     <span class="k">return</span> <span class="n">B</span></div>
 
 <div class="viewcode-block" id="construct_lowpass_operator"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.construct_lowpass_operator">[docs]</a><span class="k">def</span> <span class="nf">construct_lowpass_operator</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">):</span>
@@ -408,11 +410,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">ff</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="mi">4</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">ff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="mi">4</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">ff</span><span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">ff</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
         <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ff</span><span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
@@ -432,16 +434,16 @@
 <span class="sd">    -------</span>
 <span class="sd">    xc: autocorrelation over lags D, with zero-lag variance</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">xc</span>   <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">lags</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">xc</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">lag</span><span class="p">:]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">-</span><span class="n">lag</span><span class="p">]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-        <span class="n">cm</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-        <span class="n">cv</span> <span class="o">=</span> <span class="n">var</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">cm</span> <span class="o">=</span> <span class="n">cm</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cv</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
         <span class="n">xc</span><span class="p">[</span><span class="n">lag</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm</span>
     <span class="k">return</span> <span class="n">xc</span></div>
@@ -452,22 +454,22 @@
 <span class="sd">k = 30</span>
 <span class="sd">N = 2000</span>
 <span class="sd">sim_spikes = rand(N)&lt;0.04</span>
-<span class="sd">sim_sta = zeros((k,),dtype=float64)</span>
+<span class="sd">sim_sta = np.zeros((k,),dtype=np.float64)</span>
 <span class="sd">sim_sta[k//2:]=1</span>
 <span class="sd">sim_lfp = convolve(sim_sta,sim_spikes,&#39;same&#39;)</span>
 <span class="sd">clf()</span>
 <span class="sd">plot(sim_lfp,&#39;m&#39;)</span>
 <span class="sd">plot(sim_spikes,&#39;c&#39;)</span>
-<span class="sd">sim_spikes = array([[sim_spikes]])</span>
-<span class="sd">sim_lfp = array([sim_lfp])</span>
+<span class="sd">sim_spikes = np.array([[sim_spikes]])</span>
+<span class="sd">sim_lfp = np.array([sim_lfp])</span>
 <span class="sd">XTX=blockccm(k,sim_spikes)</span>
 <span class="sd">XTY=blocksta(k,sim_spikes,sim_lfp)</span>
 <span class="sd"># linear least squares model estimate</span>
-<span class="sd">B = dot(pinv(XTX),XTY)</span>
+<span class="sd">B = np.dot(pinv(XTX),XTY)</span>
 <span class="sd"># Check time-domain solution: did it work?</span>
 <span class="sd">original = ravel(sim_lfp)</span>
 <span class="sd">reconstruction = ravel(reconstruct(k,B,sim_spikes))</span>
-<span class="sd">RMSE = sqrt(mean((original-reconstruction)**2))</span>
+<span class="sd">RMSE = sqrt(np.mean((original-reconstruction)**2))</span>
 <span class="sd">print &#39;RMSE = &#39;,RMSE</span>
 <span class="sd">plot(original,&#39;b&#39;)</span>
 <span class="sd">plot(reconstruction,&#39;g&#39;)</span>
@@ -479,22 +481,22 @@
 <span class="sd">k = 30</span>
 <span class="sd">N = 3000</span>
 <span class="sd">sim_spikes = rand(N)&lt;0.005</span>
-<span class="sd">sim_sta = zeros((k,),dtype=float64)</span>
+<span class="sd">sim_sta = np.zeros((k,),dtype=np.float64)</span>
 <span class="sd">sim_sta[k//2:]=1</span>
 <span class="sd">sim_lfp = convolve(sim_sta,sim_spikes,&#39;same&#39;)</span>
 <span class="sd">clf()</span>
 <span class="sd">plot(sim_lfp,&#39;m&#39;)</span>
 <span class="sd">plot(sim_spikes,&#39;c&#39;)</span>
-<span class="sd">sim_spikes = array([[sim_spikes]])</span>
-<span class="sd">sim_lfp = array([sim_lfp])</span>
+<span class="sd">sim_spikes = np.array([[sim_spikes]])</span>
+<span class="sd">sim_lfp = np.array([sim_lfp])</span>
 <span class="sd">XTX = cspectm(sim_spikes)</span>
 <span class="sd">XTY = spike_lfp_filters(sim_spikes,sim_lfp)</span>
 <span class="sd"># solve each frequency separately</span>
-<span class="sd">B = array([dot(pinv(xtx),xty) for xtx,xty in zip(XTX,XTY)])</span>
+<span class="sd">B = np.array([np.dot(pinv(xtx),xty) for xtx,xty in zip(XTX,XTY)])</span>
 <span class="sd"># B should be something like the cross-spectral densirt between the </span>
 <span class="sd"># spiking population and LFP now</span>
 <span class="sd"># sort of a population coherence with the LFP? </span>
-<span class="sd"># plot(fftfreq(len(B)*2,BINSIZE/float(Fs))[:len(B)],mean(abs(B),1))</span>
+<span class="sd"># plot(fftfreq(len(B)*2,BINSIZE/float(Fs))[:len(B)],np.mean(abs(B),1))</span>
 <span class="sd">reconstruction = spectreconstruct(k,B,sim_spikes)</span>
 <span class="sd">plot(ravel(reconstruction),&#39;y&#39;)</span>
 <span class="sd">plot(ravel(sim_lfp),&#39;c&#39;)</span>
@@ -504,22 +506,22 @@
 <span class="sd"># cross-validated simulated sanity check with regularization</span>
 <span class="sd">k = 30</span>
 <span class="sd">N = 3000</span>
-<span class="sd">sim_sta = zeros((k,),dtype=float64)</span>
+<span class="sd">sim_sta = np.zeros((k,),dtype=np.float64)</span>
 <span class="sd">sim_sta[k//2:]=1</span>
 <span class="sd">NTrials = 2</span>
-<span class="sd">sim_spikes = [rand(N)&lt;0.05 for i in range(NTrials)]</span>
-<span class="sd">sim_lfp    = [convolve(sim_sta,sim_spikes[i],&#39;same&#39;) for i in range(NTrials)]</span>
-<span class="sd">spikes = array(sim_spikes)[:,None,:]</span>
+<span class="sd">sim_spikes = [rand(N)&lt;0.05 for i in np.arange(NTrials)]</span>
+<span class="sd">sim_lfp    = [convolve(sim_sta,sim_spikes[i],&#39;same&#39;) for i in np.arange(NTrials)]</span>
+<span class="sd">spikes = np.array(sim_spikes)[:,None,:]</span>
 <span class="sd">lfp    = sim_lfp</span>
-<span class="sd">lfp   -= mean(lfp)</span>
+<span class="sd">lfp   -= np.mean(lfp)</span>
 <span class="sd">clf()</span>
-<span class="sd">for shrinkage in range(20):</span>
+<span class="sd">for shrinkage in np.arange(20):</span>
 <span class="sd">    B = create_spectral_model(spikes[:NTrials//2],lfp[:NTrials//2],shrinkage=shrinkage)</span>
 <span class="sd">    original       = ravel(lfp[NTrials//2:])</span>
 <span class="sd">    reconstruction = ravel(spectreconstruct(k,B,spikes[NTrials//2:]))</span>
 <span class="sd">    plot(original,&#39;c&#39;)</span>
 <span class="sd">    plot(reconstruction,color=(shrinkage/20.0,)*3)</span>
-<span class="sd">    RMSE = sqrt(mean((original-reconstruction)**2))</span>
+<span class="sd">    RMSE = sqrt(np.mean((original-reconstruction)**2))</span>
 <span class="sd">    print &#39;shrinkage = &#39;,shrinkage</span>
 <span class="sd">    print &#39;RMSE = &#39;,RMSE</span>
 <span class="sd">&#39;&#39;&#39;</span>

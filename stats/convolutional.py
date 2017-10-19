@@ -18,15 +18,23 @@ still slow and memory intensive, but not prohibitive
 (see efficient solution in frequency domain)
 '''
 
+import numpy as np
+
 def ccor(i,j,spikes):
     '''
+    TODO: documentation
+    
     Cross correlate spikes
     
     Parameters
     ----------
+    i : first neuron index 
+    j : second neuron index
+    spikes : nreplicas x nneurons x samples array of spiking data
     
     Returns
     -------
+    x : 
     '''
     A = spikes[:,i,:]
     B = spikes[:,j,:]
@@ -37,11 +45,17 @@ def ccor(i,j,spikes):
 
 def ccm(i,j,k,spikes):
     '''
+    TODO: documentation
+    
     Construct size k cross-correlation matrix.
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
+    i : first neuron index 
+    j : second neuron index
+    spikes : nreplicas x nneurons x samples array of spiking data
+    k : TODO
     
     Returns
     -------
@@ -55,6 +69,8 @@ def ccm(i,j,k,spikes):
 
 def blockccm(k,spikes):
     '''
+    TODO: documentation
+    
     Generate covariance matrix for linear least squares. It is a block
     matrix of all pairwise cross-correlation matrices
     NTrials,NNeurons,NSamples = np.shape(spikes)
@@ -97,6 +113,8 @@ def sta(i,spikes,lfp):
 
 def blocksta(k,spikes,lfp):
     '''
+    TODO: documentation
+    
     Block spike-triggered average vector for time-domain least squares
     filter
     NTrials,NNeurons,NSamples = np.shape(spikes)
@@ -116,6 +134,8 @@ def blocksta(k,spikes,lfp):
     
 def reconstruct(k,B,spikes):
     '''
+    TODO: documentation
+    
     Reconstructs LFP from spikes
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
@@ -153,6 +173,8 @@ def cspect(i,j,spikes):
 
 def cspectm(spikes):
     '''
+    TODO: documentation
+    
     Get all pairs cross spectral matrix
     NTrials,NNeurons,NSamples = np.shape(spikes)
     This is doing much more work than is needed, should change it to
@@ -182,6 +204,8 @@ def cspectm(spikes):
 
 def spike_lfp_filters(spikes,lfp):
     '''
+    TODO: documentation
+    
     Cross-spectral densities between spikes and LFP
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
@@ -205,6 +229,8 @@ def spike_lfp_filters(spikes,lfp):
     
 def spectreconstruct(k,B,spikes=None,fftspikes=None):
     '''
+    TODO: documentation
+    
     Reconstructs LFP from spikes using cross-spectral matrix.
     Can optionally pass the fts if they are already available
     NTrials,NNeurons,NSamples = np.shape(spikes)
@@ -227,6 +253,8 @@ def spectreconstruct(k,B,spikes=None,fftspikes=None):
 
 def create_spectral_model(spikes,lfp,shrinkage=0):
     '''
+    TODO: documentation
+    
     
     Parameters
     ----------
@@ -243,6 +271,8 @@ def create_spectral_model(spikes,lfp,shrinkage=0):
 
 def construct_lowpass_operator(fb,k,Fs=1000.0):
     '''
+    TODO: documentation
+    
     Constructs a low-pass regularization operator
     Get the impulse response of a low-pass filter first
     Then copy it into the matrix.

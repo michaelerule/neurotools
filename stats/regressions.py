@@ -185,6 +185,8 @@ def damped_cosine(X,Y,W):
         plot(X,Z)
         plot(X,np.cos(w*X)*np.exp(-X/L+b))
     '''
+    X = np.float64(X)
+    Y = np.float64(Y)
     def objective(wLb):
         (w,L,b) = wLb
         z = np.cos(w*X)*np.exp(-X/L+b)
@@ -200,6 +202,9 @@ def damped_cosine(X,Y,W):
         dEdb = np.sum(W*h)
         return arr([dEdw,dEdL,dEdb])
     result = minimize(objective,[1,1,0])#,jac=gradient)
+    if not result.success:
+        print(result.message)
+        raise RuntimeError('Optimization failed: %s'%result.message)
     return result
 
 from scipy.stats import linregress
@@ -216,11 +221,16 @@ def weighted_least_squares(X,Y,W):
     Y: List of amplitudes
     W: Weights for points 
     '''
+    X = np.float64(X)
+    Y = np.float64(Y)
     def objective(ab):
         a,b=(a,b)
         return np.sum( W*(Y-(X*a+b))**2)
     a,b,_,_,_ = linregress(X,Y)
     result = minimize(objective,[a,b])
+    if not result.success:
+        print(result.message)
+        raise RuntimeError('Optimization failed: %s'%result.message)
     return result
 
 
@@ -254,6 +264,8 @@ def power_law(X,Y,W):
     a,b = power_law(X,Y,1/X**2)
     plot(sorted(X),b*arr(sorted(X))**a)
     '''
+    X = np.float64(X)
+    Y = np.float64(Y)
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
     a,b = polyfit(np.log(X)[use],np.log(Y)[use],1,w=W[use])
@@ -277,6 +289,8 @@ def gaussian_function(X,Y):
     Y: List of amplitudes
         
     '''
+    X = np.float64(X)
+    Y = np.float64(Y)
     def objective(theta):
         (mu,sigma,scale,dc) = theta
         z = npdf(mu,sigma,X)*scale+dc
@@ -294,17 +308,24 @@ def half_gaussian_function(X,Y):
     Y: List of amplitudes
         
     '''
+    X = np.float64(X)
+    Y = np.float64(Y)
     def objective(theta):
         (sigma,scale,dc) = theta
         z = npdf(0,sigma,X)*scale+dc
         error = np.sum( (z-Y)**2 )
         return error
     result = minimize(objective,[1,1,0])
+    if not result.success:
+        print(result.message)
+        raise RuntimeError('Optimization failed: %s'%result.message)
     sigma,scale,dc = result.x
     return sigma,scale,dc
 
 def exponential_decay(X,Y):
     '''
+    Fit exponential decay from an initial value to a final value with 
+    some time (or length, etc) constant.
     
     Parameters
     ----------
@@ -320,12 +341,16 @@ def exponential_decay(X,Y):
     dc : float
         DC offset of exponential fit (asymptotic value)
     '''
-    def objective(theta):
+    X = np.float64(X)
+    Y = np.float64(Y)
+    def error(theta):
         (lamb,scale,dc) = theta
         z = np.exp(-lamb*X)*scale+dc
-        error = np.sum( (z-Y)**2 )
-        return error
-    result = minimize(objective,[1,1,1])
+        return np.sum( (z-Y)**2 )
+    result = minimize(error,[1,1,1])#,method='BFGS')#Nelder-Mead')
+    if not result.success:
+        print(result.message)
+        raise RuntimeError('Optimization failed: %s'%result.message)
     lamb,scale,dc = result.x
     return lamb,scale,dc
     
@@ -340,12 +365,17 @@ def robust_line(X,Y):
     Y: List of amplitudes
         
     '''
+    X = np.float64(X)
+    Y = np.float64(Y)
     def pldist(x,y,m,b):
         return (-m*x+y-b)/np.sqrt(m**2+1)
     def objective(H):
         m,b = H
         return np.sum([np.abs(pldist(x,y,m,b)) for (x,y) in zip(X,Y)])
     res = scipy.optimize.minimize(objective,[1,0],method = 'Nelder-Mead')
+    if not result.success:
+        print(result.message)
+        raise RuntimeError('Optimization failed: %s'%result.message)
     return res.x
 
 

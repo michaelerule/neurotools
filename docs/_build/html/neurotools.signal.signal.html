@@ -266,6 +266,27 @@ Array can be any dimension, filtering performed over last dimension</p>
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">box_filter</code><span class="sig-paren">(</span><em>data</em>, <em>smoothat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#box_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.box_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Smooths data by convolving with a size smoothat box
 provide smoothat in units of frames i.e. samples (not ms or seconds)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</li>
+<li><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</li>
+<li><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">One-dimensional filtered signal</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -430,13 +451,15 @@ Defaults to order=4 and Fs=1000</p>
 <dl class="function">
 <dt id="neurotools.signal.signal.mean_block">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">mean_block</code><span class="sig-paren">(</span><em>data</em>, <em>N=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#mean_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.mean_block" title="Permalink to this definition">¶</a></dt>
-<dd><p>blocks data by mean over last axis</p>
+<dd><p>Calls stats_block using np.mean. See documentation of stats_block for
+details.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="neurotools.signal.signal.median_block">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">median_block</code><span class="sig-paren">(</span><em>data</em>, <em>N=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#median_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.median_block" title="Permalink to this definition">¶</a></dt>
-<dd><p>blocks data by median over last axis</p>
+<dd><p>Calls stats_block using np.median. See documentation of stats_block for
+details.</p>
 </dd></dl>
 
 <dl class="function">
@@ -450,6 +473,27 @@ width ‘window’</p>
 <dt>mode=’valid’ will compute median only at points where the full window</dt>
 <dd>is available</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</li>
+<li><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</li>
+<li><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">One-dimensional filtered signal</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -583,6 +627,36 @@ larger than pi/2, that is also a local extremum in phase velocity</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="neurotools.signal.signal.stats_block">
+<code class="descclassname">neurotools.signal.signal.</code><code class="descname">stats_block</code><span class="sig-paren">(</span><em>data</em>, <em>statfunction</em>, <em>N=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#stats_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.stats_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute function of signal in blocks of size $N$ over the last axis
+of the data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>np.array</em>) – N-dimensional numpy array. Blocking is performed over the last axis</li>
+<li><strong>statfunction</strong> (<a class="reference internal" href="neurotools.gpu.cu.function.html#module-neurotools.gpu.cu.function" title="neurotools.gpu.cu.function"><em>function</em></a>) – Statistical function to compute on each block. Should be, or
+behave similarly to, the <cite>numpy</cite> buit-ins, e.g. np.mean,
+np.median, etc.</li>
+<li><strong>N</strong> (<em>positive integer</em>) – Block size in which to break data. If data cannot be split
+evenly into blocks of size $N$, then data are truncated to the
+largest integer multiple of N.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Blocked data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="neurotools.signal.signal.triggeredaverage">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">triggeredaverage</code><span class="sig-paren">(</span><em>signal</em>, <em>times</em>, <em>window</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#triggeredaverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.triggeredaverage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -615,6 +689,46 @@ ranging from 0 to 2*pi, the values increase (or decrease) continuously.</p>
 <li><strong>x</strong> (<em>array-like</em>) – X is cast to float64 before processing. Complex values are
 not supported.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.signal.var_block">
+<code class="descclassname">neurotools.signal.signal.</code><code class="descname">var_block</code><span class="sig-paren">(</span><em>data</em>, <em>N=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#var_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.var_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls stats_block using np.var. See documentation of stats_block for
+details.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.signal.variance_filter">
+<code class="descclassname">neurotools.signal.signal.</code><code class="descname">variance_filter</code><span class="sig-paren">(</span><em>x</em>, <em>window=100</em>, <em>mode=u'same'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#variance_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.variance_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts signal variance in a sliding window</p>
+<dl class="docutils">
+<dt>mode=’same’ will compute median even at the edges, where a full window</dt>
+<dd>is not available</dd>
+<dt>mode=’valid’ will compute median only at points where the full window</dt>
+<dd>is available</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</li>
+<li><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</li>
+<li><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">One-dimensional filtered signal</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>

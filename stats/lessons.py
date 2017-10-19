@@ -21,8 +21,7 @@ import neurotools.stats.hmm as hmm
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
-from neurotools.color import BLACK,RUST,TURQUOISE,OCHRE,AZURE
+from   neurotools.graphics.color import BLACK,RUST,TURQUOISE,OCHRE,AZURE
 
 # Adjust plotting preference
 # TODO: move these config options elsewhere
@@ -34,6 +33,13 @@ plt.rcParams['axes.color_cycle'] = [BLACK,RUST,TURQUOISE,OCHRE,AZURE]
 plt.rcParams['legend.borderaxespad'] = 0.
 
 def sample_wiener_process(x0,sigma,dt,N,ntrial=1):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     simulated = np.zeros((N,ntrial),dtype=np.float32)
     x = x0*np.ones((ntrial,),dtype=np.float32)
     for i in range(N):
@@ -50,7 +56,13 @@ def sample_ou_process(x0,sigma,tau,dt,N,ntrial=1):
         sigma : standard deviation of driving Wiener process
         tau : exponential damping time constant
         dt : time step
-        N : number of samples to draw
+        N : number of samples to draw 
+        
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     simulated = np.zeros((N,ntrial),'float')
     x = x0*np.ones((ntrial,),'float')
@@ -60,6 +72,13 @@ def sample_ou_process(x0,sigma,tau,dt,N,ntrial=1):
     return simulated
 
 def add_spikes(Y):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # plot spikes
     y1,y2 = plt.ylim()
     y3 = y2+.1*(y2-y1)
@@ -68,12 +87,26 @@ def add_spikes(Y):
     ylim(y1,y3)
    
 def precision1D(N,a,b):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     a =  1 # diagonal weights (precisions)
     b = .1 # off-diagonal (precision of time correlations)
     precision = np.diag(np.ones(N)*a)*2 - np.diag(np.ones(N-1)*b,-1) - np.diag(np.ones(N-1)*b,1)
     return precision
     
 def showim(x,**vargs):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     plt.figure()
     if x.dtype in (np.complex64,np.complex128,np.complex256):
         vmin = min(np.min(x.real),np.min(x.imag),np.min(abs(x)))
@@ -89,6 +122,13 @@ def showim(x,**vargs):
         plt.imshow(x,**vargs)
 
 def infer_states_Gaussian_ADF(Y,variance,true_states=None,do_plot=True):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     fx0 = hmm.Gaussian(0,0)
     fA  = hmm.DiffusionGaussian(variance)
     fB  = hmm.PoissonObservationModel(1,0)
@@ -115,9 +155,23 @@ class PGOM:
     '''
     class Approximate(hmm.PoissonObservationApproximator):
         def __init__(s,y,g,a=1,b=0):
+            '''
+            Parameters
+            ----------
+            
+            Returns
+            -------
+            '''
             PoissonObservationApproximator.__init__(s,a,b,y)
             s.g = g
         def __mul__(s,o):
+            '''
+            Parameters
+            ----------
+            
+            Returns
+            -------
+            '''
             # first combine our Gaussian with the other Gaussian
             # then call the integration method in parent class
             return PoissonObservationApproximator.__mul__(s,s.g if o is 1 else s.g*o)

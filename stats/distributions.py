@@ -21,6 +21,8 @@ scipy.stats by computing log-probability values using high precision
 import numpy as np
 from neurotools.functions import log_factorial, slog
 import random
+import scipy
+import scipy.special
 
 def poisson_logpdf(k,l):
     '''
@@ -28,7 +30,8 @@ def poisson_logpdf(k,l):
     evaluated at points k. k should be a vector of integers.
     '''
     # k,l = map(np.float128,(k,l))
-    return k*slog(l)-l-np.array([log_factorial(x) for x in k])
+    return k*slog(l)-l-np.array([scipy.special.gammaln(x+1) for x in k])
+    #return k*slog(l)-l-np.array([log_factorial(x) for x in k])
 
 def poisson_pdf(k,l):
     return np.exp(poisson_logpdf(k,l))

@@ -349,6 +349,22 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooths data by convolving with a size smoothat box</span>
 <span class="sd">    provide smoothat in units of frames i.e. samples (not ms or seconds)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : np.array</span>
+<span class="sd">        One-dimensional numpy array of the signal to be filtred</span>
+<span class="sd">    window : positive int</span>
+<span class="sd">        Filtering window length in samples</span>
+<span class="sd">    mode : string, default &#39;same&#39;</span>
+<span class="sd">        If &#39;same&#39;, the returned signal will have the same time-base and</span>
+<span class="sd">        length as the original signal. if &#39;valid&#39;, edges which do not</span>
+<span class="sd">        have the full window length will be trimmed</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array :</span>
+<span class="sd">        One-dimensional filtered signal</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span>
@@ -371,15 +387,67 @@
 <span class="sd">    mode=&#39;valid&#39; will compute median only at points where the full window</span>
 <span class="sd">        is available</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : np.array</span>
+<span class="sd">        One-dimensional numpy array of the signal to be filtred</span>
+<span class="sd">    window : positive int</span>
+<span class="sd">        Filtering window length in samples</span>
+<span class="sd">    mode : string, default &#39;same&#39;</span>
+<span class="sd">        If &#39;same&#39;, the returned signal will have the same time-base and</span>
+<span class="sd">        length as the original signal. if &#39;valid&#39;, edges which do not</span>
+<span class="sd">        have the full window length will be trimmed</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array :</span>
+<span class="sd">        One-dimensional filtered signal</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;valid&#39;</span><span class="p">:</span>
         <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">window</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">window</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;same&#39;</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;EDGE VALUES WILL BE BAD&#39;</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">window</span> <span class="o">/</span> <span class="mi">2</span>
-        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="o">-</span><span class="n">w</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">w</span><span class="p">)])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">window</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">window</span> <span class="o">-</span> <span class="n">a</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="o">-</span><span class="n">a</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">b</span><span class="p">)])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="variance_filter"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.variance_filter">[docs]</a><span class="k">def</span> <span class="nf">variance_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts signal variance in a sliding window</span>
+
+<span class="sd">    mode=&#39;same&#39; will compute median even at the edges, where a full window</span>
+<span class="sd">        is not available</span>
+
+<span class="sd">    mode=&#39;valid&#39; will compute median only at points where the full window</span>
+<span class="sd">        is available</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : np.array</span>
+<span class="sd">        One-dimensional numpy array of the signal to be filtred</span>
+<span class="sd">    window : positive int</span>
+<span class="sd">        Filtering window length in samples</span>
+<span class="sd">    mode : string, default &#39;same&#39;</span>
+<span class="sd">        If &#39;same&#39;, the returned signal will have the same time-base and</span>
+<span class="sd">        length as the original signal. if &#39;valid&#39;, edges which do not</span>
+<span class="sd">        have the full window length will be trimmed</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array :</span>
+<span class="sd">        One-dimensional filtered signal</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;valid&#39;</span><span class="p">:</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">window</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">window</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;same&#39;</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">window</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">window</span> <span class="o">-</span> <span class="n">a</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="o">-</span><span class="n">a</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">b</span><span class="p">)])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span></div>
 
@@ -540,31 +608,57 @@
         <span class="n">ps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span><span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">ps</span></div>
 
-<div class="viewcode-block" id="median_block"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.median_block">[docs]</a><span class="k">def</span> <span class="nf">median_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="stats_block"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.stats_block">[docs]</a><span class="k">def</span> <span class="nf">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">statfunction</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    blocks data by median over last axis</span>
+<span class="sd">    Compute function of signal in blocks of size $N$ over the last axis</span>
+<span class="sd">    of the data</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : np.array</span>
+<span class="sd">        N-dimensional numpy array. Blocking is performed over the last axis</span>
+<span class="sd">    statfunction : function</span>
+<span class="sd">        Statistical function to compute on each block. Should be, or </span>
+<span class="sd">        behave similarly to, the `numpy` buit-ins, e.g. np.mean,</span>
+<span class="sd">        np.median, etc.</span>
+<span class="sd">    N : positive integer</span>
+<span class="sd">        Block size in which to break data. If data cannot be split </span>
+<span class="sd">        evenly into blocks of size $N$, then data are truncated to the </span>
+<span class="sd">        largest integer multiple of N. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array : </span>
+<span class="sd">        Blocked data</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">L</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">L</span><span class="o">/</span><span class="n">N</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">L</span><span class="o">//</span><span class="n">N</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">B</span><span class="o">*</span><span class="n">N</span>
-    <span class="k">if</span> <span class="n">D</span><span class="o">!=</span><span class="n">N</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;DROPPING LAST BIT, NOT ENOUGH FOR A BLOCK&#39;</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">statfunction</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="mean_block"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.mean_block">[docs]</a><span class="k">def</span> <span class="nf">mean_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    blocks data by mean over last axis</span>
+<span class="sd">    Calls stats_block using np.mean. See documentation of stats_block for</span>
+<span class="sd">    details.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-    <span class="n">L</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">L</span><span class="o">/</span><span class="n">N</span>
-    <span class="n">D</span> <span class="o">=</span> <span class="n">B</span><span class="o">*</span><span class="n">N</span>
-    <span class="k">if</span> <span class="n">D</span><span class="o">!=</span><span class="n">N</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;DROPPING LAST BIT, NOT ENOUGH FOR A BLOCK&#39;</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="n">D</span><span class="p">]</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="var_block"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.var_block">[docs]</a><span class="k">def</span> <span class="nf">var_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calls stats_block using np.var. See documentation of stats_block for</span>
+<span class="sd">    details.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="median_block"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.median_block">[docs]</a><span class="k">def</span> <span class="nf">median_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calls stats_block using np.median. See documentation of stats_block for</span>
+<span class="sd">    details.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="phase_randomize"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.phase_randomize">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

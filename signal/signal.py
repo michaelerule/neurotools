@@ -194,6 +194,22 @@ def box_filter(data,smoothat):
     '''
     Smooths data by convolving with a size smoothat box
     provide smoothat in units of frames i.e. samples (not ms or seconds)
+    
+    Parameters
+    ----------
+    x : np.array
+        One-dimensional numpy array of the signal to be filtred
+    window : positive int
+        Filtering window length in samples
+    mode : string, default 'same'
+        If 'same', the returned signal will have the same time-base and
+        length as the original signal. if 'valid', edges which do not
+        have the full window length will be trimmed
+    
+    Returns
+    -------
+    np.array :
+        One-dimensional filtered signal
     '''
     N = len(data)
     assert len(data.shape)==1
@@ -216,15 +232,67 @@ def median_filter(x,window=100,mode='same'):
     mode='valid' will compute median only at points where the full window
         is available
 
+    Parameters
+    ----------
+    x : np.array
+        One-dimensional numpy array of the signal to be filtred
+    window : positive int
+        Filtering window length in samples
+    mode : string, default 'same'
+        If 'same', the returned signal will have the same time-base and
+        length as the original signal. if 'valid', edges which do not
+        have the full window length will be trimmed
+    
+    Returns
+    -------
+    np.array :
+        One-dimensional filtered signal
     '''
     n = x.shape[0]
     if mode=='valid':
         filtered = [np.median(x[i:i+window]) for i in range(n-window)]
         return array(filtered)
     if mode=='same':
-        warn('EDGE VALUES WILL BE BAD')
-        w = window / 2
-        filtered = [np.median(x[max(0,i-w):min(n,i+w)]) for i in range(n)]
+        a = window // 2
+        b = window - a
+        filtered = [np.median(x[max(0,i-a):min(n,i+b)]) for i in range(n)]
+        return np.array(filtered)
+    assert 0
+
+def variance_filter(x,window=100,mode='same'):
+    '''
+    Extracts signal variance in a sliding window
+
+    mode='same' will compute median even at the edges, where a full window
+        is not available
+
+    mode='valid' will compute median only at points where the full window
+        is available
+    
+    Parameters
+    ----------
+    x : np.array
+        One-dimensional numpy array of the signal to be filtred
+    window : positive int
+        Filtering window length in samples
+    mode : string, default 'same'
+        If 'same', the returned signal will have the same time-base and
+        length as the original signal. if 'valid', edges which do not
+        have the full window length will be trimmed
+    
+    Returns
+    -------
+    np.array :
+        One-dimensional filtered signal
+    '''
+    n = x.shape[0]
+    if mode=='valid':
+        filtered = [np.var(x[i:i+window]) for i in range(n-window)]
+        return array(filtered)
+    if mode=='same':
+        a = window // 2
+        b = window - a
+        filtered = [np.var(x[max(0,i-a):min(n,i+b)]) for i in range(n)]
         return np.array(filtered)
     assert 0
 
@@ -385,31 +453,57 @@ def pieces(x,thr=4):
         ps.append((range(a,b),x[a:b]))
     return ps
 
-def median_block(data,N=100):
+def stats_block(data,statfunction,N=100):
     '''
-    blocks data by median over last axis
+    Compute function of signal in blocks of size $N$ over the last axis
+    of the data
+    
+    Parameters
+    ----------
+    data : np.array
+        N-dimensional numpy array. Blocking is performed over the last axis
+    statfunction : function
+        Statistical function to compute on each block. Should be, or 
+        behave similarly to, the `numpy` buit-ins, e.g. np.mean,
+        np.median, etc.
+    N : positive integer
+        Block size in which to break data. If data cannot be split 
+        evenly into blocks of size $N$, then data are truncated to the 
+        largest integer multiple of N. 
+    
+    Returns
+    -------
+    np.array : 
+        Blocked data
     '''
     N = int(N)
     L = data.shape[-1]
-    B = L/N
+    B = L//N
     D = B*N
-    if D!=N: warn('DROPPING LAST BIT, NOT ENOUGH FOR A BLOCK')
     data = data[...,:D]
-    data = np.reshape(data,shape(data)[:-1]+(B,N))
-    return np.median(data,axis=-1)
+    data = np.reshape(data,data.shape[:-1]+(B,N))
+    return statfunction(data,axis=-1)
 
 def mean_block(data,N=100):
     '''
-    blocks data by mean over last axis
+    Calls stats_block using np.mean. See documentation of stats_block for
+    details.
     '''
-    N = int(N)
-    L = data.shape[-1]
-    B = L/N
-    D = B*N
-    if D!=N: warn('DROPPING LAST BIT, NOT ENOUGH FOR A BLOCK')
-    data = data[...,:D]
-    data = reshape(data,data.shape[:-1]+(B,N))
-    return np.mean(data,axis=-1)
+    return stats_block(data,np.mean,N)
+
+def var_block(data,N=100):
+    '''
+    Calls stats_block using np.var. See documentation of stats_block for
+    details.
+    '''
+    return stats_block(data,np.var,N)
+
+def median_block(data,N=100):
+    '''
+    Calls stats_block using np.median. See documentation of stats_block for
+    details.
+    '''
+    return stats_block(data,np.median,N)
 
 def phase_randomize(signal):
     '''

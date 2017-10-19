@@ -7,8 +7,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
 
 import numpy as np

@@ -172,13 +172,13 @@
 </table>
 <p class="rubric">Example</p>
 <p>X = 0.4*arange(9)
-Y = exp(-X/4+1)*cos(X)
+Y = np.exp(-X/4+1)*np.cos(X)
 Z = Y+randn(<a href="#id1"><span class="problematic" id="id2">*</span></a>shape(X))
 W = ones(shape(X))
 w,L,b = damped_cosine(X,Z,W).x
 plot(X,Y)
 plot(X,Z)
-plot(X,cos(w*X)*exp(-X/L+b))</p>
+plot(X,np.cos(w*X)*np.exp(-X/L+b))</p>
 </dd></dl>
 
 <dl class="function">
@@ -249,7 +249,11 @@ returns the tuple (m,b) for line in y = mx+b format</p>
 <dl class="function">
 <dt id="neurotools.stats.regressions.weighted_least_squares">
 <code class="descclassname">neurotools.stats.regressions.</code><code class="descname">weighted_least_squares</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/regressions.html#weighted_least_squares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.regressions.weighted_least_squares" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initialize power law fit
+EPS = 1e-10
+use = (X&gt;EPS)&amp;(Y&gt;EPS)
+weighted_least_squares(np.log(X+EPS)[use],np.log(Y+EPS)[use],1/(EPS+X[use]))</p>
+</dd></dl>
 
 </div>
 

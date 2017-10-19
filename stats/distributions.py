@@ -7,8 +7,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
 
 '''
@@ -28,21 +26,40 @@ def poisson_logpdf(k,l):
     '''
     Gives the log-pdf for a poisson distribution with rate l 
     evaluated at points k. k should be a vector of integers.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     # k,l = map(np.float128,(k,l))
     return k*slog(l)-l-np.array([scipy.special.gammaln(x+1) for x in k])
     #return k*slog(l)-l-np.array([log_factorial(x) for x in k])
 
 def poisson_pdf(k,l):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return np.exp(poisson_logpdf(k,l))
 
-# log(sqrt(2*pi)) computed to high precision on Wolfram Alpha.
-logsqrt2pi = np.float128(
-    '0.91893853320467274178032973640561763986139747363778341281')
+# log(sqrt(2*pi)) computed to high precision
+logsqrt2pi = np.float128('0.91893853320467274178032973640561763986139747363778341281')
 
 def gaussian_logpdf(mu,sigma,x):
     '''
     Non-positive standar deviations will be clipped
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     mu,sigma,x = map(np.float128,(mu,sigma,x))
     x = (x-mu)/sigma
@@ -54,6 +71,12 @@ def gaussian_pdf(mu,sigma,x):
 def explogpdf(x,dx=1):
     '''
     Convert log-pdf to normalized pdf, integrating to get normalization constant
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     x -= np.mean(x)
     p = np.exp(x)

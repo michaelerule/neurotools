@@ -1,3 +1,14 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
 # depends on pylab
 '''
 In a paper in PLoS computational biology, April 2015, titled "Quantifying Spike
@@ -34,7 +45,6 @@ mean rate is higher than the power. Can we re-do it in log-power?
 
 if __name__=='__main__':
     from os.path import *
-    #execfile(expanduser('~/Dropbox/bin/multitapertools.py'))
     from multitapertools import *
     from numpy import *
     from matplotlib.pyplot import clf,plot

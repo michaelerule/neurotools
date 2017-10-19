@@ -134,7 +134,7 @@ for entry in DEPENDENCIES:
     try:
         mod = __import__(package)
     except:
-        sys.stdout.write('\n\timport failed, %s may not be installed or python path may not me correctly configured'%package)
+        sys.stdout.write('\n\timport failed, %s may not be installed or python path may not me correctly configured\n'%package)
         missing.append(package)
         continue # move on to next dependency
 
@@ -170,8 +170,8 @@ for entry in DEPENDENCIES:
     else:
         loaded_version = loaded_version.split('\n')[0]
         sys.stdout.write('\tVersion '+str(loaded_version ))
-        if loaded_version != version:
-            sys.stdout.write('\tThe loaded version differs from the dependency version '+str(version))
+        if loaded_version < version:
+            sys.stdout.write('\tLoaded version older than expected '+str(version))
 
     sys.stdout.write('\n')
     if package in builtins:

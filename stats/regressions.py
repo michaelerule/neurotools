@@ -3,16 +3,21 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+from neurotools.system import *
+
 '''
 Routines to regress spatiotemporal wave shapes to data
 '''
 
 '''
 Regress on the following model for synchrony
-synchrony(x) = cos(wx)*exp(-x/tau)+b
+synchrony(x) = np.cos(wx)*np.exp(-x/tau)+b
 
-angular synchrony cos(theta_x1-theta_x2) should
+angular synchrony np.cos(theta_x1-theta_x2) should
 decay as a damped cosine, with some constant offset b. Note that
 a nonzero constant offset may not indicate uniform synchrony, for
 example, the direction of constant phase in a plane wave will contribute
@@ -24,41 +29,41 @@ X: List of distances
 W: List of weights
 Y: List of average pairwise distances
 
-Model is cos(wx)*exp(-x/L)+b
+Model is np.cos(wx)*np.exp(-x/L)+b
 Generates predictions Z
 error is \sum W*(Z-Y)^2
 
 gradient of the error
-dErr/dw sum(W*(cos(w*x)*exp(-x/L)+b-Y)**2)
-dErr/dL sum(W*(cos(w*x)*exp(-x/L)+b-Y)**2)
-dErr/db sum(W*(cos(w*x)*exp(-x/L)+b-Y)**2)
+dErr/dw np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
+dErr/dL np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
+dErr/db np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
 
-sum(W* dErr/dw (cos(w*x)*exp(-x/L)+b-Y)**2)
-sum(W* dErr/dL (cos(w*x)*exp(-x/L)+b-Y)**2)
-sum(W* dErr/db (cos(w*x)*exp(-x/L)+b-Y)**2)
+np.sum(W* dErr/dw (np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
+np.sum(W* dErr/dL (np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
+np.sum(W* dErr/db (np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
 
-sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) dErr/dw (cos(w*x)*exp(-x/L)+b-Y))
-sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) dErr/dL (cos(w*x)*exp(-x/L)+b-Y))
-sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) dErr/db (cos(w*x)*exp(-x/L)+b-Y))
+np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/dw (np.cos(w*x)*np.exp(-x/L)+b-Y))
+np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/dL (np.cos(w*x)*np.exp(-x/L)+b-Y))
+np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/db (np.cos(w*x)*np.exp(-x/L)+b-Y))
 
-sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) * -sin(w*x)*exp(-x/L) )
-sum(W* 2(cos(w*x)*exp(-x/L)+b-Y) *  cos(w*x)*(-1/L)*exp(-x/L) )
-sum(W* 2(cos(w*x)*exp(-x/L)+b-Y))
+np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) * -np.sin(w*x)*np.exp(-x/L) )
+np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) *  np.cos(w*x)*(-1/L)*np.exp(-x/L) )
+np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y))
 
 
 objective function is
 
 def objective(w,L,b):
-    z = cos(w*x)*exp(-x/L)+b
-    error = sum( W*(z-Y)**2 )
+    z = np.cos(w*x)*np.exp(-x/L)+b
+    error = np.sum( W*(z-Y)**2 )
     return error
 
 def gradient(w,lambda,b):
-    z = cos(w*x)*exp(-x/L)+b
+    z = np.cos(w*x)*np.exp(-x/L)+b
     h = 2*(z-Y)
-    dEdw = sum(W*h*-sin(w*x)*exp(-x/L))
-    dEdL = sum(W*h* cos(w*x)*(-1/L)*exp(-x/L))
-    dEdb = sum(W*H)
+    dEdw = np.sum(W*h*-np.sin(w*x)*np.exp(-x/L))
+    dEdL = np.sum(W*h* np.cos(w*x)*(-1/L)*np.exp(-x/L))
+    dEdb = np.sum(W*H)
     return [dEdw,dEdL,dEdb]
 
 We use the minimize function from scipy.optimize.
@@ -152,7 +157,9 @@ scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,
 
 '''
 
+import numpy as np
 from scipy.optimize import minimize
+from neurotools.functions import npdf
 
 def damped_cosine(X,Y,W):
     '''
@@ -171,27 +178,27 @@ def damped_cosine(X,Y,W):
     Example
     -------
         X = 0.4*arange(9)
-        Y = exp(-X/4+1)*cos(X)
+        Y = np.exp(-X/4+1)*np.cos(X)
         Z = Y+randn(*shape(X))
         W = ones(shape(X))
         w,L,b = damped_cosine(X,Z,W).x
         plot(X,Y)
         plot(X,Z)
-        plot(X,cos(w*X)*exp(-X/L+b))
+        plot(X,np.cos(w*X)*np.exp(-X/L+b))
     '''
     def objective(wLb):
         (w,L,b) = wLb
-        z = cos(w*X)*exp(-X/L+b)
-        error = sum( W*(z-Y)**2 )
+        z = np.cos(w*X)*np.exp(-X/L+b)
+        error = np.sum( W*(z-Y)**2 )
         return error
     def gradient(wLb):
         (w,L,b) = wLb
         # todo: gradient is wrong?
-        z = cos(w*X)*exp(-X/L)+b
+        z = np.cos(w*X)*np.exp(-X/L)+b
         h = 2*(z-Y)
-        dEdw = sum(W*h*-sin(w*X)*exp(-X/L))
-        dEdL = sum(W*h* cos(w*X)*(-1/L)*exp(-X/L))
-        dEdb = sum(W*h)
+        dEdw = np.sum(W*h*-np.sin(w*X)*np.exp(-X/L))
+        dEdL = np.sum(W*h* np.cos(w*X)*(-1/L)*np.exp(-X/L))
+        dEdb = np.sum(W*h)
         return arr([dEdw,dEdL,dEdb])
     result = minimize(objective,[1,1,0])#,jac=gradient)
     return result
@@ -199,16 +206,14 @@ def damped_cosine(X,Y,W):
 from scipy.stats import linregress
 def weighted_least_squares(X,Y,W):
     '''
-    '''
-    '''
-    Was using this one to initialize power law fit
+    Initialize power law fit
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
-    weighted_least_squares(log(X+EPS)[use],log(Y+EPS)[use],1/(EPS+X[use]))
+    weighted_least_squares(np.log(X+EPS)[use],np.log(Y+EPS)[use],1/(EPS+X[use]))
     '''
     def objective(ab):
         a,b=(a,b)
-        return sum( W*(Y-(X*a+b))**2)
+        return np.sum( W*(Y-(X*a+b))**2)
     a,b,_,_,_ = linregress(X,Y)
     result = minimize(objective,[a,b])
     return result
@@ -220,7 +225,7 @@ def power_law(X,Y,W):
     the original space.
     '''
     '''
-    power law form is `log(y)=a*log(x)+b` or `y = b*x^a`
+    power law form is `np.log(y)=a*np.log(x)+b` or `y = b*x^a`
 
     initial best guess using linear regression.
 
@@ -229,7 +234,7 @@ def power_law(X,Y,W):
 
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
-    a,b = weighted_least_squares(log(X)[use],log(Y)[use],W[use]).x
+    a,b = weighted_least_squares(np.log(X)[use],np.log(Y)[use],W[use]).x
     plot(sorted(X),b*arr(sorted(X))**a)
 
     from numpy.polynomial.polynomial import polyfit
@@ -240,19 +245,17 @@ def power_law(X,Y,W):
     '''
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
-    a,b = polyfit(log(X)[use],log(Y)[use],1,w=W[use])
+    a,b = polyfit(np.log(X)[use],np.log(Y)[use],1,w=W[use])
     '''
     def objective(ab):
         a,b = (a,b)
-        z = exp(b+a*log(X))
-        obj = sum((W*(Y-z)**2)[use])
+        z = np.exp(b+a*np.log(X))
+        obj = np.sum((W*(Y-z)**2)[use])
         print(a,b,obj)
         return obj
     result = minimize(objective,[a,b])
     '''
-    return a,exp(b)
-
-
+    return a,np.exp(b)
 
 def gaussian_function(X,Y):
     '''
@@ -263,14 +266,10 @@ def gaussian_function(X,Y):
     def objective(theta):
         (mu,sigma,scale,dc) = theta
         z = npdf(mu,sigma,X)*scale+dc
-        error = sum( (z-Y)**2 )
+        error = np.sum( (z-Y)**2 )
         return error
     result = minimize(objective,[0,1,1])
     return result
-
-
-
-from neurotools.functions import npdf
 
 def half_gaussian_function(X,Y):
     '''
@@ -281,12 +280,11 @@ def half_gaussian_function(X,Y):
     def objective(theta):
         (sigma,scale,dc) = theta
         z = npdf(0,sigma,X)*scale+dc
-        error = sum( (z-Y)**2 )
+        error = np.sum( (z-Y)**2 )
         return error
     result = minimize(objective,[1,1,0])
     sigma,scale,dc = result.x
     return sigma,scale,dc
-
 
 def exponential_decay(X,Y):
     '''
@@ -296,8 +294,8 @@ def exponential_decay(X,Y):
     '''
     def objective(theta):
         (lamb,scale,dc) = theta
-        z = exp(-lamb*X)*scale+dc
-        error = sum( (z-Y)**2 )
+        z = np.exp(-lamb*X)*scale+dc
+        error = np.sum( (z-Y)**2 )
         return error
     result = minimize(objective,[1,1,1])
     lamb,scale,dc = result.x
@@ -309,10 +307,10 @@ def robust_line(X,Y):
     returns the tuple (m,b) for line in y = mx+b format
     '''
     def pldist(x,y,m,b):
-        return (-m*x+y-b)/sqrt(m**2+1)
+        return (-m*x+y-b)/np.sqrt(m**2+1)
     def objective(H):
         m,b = H
-        return sum([abs(pldist(x,y,m,b)) for (x,y) in zip(X,Y)])
+        return np.sum([np.abs(pldist(x,y,m,b)) for (x,y) in zip(X,Y)])
     res = scipy.optimize.minimize(objective,[1,0],method = 'Nelder-Mead')
     return res.x
 

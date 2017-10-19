@@ -162,8 +162,6 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="c1"># more py2/3 compat</span>
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
@@ -183,21 +181,40 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Gives the log-pdf for a poisson distribution with rate l </span>
 <span class="sd">    evaluated at points k. k should be a vector of integers.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># k,l = map(np.float128,(k,l))</span>
     <span class="k">return</span> <span class="n">k</span><span class="o">*</span><span class="n">slog</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="o">-</span><span class="n">l</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span></div>
     <span class="c1">#return k*slog(l)-l-np.array([log_factorial(x) for x in k])</span>
 
 <div class="viewcode-block" id="poisson_pdf"><a class="viewcode-back" href="../../../neurotools.stats.distributions.html#neurotools.stats.distributions.poisson_pdf">[docs]</a><span class="k">def</span> <span class="nf">poisson_pdf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">poisson_logpdf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">))</span></div>
 
-<span class="c1"># log(sqrt(2*pi)) computed to high precision on Wolfram Alpha.</span>
-<span class="n">logsqrt2pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span>
-    <span class="s1">&#39;0.91893853320467274178032973640561763986139747363778341281&#39;</span><span class="p">)</span>
+<span class="c1"># log(sqrt(2*pi)) computed to high precision</span>
+<span class="n">logsqrt2pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;0.91893853320467274178032973640561763986139747363778341281&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="gaussian_logpdf"><a class="viewcode-back" href="../../../neurotools.stats.distributions.html#neurotools.stats.distributions.gaussian_logpdf">[docs]</a><span class="k">def</span> <span class="nf">gaussian_logpdf</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Non-positive standar deviations will be clipped</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">,(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
     <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="n">sigma</span>
@@ -209,6 +226,12 @@
 <div class="viewcode-block" id="explogpdf"><a class="viewcode-back" href="../../../neurotools.stats.distributions.html#neurotools.stats.distributions.explogpdf">[docs]</a><span class="k">def</span> <span class="nf">explogpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">dx</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert log-pdf to normalized pdf, integrating to get normalization constant</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

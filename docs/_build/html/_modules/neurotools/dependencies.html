@@ -289,7 +289,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">mod</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">import failed, </span><span class="si">%s</span><span class="s1"> may not be installed or python path may not me correctly configured&#39;</span><span class="o">%</span><span class="n">package</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">import failed, </span><span class="si">%s</span><span class="s1"> may not be installed or python path may not me correctly configured</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">package</span><span class="p">)</span>
         <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
         <span class="k">continue</span> <span class="c1"># move on to next dependency</span>
 
@@ -325,8 +325,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">loaded_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Version &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">loaded_version</span> <span class="p">))</span>
-        <span class="k">if</span> <span class="n">loaded_version</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">The loaded version differs from the dependency version &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">loaded_version</span> <span class="o">&lt;</span> <span class="n">version</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Loaded version older than expected &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
 
     <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">builtins</span><span class="p">:</span>

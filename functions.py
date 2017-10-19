@@ -8,10 +8,7 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATEion
+from neurotools.system import *
 
 """
 Commonly used functions

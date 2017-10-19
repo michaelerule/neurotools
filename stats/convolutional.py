@@ -9,14 +9,22 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
 
-# examine spiking correlations. time-domain implementation
-# build a correlation matrix out of cross-correlation estimates
-# still slow and memory intensive, but not prohibitive
-# (see efficient solution in frequency domain)
+'''
+Examine spiking correlations. time-domain implementation
+build a correlation matrix out of cross-correlation estimates
+still slow and memory intensive, but not prohibitive
+(see efficient solution in frequency domain)
+'''
 
 def ccor(i,j,spikes):
     '''
     Cross correlate spikes
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     A = spikes[:,i,:]
     B = spikes[:,j,:]
@@ -29,6 +37,12 @@ def ccm(i,j,k,spikes):
     '''
     Construct size k cross-correlation matrix.
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     x = ccor(i,j,spikes)
     midpoint = len(x)//2
@@ -42,6 +56,12 @@ def blockccm(k,spikes):
     Generate covariance matrix for linear least squares. It is a block
     matrix of all pairwise cross-correlation matrices
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     NTrials,NNeurons,NSamples = shape(spikes)
     result = float64(zeros((k*NNeurons,)*2))
@@ -59,6 +79,12 @@ def sta(i,spikes,lfp):
     '''
     Construct size k STA
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     A = spikes[:,i,:]
     B = lfp
@@ -72,6 +98,12 @@ def blocksta(k,spikes,lfp):
     Block spike-triggered average vector for time-domain least squares
     filter
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     NTrials,NNeurons,NSamples = shape(spikes)
     B = zeros((k*NNeurons,),dtype=float64)
@@ -84,6 +116,12 @@ def reconstruct(k,B,spikes):
     '''
     Reconstructs LFP from spikes
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     NTrials,NNeurons,NSamples = shape(spikes)
     result = zeros((NTrials,NSamples),dtype=float64)
@@ -101,6 +139,12 @@ def reconstruct(k,B,spikes):
 def cspect(i,j,spikes):
     '''
     Get cross-spectral density as FT of cross-correlation
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     x = ccor(i,j,spikes)
     return fft(x)[:len(x)//2+1]
@@ -111,6 +155,12 @@ def cspectm(spikes):
     NTrials,NNeurons,NSamples = shape(spikes)
     This is doing much more work than is needed, should change it to
     frequency domain.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     NTrials,NNeurons,NSamples = shape(spikes)
     window = hanning(NSamples)
@@ -132,6 +182,12 @@ def spike_lfp_filters(spikes,lfp):
     '''
     Cross-spectral densities between spikes and LFP
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     NTrials,NNeurons,NSamples = shape(spikes)
     # precomute lfp fft
@@ -150,6 +206,12 @@ def spectreconstruct(k,B,spikes=None,fftspikes=None):
     Reconstructs LFP from spikes using cross-spectral matrix.
     Can optionally pass the fts if they are already available
     NTrials,NNeurons,NSamples = shape(spikes)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if spikes!=None:
         NTrials,NNeurons,NSamples = shape(spikes)
@@ -162,6 +224,14 @@ def spectreconstruct(k,B,spikes=None,fftspikes=None):
     return result
 
 def create_spectral_model(spikes,lfp,shrinkage=0):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     XTX = cspectm(spikes)
     XTY = spike_lfp_filters(spikes,lfp)
     shrinkage = eye(shape(XTY)[1])*shrinkage
@@ -175,6 +245,13 @@ def construct_lowpass_operator(fb,k,Fs=1000.0):
     Get the impulse response of a low-pass filter first
     Then copy it into the matrix.
     This really only makes sense in the time domain.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     ff = zeros((k*4),dtype=float64)
     ff[k*2]=1
@@ -183,6 +260,36 @@ def construct_lowpass_operator(fb,k,Fs=1000.0):
     for i in range(k):
         result[i] = ff[k*2-i:][:k]
     return result
+
+def autocorrelation_bayes(s,D=200,prior_var=None):
+    '''
+    Computes autocorrelation of signal `s` over time lags `D`, 
+    applying a Gaussian prior of mean zero and variance `prior_var`.
+    If `prior_var` is None, then the length of signal `s` is used.
+    
+    Parameters
+    ----------
+    s : sequence of values
+    D : number of lags to compute, default is 200
+    prior_var : positive scalar or None, default is None
+    
+    Returns
+    -------
+    xc: autocorrelation over lags D, with zero-lag variance
+    '''
+    xc   = zeros(D+1)
+    lags = range(0,D+1)
+    for lag in lags:
+        a = s[lag:]
+        b = s[:len(s)-lag]
+        a = a-mean(a)
+        b = b-mean(b)
+        cm = mean(a*b)
+        n = len(a)
+        cv = var(a*b)*n/(n-1)
+        cm = cm / (1 + cv/len(s))
+        xc[lag] = cm
+    return xc
 
 
 '''

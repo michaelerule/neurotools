@@ -165,7 +165,6 @@ def damped_cosine(X,Y,W):
     '''
     Todo: constrain b, L to be positive
 
-
     Parameters
     ----------
     X: 
@@ -210,6 +209,12 @@ def weighted_least_squares(X,Y,W):
     EPS = 1e-10
     use = (X>EPS)&(Y>EPS)
     weighted_least_squares(np.log(X+EPS)[use],np.log(Y+EPS)[use],1/(EPS+X[use]))
+    
+    Parameters
+    ----------
+    X: List of distances
+    Y: List of amplitudes
+    W: Weights for points 
     '''
     def objective(ab):
         a,b=(a,b)
@@ -223,6 +228,12 @@ def power_law(X,Y,W):
     '''
     Fit a power law, but with error terms computed by r^2 in
     the original space.
+    
+    Parameters
+    ----------
+    X: List of distances
+    Y: List of amplitudes
+    W: Weights for points    
     '''
     '''
     power law form is `np.log(y)=a*np.log(x)+b` or `y = b*x^a`
@@ -259,9 +270,12 @@ def power_law(X,Y,W):
 
 def gaussian_function(X,Y):
     '''
-    Args:
-        X: List of distances
-        Y: List of amplitudes
+    
+    Parameters
+    ----------
+    X: List of distances
+    Y: List of amplitudes
+        
     '''
     def objective(theta):
         (mu,sigma,scale,dc) = theta
@@ -273,9 +287,12 @@ def gaussian_function(X,Y):
 
 def half_gaussian_function(X,Y):
     '''
-    Args:
-        X: List of distances
-        Y: List of amplitudes
+    
+    Parameters
+    ----------
+    X: List of distances
+    Y: List of amplitudes
+        
     '''
     def objective(theta):
         (sigma,scale,dc) = theta
@@ -288,9 +305,20 @@ def half_gaussian_function(X,Y):
 
 def exponential_decay(X,Y):
     '''
-    Args:
-        X: List of distances
-        Y: List of amplitudes
+    
+    Parameters
+    ----------
+    X: List of distances
+    Y: List of amplitudes
+        
+    Returns
+    -------
+    lambda : float
+        Length constant of fitted exponential fit
+    scale: float
+        Scale parameter (magnitude at zero) of exponential fit
+    dc : float
+        DC offset of exponential fit (asymptotic value)
     '''
     def objective(theta):
         (lamb,scale,dc) = theta
@@ -305,6 +333,12 @@ def robust_line(X,Y):
     '''
     2-variable linear regression with L1 penalty
     returns the tuple (m,b) for line in y = mx+b format
+    
+    Parameters
+    ----------
+    X: List of distances
+    Y: List of amplitudes
+        
     '''
     def pldist(x,y,m,b):
         return (-m*x+y-b)/np.sqrt(m**2+1)

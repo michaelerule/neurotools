@@ -164,14 +164,22 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 
-<span class="c1"># examine spiking correlations. time-domain implementation</span>
-<span class="c1"># build a correlation matrix out of cross-correlation estimates</span>
-<span class="c1"># still slow and memory intensive, but not prohibitive</span>
-<span class="c1"># (see efficient solution in frequency domain)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Examine spiking correlations. time-domain implementation</span>
+<span class="sd">build a correlation matrix out of cross-correlation estimates</span>
+<span class="sd">still slow and memory intensive, but not prohibitive</span>
+<span class="sd">(see efficient solution in frequency domain)</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="ccor"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.ccor">[docs]</a><span class="k">def</span> <span class="nf">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cross correlate spikes</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span>
@@ -184,6 +192,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Construct size k cross-correlation matrix.</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">midpoint</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
@@ -197,6 +211,12 @@
 <span class="sd">    Generate covariance matrix for linear least squares. It is a block</span>
 <span class="sd">    matrix of all pairwise cross-correlation matrices</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">float64</span><span class="p">(</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">NNeurons</span><span class="p">,)</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
@@ -214,6 +234,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Construct size k STA</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">lfp</span>
@@ -227,6 +253,12 @@
 <span class="sd">    Block spike-triggered average vector for time-domain least squares</span>
 <span class="sd">    filter</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">NNeurons</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
@@ -239,6 +271,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reconstructs LFP from spikes</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">NTrials</span><span class="p">,</span><span class="n">NSamples</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
@@ -256,6 +294,12 @@
 <div class="viewcode-block" id="cspect"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.cspect">[docs]</a><span class="k">def</span> <span class="nf">cspect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get cross-spectral density as FT of cross-correlation</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></div>
@@ -266,6 +310,12 @@
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
 <span class="sd">    This is doing much more work than is needed, should change it to</span>
 <span class="sd">    frequency domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">window</span> <span class="o">=</span> <span class="n">hanning</span><span class="p">(</span><span class="n">NSamples</span><span class="p">)</span>
@@ -287,6 +337,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cross-spectral densities between spikes and LFP</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="c1"># precomute lfp fft</span>
@@ -305,6 +361,12 @@
 <span class="sd">    Reconstructs LFP from spikes using cross-spectral matrix.</span>
 <span class="sd">    Can optionally pass the fts if they are already available</span>
 <span class="sd">    NTrials,NNeurons,NSamples = shape(spikes)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">spikes</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
         <span class="n">NTrials</span><span class="p">,</span><span class="n">NNeurons</span><span class="p">,</span><span class="n">NSamples</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
@@ -317,6 +379,14 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="create_spectral_model"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.create_spectral_model">[docs]</a><span class="k">def</span> <span class="nf">create_spectral_model</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">,</span><span class="n">shrinkage</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">XTX</span> <span class="o">=</span> <span class="n">cspectm</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">XTY</span> <span class="o">=</span> <span class="n">spike_lfp_filters</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">)</span>
     <span class="n">shrinkage</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">XTY</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">shrinkage</span>
@@ -330,6 +400,13 @@
 <span class="sd">    Get the impulse response of a low-pass filter first</span>
 <span class="sd">    Then copy it into the matrix.</span>
 <span class="sd">    This really only makes sense in the time domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ff</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="mi">4</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">ff</span><span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
@@ -338,6 +415,36 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
         <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ff</span><span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="autocorrelation_bayes"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.autocorrelation_bayes">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation_bayes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">D</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">prior_var</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes autocorrelation of signal `s` over time lags `D`, </span>
+<span class="sd">    applying a Gaussian prior of mean zero and variance `prior_var`.</span>
+<span class="sd">    If `prior_var` is None, then the length of signal `s` is used.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : sequence of values</span>
+<span class="sd">    D : number of lags to compute, default is 200</span>
+<span class="sd">    prior_var : positive scalar or None, default is None</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xc: autocorrelation over lags D, with zero-lag variance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">xc</span>   <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lags</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">lag</span><span class="p">:]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">-</span><span class="n">lag</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">cv</span> <span class="o">=</span> <span class="n">var</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">cm</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cv</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        <span class="n">xc</span><span class="p">[</span><span class="n">lag</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm</span>
+    <span class="k">return</span> <span class="n">xc</span></div>
 
 
 <span class="sd">&#39;&#39;&#39;</span>

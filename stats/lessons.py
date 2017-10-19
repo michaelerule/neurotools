@@ -13,10 +13,6 @@ from neurotools.system import *
 Miscellaneous routines from lessons
 '''
 
-#TODO: fix imports below
-#from neurotools.stats.hmm import *
-#from pylab import *
-
 import neurotools.stats.hmm as hmm
 import numpy as np
 import matplotlib as mpl

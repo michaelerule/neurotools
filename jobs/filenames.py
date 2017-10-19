@@ -39,7 +39,7 @@ def validate_argument_signature(sig):
     consists of types that can be translated between python, numpy, and
     matlab convenctions.
     '''
-    rause NotImplementedError('Function not yet implemented');
+    raise NotImplementedError('Function not yet implemented');
 
 def is_dangerous_filename(filename):
     '''

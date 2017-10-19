@@ -40,7 +40,7 @@ except:
 
 import neurotools.jobs.decorator
 import neurotools.tools
-import neurotools.ntime
+import neurotools.tools
 
 from neurotools.jobs.closure import verify_function_closure
 
@@ -503,8 +503,9 @@ def disk_cacher(
     method='npy',
     write_back=True,
     skip_fast=False,
-    verbose=VERBOSE_CACHING,
-    allow_mutable_bindings=False):
+    verbose=False,
+    allow_mutable_bindings=False,
+    CACHE_IDENTIFIER='.__neurotools_cache__'):
     '''
     Decorator to memoize functions to disk.
     Currying pattern here where cache_location creates decotrators
@@ -538,9 +539,30 @@ def disk_cacher(
     
     Parameters
     ----------
+    cache_location : string
+        Path to disk cache
+    method : string, default 'npy',
+        Storange format for caches. Can be 'pickle', 'mat' or 'npy'
+    write_back : bool, default=True
+        Whether to copy new cache value back to the disk cache. If false,
+        then previously cached values can be read but new entries will not
+        be creates
+    skip_fast : bool, default=False
+        Attempt to simply re-compute values which are taking too long to
+        retrieve from the cache. Experimental, should not be used.
+    verbose : bool, default=False
+        Whether to print detailde logging information
+    allow_mutable_bindings : bool, default=False
+        Whether to allow caching of functions that close over mutable
+        scope. Such functions are more likely to return different results
+        for the same arguments, leading to invalid cached return values.
+    CACHE_IDENTIFIER : string, default='.__neurotools_cache__'
+        subdirectory name for disk cache.
     
     Returns
     -------
+    cached : disk cacher object
+        TODO
     '''
     VALID_METHODS = ('pickle','mat','npy')
     assert method in VALID_METHODS
@@ -565,7 +587,7 @@ def disk_cacher(
             Returns
             -------
             '''
-            t0 = neurotools.ntime.current_milli_time()
+            t0 = neurotools.tools.current_milli_time()
             try:
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
             except ValueError as exc:
@@ -622,7 +644,7 @@ def disk_cacher(
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a numpy file')
                             np.save(location, result)
-                    except (RuntimeError, ValueError, IOError, PicklingError) as exc2:
+                    except (RutoolsError, ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
                             print('\t%s.%s'%(f.__module__,f.__name__))
@@ -640,7 +662,7 @@ def disk_cacher(
                                 neurotools.jobs.decorator.print_signature(sig))
                             st        = os.stat(location)
                             du        = st.st_blocks * st.st_blksize
-                            t1        = neurotools.ntime.current_milli_time()
+                            t1        = neurotools.tools.current_milli_time()
                             overhead  = float(t1-t0) - time
                             io        = float(du)/(1+overhead)
                             recompute = float(du)/(1+time)
@@ -695,7 +717,7 @@ def hierarchical_cacher(
         fast_to_slow,
         method='npy',
         write_back=True,
-        verbose=VERBOSE_CACHING,
+        verbose=False,
         allow_mutable_bindings=False):
     '''
     Construct a filesystem cache defined in terms of a hierarchy from
@@ -711,7 +733,7 @@ def hierarchical_cacher(
     write_back : bool, default True
         whether to automatically copy newly computed cache values to 
         the slower caches
-    verbose : bool, defaults to global `VERBOSE_CACHING`
+    verbose : bool, defaults to `False`
         whether to print detailed logging iformation to standard out
         when manipulating the cache
     allow_mutable_bindings : bool, default False

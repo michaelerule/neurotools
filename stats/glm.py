@@ -28,14 +28,10 @@ http://statsmodels.sourceforge.net/devel/install.html
 See also 
 '''
 
-#from neurotools.tools import varexists
-#from neurotools.ntime import *
-
 #############################################################################
 # Imports
 # Check that numpy and scipy is installed
 try:
-    #from numpy import *
     import numpy as np
 except:
     print('Numpy appears to be missing. Try:')

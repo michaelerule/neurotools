@@ -151,8 +151,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="neurotools-jobs-initialize-system-cache-module">
-<h1>neurotools.jobs.initialize_system_cache module<a class="headerlink" href="#neurotools-jobs-initialize-system-cache-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.jobs.initialize_system_cache">
+<span id="neurotools-jobs-initialize-system-cache-module"></span><h1>neurotools.jobs.initialize_system_cache module<a class="headerlink" href="#module-neurotools.jobs.initialize_system_cache" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.jobs.initialize_system_cache.du">
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">du</code><span class="sig-paren">(</span><em>location</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#du"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.du" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the disk usave (<cite>du</cite>) of a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>location</strong> (<em>string</em>) – Path on filesystem</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>du</strong> – File size in bytes</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.initialize_system_cache.launch_cache_synchronizers">
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">launch_cache_synchronizers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#launch_cache_synchronizers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inter-process communication is mediated via shared caches mapped onto
+the file-system. If a collection of processes are distributed over
+a large filesystem, they may need to share data.</p>
+<p>This solution is very bad and has been depricated. It now raises a
+<cite>NotImplementedError</cite>.</p>
+<p>This solution originally spawned rsync jobs to keep a collection of
+locations in the filesystem synchronized. This is bad for the following
+reasons. Mis-configuration can lead to loss of data. Not all jobs
+may need to share all cache values. It is far better to implement
+some sort of lazy protocol.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.initialize_system_cache.purge_ram_cache">
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">purge_ram_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#purge_ram_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.purge_ram_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the ramdisk cache. USE WITH CAUTION. This depends on the
+global confuration variable <cite>ssd_cache_location</cite> as well as
+<cite>CACHE_IDENTIFIER</cite>.</p>
+<p>This will <cite>rm -rf</cite> the entire  <cite>ramdisk_location</cite> and is EXTREMELY
+dangerous. It has been disabled and now raises <cite>NotImplementedError</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.initialize_system_cache.purge_ssd_cache">
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">purge_ssd_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#purge_ssd_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.purge_ssd_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the SSD drive cache. USE WITH CAUTION. This depends on the
+global confuration variable <cite>ssd_cache_location</cite> as well as
+<cite>CACHE_IDENTIFIER</cite>.</p>
+<p>This will <cite>rm -rf</cite> the entire  <cite>ssd_cache_location</cite> and is EXTREMELY
+dangerous. It has been disabled and now raises <cite>NotImplementedError</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.initialize_system_cache.reset_ramdisk">
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">reset_ramdisk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#reset_ramdisk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.reset_ramdisk" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will generate a 500GB ramdisk on debian linux. This allows in RAM
+inter-process communication using the filesystem metaphore. It should
+be considered dangerous. It runs shell commands that
+require <cite>sudo</cite> privileges.</p>
+</dd></dl>
+
 </div>
 
 

@@ -1,4 +1,20 @@
 #!/user/bin/env python 
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+import sys
+__PYTHON_2__ = sys.version_info<(3, 0)
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
+
 from neurotools.jobs.cache import *
 
 '''
@@ -11,8 +27,6 @@ paths, for example.
 
 CACHE_IDENTIFIER ='.__neurotools_cache__'
 VERBOSE_CACHING = 0
-
-
 
 ######################################################################
 # Setup advanced memoization
@@ -154,12 +168,12 @@ For example, a cache hierarchy might include
 - local HDD for larger working datasets
 - network filesystem for large database
 ''' 
-# disk_cache_hierarchy = (ramdisk_location,ssd_cache_location)
+disk_cache_hierarchy = (ramdisk_location,ssd_cache_location)
 
-# disk_cached       = disk_cacher('.')
-# leviathan         = hierarchical_cacher(disk_cache_hierarchy,method='npy')
-# unsafe_disk_cache = hierarchical_cacher(disk_cache_hierarchy,method='npy',allow_mutable_bindings=True)
-# pickle_cache      = hierarchical_cacher(disk_cache_hierarchy,method='pickle')
+disk_cached       = disk_cacher('.')
+leviathan         = hierarchical_cacher(disk_cache_hierarchy,method='npy')
+unsafe_disk_cache = hierarchical_cacher(disk_cache_hierarchy,method='npy',allow_mutable_bindings=True)
+pickle_cache      = hierarchical_cacher(disk_cache_hierarchy,method='pickle')
 
 # neurotools.jobs.decorator.memoize memoizes within the process memory
 # leviathan (because it is large and slow and buggy) memoizes within
@@ -171,9 +185,6 @@ old_memoize = neurotools.jobs.decorator.memoize
 new_memoize = leviathan
 memoize     = new_memoize
 neurotools.jobs.decorator.memoize = new_memoize
-
-
-
 
 # Testing code
 if __name__=="__main__":

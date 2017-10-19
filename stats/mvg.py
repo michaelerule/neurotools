@@ -20,7 +20,7 @@ import numpy.random
 from   numpy.random import randn
 from   numpy import pi
 
-from neurotools.matrix import check_covmat, check_covmat_fast, check_finite_real
+from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_finite_real
 from neurotools.stats.Gaussian import *
 # TODO fix imports
 #from neurotools.matrix import *

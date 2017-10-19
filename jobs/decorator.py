@@ -20,15 +20,9 @@ Robust decorators are provided by the decorator package
     http://pythonhosted.org/decorator/documentation.html
 '''
 
-
-
-#from neurotools import tools
-
 import neurotools.tools
-
 import os, sys
-from collections import defaultdict
-
+from   collections import defaultdict
 import inspect, ast, types
 import warnings, traceback, errno
 import pickle, json, base64, zlib

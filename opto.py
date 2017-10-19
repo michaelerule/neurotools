@@ -1,4 +1,26 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+import sys
+__PYTHON_2__ = sys.version_info<(3, 0)
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
+
+'''
+Routines specific to working with Optogenetics datasets from the 
+Donoghue lab. These routines need to be ported to make them general.
+This module refers to and depends on unpublished data. 
+
+TODO: once data can be publicly released, re-package these routines.
+'''
 
 opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001';
 
@@ -122,7 +144,7 @@ def __opto_get_lfp_analytic_helper__((i,data,fa,fb,Fs,order)):
     '''
     Parallel function wrapper for opto_get_lfp_analytic
     '''
-    print 5,i
+    print(5,i)
     return i,hilbert(bandfilter(data,fa,fb,Fs,order))
 
 def opto_get_lfp_analytic(opto_dataset,channel,fa,fb,order=4):
@@ -144,15 +166,11 @@ def opto_get_lfp_analytic(opto_dataset,channel,fa,fb,order=4):
         high-frequency of band-pass, or 'None to use a high-pass filter.
         if fa is 'None' then this is the cutoff for a low-pass filter
     '''
-    print 1
     Fs = opto_get_Fs(opto_dataset)
     if channel is None:
-        print 2
         data = metaloadmat(opto_dataset)['LFP'].T
         #return array([bandfilter(x,fa,fb,Fs,order) for x in data])
-        print 3
         problems = [(i,x,fa,fb,Fs,order) for i,x in enumerate(data)]
-        print 4
         data = array(parmap(__opto_get_lfp_analytic_helper__,problems,verbose=1))
         return squeeze(data)
     else:

@@ -18,7 +18,7 @@ UNDER CONSTRUCTION
 '''
 
 from neurotools.stats.glm import gradientglmfit
-from neurotools.spatial.magickernel import derive_log_cosine_basis
+from neurotools.spatial.magickernel import make_cosine_basis
 import scipy
 import numpy as np
 import matplotlib 
@@ -149,7 +149,7 @@ def spatiotemporal_history(stims,hlen,hn,hmin,chs=None,ncomp=None,pad=0):
     else:
         Bs = np.eye(nch)
     # Convolve w history basis
-    Bh = orthogonalize(derive_log_cosine_basis(hn,hlen,hmin))
+    Bh = orthogonalize(make_cosine_basis(hn,hlen,hmin))
     X = spatiotemporal_history_projection(stims,Bh,Bs,pad=0)
     return X,Bh,Bs
 

@@ -151,8 +151,60 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="neurotools-jobs-filenames-module">
-<h1>neurotools.jobs.filenames module<a class="headerlink" href="#neurotools-jobs-filenames-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.jobs.filenames">
+<span id="neurotools-jobs-filenames-module"></span><h1>neurotools.jobs.filenames module<a class="headerlink" href="#module-neurotools.jobs.filenames" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.jobs.filenames.check_filename">
+<code class="descclassname">neurotools.jobs.filenames.</code><code class="descname">check_filename</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/filenames.html#check_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.filenames.check_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a <cite>filename</cite> is safe to use on most filesystems. More lenient
+than <cite>is_dangerous_filename</cite>.</p>
+<p>Unicode filenames are permitted (in Python 3), but generate a warning
+in Pythoon 2.</p>
+<p>Long filenames (over 255 chars) are ok on many modern filesystems and
+only trigger a warning</p>
+<p>Only special characters that outright break windows will raise an error.</p>
+<p>No return value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) – String representing a filename.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.filenames.is_dangerous_filename">
+<code class="descclassname">neurotools.jobs.filenames.</code><code class="descname">is_dangerous_filename</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/filenames.html#is_dangerous_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.filenames.is_dangerous_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether a <cite>filename</cite> is safe to use on most modern filesystems.
+Filnames must be shorter than 255 characters, and contain no
+special characters or escape sequences. Filenames should be ASCII</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) – String representing a filename. Should be in ASCII and not unicode
+format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">False if the filename is broadly compatible with most modern
+filesystems.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.jobs.filenames.validate_argument_signature">
+<code class="descclassname">neurotools.jobs.filenames.</code><code class="descname">validate_argument_signature</code><span class="sig-paren">(</span><em>sig</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/filenames.html#validate_argument_signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.filenames.validate_argument_signature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether a given argument signature can be used to cache
+things to disk. The argument signature must be hashable. It must
+consists of types that can be translated between python, numpy, and
+matlab convenctions.</p>
+</dd></dl>
+
 </div>
 
 

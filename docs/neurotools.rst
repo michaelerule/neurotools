@@ -9,9 +9,11 @@ Subpackages
     neurotools.gpu
     neurotools.graphics
     neurotools.jobs
+    neurotools.linalg
     neurotools.models
     neurotools.signal
     neurotools.spatial
+    neurotools.spikes
     neurotools.stats
 
 Submodules

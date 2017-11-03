@@ -35,6 +35,18 @@ def poisson_parameter_guess(X,Y,N):
         1D integer array of observations
     N : positive integer
         Number of states
+        
+    Returns
+    -------
+    logP : log Prior for state at first observation
+    logA : log State transition array
+    logB : log Poisson process rates
+    params : p1,p01,p10,mu0,mu1
+        p1  = np.mean(X)
+        p01 = np.sum(np.diff(X)== 1)/(1+np.sum(X==0))
+        p10 = np.sum(np.diff(X)==-1)/(1+np.sum(X==1))
+        mu0 = np.mean(Y[X==0])
+        mu1 = np.mean(Y[X==1])
     '''
     # Estimate model parameters from best-guess X
     p1  = np.mean(X)
@@ -43,19 +55,27 @@ def poisson_parameter_guess(X,Y,N):
     mu0 = np.mean(Y[X==0])
     mu1 = np.mean(Y[X==1])
     params = (p1,p01,p10,mu0,mu1)
-
     # Prior for state at first observation
-    logP = np.array([np.log1p(-p1),slog(p1)])
+    logP = np.array([slog(1-p1),slog(p1)])
+    if not np.all(np.isfinite(logP)):
+        raise RuntimeError(
+            'Error computing marginal log-pr in Poisson data; zero rate?');
     # State transition array
     logA = np.array([
-        [np.log1p(-p01), slog(p01)],
-        [slog(p10), np.log1p(-p10)]],
+        [slog(1-p01), slog(p01)],
+        [slog(p10), slog(1-p10)]],
         dtype=np.float64)
+    if not np.all(np.isfinite(logA)):
+        raise RuntimeError(
+            'Error computing transition matrix');
     # Poisson process rates
     O = np.arange(N)      # List of available states
     logB = np.array([
         poisson_logpdf(O, mu0),
         poisson_logpdf(O, mu1)])
+    if not np.all(np.isfinite(logB)):
+        raise RuntimeError(
+            'Error computing observation matrix');s
     return logP,logA,logB,params
 
 def poisson_baum_welch(Y,initial=None):
@@ -201,6 +221,11 @@ def poisson_viterbi_state_infer(Y,initial=None):
         procedure fails when the frequency of latent states is
         asymmetric, so you may want to provide different initial
         conditions.
+        
+    Returns
+    -------
+    X : inferred states
+    params : inferred model parameters
     '''
     N = np.max(Y)+1  # Number of observation states
     O = np.arange(N) # List of available states
@@ -219,6 +244,11 @@ def poisson_viterbi_state_infer(Y,initial=None):
         X[:] = new_X
         logP,logA,logB,params = poisson_parameter_guess(X,Y,N)
         new_X = viterbi_log(Y,logP,logA,logB)
+        # if X has degenerated to one class we have a problem
+        # (we probably need soft-EM to compensate?)
+        s = np.sum(new_X)
+        if s==0 or s==len(new_X):
+            raise RuntimeError('Inference collapsed to a single class; consider soft-EM instead?')
         if any(map(hasNaN,(logP,logA,logB,X))):
             raise RuntimeError('NaN encountered')
     return X,params

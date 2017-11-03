@@ -76,7 +76,7 @@ from neurotools.spatial.distance         import *
 from neurotools.spatial.fftzeros         import *
 from neurotools.spatial.spatialPSD       import *
 from neurotools.spatial.phase            import *
-from neurotools.spatial.magickernel      import *
+from neurotools.spatial.spiking          import *
 from neurotools.spatial.kernels          import *
 
 from neurotools.stats.density            import *

@@ -11,9 +11,9 @@ Submodules
    neurotools.spatial.distance
    neurotools.spatial.fftzeros
    neurotools.spatial.kernels
-   neurotools.spatial.magickernel
    neurotools.spatial.phase
    neurotools.spatial.spatialPSD
+   neurotools.spatial.spiking
    neurotools.spatial.wave_parametric_models
 
 Module contents

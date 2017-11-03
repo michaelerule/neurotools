@@ -8,6 +8,7 @@ Submodules
 
    neurotools.models.izh
    neurotools.models.lif
+   neurotools.models.rbm
 
 Module contents
 ---------------

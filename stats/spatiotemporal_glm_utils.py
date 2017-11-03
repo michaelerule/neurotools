@@ -18,7 +18,7 @@ UNDER CONSTRUCTION
 '''
 
 from neurotools.stats.glm import gradientglmfit
-from neurotools.spatial.magickernel import make_cosine_basis
+from neurotools.spatial.kernel import make_cosine_basis
 import scipy
 import numpy as np
 import matplotlib 

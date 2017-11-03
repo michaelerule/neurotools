@@ -173,6 +173,9 @@ def damped_cosine(X,Y,W):
         List of weights
     Y: 
         List of average pairwise distances
+    
+    Returns
+    -------
 
     Example
     -------
@@ -220,6 +223,9 @@ def weighted_least_squares(X,Y,W):
     X: List of distances
     Y: List of amplitudes
     W: Weights for points 
+    
+    Returns
+    -------
     '''
     X = np.float64(X)
     Y = np.float64(Y)
@@ -243,7 +249,10 @@ def power_law(X,Y,W):
     ----------
     X: List of distances
     Y: List of amplitudes
-    W: Weights for points    
+    W: Weights for points   
+    
+    Returns
+    ------- 
     '''
     '''
     power law form is `np.log(y)=a*np.log(x)+b` or `y = b*x^a`
@@ -287,6 +296,9 @@ def gaussian_function(X,Y):
     ----------
     X: List of distances
     Y: List of amplitudes
+    
+    Returns
+    -------
         
     '''
     X = np.float64(X)
@@ -306,7 +318,9 @@ def half_gaussian_function(X,Y):
     ----------
     X: List of distances
     Y: List of amplitudes
-        
+    
+    Returns
+    -------
     '''
     X = np.float64(X)
     Y = np.float64(Y)
@@ -363,6 +377,10 @@ def robust_line(X,Y):
     ----------
     X: List of distances
     Y: List of amplitudes
+    
+    Returns
+    -------
+    res.x
         
     '''
     X = np.float64(X)

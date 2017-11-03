@@ -12,8 +12,6 @@ from neurotools.system import *
 try:
     from spectrum.mtm import dpss
 except:
-    print('Could not locate the spectrum module, please install it')
-    print('Multitaper methods will not work')
     def dpss(*args):
         raise NotImplementedError("Please install the spectrum module")
 
@@ -21,11 +19,6 @@ import types
 import numpy as np
 from neurotools.tools import warn
 from neurotools.signal.signal import phase_randomize
-
-# TODO: fix imports
-#from numpy import *
-#from neurotools.getfftw import *
-#from numpy.random import *
 
 __PPC_FP_TYPE__=np.float128
 

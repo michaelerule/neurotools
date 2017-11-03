@@ -16,19 +16,18 @@ if sys.version_info<(3,):
 from   neurotools.graphics.color   import *
 from   neurotools.getfftw import *
 from   neurotools.tools   import *
-
 import os
 import pickle
 import scipy
 import numpy
 import scipy.optimize
-
 from   scipy.io          import savemat
 from   scipy.optimize    import leastsq
 from   multiprocessing   import Process, Pipe, cpu_count, Pool
 from   scipy.io          import loadmat
 from   scipy.signal      import butter,filtfilt,lfilter
 from   matplotlib.pyplot import *
+import matplotlib.pyplot as plt
 
 try: # python 2.x
     from itertools import izip, chain
@@ -43,13 +42,27 @@ try:
 except:
     print('statsmodels is missing!')
 
-zscore = lambda x: (x-mean(x,0))/std(x,0)
+def zscore(x):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    return (x-np.mean(x,0))/np.std(x,0)
 
 def simpleaxis(ax=None):
     '''
     Only draw the bottom and left axis lines
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if ax is None: ax=gca()
+    if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.get_xaxis().tick_bottom()
@@ -58,8 +71,14 @@ def simpleaxis(ax=None):
 def simpleraxis(ax=None):
     '''
     Only draw the left y axis, nothing else
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if ax is None: ax=gca()
+    if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
@@ -69,8 +88,14 @@ def simpleraxis(ax=None):
 def noaxis(ax=None):
     '''
     Hide all axes
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if ax is None: ax=gca()
+    if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
@@ -81,6 +106,12 @@ def noaxis(ax=None):
 def nicebp(bp,c):
     '''
     Improve the appearance of a box and whiskers plot
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     for kk in 'boxes whiskers fliers caps'.split():
         setp(bp[kk], color=c)
@@ -88,17 +119,66 @@ def nicebp(bp,c):
     setp(bp['caps'],     linestyle='solid',linewidth=.5)
     #setp(bp['caps'], color=(0,)*4)
 
+# printing routines
+
+
+def percent(n,total):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    return '%0.2g%%'%(n*100.0/total)
+    
+def shortscientific(x,prec=0):
+    '''
+    Parameters
+    ----------
+    x : scalar numeric
+    prec : non-negative integer
+    
+    Returns
+    -------
+    '''
+    return ('%.*e'%(prec,x)).replace('-0','-').replace('+','').replace('e0','e')
+
 def eformat(f, prec, exp_digits):
     '''
     Format a float in scientific notation with fewer characters.
+    
+    Parameters
+    ----------
+    f: scalar
+        Number
+    prec:
+        Precision
+    exp_digits: int
+        Number exponent digits
+    
+    Returns
+    -------
+    string : reformatted string
     '''
+    if not np.isfinite(f):
+        return '%e'%f
     s = "%.*e"%(prec, f)
-    mantissa, exp = s.split('e')
-    return "%se%+0*d"%(mantissa, exp_digits+1, int(exp))
+    mantissa, exponent = s.split('e')
+    exponent = int(exponent)
+    s = mantissa + "e%+0*d"%(exp_digits+1, exponent)
+    s = s.replace('+','')
+    return s
 
 def nicey():
     '''
     Mark only the min/max value of y axis
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if ylim()[0]<0:
         yticks([ylim()[0],0,ylim()[1]])
@@ -108,6 +188,12 @@ def nicey():
 def nicex():
     '''
     Mark only the min/max value of x axis
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if xlim()[0]<0:
         xticks([xlim()[0],0,xlim()[1]])
@@ -117,6 +203,12 @@ def nicex():
 def nicexy():
     '''
     Mark only the min/max value of y/y axis
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     nicey()
     nicex()
@@ -126,6 +218,12 @@ def positivex():
     Sets the lower x limit to zero, and the upper limit to the largest
     positive value un the current xlimit. If the curent xlim() is
     negative, a value error is raised.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     top = np.max(xlim())
     if top<=0:
@@ -139,6 +237,12 @@ def positivey():
     Sets the lower y limit to zero, and the upper limit to the largest
     positive value un the current ylimit. If the curent ylim() is
     negative, a value error is raised.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     top = np.max(ylim())
     if top<=0:
@@ -148,43 +252,106 @@ def positivey():
     nicey()
 
 def positivexy():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     positivex()
     positivey()
 
 def xylim(a,b,ax=None):
-    if ax==None: ax = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax==None: ax = plt.gca()
     ax.set_xlim(a,b)
     ax.set_ylim(a,b)
 
 def nox():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     xticks([])
     xlabel('')
 
 def noy():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     yticks([])
     ylabel('')
 
 def righty(ax=None):
-    if ax==None: ax=gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax==None: ax=plt.gca()
     ax.yaxis.tick_right()
     ax.yaxis.set_label_position("right")
 
 def unity():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     ylim(0,1)
     nicey()
 
 def unitx():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     xlim(0,1)
     nicex()
 
 def force_aspect(aspect=1,a=None):
-    if a is None: a = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if a is None: a = plt.gca()
     x1,x2=a.get_xlim()
     y1,y2=a.get_ylim()
-    a.set_aspect(abs((x2-x1)/(y2-y1))/aspect)
+    a.set_aspect(np.abs((x2-x1)/(y2-y1))/aspect)
 
 def unitaxes(a=None):
-    if a is None: a=gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if a is None: a=plt.gca()
     a.set_xlim(0,1)
     a.set_ylim(0,1)
     a.set_xticks([0,1])
@@ -193,8 +360,15 @@ def unitaxes(a=None):
     a.set_yticklabels(['0','1'])
 
 def adjustmap(arraymap):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     nrow,ncol = shape(arraymap)
-    adjustedmap = array(arraymap)
+    adjustedmap = np.array(arraymap)
     available   = sorted(list(set([x for x in ravel(arraymap) if x>0])))
     for i,ch in enumerate(available):
         adjustedmap[arraymap==ch]=i
@@ -203,12 +377,18 @@ def adjustmap(arraymap):
 def get_ax_size(ax=None,fig=None):
     '''
     Gets tha axis size in figure-relative units
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax is None: ax  = plt.gca()
     '''http://stackoverflow.com/questions/19306510/determine-matplotlib-axis-size-in-pixels'''
-    fig  = gcf()
-    ax   = gca()
+    fig  = plt.gcf()
+    ax   = plt.gca()
     bbox = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
     width, height = bbox.width, bbox.height
     width  *= fig.dpi
@@ -218,9 +398,15 @@ def get_ax_size(ax=None,fig=None):
 def get_ax_pixel(ax=None,fig=None):
     '''
     Gets tha axis size in pixels
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax is None: ax  = plt.gca()
     # w/h in pixels
     w,h = get_ax_size()
     # one px in axis units is the axis span div no. pix
@@ -232,29 +418,47 @@ def pixels_to_xunits(n,ax=None,fig=None):
     '''
     Converts a measurement in pixels to units of the current x-axis
     scale
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax  is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
-    dx = diff(xlim())[0]
+    dx  = np.diff(plt.xlim())[0]
     return n*dx/float(w)
 
 def yunits_to_pixels(n,ax=None,fig=None):
     '''
     Converts a measurement in units of the current y-axis to pixels
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax  is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
-    dy = diff(ylim())[0]
+    dy  = np.diff(plt.ylim())[0]
     return n*float(h)/dy
 
 def xunits_to_pixels(n,ax=None,fig=None):
     '''
     Converts a measurement in units of the current x-axis to pixels
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax  is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
     dx = diff(xlim())[0]
     return n*float(w)/dx
@@ -263,9 +467,15 @@ def pixels_to_yunits(n,ax=None,fig=None):
     '''
     Converts a measurement in pixels to units of the current y-axis
     scale
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax  is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
     dy = diff(ylim())[0]
     return n*dy/float(h)
@@ -274,9 +484,15 @@ def pixels_to_xfigureunits(n,ax=None,fig=None):
     '''
     Converts a measurement in pixels to units of the current
     figure width scale
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax  is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
     w_pixels = fig.get_size_inches()[0]*fig.dpi
     return n/float(w_pixels)
 
@@ -284,26 +500,54 @@ def pixels_to_yfigureunits(n,ax=None,fig=None):
     '''
     Converts a measurement in pixels to units of the current
     figure height scale
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if fig is None: fig = gcf()
-    if ax  is None: ax  = gca()
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
     h_pixels = fig.get_size_inches()[1]*fig.dpi
     return n/float(h_pixels)
 
 def adjust_ylabel_space(n,ax=None):
-    if ax is None: ax=gca()
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax=plt.gca()
     ax.yaxis.labelpad = n
 
 def adjust_xlabel_space(n,ax=None):
-    if ax is None: ax=gca()
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax=plt.gca()
     ax.xaxis.labelpad = n
 
 def nudge_axis_y_pixels(dy,ax=None):
     '''
     moves axis dx pixels.
     Direction of dx may depent on axis orientation. TODO: fix this
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if ax is None: ax=gca()
+    if ax is None: ax=plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     dy = -pixels_to_yfigureunits(float(dy),ax)
@@ -313,53 +557,101 @@ def adjust_axis_height_pixels(dy,ax=None):
     '''
     moves axis dx pixels.
     Direction of dx may depent on axis orientation. TODO: fix this
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if ax is None: ax=gca()
+    if ax is None: ax=plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     ax.set_position((x,y,w,h-pixels_to_yfigureunits(float(dy),ax)))
 
 def nudge_axis_y(dy,ax=None):
-    if ax is None: ax = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     dy = pixels_to_yfigureunits(dy,ax)
     ax.set_position((x,y+dy,w,h))
 
 def nudge_axis_x(dx,ax=None):
-    if ax is None: ax = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     dx = pixels_to_xfigureunits(dx,ax)
     ax.set_position((x+dx,y,w,h))
 
 def expand_axis_y(dy,ax=None):
-    if ax is None: ax = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     dy = pixels_to_yfigureunits(dy,ax)
     ax.set_position((x,y,w,h+dy))
 
 def nudge_axis_baseline(dy,ax=None):
-    if ax is None: ax = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     dy = pixels_to_yfigureunits(dy,ax)
     ax.set_position((x,y+dy,w,h-dy))
 
 def nudge_axis_left(dx,ax=None):
-    if ax is None: ax = gca()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     dx = pixels_to_xfigureunits(dx,ax)
     ax.set_position((x+dx,y,w-dx,h))
 
 def zoombox(ax1,ax2,xspan1=None,xspan2=None):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # need to do this to get the plot to ... update correctly
     show()
     draw()
     show()
-    fig = gcf()
+    fig = plt.gcf()
 
     if xspan1==None:
         xspan1 = ax1.get_xlim()
@@ -379,19 +671,42 @@ def zoombox(ax1,ax2,xspan1=None,xspan2=None):
     fig.lines.append(line)
     show()
 
-def fudgex(by=10,ax=None):
-    if ax is None: ax=gca()
+def fudgex(by=10,ax=None,doshow=False):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax=plt.gca()
     ax.xaxis.labelpad = -by
-    draw()
-    show()
+    plt.draw()
+    if doshow:
+        plt.show()
 
-def fudgey(by=20,ax=None):
-    if ax is None: ax=gca()
+def fudgey(by=20,ax=None,doshow=False):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if ax is None: ax=plt.gca()
     ax.yaxis.labelpad = -by
-    draw()
-    show()
+    plt.draw()
+    if doshow:
+        plt.show()
 
 def fudgexy(by=10,ax=None):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     fudgex(by,ax)
     fudgey(by,ax)
 
@@ -399,6 +714,12 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
     '''
     Edges of the form (start,stop)
     Shades regions of graph defined by "edges"
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     a,b = ylim()
     c,d = xlim()
@@ -411,21 +732,49 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
 shade = shade_edges
 
 def ybar(x,**kwargs):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     a,b = ylim()
     plot([x,x],[a,b],**kwargs)
     ylim(a,b)
 
 def xbar(y,**kwargs):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     a,b = xlim()
     plot([a,b],[y,y],**kwargs)
     xlim(a,b)
 
 def allnice():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     nicex()
     nicey()
     nice_legend()
 
 def ybartext(x,t,c1,c2,**kwargs):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     a,b = ylim()
     outline = False
     if 'outline' in kwargs:
@@ -449,6 +798,13 @@ def ybartext(x,t,c1,c2,**kwargs):
     ylim(a,b)
 
 def xbartext(y,t,c1,c2,**kwargs):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     a,b = xlim()
     outline = False
     if 'outline' in kwargs:
@@ -485,6 +841,12 @@ def nice_legend(*args,**kwargs):
     '''
     Better defaults for the plot legend. TODO: make this into a
     matplotlib style.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     defaults = {
         'framealpha':0.9,
@@ -498,12 +860,33 @@ def nice_legend(*args,**kwargs):
     return lg
 
 def rangeto(rangefun,data):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     rangefun(np.min(data),np.max(data))
 
 def rangeover(data):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return np.min(data),np.max(data)
 
 def cleartop(x):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     subplots_adjust(top=1-x)
 
 def plotCWT(ff,cwt,aspect='auto',
@@ -518,7 +901,7 @@ def plotCWT(ff,cwt,aspect='auto',
     '''
     cwt = squeeze(cwt)
     nf,N = shape(cwt)
-    pwr    = abs(cwt)
+    pwr    = np.abs(cwt)
     fest   = ff[argmax(pwr,0)]
     cla()
     imshow(pwr,aspect=aspect,extent=(0,N,ff[-1],ff[0]),vmin=vmin,vmax=vmax,interpolation=interpolation,cmap=cm)
@@ -535,6 +918,11 @@ def plotCWT(ff,cwt,aspect='auto',
 def complex_axis(scale):
     '''
     Draws a nice complex-plane axis with LaTeX Re, Im labels and everything
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     xlim(-scale,scale)
     ylim(-scale,scale)
@@ -549,10 +937,17 @@ def complex_axis(scale):
     force_aspect()
 
 def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     cwt = squeeze(cwt)
     nf,N = shape(cwt)
     if aspect is None: aspect = N/float(nf)*0.5
-    pwr = abs(cwt)
+    pwr = np.abs(cwt)
     rgb = complexHLArr2RGB(cwt*(0.9/nmx(pwr)))
     cla()
     imshow(rgb,cmap=None,aspect=aspect,
@@ -570,9 +965,16 @@ wtpshow = plotWTPhase
 
 def plotWTPhaseFig(ff,cwt,aspect=50,
     vmin=None,vmax=None,cm='bone',interpolation='nearest'):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     cwt = squeeze(cwt)
     nf,N = shape(cwt)
-    pwr    = abs(cwt)
+    pwr    = np.abs(cwt)
     fest   = ff[argmax(pwr,0)]
     clf()
     subplot(211)
@@ -593,9 +995,16 @@ def plotWTPhaseFig(ff,cwt,aspect=50,
     show()
 
 def domask(*args):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if len(args)>2:
         return (args[1],)+domask(args[0],*args[2:])
-    mm = array(args[1])
+    mm = np.array(args[1])
     ok = ~args[0]
     N  = len(ok)
     M  = len(mm)
@@ -610,7 +1019,14 @@ def domask(*args):
     return mm
 
 def fsize(f=None):
-    if f is None: f=gcf()
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if f is None: f=plt.gcf()
     return f.get_size_inches()
 
 # http://stackoverflow.com/questions/27826064/matplotlib-make-legend-keys-square
@@ -620,6 +1036,13 @@ import matplotlib.patches as mpatches
 class HandlerSquare(HandlerPatch):
     def create_artists(self, legend, orig_handle,
                        xdescent, ydescent, width,height, fontsize, trans):
+        '''
+        Parameters
+        ----------
+        
+        Returns
+        -------
+        '''
         center = xdescent + 0.5 * (width-height),ydescent
         p = mpatches.Rectangle(xy=center,width=height,height=height, angle=0.0)
         self.update_prop(p,orig_handle,legend)
@@ -629,11 +1052,11 @@ class HandlerSquare(HandlerPatch):
 def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
     extent=None,onlyphase=False,previous=None,origin='lower'):
     '''
-    Renders complex array as image, in polar form with magnitude mapped to
+    Renders complex np.array as image, in polar form with magnitude mapped to
     lightness and hue mapped to phase.
 
-    :param z: 2D array of complex values
-    :param vm: max complex modulus. Default of None will use max(abs(z))
+    :param z: 2D np.array of complex values
+    :param vm: max complex modulus. Default of None will use max(np.abs(z))
     :param aspect: image aspect ratio. defaults auto
     :param ip: interpolation mode to forward to imshow. defaults bicubic
     :param extent: extents (dimensions) for imshow. defaults None.
@@ -646,11 +1069,11 @@ def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
     '''
     z   = squeeze(z)
     h,w = shape(z)
-    a   = abs(z)
+    a   = np.abs(z)
     if vm is None: vm = numpy.max(a)
     if aspect is None: aspect = w/float(h)
     if onlyphase:
-        rgb = complexHLArr2RGB(0.5*z/abs(z))
+        rgb = complexHLArr2RGB(0.5*z/np.abs(z))
     else:
         rgb = complexHLArr2RGB(z*(0.9/vm))
     if previous is None:
@@ -685,27 +1108,28 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,
         vmin (number): min value for colormap
         vmax (number): mac value for colormap
         cmap (colormap): what colormap to use
-        ax (axis): optional, defaults to gca(). axis to which to add colorbar
+        ax (axis): optional, defaults to plt.gca(). axis to which to add colorbar
         title (string): Units for colormap
         sideways (bool): Flips the axis label sideways
         spacing (int): distance from axis in pixels. defaults to 5
     Returns:
         axis: colorbar axis
     '''
-    oldax = gca() #remember previously active axis
-    if ax==None: ax=gca()
+    oldax = plt.gca() #remember previously active axis
+    if ax==None: 
+        ax=plt.gca()
     # WIDTH   = 0.05
     SPACING = pixels_to_xfigureunits(spacing,ax=ax)
     CWIDTH  = pixels_to_xfigureunits(15,ax=ax)
-    # manually add colorbar axes because matplotlib gets it wrong
+    # manually add colorbar axes 
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     # ax.set_position((x,y,w-WIDTH,h))
     bb = ax.get_position()
     right,bottom = bb.xmax,bb.ymax
-    cax = axes((right+SPACING,bottom-h,CWIDTH,h),axisbg='w',frameon=border)
-    sca(cax)
-    imshow(array([linspace(vmax,vmin,100)]).T,
+    cax = plt.axes((right+SPACING,bottom-h,CWIDTH,h),facecolor='w',frameon=border)
+    plt.sca(cax)
+    plt.imshow(np.array([np.linspace(vmax,vmin,100)]).T,
         extent=(0,1,vmin,vmax),
         aspect='auto',
         cmap=cmap)
@@ -713,18 +1137,18 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,
     nicey()
     cax.yaxis.tick_right()
     if sideways:
-        text(
+        plt.text(
             xlim()[1]+pixels_to_xunits(5,ax=cax),
-            mean(ylim()),
+            np.mean(ylim()),
             title,
             fontsize=fontsize,
             rotation=0,
             horizontalalignment='left',
-            verticalalignment='center')
+            verticalalignment  ='center')
     else:
-        ylabel(title,fontsize=fontsize)
+        plt.ylabel(title,fontsize=fontsize)
     cax.yaxis.set_label_position("right")
-    sca(oldax) #restore previously active axis
+    plt.sca(oldax) #restore previously active axis
     return cax
 
 def complex_axis(scale):
@@ -743,6 +1167,13 @@ def complex_axis(scale):
     force_aspect()
 
 def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     fontproperties = {
         'family':'Bitstream Vera Sans',
         'weight': 'bold',
@@ -753,18 +1184,29 @@ def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
 
 def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
     '''
-    draw a significance bar between position x1 and x2 at height y
+    draw a significance bar between position x1 and x2 at height y 
+    
+    Parameters
+    ----------
     '''
     dy = pixels_to_yunits(dy)
     height = y+2*dy
     plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],lw=0.5,color=BLACK)
-    text(mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
+    text(np.mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
 
 def savefigure(name):
     '''
     Saves figure as both SVG and PDF, prepending the current date
-    in YYYYMMDD forma
+    in YYYYMMDD format
+    
+    Parameters
+    ----------
+    name : string
+        file name to save as (sans extension)
     '''
+    # strip user-supplied extension if present
+    if basename.split('.')[-1].lower() in {'svg','pdf','png'}:
+        basename = '.'.join(basename.split('.')[:-1])
     dirname  = os.path.dirname(name)
     if dirname=='': dirname='./'
     basename = os.path.basename(name)
@@ -773,7 +1215,14 @@ def savefigure(name):
     savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True,bbox_inches='tight')
 
 def clean_y_range(ax=None,precision=1):
-    if ax is None: ax=gca()
+    '''
+    Round down to a specified number of significant figures
+    
+    Parameters
+    ----------
+    
+    '''
+    if ax is None: ax=plt.gca()
     y1,y2 = ylim()
     precision = 10.0**precision
     _y1 = floor(y1*precision)/precision
@@ -783,39 +1232,86 @@ def clean_y_range(ax=None,precision=1):
 def round_to_precision(x,precision=1):
     '''
     Round to a specified number of significant figures
+    
+    Parameters
+    ----------
+    x : scalar
+        Number to round
+    precision : positive integer, default=1
+        Number of digits to keep
+    
+    Returns
+    -------
+    x : scalar
+        Rounded number
     '''
     if x==0.0: return 0
-    magnitude = abs(x)
-    digits = ceil(log10(magnitude))
+    magnitude = np.abs(x)
+    digits = np.ceil(np.log10(magnitude))
     factor = 10.0**(precision-digits)
-    return round(x*precision)/precision
+    precision *= factor
+    return np.round(x*precision)/precision
 
 def ceil_to_precision(x,precision=1):
     '''
     Round up to a specified number of significant figures
+    
+    
+    Parameters
+    ----------
+    x : scalar
+        Number to round
+    precision : positive integer, default=1
+        Number of digits to keep
+    
+    Returns
+    -------
+    x : scalar
+        Rounded number
+    -------
     '''
     if x==0.0: return 0
-    magnitude = abs(x)
-    digits = ceil(log10(magnitude))
+    magnitude = np.abs(x)
+    digits = np.ceil(np.log10(magnitude))
     factor = 10.0**(precision-digits)
-    return ceil(x*precision)/precision
+    precision *= factor
+    return np.ceil(x*precision)/precision
 
 def floor_to_precision(x,precision=1):
     '''
     Round down to a specified number of significant figures
+    
+    Parameters
+    ----------
+    x : scalar
+        Number to round
+    precision : positive integer, default=1
+        Number of digits to keep
+    
+    Returns
+    -------
+    x : scalar
+        Rounded number
     '''
     if x==0.0: return 0
-    magnitude = abs(x)
-    digits = ceil(log10(magnitude))
+    magnitude = np.abs(x)
+    digits = np.ceil(np.log10(magnitude))
     factor = 10.0**(precision-digits)
-    return floor(x*precision)/precision
+    precision *= factor
+    return np.floor(x*precision)/precision
 
 def expand_y_range(yvalues,ax=None,precision=1,pad=1.2):
     '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    if ax is None: ax=gca()
-    yy = array(yvalues)
-    m = mean(yy)
+    if ax is None: ax=plt.gca()
+    yy = np.array(yvalues)
+    m = np.mean(yy)
     yy = (yy-m)*pad+m
     y1 = np.min(yy)
     y2 = np.max(yy)
@@ -835,7 +1331,7 @@ def Gaussian2D_covellipse(M,C,N=60,**kwargs):
     Parameters
     ----------
     M : tuple of (x,y) coordinates for the mean
-    C : 2x2 array-like covariance matrix
+    C : 2x2 np.array-like covariance matrix
     N : optional, number of points in ellipse (default 60)
 
     Returns

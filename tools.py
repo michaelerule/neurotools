@@ -320,14 +320,6 @@ def metaloadmat(path):
     if dowarn(): print('loaded')
     return data
 
-# printing routines
-
-def shortscientific(x):
-    return ('%0.0e'%x).replace('-0','-')
-
-def percent(n,total):
-    return '%0.2g%%'%(n*100.0/total)
-
 def find_all_extension(d,ext='png'):
     '''
     Locate manually sorted unit classes

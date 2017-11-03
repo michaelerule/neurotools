@@ -190,6 +190,18 @@
 <span class="sd">        1D integer array of observations</span>
 <span class="sd">    N : positive integer</span>
 <span class="sd">        Number of states</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    logP : log Prior for state at first observation</span>
+<span class="sd">    logA : log State transition array</span>
+<span class="sd">    logB : log Poisson process rates</span>
+<span class="sd">    params : p1,p01,p10,mu0,mu1</span>
+<span class="sd">        p1  = np.mean(X)</span>
+<span class="sd">        p01 = np.sum(np.diff(X)== 1)/(1+np.sum(X==0))</span>
+<span class="sd">        p10 = np.sum(np.diff(X)==-1)/(1+np.sum(X==1))</span>
+<span class="sd">        mu0 = np.mean(Y[X==0])</span>
+<span class="sd">        mu1 = np.mean(Y[X==1])</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Estimate model parameters from best-guess X</span>
     <span class="n">p1</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -198,19 +210,27 @@
     <span class="n">mu0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">X</span><span class="o">==</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">mu1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">X</span><span class="o">==</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p01</span><span class="p">,</span><span class="n">p10</span><span class="p">,</span><span class="n">mu0</span><span class="p">,</span><span class="n">mu1</span><span class="p">)</span>
-
     <span class="c1"># Prior for state at first observation</span>
-    <span class="n">logP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1</span><span class="p">),</span><span class="n">slog</span><span class="p">(</span><span class="n">p1</span><span class="p">)])</span>
+    <span class="n">logP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">slog</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p1</span><span class="p">),</span><span class="n">slog</span><span class="p">(</span><span class="n">p1</span><span class="p">)])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logP</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;Error computing marginal log-pr in Poisson data; zero rate?&#39;</span><span class="p">);</span>
     <span class="c1"># State transition array</span>
     <span class="n">logA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p01</span><span class="p">),</span> <span class="n">slog</span><span class="p">(</span><span class="n">p01</span><span class="p">)],</span>
-        <span class="p">[</span><span class="n">slog</span><span class="p">(</span><span class="n">p10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p10</span><span class="p">)]],</span>
+        <span class="p">[</span><span class="n">slog</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p01</span><span class="p">),</span> <span class="n">slog</span><span class="p">(</span><span class="n">p01</span><span class="p">)],</span>
+        <span class="p">[</span><span class="n">slog</span><span class="p">(</span><span class="n">p10</span><span class="p">),</span> <span class="n">slog</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p10</span><span class="p">)]],</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logA</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;Error computing transition matrix&#39;</span><span class="p">);</span>
     <span class="c1"># Poisson process rates</span>
     <span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>      <span class="c1"># List of available states</span>
     <span class="n">logB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
         <span class="n">poisson_logpdf</span><span class="p">(</span><span class="n">O</span><span class="p">,</span> <span class="n">mu0</span><span class="p">),</span>
         <span class="n">poisson_logpdf</span><span class="p">(</span><span class="n">O</span><span class="p">,</span> <span class="n">mu1</span><span class="p">)])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logB</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;Error computing observation matrix&#39;</span><span class="p">);</span><span class="n">s</span>
     <span class="k">return</span> <span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">params</span></div>
 
 <div class="viewcode-block" id="poisson_baum_welch"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.poisson_baum_welch">[docs]</a><span class="k">def</span> <span class="nf">poisson_baum_welch</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -356,6 +376,11 @@
 <span class="sd">        procedure fails when the frequency of latent states is</span>
 <span class="sd">        asymmetric, so you may want to provide different initial</span>
 <span class="sd">        conditions.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    X : inferred states</span>
+<span class="sd">    params : inferred model parameters</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>  <span class="c1"># Number of observation states</span>
     <span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="c1"># List of available states</span>
@@ -374,6 +399,11 @@
         <span class="n">X</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new_X</span>
         <span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">params</span> <span class="o">=</span> <span class="n">poisson_parameter_guess</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
         <span class="n">new_X</span> <span class="o">=</span> <span class="n">viterbi_log</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">)</span>
+        <span class="c1"># if X has degenerated to one class we have a problem</span>
+        <span class="c1"># (we probably need soft-EM to compensate?)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">new_X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">s</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">new_X</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Inference collapsed to a single class; consider soft-EM instead?&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">hasNaN</span><span class="p">,(</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">X</span><span class="p">))):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;NaN encountered&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">params</span></div>

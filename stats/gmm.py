@@ -8,17 +8,24 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
-
 import numpy as np
+import warnings
+'''
+This module is deprecated, please use `sklearn.mixtur` instead.
+'''
 
 def GMM(points,NCLASS=2):
     '''
-    Fit a ND Gaussian mixture model
+    This function is deprecated, suggest `sklearn.mixture` instead.
+
+    Fit a ND Gaussian mixture model using a hard-EM approach. This is 
+    sloppier and less accurate than the routine from `sklearn.mixture`.
     
     $ PDF = \Pr(G) (2pi)^(k/2)\operatorname{det}(S)^{-1/2}\exp[-1/2 (x-mu)^T S^{-1} (x-mu)] $
     $ logPDF = \log\Pr(G) k/2 \log(2\pi)-1/2\log(\operatorname{det}(S))-1/2(x-mu)^T S^{-1}(x-mu)$ 
     Pr is inverse monotonic with $\log\Pr(G)-\log(\operatorname{det}(S))-(x-mu)^T S^{-1}(x-mu)$
     '''
+    warnings.warn("This function is deprecated, suggest `sklearn.mixture` instead.", DeprecationWarning)
     N          = points.shape()[1]
     initsize   = N//NCLASS
     classes    = np.zeros((N,))
@@ -45,7 +52,10 @@ def GMM(points,NCLASS=2):
 
 def GMM1D(points,NCLASS=2):
     '''
-    Fit a 1D Gaussian mixture model
+    This function is deprecated, please use `sklearn.mixture` instead.
+
+    Fit a 1D Gaussian mixture model using a hard-EM approach. This is 
+    sloppier and less accurate than the routine from `sklearn.mixture`.
     
     # Example: find group of small values
     flag,pr   = GMM1D(array(points))
@@ -53,7 +63,21 @@ def GMM1D(points,NCLASS=2):
     aresmall  = flag[:,smallf]>flag[:,1-smallf]
     aresmall |= points<mean(edgelen[aresmall])
     small = points[aresmall]
+    
+    Parameters
+    ----------
+    points : vector
+    NCLASS : integer>1, default=2
+        number of classes to use
+    
+    Returns
+    -------
+    classification : vector
+        Probability of beloning to each class (normalized)
+    Pr : 
+        Probabilities of belonging to each class (not normalized)
     '''
+    warnings.warn("This function is deprecated, suggest `sklearn.mixture` instead.", DeprecationWarning)
     points   = np.squeeze(points)
     N        = len(points)
     initsize = N//NCLASS

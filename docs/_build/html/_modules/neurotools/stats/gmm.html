@@ -163,17 +163,24 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This module is deprecated, please use `sklearn.mixtur` instead.</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="GMM"><a class="viewcode-back" href="../../../neurotools.stats.gmm.html#neurotools.stats.gmm.GMM">[docs]</a><span class="k">def</span> <span class="nf">GMM</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">NCLASS</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Fit a ND Gaussian mixture model</span>
+<span class="sd">    This function is deprecated, suggest `sklearn.mixture` instead.</span>
+
+<span class="sd">    Fit a ND Gaussian mixture model using a hard-EM approach. This is </span>
+<span class="sd">    sloppier and less accurate than the routine from `sklearn.mixture`.</span>
 <span class="sd">    </span>
 <span class="sd">    $ PDF = \Pr(G) (2pi)^(k/2)\operatorname{det}(S)^{-1/2}\exp[-1/2 (x-mu)^T S^{-1} (x-mu)] $</span>
 <span class="sd">    $ logPDF = \log\Pr(G) k/2 \log(2\pi)-1/2\log(\operatorname{det}(S))-1/2(x-mu)^T S^{-1}(x-mu)$ </span>
 <span class="sd">    Pr is inverse monotonic with $\log\Pr(G)-\log(\operatorname{det}(S))-(x-mu)^T S^{-1}(x-mu)$</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This function is deprecated, suggest `sklearn.mixture` instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
     <span class="n">N</span>          <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">initsize</span>   <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="n">NCLASS</span>
     <span class="n">classes</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
@@ -200,7 +207,10 @@
 
 <div class="viewcode-block" id="GMM1D"><a class="viewcode-back" href="../../../neurotools.stats.gmm.html#neurotools.stats.gmm.GMM1D">[docs]</a><span class="k">def</span> <span class="nf">GMM1D</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">NCLASS</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Fit a 1D Gaussian mixture model</span>
+<span class="sd">    This function is deprecated, please use `sklearn.mixture` instead.</span>
+
+<span class="sd">    Fit a 1D Gaussian mixture model using a hard-EM approach. This is </span>
+<span class="sd">    sloppier and less accurate than the routine from `sklearn.mixture`.</span>
 <span class="sd">    </span>
 <span class="sd">    # Example: find group of small values</span>
 <span class="sd">    flag,pr   = GMM1D(array(points))</span>
@@ -208,7 +218,21 @@
 <span class="sd">    aresmall  = flag[:,smallf]&gt;flag[:,1-smallf]</span>
 <span class="sd">    aresmall |= points&lt;mean(edgelen[aresmall])</span>
 <span class="sd">    small = points[aresmall]</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : vector</span>
+<span class="sd">    NCLASS : integer&gt;1, default=2</span>
+<span class="sd">        number of classes to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    classification : vector</span>
+<span class="sd">        Probability of beloning to each class (normalized)</span>
+<span class="sd">    Pr : </span>
+<span class="sd">        Probabilities of belonging to each class (not normalized)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This function is deprecated, suggest `sklearn.mixture` instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
     <span class="n">points</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="n">N</span>        <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="n">initsize</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="n">NCLASS</span>

@@ -21,19 +21,8 @@ Under development, intended to be used with internal lab archive format
 from collections import defaultdict
 import numpy as np
 
-def f(x):
-    '''
-    Logistic function mapping activation to probability
-    
-    Parameters
-    ----------
-    x : numeric
-    
-    Returns
-    -------
-    numeric : 1/(1+np.exp(-x))
-    '''
-    return 1/(1+np.exp(-x))
+
+from neurotools.functions import slog, sexp, g, f, f1, f2
 
 def bar_f(x):
     '''
@@ -44,7 +33,7 @@ def bar_f(x):
     Returns
     -------
     '''
-    return 1/(1+np.exp(x))
+    return f(-x)
 
 def inv_f(x,eps=1e-12):
     '''
@@ -57,7 +46,7 @@ def inv_f(x,eps=1e-12):
     '''
     x = 1./x-1
     x[x<eps]=eps
-    return -np.log(x)
+    return -slog(x)
 
 
 a2p = f
@@ -94,6 +83,9 @@ def lnPr(s,p,eps=1e-12,axis=-1):
     
     Parameters
     ----------
+    s : bits
+    p : probability of bits being 1
+    
     Returns
     -------
     '''
@@ -101,7 +93,7 @@ def lnPr(s,p,eps=1e-12,axis=-1):
     p[p<eps]=eps
     p[p>1-eps]=1-eps
     s = np.int32(s)
-    return np.sum(s*np.log(p)+(1-s)*np.log1p(-p),axis=axis)
+    return np.sum(s*slog(p)+(1-s)*np.log1p(-p),axis=axis)
 
 def lnPr_activation(s,a,axis=-1):
     '''
@@ -114,7 +106,7 @@ def lnPr_activation(s,a,axis=-1):
     Returns
     -------
     '''
-    return np.sum(s*a-np.log1p(np.exp(a)),axis=axis)
+    return np.sum(s*a-np.log1p(sexp(a)),axis=axis)
 
 def ground_state(a,eps=1e-12,axis=-1):
     '''
@@ -125,7 +117,7 @@ def ground_state(a,eps=1e-12,axis=-1):
     Returns
     -------
     '''
-    return np.sum(np.log1p(np.exp(a)),axis=axis)
+    return np.sum(np.log1p(sexp(a)),axis=axis)
 
 def unique_counts(samples):
     '''
@@ -155,9 +147,10 @@ def bernoulli_entropy(p,eps=1e-12):
     -------
     '''
     p = p.copy()
+    q = 1-p
     p[p<eps]=eps
-    p[p>1-eps]=1-eps
-    return -(p*np.log(p)+(1-p)*np.log1p(-p))
+    q[q<eps]=eps
+    return -(p*np.log(p)+q*np.log(q))
 
 def bernoulli_entropy_activation(a,eps=1e-12):
     '''
@@ -168,8 +161,9 @@ def bernoulli_entropy_activation(a,eps=1e-12):
     -------
     '''
     p = f(a)
-    p[p>1-eps]=1-eps
-    return -(p*a+np.log(1-p))
+    q = 1-p
+    q[q<eps]=eps
+    return -(p*a+np.log(q))
 
 def hashint64(x,N):
     '''

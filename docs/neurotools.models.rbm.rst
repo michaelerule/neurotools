@@ -1,5 +1,17 @@
-neurotools\.models\.rbm module
-==============================
+neurotools\.models\.rbm package
+===============================
+
+Submodules
+----------
+
+.. toctree::
+
+   neurotools.models.rbm.rbm
+   neurotools.models.rbm.rbm_helper
+   neurotools.models.rbm.rbm_sample
+
+Module contents
+---------------
 
 .. automodule:: neurotools.models.rbm
     :members:

@@ -171,27 +171,96 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="softhresh"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.softhresh">[docs]</a><span class="k">def</span> <span class="nf">softhresh</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="c1"># Constants: ensure compatibility with float32</span>
+<span class="c1"># while using highest available accuracy (float128)</span>
+
+<span class="n">F32EPS</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="mf">7e-45</span><span class="p">)</span>
+<span class="n">F32SAFE</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">F32EPS</span><span class="p">)</span>
+<span class="n">ZERO128</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="n">EMAX</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)))</span>
+
+<span class="n">F128EMAX</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;11355.52340629414395&#39;</span><span class="p">))</span>
+
+<span class="n">lgE</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;1.442695040888963407359924681001892137426645954152985934135&#39;</span><span class="p">)</span>
+<span class="n">pi</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;3.141592653589793238462643383279502884197169399375105820974&#39;</span><span class="p">)</span>
+<span class="n">tau</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;6.283185307179586476925286766559005768394338798750211641949&#39;</span><span class="p">)</span>
+<span class="n">e</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;2.718281828459045235360287471352662497757247093699959574966&#39;</span><span class="p">)</span>
+<span class="n">sqrt2</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;1.414213562373095048801688724209698078569671875376948073176&#39;</span><span class="p">)</span>
+<span class="n">sqrttau</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;2.506628274631000502415765284811045253006986740609938316629&#39;</span><span class="p">)</span>
+<span class="n">invsqrttau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;0.398942280401432677939946059934381868475858631164934657666&#39;</span><span class="p">)</span>
+
+<span class="c1"># largest floating point accuracy that scipy.linalg</span>
+<span class="c1"># can support</span>
+<span class="n">LINALGMAXFLOAT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+
+<div class="viewcode-block" id="slog"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.slog">[docs]</a><span class="k">def</span> <span class="nf">slog</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="n">F32SAFE</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Safe natural logarithm</span>
+<span class="sd">    Natural logarithm that truncates inputs to small positive value</span>
+<span class="sd">    epsilon (eps, default 1e-6) to avoid underflow in the output.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">returntype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="n">x</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="sexp"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.sexp">[docs]</a><span class="k">def</span> <span class="nf">sexp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="n">EMAX</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Safe exponential</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">returntype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span><span class="n">x</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="sigmoid"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.sigmoid">[docs]</a><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Soft-threshold function (rescaled hyperbolic tangent)</span>
+<span class="sd">    More numerically stable version </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">returntype</span><span class="p">(</span><span class="n">sexp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span></div>
 
-<span class="n">zero128</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="sigmoid"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.sigmoid">[docs]</a><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="c1"># Sigmoid and derivatives</span>
+
+<div class="viewcode-block" id="g"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.g">[docs]</a><span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span> 
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    More numerically stable version of the logit function</span>
+<span class="sd">    Evaluates g(x)=log(1+exp(x)) as accurately as possible. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">returntype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span></div>
+    
+<div class="viewcode-block" id="f"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.f">[docs]</a><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span> 
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    evaluates f(x)=1/(1+exp(-x)) as accurately as possible</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">returntype</span><span class="p">(</span><span class="n">sexp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span></div>
+
+<div class="viewcode-block" id="f1"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.f1">[docs]</a><span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span> 
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fist derivative of sigmoid</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">zero128</span><span class="p">,</span> <span class="o">-</span><span class="n">x</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">sexp</span><span class="p">(</span>\
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>\
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span><span class="n">x</span><span class="p">),</span>
+        <span class="n">returntype</span><span class="o">=</span><span class="n">returntype</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="f2"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.f2">[docs]</a><span class="k">def</span> <span class="nf">f2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="n">LINALGMAXFLOAT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Second derivative of sigmoid</span>
+<span class="sd">    </span>
+<span class="sd">    (q - p) p q</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">logp</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">logq</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">ZERO128</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">p</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">F128EMAX</span><span class="p">,</span><span class="n">logp</span><span class="p">))</span>
+    <span class="n">q</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">F128EMAX</span><span class="p">,</span><span class="n">logq</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">returntype</span><span class="p">((</span><span class="n">q</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">q</span><span class="o">*</span><span class="n">p</span><span class="p">);</span></div>
+
+
+
 
 <div class="viewcode-block" id="npdf"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.npdf">[docs]</a><span class="k">def</span> <span class="nf">npdf</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Gaussian probability density</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">partition</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="n">sigma</span>
-    <span class="k">return</span> <span class="n">partition</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+    <span class="n">invsigma</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">sigma</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">invsigma</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">invsqrttau</span><span class="o">*</span><span class="n">invsigma</span><span class="p">)</span> <span class="o">*</span> <span class="n">sexp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="log_factorial"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.log_factorial">[docs]</a><span class="k">def</span> <span class="nf">log_factorial</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -203,21 +272,6 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">k</span><span class="o">&lt;</span><span class="mi">2</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span></div>
 
-<div class="viewcode-block" id="slog"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.slog">[docs]</a><span class="k">def</span> <span class="nf">slog</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Safe natural logarithm</span>
-<span class="sd">    Natural logarithm that truncats inputs to small positive value</span>
-<span class="sd">    epsilon (eps, default 1e-6) to avoid underflow in the output.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="n">x</span><span class="p">))</span></div>
-    
-
-<span class="n">emax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">3.402823e38</span><span class="p">)))</span>
-<div class="viewcode-block" id="safeexp"><a class="viewcode-back" href="../../neurotools.functions.html#neurotools.functions.safeexp">[docs]</a><span class="k">def</span> <span class="nf">safeexp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Safe exponential</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">emax</span><span class="p">,</span><span class="n">x</span><span class="p">))</span></div>
 
 </pre></div>
 

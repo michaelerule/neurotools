@@ -638,15 +638,18 @@
 
 <div class="viewcode-block" id="today"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.today">[docs]</a><span class="k">def</span> <span class="nf">today</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns the date in YYMMDD format</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `string` : the date in YYMMDD format</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<span class="c1">#crude versions of tic and toc from Matlab</span>
-<span class="c1">#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</span>
 <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="kc">None</span>
 <div class="viewcode-block" id="tic"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.tic">[docs]</a><span class="k">def</span> <span class="nf">tic</span><span class="p">(</span><span class="n">st</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; Similar to Matlab tic &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    Similar to Matlab tic </span>
+<span class="sd">    stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
@@ -657,8 +660,12 @@
     <span class="k">except</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timing...&quot;</span><span class="p">)</span>
     <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">t</span></div>
+
 <div class="viewcode-block" id="toc"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.toc">[docs]</a><span class="k">def</span> <span class="nf">toc</span><span class="p">(</span><span class="n">st</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; Similar to Matlab toc &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    Similar to Matlab toc </span>
+<span class="sd">    stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
@@ -677,6 +684,21 @@
     <span class="k">while</span> <span class="n">current_milli_time</span><span class="p">()</span><span class="o">&lt;</span><span class="n">t</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">return</span> <span class="n">current_milli_time</span><span class="p">()</span></div>
+    
+    
+    
+<div class="viewcode-block" id="getVariable"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.getVariable">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">getVariable</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reads a variable from a .mat or .hdf5 file</span>
+<span class="sd">    The read result is cached in ram for later access</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;.mat&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">variable_names</span><span class="o">=</span><span class="p">[</span><span class="n">var</span><span class="p">])[</span><span class="n">var</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s1">&#39;.hdf5&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Path is neither .mat nor .hdf5&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

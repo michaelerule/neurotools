@@ -32,12 +32,12 @@ try:
     import decorator
     from decorator import decorator as robust_decorator
 except:
-    print('Error, cannot find decorator module')
+    print('could not find decorator module; no robust_decorator support')
 try:
     import typedecorator
     from typedecorator import params, returns, setup_typecheck
 except:
-    print('Error, cannot find typedecorator module')
+    print('could not find typedecorator module; advanced decorator functions missing')
 
 def listit(t):
     return list(map(listit, t)) if isinstance(t, (list, tuple)) else t

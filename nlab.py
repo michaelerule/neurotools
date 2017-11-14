@@ -9,6 +9,8 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
 
+print( 'Loading nlab namespace')
+
 import os, sys
 import pickle
 import random
@@ -26,7 +28,7 @@ import scipy.optimize
 try:
     from   sklearn.metrics   import roc_auc_score,roc_curve,auc
 except Exception as e:
-    print('Importing sklearn failed, ROC and AUC will be missing')
+    print('could not find sklearn; ROC and AUC will be missing')
 
 from   scipy.stats       import wilcoxon
 from   scipy.signal      import *
@@ -57,7 +59,6 @@ import matplotlib.pyplot as plt
 print matplotlib.pyplot.get_backend()
 '''
 
-print( 'Loading nlab namespace')
 from neurotools.spikes.spikes            import *
 from neurotools.spikes.waveform          import *
 from neurotools.tools                    import *
@@ -107,11 +108,7 @@ from neurotools.signal.conv              import *
 from neurotools.jobs.parallel            import *
 from neurotools.jobs.decorator           import *
 
-# from scipy.stats    import *
-from neurotools.getfftw             import *
-# seems like too many imports ruining pylab context
-# try to fix it up a bit
-# from pylab    import *
+from neurotools.getfftw                  import *
 
 # suppress verbose warning messages
 nowarn()
@@ -121,18 +118,11 @@ from numpy.core.multiarray import concatenate as cat
 try:
     import h5py
 except:
-    print('h5py missing')
+    print('could not locate h5py; support for hdf5 files missing')
     h5py = None
 
-@memoize
-def getVariable(path,var):
-    '''
-    Reads a variable from a .mat or .hdf5 file
-    The read result is cached in ram for later access
-    '''
-    if '.mat' in path:
-        return loadmat(path,variable_names=[var])[var]
-    elif '.hdf5' in path:
-        with h5py.File(path) as f:
-            return f[var].value
-    raise ValueError('Path is neither .mat nor .hdf5')
+# Last but not least 
+from pylab import *   
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy.random import *

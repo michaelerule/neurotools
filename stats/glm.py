@@ -33,39 +33,27 @@ See also
 try:
     import numpy as np
 except:
-    print('Numpy appears to be missing. Try:')
-    print('> pip install -U numpy')
-    print('then restart the python interpreter')
+    print('could not find numpy; glm routines will not work')
 
 # get GLM solver from statsmodels
 try:
     from statsmodels.genmod.generalized_linear_model import GLM
     from statsmodels.genmod.families import Poisson
 except:
-    print('statsmodels import failed! no GLM support. Try:')
-    print('> pip install -U statsmodels')
-    print('then restart the python interpreter')
-    print('On OSX I used')
-    print('> sudo port install py27-statsmodels')
+    print('could not find statsmodels; glm routines will not work')
 
 # get ROC curve code from sklearn
 try:
     # This AUC algorithm is not the best, but it will do
     from sklearn.metrics import roc_auc_score as auc
 except:
-    print('sklearn import failed? no ROC curve analysis. Try:')
-    print('> pip install -U scikit-learn')
-    print('then restart the python interpreter')
-    print('On OSX I used')
-    print('> sudo port install py27-scikits*')
+    print('could not find sklearn; ROC curve routines missing')
 
 # the function minimize wraps a large number of function optimizers
 try:
     from scipy.optimize import minimize
 except:
-    print('Scipy could not be imported. Try:')
-    print('> pip install -U scipy')
-    print('then restart the python interpreter')
+    print('could not find scipy; glm routines will not work')
 
 #############################################################################
 

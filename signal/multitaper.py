@@ -11,10 +11,9 @@ from numpy import *
 try:
     from spectrum.mtm import dpss
 except:
-    print('Could not locate the spectrum module, please install it')
-    print('Multitaper methods will not work')
+    print('could not locate the spectrum module; multitaper methods missing')
     def dpss(*args):
-        raise NotImplementedError("Please install the spectrum module")
+        raise NotImplementedError("Please install the spectrum module to use multi-taper methods")
 
 from neurotools.getfftw import *
 from neurotools.signal.signal import zscore

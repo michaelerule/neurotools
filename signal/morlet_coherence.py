@@ -17,7 +17,8 @@ try:
 except:
     pass
 
-from neurotools.tools import memoize
+#from neurotools.tools import memoize
+from neurotools.jobs.decorator import memoize
 
 # from plottools import *
 ############################################################################

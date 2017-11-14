@@ -40,7 +40,7 @@ try:
     import statsmodels.api as smapi
     import statsmodels.graphics as smgraphics
 except:
-    print('statsmodels is missing!')
+    print('could not find statsmodels; some plotting functions missing')
 
 def zscore(x):
     '''
@@ -477,7 +477,7 @@ def pixels_to_yunits(n,ax=None,fig=None):
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
-    dy = diff(ylim())[0]
+    dy = np.diff(ylim())[0]
     return n*dy/float(h)
 
 def pixels_to_xfigureunits(n,ax=None,fig=None):
@@ -1205,11 +1205,11 @@ def savefigure(name):
         file name to save as (sans extension)
     '''
     # strip user-supplied extension if present
-    if basename.split('.')[-1].lower() in {'svg','pdf','png'}:
-        basename = '.'.join(basename.split('.')[:-1])
     dirname  = os.path.dirname(name)
     if dirname=='': dirname='./'
     basename = os.path.basename(name)
+    if basename.split('.')[-1].lower() in {'svg','pdf','png'}:
+        basename = '.'.join(basename.split('.')[:-1])
     savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True,bbox_inches='tight')
     savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight')
     savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True,bbox_inches='tight')

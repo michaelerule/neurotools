@@ -8,7 +8,7 @@ from __future__ import print_function
 
 from neurotools.graphics.plot    import *
 from neurotools.getfftw import *
-from neurotools.tools   import memoize
+from neurotools.jobs.decorator import memoize
 from scipy.signal.wavelets import morlet
 
 def normalized_morlet(m,w):

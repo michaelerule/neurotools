@@ -43,7 +43,4 @@ try:
         return M
 
 except:
-    print('statsmodels is not installed! no GLMfit')
-    print('TRY')
-    print(' > sudo easy_install statsmodels')
-    print('AND RESTART PYTHON INTERPRETER')
+    print('could not find statsmodels; glm routines will not work')

@@ -483,15 +483,18 @@ now = current_milli_time
 
 def today():
     '''
-    Returns the date in YYMMDD format
+    Returns
+    -------
+    `string` : the date in YYMMDD format
     '''
     return datetime.date.today().strftime('%Y%m%d')
 
-#crude versions of tic and toc from Matlab
-#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
 __GLOBAL_TIC_TIME__ = None
 def tic(st=''):
-    ''' Similar to Matlab tic '''
+    ''' 
+    Similar to Matlab tic 
+    stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
+    '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
     try:
@@ -502,8 +505,12 @@ def tic(st=''):
     except: print("timing...")
     __GLOBAL_TIC_TIME__ = current_milli_time()
     return t
+
 def toc(st=''):
-    ''' Similar to Matlab toc '''
+    ''' 
+    Similar to Matlab toc 
+    stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
+    '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
     try:
@@ -522,3 +529,18 @@ def waitfor(t):
     while current_milli_time()<t:
         pass
     return current_milli_time()
+    
+    
+    
+@memoize
+def getVariable(path,var):
+    '''
+    Reads a variable from a .mat or .hdf5 file
+    The read result is cached in ram for later access
+    '''
+    if '.mat' in path:
+        return loadmat(path,variable_names=[var])[var]
+    elif '.hdf5' in path:
+        with h5py.File(path) as f:
+            return f[var].value
+    raise ValueError('Path is neither .mat nor .hdf5')

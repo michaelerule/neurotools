@@ -14,9 +14,17 @@ from neurotools.signal.signal import get_edges
 
 import numpy as np
 from   pylab import find
-
+import scipy
 
 def kdepeak(x, x_grid=None):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if x_grid==None:
         x_grid = np.linspace(np.min(x),np.max(x),201)
     kde = gaussian_kde(x)
@@ -85,12 +93,26 @@ def knn_1d_density(x,k=10,eps=0.01,pad=100,final=None):
     
     return centers[ok],density[ok]
 
-def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None):
+def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None,kind='linear'):
     '''
     Follow the knn_1d_density estimation with interpolation of the
     density on a grid
 
-    fill: if not given will fill with the mean rate
+    Parameters
+    ----------
+    grid:
+    x:
+    k : `int`, default 10
+    eps : `float`, default 0.01
+    fill: assign missing values
+        if not given will fill with the mean rate
+    kind : `string`, default 'linear'
+        Interpolation method parameter for scipy.interpolate.interp1d
+        
+    Returns
+    -------
+    y : 
+        Probability density on grid
     '''
     centers,density = knn_1d_density(x,k,eps=eps)
     if len(centers)!=len(density):
@@ -99,8 +121,12 @@ def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None):
         N = min(len(centers),len(density))
         centers = centers[:N]
         density = density[:N]
-    if fill is None: fill=mean(density)
-    y = np.interp1d(centers,density,bounds_error=0,fill_value=fill)(grid)
+    if fill is None: fill=np.mean(density)
+    y = scipy.interpolate.interp1d(
+        centers,density,
+        bounds_error=0,
+        fill_value=fill,
+        kind=kind)(grid)
     return y
 
 def gridhist(ngrid,width,points):

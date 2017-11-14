@@ -1,6 +1,13 @@
 neurotools\.models package
 ==========================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    neurotools.models.rbm
+
 Submodules
 ----------
 
@@ -8,7 +15,6 @@ Submodules
 
    neurotools.models.izh
    neurotools.models.lif
-   neurotools.models.rbm
 
 Module contents
 ---------------

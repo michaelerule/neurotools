@@ -28,9 +28,7 @@ try:
     import nitime
     from nitime.algorithms import coherence
 except:
-    print('The nitime module is missing. To install, run one of these')
-    print('> sudo easy_install nitime')
-    print('> sudo pip install nitime')
+    print('could not locate nitime module; coherence functions missing')
     def coherence(*args,**kwargs):
         raise ImportError("nitime module not loaded, coherence missing")
 

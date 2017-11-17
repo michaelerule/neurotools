@@ -18,6 +18,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from   neurotools.graphics.color import BLACK,RUST,TURQUOISE,OCHRE,AZURE
+from matplotlib.mlab import find
 
 # Adjust plotting preference
 # TODO: move these config options elsewhere
@@ -79,8 +80,8 @@ def add_spikes(Y):
     y1,y2 = plt.ylim()
     y3 = y2+.1*(y2-y1)
     for e in find(Y==1):
-        plot([e,e],[y2,y3],color='k',lw=.5)
-    ylim(y1,y3)
+        plt.plot([e,e],[y2,y3],color='k',lw=.5)
+    plt.ylim(y1,y3)
    
 def precision1D(N,a,b):
     '''
@@ -99,7 +100,6 @@ def showim(x,**vargs):
     '''
     Parameters
     ----------
-    
     Returns
     -------
     '''

@@ -356,6 +356,29 @@ used for spike-triggered statistics</p>
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">gettriggeredstats</code><span class="sig-paren">(</span><em>signal</em>, <em>times</em>, <em>window</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#gettriggeredstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.gettriggeredstats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a statistical summary of data in length window around time point
 times.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>signal</strong> (<em>one-dimensional array-like</em>) – Signal to summarize</li>
+<li><strong>times</strong> (<em>one-dimensionan array-like</em>) – list of time-points around which to summarize (in frames)</li>
+<li><strong>window</strong> (<em>positive int</em>) – window (in frames) around each time-point to use for statistical
+summary</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>means</em> – means of <cite>signal</cite> for all time-windows specified in <cite>times</cite></li>
+<li><em>standard-deviations</em> – std of <cite>signal</cite> for all time-windows specified in <cite>times</cite></li>
+<li><em>standard-erros</em> – standard errors of the mean of <cite>signal</cite> for all time-windows
+specified in <cite>times</cite></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -510,16 +533,22 @@ to the data for stability.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> (<em>ndarray</em>) – data, filtering performed over last dimension</li>
-<li><strong>fa</strong> (<em>number</em>) – low-freq cutoff Hz. If none, lowpass at fb</li>
-<li><strong>fb</strong> (<em>number</em>) – high-freq cutoff Hz. If none, highpass at fa</li>
-<li><strong>Fs</strong> (<em>int</em>) – Sample rate in Hz</li>
-<li><strong>order</strong> (<em>1..6</em>) – butterworth filter order. Default 4</li>
-<li><strong>zerophase</strong> (<em>boolean</em>) – Use forward-backward filtering? (true)</li>
-<li><strong>bandstop</strong> (<em>boolean</em>) – Do band-stop rather than band-pass</li>
-<li><strong>offset</strong> (<em>positive number</em>) – Offset data to avoid underflow (1)</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>(</strong><strong>ndarray</strong><strong>)</strong> (<em>data</em>) – data, filtering performed over last dimension</li>
+<li><strong>(</strong><strong>number</strong><strong>)</strong> (<em>fb</em>) – low-freq cutoff Hz. If none, lowpass at fb</li>
+<li><strong>(</strong><strong>number</strong><strong>)</strong> – high-freq cutoff Hz. If none, highpass at fa</li>
+<li><strong>(</strong><strong>int</strong><strong>)</strong> (<em>Fs</em>) – Sample rate in Hz</li>
+<li><strong>(</strong><strong>1..6</strong><strong>)</strong> (<em>order</em>) – butterworth filter order. Default 4</li>
+<li><strong>(</strong><strong>boolean</strong><strong>)</strong> (<em>bandstop</em>) – Use forward-backward filtering? (true)</li>
+<li><strong>(</strong><strong>boolean</strong><strong>)</strong> – Do band-stop rather than band-pass</li>
+<li><strong>(</strong><strong>positive number</strong><strong>)</strong> (<em>offset</em>) – Offset data to avoid underflow (1)</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Filtered signal</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">filtered</p>
 </td>
 </tr>
 </tbody>
@@ -529,7 +558,22 @@ to the data for stability.</p>
 <dl class="function">
 <dt id="neurotools.signal.signal.padin">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">padin</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#padin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.padin" title="Permalink to this definition">¶</a></dt>
-<dd><p>See padout</p>
+<dd><p>Removes padding added by the <cite>padout</cite> function;
+<cite>padin</cite> and <cite>padout</cite> together are used to control the
+boundary condtitions for filtering. See the documentation
+for padout for details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>array-like</em>) – Data array produced by the <cite>padout function</cite></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">data with edge padding removed</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -592,6 +636,56 @@ See resonantDrive</p>
 <dt id="neurotools.signal.signal.randband">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">randband</code><span class="sig-paren">(</span><em>N</em>, <em>fa=None</em>, <em>fb=None</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#randband"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.randband" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns Gaussian random noise band-pass filtered between fa and fb.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.signal.remove_gaps">
+<code class="descclassname">neurotools.signal.signal.</code><code class="descname">remove_gaps</code><span class="sig-paren">(</span><em>w</em>, <em>cutoff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#remove_gaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.remove_gaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes gaps (streaches of zeros bordered by ones) from
+binary signal <cite>w</cite> that are shorter than <cite>cutoff</cite> in duration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>one-dimensional array-like</em>) – Binary signal</li>
+<li><strong>cutoff</strong> (<em>positive int</em>) – Minimum gap duration to keep</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Copy of w with gaps shorter than <cite>cutoff</cite> removed</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array-like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.signal.signal.remove_short">
+<code class="descclassname">neurotools.signal.signal.</code><code class="descname">remove_short</code><span class="sig-paren">(</span><em>w</em>, <em>cutoff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#remove_short"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.remove_short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes spans of ones bordered by zeros from
+binary signal <cite>w</cite> that are shorter than <cite>cutoff</cite> in duration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>one-dimensional array-like</em>) – Binary signal</li>
+<li><strong>cutoff</strong> (<em>positive int</em>) – Minimum gap duration to keep</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Copy of w with spans shorter than <cite>cutoff</cite> removed</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array-like</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

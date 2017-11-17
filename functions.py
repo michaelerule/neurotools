@@ -19,8 +19,10 @@ import numpy as np
 # Constants: ensure compatibility with float32
 # while using highest available accuracy (float128)
 
-F32EPS     = np.float128(7e-45)
+F32EPS     = np.float128('7e-45')
 F32SAFE    = np.sqrt(F32EPS)
+F64EPS     = np.float128('1.4012985e-45')
+F64SAFE    = np.sqrt(F64EPS)
 ZERO128    = np.float128('0')
 EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float64).max)))
 
@@ -38,7 +40,7 @@ invsqrttau = np.float128('0.3989422804014326779399460599343818684758586311649346
 # can support
 LINALGMAXFLOAT = np.float64
 
-def slog(x,eps=F32SAFE,returntype=LINALGMAXFLOAT):
+def slog(x,eps=F64SAFE,returntype=LINALGMAXFLOAT):
     '''
     Safe natural logarithm
     Natural logarithm that truncates inputs to small positive value

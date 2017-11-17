@@ -179,12 +179,40 @@ Operates on Gaussian densities</p>
 <dl class="method">
 <dt id="neurotools.stats.hmm.DiffusionGaussian.bwd">
 <code class="descname">bwd</code><span class="sig-paren">(</span><em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.hmm.DiffusionGaussian.bwd" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Forward (and backward) operator of a Gaussian diffusion process
+(Wiener process).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>d</strong> (<em>Gaussian object</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">new gaussian object reflecting diffusion</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="neurotools.stats.hmm.DiffusionGaussian.fwd">
 <code class="descname">fwd</code><span class="sig-paren">(</span><em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#DiffusionGaussian.fwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.DiffusionGaussian.fwd" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Forward (and backward) operator of a Gaussian diffusion process
+(Wiener process).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>d</strong> (<em>Gaussian object</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">new gaussian object reflecting diffusion</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -264,9 +292,19 @@ B: projection vector from multivariate system to log-rate</p>
 backward. Used to condition Gaussian states on Poisson
 observations. Uses 1D integration (quadrature) to estimate
 posterior moments. Assumes log λ = a*x+b.</p>
-<p>a: log-rate gain parameter
-b: log-rate bias parameter
-y: The observed count (non-negative integer)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>a</strong> (<em>log-rate gain parameter</em>) – </li>
+<li><strong>b</strong> (<em>log-rate bias parameter</em>) – </li>
+<li><strong>y</strong> (<em>The observed count</em><em> (</em><em>non-negative integer</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -306,7 +344,7 @@ see: PoissonObservationApproximator</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>y</strong> (<em>iterable of observations</em>) – sequence of observations</li>
-<li><strong>B</strong> (<em>y → P</em><em>(</em><em>x</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
+<li><strong>B</strong> (<em>y→</em><em>(</em><em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
 should accept and observation, and return a function from
 prior distribution to posterior distribution.</li>
 <li><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – initial state estimate (distribution)</li>
@@ -368,7 +406,7 @@ to avoid probability of any state or transition going to zero</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>y</strong> (<em>iterable of observations</em>) – sequence of observations</li>
-<li><strong>B</strong> (<em>y → P</em><em>(</em><em>x</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
+<li><strong>B</strong> (<em>y→</em><em>(</em><em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
 should accept and observation, and return a function from
 prior distribution to posterior distribution.</li>
 <li><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – initial state estimate (distribution)</li>
@@ -443,7 +481,7 @@ points using the forward-backward algorithm.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>y</strong> (<em>iterable</em>) – sequence of observations</li>
-<li><strong>B</strong> (<em>y→P</em><em>(</em><em>x</em><em>)</em>) – conditioning on observations P(x|y(t))</li>
+<li><strong>B</strong> (<em>y→</em><em>(</em><em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>)</em><em>,</em>) – conditioning on observations P(x|y(t))</li>
 <li><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – Initial condition</li>
 <li><strong>T.fwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em>) – Operator for the forward  pass</li>
 <li><strong>T.bwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em>) – Operator for the backward pass</li>
@@ -453,21 +491,6 @@ points using the forward-backward algorithm.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.stats.hmm.gaussian_quadrature">
-<code class="descclassname">neurotools.stats.hmm.</code><code class="descname">gaussian_quadrature</code><span class="sig-paren">(</span><em>p</em>, <em>domain</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#gaussian_quadrature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.gaussian_quadrature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Treat f as a density and estimate it’s mean and precision
-over the domain</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.stats.hmm.gaussian_quadrature_logarithmic">
-<code class="descclassname">neurotools.stats.hmm.</code><code class="descname">gaussian_quadrature_logarithmic</code><span class="sig-paren">(</span><em>logp</em>, <em>domain</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#gaussian_quadrature_logarithmic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.gaussian_quadrature_logarithmic" title="Permalink to this definition">¶</a></dt>
-<dd><p>logp is (proportional to) a 1D density
-estimate it’s mean and precision over the domain
-NOT IMPLEMENTED</p>
 </dd></dl>
 
 <dl class="function">

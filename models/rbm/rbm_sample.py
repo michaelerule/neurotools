@@ -27,6 +27,8 @@ def conditional_map(k,v):
     newer versions of np.unique offer this functionality and are
     recommended if available.
     '''
+    k = np.array(k)
+    v = np.array(v)
     assert v.shape==k.shape
     assert len(v.shape)==1
     order  = np.argsort(k)

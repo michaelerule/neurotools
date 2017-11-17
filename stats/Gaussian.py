@@ -15,15 +15,36 @@ from neurotools.stats.distributions import poisson_logpdf
 import random
 from scipy.optimize import minimize
 
-def gaussian_quadrature(p,domain):
+def gaussian_quadrature(p,domain,eps=1e-12):
     '''
     Treat f as a density and estimate it's mean and precision
     over the domain
     '''
+    assert np.all(np.isfinite(p))
+    p = np.array(p)
+    p[p<eps] = eps   
     p/= np.sum(p)
     m = np.sum(domain*p)
     assert np.isfinite(m)
     v = np.sum((domain-m)**2*p)
+    assert np.isfinite(v)
+    t = 1./(v+1e-10)
+    assert np.isfinite(t)
+    assert t>=0
+    return Gaussian(m, t)
+
+def gaussian_quadrature_logarithmic(logp,domain):
+    '''
+    logp is (proportional to) a 1D density
+    estimate it's mean and precision over the domain
+    NOT IMPLEMENTED
+    '''
+    raise NotImplementedError('This function is not yet implemented')
+    assert 0
+    normalization = sum(p)
+    m = np.sum(domain*p)/normalization
+    assert np.isfinite(m)
+    v = np.sum((domain-m)**2*p/normalization)
     assert np.isfinite(v)
     t = 1./(v+1e-10)
     assert np.isfinite(t)

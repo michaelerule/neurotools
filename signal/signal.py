@@ -20,6 +20,11 @@ def gaussian_kernel(sigma):
     '''
     generate 1D Guassian kernel for smoothing
     sigma: standard deviation, >0
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     assert sigma>0
     K = np.ceil(sigma)
@@ -34,6 +39,11 @@ def gaussian_smooth(x,sigma):
 
     sigma: standard deviation
     x: 1D array-like signal
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     K = gaussian_kernel(sigma)
     return np.convolve(x,K,'same')
@@ -46,29 +56,49 @@ def zscore(x,axis=0,regularization=1e-30):
     The default refularization is 1e-30.
     x: NDarray
     axis: axis to zscore; default 0
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     ss = np.std(x,axis=axis)+regularization
     return (x-np.mean(x,axis=axis))/ss
 
 def local_maxima(x):
-   '''
-   Returns signal index and values at those indecies
-   '''
-   t = find(np.diff(np.sign(np.diff(x)))<0)+1
-   return t,x[t]
+    '''
+    Returns signal index and values at those indecies
+
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    t = find(np.diff(np.sign(np.diff(x)))<0)+1
+    return t,x[t]
 
 def local_minima(x):
-   '''
-   Returns signal index and values at those indecies for all local minima.
-   See local_maxima
-   '''
-   t,x = local_maxima(-x)
-   return t,-x
+    '''
+    Returns signal index and values at those indecies for all local minima.
+    See local_maxima
+
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    t,x = local_maxima(-x)
+    return t,-x
 
 def amp(x):
     '''
     Extracts amplitude envelope using Hilbert transform. X must be narrow
     band. No padding is performed so watch out for boundary effects
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return abs(hilbert(x))
 
@@ -76,6 +106,11 @@ def getsnips(signal,times,window):
     '''
     Extract snippits of a time series surronding a list of times. Typically
     used for spike-triggered statistics
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     times = times[times>window]
     times = times[times<len(signal)-window-1]
@@ -83,12 +118,39 @@ def getsnips(signal,times,window):
     return snips
 
 def triggeredaverage(signal,times,window):
+    '''
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
     return np.mean(getsnips(signal,times,window),0)
 
 def gettriggeredstats(signal,times,window):
     '''
     Get a statistical summary of data in length window around time point
     times.
+    
+    Parameters
+    ----------
+    signal : one-dimensional array-like
+        Signal to summarize
+    times : one-dimensionan array-like
+        list of time-points around which to summarize (in frames)
+    window : positive int
+        window (in frames) around each time-point to use for statistical
+        summary
+        
+    Returns
+    -------
+    means : 
+        means of `signal` for all time-windows specified in `times`
+    standard-deviations : 
+        std of `signal` for all time-windows specified in `times`
+    standard-erros : 
+        standard errors of the mean of `signal` for all time-windows 
+        specified in `times`
     '''
     s = getsnips(signal,times,window)
     return np.mean(s,0),np.std(s,0),np.std(s,0)/np.sqrt(len(times))*1.96
@@ -101,10 +163,15 @@ def padout(data):
 
     The original data is placed in the middle, between the mirrord copies.
     Use the function "padin" to strip the padding
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     N = len(data)
     assert len(data.shape)==1
-    padded = zeros(2*N,dtype=data.dtype)
+    padded = np.zeros(2*N,dtype=data.dtype)
     padded[N//2  :N//2+N]=data
     padded[     :N//2  ]=data[N//2:0    :-1]
     padded[N//2+N:     ]=data[-1 :N//2-1:-1]
@@ -112,7 +179,20 @@ def padout(data):
 
 def padin(data):
     '''
-    See padout
+    Removes padding added by the `padout` function; 
+    `padin` and `padout` together are used to control the
+    boundary condtitions for filtering. See the documentation
+    for padout for details.
+    
+    Parameters
+    ----------
+    data : array-like
+        Data array produced by the `padout function` 
+        
+    Returns
+    -------
+    np.array : 
+        data with edge padding removed
     '''
     N = len(data)
     assert len(data.shape)==1
@@ -131,15 +211,29 @@ def nonnegative_bandpass_filter(data,fa=None,fb=None,
     numeric underflow, so an offset parameter (default 1) is added
     to the data for stability.
 
-    Args:
-        data (ndarray): data, filtering performed over last dimension
-        fa (number): low-freq cutoff Hz. If none, lowpass at fb
-        fb (number): high-freq cutoff Hz. If none, highpass at fa
-        Fs (int): Sample rate in Hz
-        order (1..6): butterworth filter order. Default 4
-        zerophase (boolean): Use forward-backward filtering? (true)
-        bandstop (boolean): Do band-stop rather than band-pass
-        offset (positive number): Offset data to avoid underflow (1)
+    Parameters
+    ----------
+    data (ndarray): 
+        data, filtering performed over last dimension
+    fa (number): 
+        low-freq cutoff Hz. If none, lowpass at fb
+    fb (number): 
+        high-freq cutoff Hz. If none, highpass at fa
+    Fs (int): 
+        Sample rate in Hz
+    order (1..6): 
+        butterworth filter order. Default 4
+    zerophase (boolean): 
+        Use forward-backward filtering? (true)
+    bandstop (boolean): 
+        Do band-stop rather than band-pass
+    offset (positive number): 
+        Offset data to avoid underflow (1)
+    
+    Returns
+    -------
+    filtered : 
+        Filtered signal
     '''
     offset -= 1.0
     data = np.log1p(data+offset)
@@ -164,6 +258,11 @@ def bandpass_filter(data,fa=None,fb=None,
         order (1..6): butterworth filter order. Default 4
         zerophase (boolean): Use forward-backward filtering? (true)
         bandstop (boolean): Do band-stop rather than band-pass
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     N = data.shape[-1]
     padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
@@ -187,7 +286,7 @@ def bandpass_filter(data,fa=None,fb=None,
     return (filtfilt if zerophase else lfilter)(b,a,padded)[...,N//2:N//2+N]
     assert 0
 
-'''For legacy, bandpass_filter is aliased as bandfilter'''
+'''For backward compatibility, bandpass_filter is aliased as bandfilter'''
 bandfilter = bandpass_filter
 
 def box_filter(data,smoothat):
@@ -300,6 +399,11 @@ def rewrap(x):
     '''
     Used to handle wraparound when getting phase derivatives.
     See pdiff.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     x = np.array(x)
     return (x+pi)%(2*pi)-pi
@@ -309,6 +413,11 @@ def pdiff(x):
     Take the derivative of a sequence of phases.
     Times when this derivative wraps around form 0 to 2*pi are correctly
     handeled.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     x = np.array(x)
     return rewrap(np.diff(x))
@@ -316,6 +425,11 @@ def pdiff(x):
 def pghilbert(x):
     '''
     Extract phase gradient using the hilbert transform. See also pdiff.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     x = np.array(x)
     return pdiff(np.angle(np.hilbert(x)))
@@ -328,6 +442,11 @@ def fudge_derivative(x):
     sample times of the original signal. This procedure uses averaging to
     move the sample times of a differentiated signal back in line with the
     original.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     n = len(x)+1
     result = np.zeros(n)
@@ -362,6 +481,11 @@ def unwrap(h):
     '''
     Unwraps a sequences of phase measurements so that rather than
     ranging from 0 to 2*pi, the values increase (or decrease) continuously.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     d = fudgeDerivative(pdiff(h))
     return np.cumsum(d)
@@ -370,12 +494,22 @@ def ang(x):
     '''
     Uses the Hilbert transform to extract the phase of x. X should be
     narrow-band. The signal is not padded, so be wary of boundary effects.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return np.angle(np.hilbert(x))
 
 def randband(N,fa=None,fb=None,Fs=1000):
     '''
     Returns Gaussian random noise band-pass filtered between fa and fb.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return zscore(bandfilter(np.random.randn(N*2),fa=fa,fb=fb,Fs=Fs))[N//2:N//2+N]
 
@@ -383,6 +517,11 @@ def arenear(b,K=5):
     '''
     Expand a boolean/binary sequence by K samples in each direction.
     See "aresafe"
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     for i in range(1,K+1):
         b[i:] |= b[:-i]
@@ -395,6 +534,11 @@ def aresafe(b,K=5):
     Contract a boolean/binary sequence by K samples in each direction.
     For example, you may want to test for a condition, but avoid samples
     close to edges in that condition.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     for i in range(1,K+1):
         b[i:] &= b[:-i]
@@ -406,6 +550,11 @@ def get_edges(signal):
     '''
     Assuming a binary signal, get the start and stop times of each
     treatch of "1s"
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     if len(signal)<1:
         return np.array([[],[]])
@@ -420,22 +569,85 @@ def set_edges(edges,N):
     Converts list of start, stop times over time period N into a [0,1]
     array which is 1 for any time between a [start,stop)
     edge info outsize [0,N] results in undefined behavior
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     x = np.zeros(shape=(N,),dtype=np.int32)
     for (a,b) in edges:
         x[a:b]=1
     return x
 
+def remove_gaps(w,cutoff):
+    '''
+    Removes gaps (streaches of zeros bordered by ones) from 
+    binary signal `w` that are shorter than `cutoff` in duration.
+    
+    Parameters
+    ----------
+    w : one-dimensional array-like
+        Binary signal
+    cutoff : positive int
+        Minimum gap duration to keep
+        
+    Returns
+    -------
+    array-like
+        Copy of w with gaps shorter than `cutoff` removed
+    '''
+    a,b  = get_edges(1-w)
+    gaps = b-a
+    keep = np.array([a,b])[:,gaps>cutoff]
+    newgaps = set_edges(keep.T,len(w))
+    return 1-newgaps
+    
+def remove_short(w,cutoff):
+    '''
+    Removes spans of ones bordered by zeros from 
+    binary signal `w` that are shorter than `cutoff` in duration.
+    
+    Parameters
+    ----------
+    w : one-dimensional array-like
+        Binary signal
+    cutoff : positive int
+        Minimum gap duration to keep
+        
+    Returns
+    -------
+    array-like
+        Copy of w with spans shorter than `cutoff` removed
+    '''
+    a,b  = get_edges(w)
+    gaps = b-a
+    keep = np.array([a,b])[:,gaps>cutoff]
+    newgaps = set_edges(keep.T,len(w))
+    return newgaps
+
 def phase_rotate(s,f,Fs=1000.):
     '''
     Only the phase advancement portion of a resonator.
     See resonantDrive
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     theta = f*2*pi/Fs
     s *= np.exp(1j*theta)
     return s
 
 def fm_mod(freq):
+    '''
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
     N = len(freq)
     signal = [1]
     for i in range(N):
@@ -443,6 +655,13 @@ def fm_mod(freq):
     return np.array(signal)[1:]
 
 def pieces(x,thr=4):
+    '''
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
     dd = diff(x)
     br = [0]+list(find(abs(dd)>thr))+[len(x)]
     ps = []
@@ -488,6 +707,11 @@ def mean_block(data,N=100):
     '''
     Calls stats_block using np.mean. See documentation of stats_block for
     details.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return stats_block(data,np.mean,N)
 
@@ -495,6 +719,11 @@ def var_block(data,N=100):
     '''
     Calls stats_block using np.var. See documentation of stats_block for
     details.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return stats_block(data,np.var,N)
 
@@ -502,6 +731,11 @@ def median_block(data,N=100):
     '''
     Calls stats_block using np.median. See documentation of stats_block for
     details.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return stats_block(data,np.median,N)
 
@@ -510,6 +744,11 @@ def phase_randomize(signal):
     Phase randomizes a signal by rotating frequency components by a random
     angle. Negative frequencies are rotated in the opposite direction.
     The nyquist frequency, if present, has it's sign randomly flipped.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     assert 1==len(signam.shape)
     N = len(signal)
@@ -540,6 +779,11 @@ def phase_randomize_from_amplitudes(amplitudes):
     '''
     phase_randomize_from_amplitudes(amplitudes)
     treats input amplitudes as amplitudes of fourier components
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     N = len(amplitudes)
     x = np.complex128(amplitudes) # need to make a copy
@@ -559,6 +803,11 @@ def estimate_padding(fa,fb,Fs=1000):
     when filtering. Takes into account the filter bandwidth, which is
     related to the time-locality of the filter, and therefore the amount
     of padding needed to prevent artifacts at the edge.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     bandwidth  = fb if fa is None else fa if fb is None else min(fa,fb)
     wavelength = Fs/bandwidth
@@ -569,6 +818,11 @@ def lowpass_filter(x, cut=10, Fs=1000, order=4):
     '''
     Execute a butterworth low pass Filter at frequency "cut"
     Defaults to order=4 and Fs=1000
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return bandfilter(x,fb=cut,Fs=fs,order=order)
 
@@ -576,6 +830,11 @@ def highpassFilter(x, cut=40, Fs=1000, order=4):
     '''
     Execute a butterworth high pass Filter at frequency "cut"
     Defaults to order=4 and Fs=1000
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return bandfilter(x,fa=cut,Fs=Fs,order=order)
 
@@ -584,6 +843,11 @@ def fdiff(x,Fs=240.):
     Take the discrete derivative of a signal, correcting result for
     sample rate. This procedure returns a singnal two samples shorter than
     the original.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return (x[2:]-x[:-2])*Fs*.5
 
@@ -595,6 +859,11 @@ def killSpikes(x,threshold=1):
     useful in correcting kinematics velocity trajectories. Velocity
     should be smooth, but motion tracking errors can cause sharp spikes
     in the signal.
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     x = np.array(x)
     y = zscore(highpassFilter(x))
@@ -609,6 +878,11 @@ def killSpikes(x,threshold=1):
 def peak_within(freqs,spectrum,fa,fb):
     '''
     Find maximum within a band
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     # clean up arguments
     order    = argsort(freqs)
@@ -623,6 +897,11 @@ def local_peak_within(freqs,cc,fa,fb):
     '''
     For a spectrum, identify the largest local maximum in the frequency
     range [fa,fb].
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     local = local_maxima(cc)[0]
     peaks = list(set(local) & set(find((freqs>=fa) & (freqs<=fb))))
@@ -633,6 +912,11 @@ def local_peak_within(freqs,cc,fa,fb):
 def zeromean(x,axis=None):
     '''
     Remove the mean trend from data
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     return x-np.mean(x,axis=axis)
 
@@ -647,6 +931,11 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
           larger than pi/2, that is also a local extremum in phase velocity
         - local minima in the amplitude at low-voltage with high curvature
 
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
 
     analytic_signal = zscore(analytic_signal)

@@ -20,6 +20,11 @@ from neurotools.functions import slog
 from neurotools.stats.distributions import poisson_logpdf
 import random
 from scipy.optimize import minimize
+from math import factorial as fact
+import scipy
+from neurotools.stats.Gaussian import gaussian_quadrature
+from neurotools.stats.Gaussian import gaussian_quadrature_logarithmic
+from neurotools.functions import slog,sexp
 
 def poisson_parameter_guess(X,Y,N):
     '''
@@ -109,7 +114,7 @@ def poisson_baum_welch(Y,initial=None):
     # Start with random state
     # new_X = np.array(urand(size=(len(counts),))<0.5,'float')
     X     = np.zeros(np.shape(new_X),'float')
-    while not all(X==new_X):
+    while not np.all(X==new_X):
         X[:] = new_X
         logP,logA,logB,params = poisson_parameter_guess(X,Y,N)
         new_X = viterbi_log(Y,logP,logA,logB)
@@ -555,7 +560,7 @@ def forward_abstract(y, x0, T, B):
     ----------
     y     : iterable of observations
         sequence of observations
-    B     : y → P(x), 
+    B     : y→(P(x)→P(x)), 
         observation model conditioning on observations P(x|y(t))
         should accept and observation, and return a function from 
         prior distribution to posterior distribution.
@@ -576,7 +581,8 @@ def forward_abstract(y, x0, T, B):
     # initial state conditioned on first observation
     f[0] = B(y[0]) * x0
     for i in range(1,L):
-        # condition on transition from previous state and current observation
+        # condition on transition from previous state and current
+        # observation
         f[i] = B(y[i])*T.fwd(f[i-1])
     f = [f[i] for i in range(L)]
     return np.array(f)
@@ -587,13 +593,13 @@ def backward_abstract(y, x0, T, B):
     
     Parameters
     ----------
-    y     : iterable of observations
+    y : iterable of observations
         sequence of observations
-    B     : y → P(x), 
+    B : y→(P(x)→P(x)), 
         observation model conditioning on observations P(x|y(t))
         should accept and observation, and return a function from 
         prior distribution to posterior distribution.
-    x0    : P(x)
+    x0: P(x)
         initial state estimate (distribution)
     T.fwd : P(x)→P(x); 
         linear operator for the forward pass;
@@ -626,9 +632,9 @@ def forward_backward_abstract(y, x0, T, B, prior=1):
     ----------
     y : iterable
         sequence of observations
-    B : y→P(x)
+    B : y→(P(x)→P(x)), 
         conditioning on observations P(x|y(t))
-    x0 : P(x)
+    x0: P(x)
         Initial condition
     T.fwd : P(x)→P(x) 
         Operator for the forward  pass
@@ -665,38 +671,6 @@ def forward_backward_abstract(y, x0, T, B, prior=1):
     b = [b[i] for i in range(L)]
     return np.array(f),np.array(b),np.array(pr)
 
-def gaussian_quadrature(p,domain):
-    '''
-    Treat f as a density and estimate it's mean and precision
-    over the domain
-    '''
-    p/= np.sum(p)
-    m = np.sum(domain*p)
-    assert np.isfinite(m)
-    v = np.sum((domain-m)**2*p)
-    assert np.isfinite(v)
-    t = 1./(v+1e-10)
-    assert np.isfinite(t)
-    assert t>=0
-    return Gaussian(m, t)
-
-def gaussian_quadrature_logarithmic(logp,domain):
-    '''
-    logp is (proportional to) a 1D density
-    estimate it's mean and precision over the domain
-    NOT IMPLEMENTED
-    '''
-    assert 0
-    normalization = sum(p)
-    m = np.sum(domain*p)/normalization
-    assert np.isfinite(m)
-    v = np.sum((domain-m)**2*p/normalization)
-    assert np.isfinite(v)
-    t = 1./(v+1e-10)
-    assert np.isfinite(t)
-    assert t>=0
-    return Gaussian(m, t)
-
 class DiffusionGaussian:
     '''
     Diffusion operator to use in abstracted forward-backward
@@ -708,16 +682,25 @@ class DiffusionGaussian:
         '''
         s.d = d
     def fwd(s,p):
-        result = Gaussian(p.m,1./(1./p.t+s.d))
+        '''
+        Forward (and backward) operator of a Gaussian diffusion process
+        (Wiener process).
+        
+        Parameters
+        ----------
+        d : Gaussian object
+        
+        Returns
+        -------
+        result : new gaussian object reflecting diffusion
+        '''
+        result = Gaussian(p.m,p.t/(1.0+s.d*p.t))
         if hasattr(p,'lognorm'):
             result.lognorm = p.lognorm
         return result
     bwd = fwd
     __call__ = fwd
     __mul__ = fwd
-
-from math import factorial as fact
-
 
 class PoissonObservationApproximator(Gaussian):
     '''
@@ -726,6 +709,8 @@ class PoissonObservationApproximator(Gaussian):
     observations. Uses 1D integration (quadrature) to estimate 
     posterior moments. Assumes log λ = a*x+b.
     
+    Parameters
+    ----------
     a: log-rate gain parameter
     b: log-rate bias parameter
     y: The observed count (non-negative integer)
@@ -752,19 +737,33 @@ class PoissonObservationApproximator(Gaussian):
         # Best when rate is large and counts are frequenty >1
         # Get the conditional probability of state given this observation
         # this is poisson in lambda = np.exp(ax+b)
-        pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/fact(s.y)
-        
+        # pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/scipy.special.gamma(s.y+1)
         # Bernoilli: stable when rate is very low
         # pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
-                
         # Multiply pxy by distribution o, 
         # handling identity as special case
-        p = pxy*(o if o is 1 else o(x)+1e-10)
-        p = np.float64(p) #Hmm
-        assert np.all(np.isfinite(p))
+        # p = pxy*(o if o is 1 else o(x)+1e-10)
+        # p = np.float64(p) #Hmm
+        # assert np.all(np.isfinite(p))
+        # Estimate mean and variance of posterior
+        # return gaussian_quadrature(p,x)
         
+        #logpxy = s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b) - scipy.special.loggamma(s.y+1)
+        # ignore normalization
+        logpxy = s.y*(s.a*x+s.b)-sexp(s.a*x+s.b)
+        assert np.all(np.isfinite(logpxy))
+        logpxy -= np.mean(logpxy)
+        assert np.all(np.isfinite(logpxy))
+        if not o is 1:
+            logpxy += slog(o(x))
+        assert np.all(np.isfinite(logpxy))
+        logpxy -= np.mean(logpxy)
+        assert np.all(np.isfinite(logpxy))
+        p = sexp(logpxy)
+        assert np.all(np.isfinite(p))
         # Estimate mean and variance of posterior
         return gaussian_quadrature(p,x)
+        
     def __str__(s): 
         return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
 
@@ -776,6 +775,12 @@ class PoissonObservationModel:
     see: PoissonObservationApproximator
     '''
     def __init__(s,a,b):
+        '''
+        Parameters
+        ----------
+        a: log-rate gain parameter
+        b: log-rate bias parameter
+        '''
         s.a,s.b = a,b
     def __call__(s,y):
         return PoissonObservationApproximator(s.a,s.b,y)
@@ -850,7 +855,7 @@ class TruncatedPoissonObservationApproximator(Gaussian):
         x = np.linspace(m0-4*s0,m0+4*s0,50)#
         # Get the conditional probability of state given this observation
         # this is poisson in lambda = np.exp(ax+b)
-        #pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/fact(s.y)
+        #pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/scipy.special.gamma(s.y+1)
         # Bernoilli may also be a little more stable sometime
         #pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
         # Truncated Poisson

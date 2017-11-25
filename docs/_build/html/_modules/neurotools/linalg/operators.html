@@ -89,8 +89,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
             
           
         </div>
@@ -160,16 +163,24 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-<span class="c1">#TODO fix imports</span>
-<span class="c1">#from pylab import *</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.linalg</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span>
 
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Functions for generating discrete representations of certain operators. </span>
+<span class="sd">Note: This is partially redundant with `neurotools.spatial.kernels`.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
 <div class="viewcode-block" id="laplaceop"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplaceop">[docs]</a><span class="k">def</span> <span class="nf">laplaceop</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">precision</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="mi">2</span>
@@ -181,18 +192,42 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="wienerop"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.wienerop">[docs]</a><span class="k">def</span> <span class="nf">wienerop</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Square-root covariance operator for standard 1D Wiener process</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : size of operator</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">laplaceop</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">x</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-5</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">sqrtcov</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sqrtcov</span></div>
 
 <div class="viewcode-block" id="diffuseop"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.diffuseop">[docs]</a><span class="k">def</span> <span class="nf">diffuseop</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-.</span><span class="mi">5</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">kernel</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span><span class="o">.</span><span class="n">real</span></div>
 
 <div class="viewcode-block" id="flatcov"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.flatcov">[docs]</a><span class="k">def</span> <span class="nf">flatcov</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Assuming time-independence, get covariance in time</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -201,6 +236,13 @@
     <span class="k">return</span> <span class="n">sums</span> <span class="o">/</span> <span class="n">N</span></div>
 
 <div class="viewcode-block" id="delta"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.delta">[docs]</a><span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Get discrete delta but make it even</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
@@ -211,6 +253,13 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="differentiator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.differentiator">[docs]</a><span class="k">def</span> <span class="nf">differentiator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Fourier space discrete differentiaion</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span>
@@ -219,12 +268,26 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="integrator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.integrator">[docs]</a><span class="k">def</span> <span class="nf">integrator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Fourier space discrete differentiaion</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">differentiator</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">delta</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-10</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">delta</span></div>
 
 <div class="viewcode-block" id="covfrom"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.covfrom">[docs]</a><span class="k">def</span> <span class="nf">covfrom</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
     <span class="n">covmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
@@ -232,6 +295,13 @@
     <span class="k">return</span> <span class="n">covmat</span></div>
 
 <div class="viewcode-block" id="oucov"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.oucov">[docs]</a><span class="k">def</span> <span class="nf">oucov</span><span class="p">(</span><span class="n">ssvar</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Get covariance structure of process</span>
     <span class="n">covariance</span> <span class="o">=</span> <span class="n">ssvar</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">-</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">tau</span><span class="p">)</span>
     <span class="n">covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>

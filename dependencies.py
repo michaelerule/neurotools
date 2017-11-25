@@ -30,8 +30,6 @@ try:
 except:
     print('The glob package is missing; this is unexpected and fatal')
 
-
-
 # Try to inspect the installed python directory to see what standard
 # library modules are available. Again, these should never be missing,
 # but may eventually change over time. Also, their version number should
@@ -45,8 +43,6 @@ except:
     print('This is alarming. Nonstandard installation or environment?')
     stdlib = []
 
-
-
 # Let's hope we can at least find the package for inspecting packages!
 try:
     import pkg_resources
@@ -54,8 +50,6 @@ except:
     print('Somehow the pkg_resources package is missing')
     print('We need this to robustly check versions for compatibility')
     print("I'll do my best without it...")
-
-
 
 # Pip may come in handy, depending on whether or not you use pip to manage
 # python packages.
@@ -72,6 +66,9 @@ except:
     print("Alternatively, an installer script should be available at https://bootstrap.pypa.io/get-pip.py")
     print("Note that pip does not work with OS X 10.8 or older")
 
+# Finally, check whether this script was called by Sphinx -- if so, then
+# we don't want to prompt for user input
+TRYINSTALL = not ('sphinx' in sys.modules)
 
 # TODO: update these or replace with professional dependency tool
 # list 
@@ -253,7 +250,7 @@ else:
             print('Package %s is missing, but automatic installation not supported.')
             print('Please search online and follow installation instructions for your platform')
             continue
-        if ask('Package %s is missing, should I try to install it'%package):
+        if TRYINSTALL and ask('Package %s is missing, should I try to install it'%package):
             if not pip is None:
                 pip.main(['install', package])
             elif not easy_install is None:

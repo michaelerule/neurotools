@@ -24,16 +24,16 @@ This class also defines three hue wheel color maps of varying brightness
 
 import math
 import pylab
-from neurotools import signal
-from neurotools import tools
+from   neurotools import signal
+from   neurotools import tools
 import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from os.path    import expanduser
-from matplotlib import cm
-from numpy import pi,e
-from neurotools.signal.signal import gaussian_smooth
+from   os.path    import expanduser
+from   matplotlib import cm
+from   numpy      import pi,e
+from   neurotools.signal.signal import gaussian_smooth
 
 # This is the color scheme from the painting "gather" by bridget riley
 GATHER = [
@@ -61,6 +61,12 @@ def hsv2rgb(h,s,v):
     h: hue 0 to 360
     s: saturation 0 to 1
     v: value 0 to 1
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     h,s,v = map(float,(h,s,v))
     h60 = h/60.0
@@ -77,6 +83,13 @@ def hsv2rgb(h,s,v):
     return ((v,t,p),(q,v,p),(p,v,t),(p,q,v),(t,p,v),(v,p,q))[hi]
 
 def lightness(r,g,b,method='lightness'):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return luminance_matrix(method=method).dot((r,g,b))
 
 def luminance_matrix(method='perceived'):
@@ -84,6 +97,12 @@ def luminance_matrix(method='perceived'):
     Method 'perceived' .299*R + .587*G + .114*B
     Method 'standard'  .2126*R + .7152*G + .0722*B
     Method 'lightness' .3*R + .59*G + .11*B
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if method=='standard':
         x1 = .2126
@@ -111,6 +130,12 @@ def match_luminance(target,color,
     Method 'perceived' .299*R + .587*G + .114*B
     Method 'standard'  .2126*R + .7152*G + .0722*B
     Method 'lightness' .3*R + .59*G + .11*B
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     LRGB   = luminance_matrix(method)
     color  = np.array(color)
@@ -137,6 +162,12 @@ def match_luminance(target,color,
 def rotate(colors,th):
     '''
     Rotate a list of rgb colors by angle theta
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     Q1 = np.sin(th)/np.sqrt(3)
     Q2 = (1-np.cos(th))/3
@@ -154,6 +185,13 @@ def rotate(colors,th):
     return results
 
 def RGBtoHCL(r,g,b,method='perceived'):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     alpha  = .5*(2*r-g-b)
     beta   = sqrt(3)/2*(g-b)
     hue    = arctan2(beta,alpha)
@@ -164,6 +202,12 @@ def RGBtoHCL(r,g,b,method='perceived'):
 def hue_angle(c1,c2):
     '''
     Calculates the angular difference in hue between two colors
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     H1 = RGBtoHCL(*c1)[0]
     H2 = RGBtoHCL(*c2)[0]
@@ -174,6 +218,12 @@ def hcl2rgb(h,c,l,target = 1.0, method='standard'):
     h: hue
     c: chroma
     l: luminosity
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if method=='standard':
         x1 = .2126
@@ -203,6 +253,12 @@ def circularly_smooth_colormap(cm,s):
 
     s: sigma, standard dev of gaussian smoothing kernel in samples
     cm: color map, array-like of RGB tuples
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     # Do circular boundary conditions the lazy way
     cm = np.array(cm)
@@ -216,30 +272,98 @@ def circularly_smooth_colormap(cm,s):
     return RGB[N:N*2,:]
 
 def isoluminance1(h,l=.5):
+    '''
+    
+    Parameters
+    ----------
+    h : hue, float 
+    
+    Returns
+    -------
+    '''
     return hcl2rgb(h,1,1,target=float(l))
 
 def isoluminance2(h):
+    '''
+    
+    Parameters
+    ----------
+    h : hue, float 
+    
+    Returns
+    -------
+    '''
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%5))/5
 
 def isoluminance3(h):
+    '''
+    
+    Parameters
+    ----------
+    h : hue, float 
+    
+    Returns
+    -------
+    '''
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%15))/15
 
 def isoluminance4(h):
+    '''
+    
+    Parameters
+    ----------
+    h : hue, float 
+    
+    Returns
+    -------
+    '''
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%60))/60
 
 def lighthues(N=10,l=0.7):
+    '''
+    
+    Parameters
+    ----------
+    N : 
+    l : luminance in [0,1]
+    
+    Returns
+    -------
+    '''
     return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
 def darkhues(N=10,l=0.4):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
 def medhues(N=10,l=0.6):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
 def radl2rgb(h,l=1.0):
     '''
     Slightly more optimized HSL conversion routine.
     Saturation fixed at 1
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     x1 = .30
     x2 = .59
@@ -275,12 +399,26 @@ except:
 def radl2rgbLUT(h,l=1.0):
     '''
     radl2rgb backed with a limited resolution lookup table
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     N = __N_HL_LUT__
     return __HL_LUT__[int(h*N/(2*pi))%N,int(l*(N-1))]
 
 def complexHLArr2RGB(z):
-    ''' Performs bulk LUT for complex numbers, avoids loops'''
+    ''' 
+    Performs bulk LUT for complex numbers, avoids loops
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     N = __N_HL_LUT__
     h = np.ravel(np.int32(np.angle(z)*N/(2*pi))%N)
     v = np.ravel(np.int32(np.clip(np.abs(z),0,1)*(N-1)))
@@ -627,6 +765,12 @@ def hex_pack_BGR(RGB):
     Packs RGB colors data in hexadecimal BGR format for fast rendering to
     Javascript canvas.
     RGB: 256x3 RGB array-like, ..1 values
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     RGB = clip(np.array(RGB),0,1)
     return ['0x%2x%2x%2x'%(B*255,G*255,R*255) for (R,G,B) in RGB]
@@ -634,6 +778,12 @@ def hex_pack_BGR(RGB):
 def code_to_16bit(code):
     '''
     Converts a #RRGGBB hex code into a 16-bit packed 565 BRG integer form
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     R = code[1:3]
     G = code[3:5]
@@ -649,6 +799,12 @@ def code_to_16bit(code):
 def bit16_RGB_to_tuple(RGB):
     '''
     Converts 16-bit RRRRR GGGGGG BBBBB into (R,G,B) tuple form
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     R = float(0b11111  & (RGB>>11))/0b11111
     G = float(0b111111 & (RGB>>5) )/0b111111
@@ -662,6 +818,12 @@ def enumerate_fast_colors():
     each byte, and reserving the fourth bit for mask storage.
     This is intended for development of optimized color pallets for
     mictrocontroller driven display interfaces.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     bytes = sorted(list(set([i&0b11110100 for i in range(0,256)])))
     colors = [bit16_RGB_to_tuple(x*256|x) for x in bytes]
@@ -670,6 +832,12 @@ def enumerate_fast_colors():
 def tuple_to_bit16(c):
     '''
     convert RGB float tuple in 565 bit packed RGB format
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     R,G,B = c
     R = int(R*0b11111)
@@ -681,6 +849,12 @@ def tuple_to_bit16(c):
 def tuple_to_bit24(c):
     '''
     convert RGB float tuple in 565 bit packed RGB format
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     R,G,B = c
     R = int(R*0b11111111)
@@ -692,10 +866,28 @@ def tuple_to_bit24(c):
 def bit16_print_color(c):
     '''
     Convert RGB tuple to 16 bit 565 RGB formt as a binary string literal
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     return bin(tuple_to_bit16(c))
 
 def show_fast_pallet():
+    '''
+    Subset of colors that can be shownn quickly on the Arduino UNO using
+    the standard 3.2-inch TFT touch-screen breakout. Restricts colors that
+    can be sent with a single write to one port. 16-bit color mode with
+    low and high bytes identical. 
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     figure(figsize=(5,5),facecolor=(1,)*4)
     ax=subplot(111)
     subplots_adjust(0,0,1,1,0,0)
@@ -714,6 +906,13 @@ def show_fast_pallet():
     draw()
 
 def show_complete_fast_pallet():
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     figure(figsize=(10,5),facecolor=(1,)*4)
     ax=subplot(111)
     subplots_adjust(0,0,1,1,0,0)
@@ -733,7 +932,13 @@ def show_complete_fast_pallet():
 
 def show_complete_fastest_pallet():
     '''
-    16 bit RGB 565 but don't even write the lower byte
+    16 bit RGB 565; but don't even write the lower byte
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     figure(figsize=(10,5),facecolor=(1,)*4)
     ax=subplot(111)
@@ -754,6 +959,13 @@ def show_complete_fastest_pallet():
     draw()
 
 def show_hex_pallet(colors):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     figure(figsize=(5,5),facecolor=(1,)*4)
     ax=subplot(111)
     subplots_adjust(0,0,1,1,0,0)

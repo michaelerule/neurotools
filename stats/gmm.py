@@ -17,6 +17,15 @@ This module is deprecated, please use `sklearn.mixtur` instead.
 def GMM(points,NCLASS=2):
     '''
     This function is deprecated, suggest `sklearn.mixture` instead.
+    For example:
+    
+    >>> from sklearn import mixture
+    >>> def fit_samples(samples):
+    >>>     samples = np.array(samples).reshape((np.size(samples),1))
+    >>>     gmix = mixture.GMM(2)
+    >>>     gmix.fit(samples)
+    >>>     labels = gmix.predict(samples)
+    >>>     return np.array(labels)
 
     Fit a ND Gaussian mixture model using a hard-EM approach. This is 
     sloppier and less accurate than the routine from `sklearn.mixture`.
@@ -53,16 +62,27 @@ def GMM(points,NCLASS=2):
 def GMM1D(points,NCLASS=2):
     '''
     This function is deprecated, please use `sklearn.mixture` instead.
+    For example:
+    
+    >>> from sklearn import mixture
+    >>> def fit_samples(samples):
+    >>>     samples = np.array(samples).reshape((np.size(samples),1))
+    >>>     gmix = mixture.GMM(2)
+    >>>     gmix.fit(samples)
+    >>>     labels = gmix.predict(samples)
+    >>>     return np.array(labels)
 
     Fit a 1D Gaussian mixture model using a hard-EM approach. This is 
     sloppier and less accurate than the routine from `sklearn.mixture`.
     
-    # Example: find group of small values
-    flag,pr   = GMM1D(array(points))
-    smallf    = argmin(points.dot(flag)/sum(flag,0))
-    aresmall  = flag[:,smallf]>flag[:,1-smallf]
-    aresmall |= points<mean(edgelen[aresmall])
-    small = points[aresmall]
+    Example
+    ------- 
+        # find group of small values
+        flag,pr   = GMM1D(array(points))
+        smallf    = argmin(points.dot(flag)/sum(flag,0))
+        aresmall  = flag[:,smallf]>flag[:,1-smallf]
+        aresmall |= points<mean(edgelen[aresmall])
+        small = points[aresmall]
     
     Parameters
     ----------

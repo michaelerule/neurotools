@@ -6,10 +6,6 @@
 Welcome to Neurotools's documentation!
 ======================================
 
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents:
-
 This is a collection of python modules developed for exploratory analysis and statistical modeling in computational neuroscience. Most of the code and documentation is of "research" (i.e. poor) quality and unstable, but some of the modules are stable and useful. Please refer to specific modules 
 (see Module Index) for further documentation.
 
@@ -34,3 +30,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+   
+.. toctree::
+   :maxdepth: 5
+   :caption: Contents:
+   
+   modules

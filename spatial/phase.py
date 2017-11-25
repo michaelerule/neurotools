@@ -11,115 +11,237 @@ from __future__ import print_function
 from neurotools.system import *
 
 '''
-Library of array statistics routines.
+Routines for calculating population summary statistics of LFP phases. 
 '''
 
-from stat import *
-from numpy import *
 import numpy as np
-from neurotools.tools import *
+
+# TODO: fix these imports
+# from stat import *
+# from neurotools.tools import *
 
 ELECTRODE_SPACING = 0.4
 
 def population_kuromoto(population):
+    '''
+    Parameters
+    ----------
+    population : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
-    return abs(mean(population/abs(population),axis=0))
+    return np.abs(np.mean(population/np.abs(population),axis=0))
 
 def population_synchrony(population):
+    '''
+    Parameters
+    ----------
+    population : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
-    return abs(mean(population,axis=0))/mean(abs(population),axis=0)
+    return np.abs(np.mean(population,axis=0))/np.mean(np.abs(population),axis=0)
 
 def population_polar_std(population):
+    '''
+    Parameters
+    ----------
+    population : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
-    return sqrt(-2*log(population_synchrony(population)))
+    return np.sqrt(-2*np.log(population_synchrony(population)))
 
 def population_average_amplitude(population):
+    '''
+    Parameters
+    ----------
+    population : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
-    return mean(abs(population),axis=0)
+    return np.mean(np.abs(population),axis=0)
 
 def population_signal_concentration(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     return population_average_amplitude(lfp)/population_signal_dispersion(lfp)**(-0.25)
 
 def population_signal_precision(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     return population_signal_dispersion(lfp)**(-1)
 
 def population_signal_dispersion(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
-    r = real(lfp)
-    i = imag(lfp)
-    r = r-mean(r,0)
-    i = i-mean(i,0)
-    Crr = mean(r*r,0)
-    Cri = mean(r*i,0)
-    Cii = mean(i*i,0)
+    r = np.real(lfp)
+    i = np.imag(lfp)
+    r = r-np.mean(r,0)
+    i = i-np.mean(i,0)
+    Crr = np.mean(r*r,0)
+    Cri = np.mean(r*i,0)
+    Cii = np.mean(i*i,0)
     Det = Crr*Cii-Cri**2
     return Det**0.25
 
 def population_signal_phase_dispersion(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
-    z = mean(lfp,axis=0)
-    h = (z/abs(z))**-1
+    z = np.mean(lfp,axis=0)
+    h = (z/np.abs(z))**-1
     x = lfp*h
     # phase dispersion is CV=sig/mu deviation along the imaginary axis
     # the mean is always zero so we don't normalize it
-    s = std (imag(x),axis=0)
-    m = mean(real(x),axis=0)
+    s = np.std (np.imag(x),axis=0)
+    m = np.mean(np.real(x),axis=0)
     return s/m
 
 def population_signal_phase_std(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
-    z = mean(lfp,axis=0)
-    h = (z/abs(z))**-1
+    z = np.mean(lfp,axis=0)
+    h = (z/np.abs(z))**-1
     x = lfp*h
     # phase dispersion is CV=sig/mu deviation along the imaginary axis
     # the mean is always zero so we don't normalize it
-    s = std (imag(x),axis=0)
+    s = std (np.imag(x),axis=0)
     return s
 
 def population_signal_amplitude_std(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
-    z = mean(lfp,axis=0)
-    h = (z/abs(z))**-1
-    x = real(lfp*h)
+    z = np.mean(lfp,axis=0)
+    h = (z/np.abs(z))**-1
+    x = np.real(lfp*h)
     # amplitude dispersion is CV=sig/mu deviation along the real axis
     s = std (x,axis=0)
     return s
 
 def population_signal_amplitude_dispersion(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
-    z = mean(lfp,axis=0)
-    h = (z/abs(z))**-1
-    x = real(lfp*h)
+    z = np.mean(lfp,axis=0)
+    h = (z/np.abs(z))**-1
+    x = np.real(lfp*h)
     # amplitude dispersion is CV=sig/mu deviation along the real axis
     s = std (x,axis=0)
-    m = mean(x,axis=0)
+    m = np.mean(x,axis=0)
     return s/m
 
 def population_signal_phase_precision(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     return 1./population_signal_phase_dispersion(lfp)
 
 def population_signal_amplitude_precision(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     return 1./population_signal_amplitude_dispersion(lfp)
 
 def population_signal_description(lfp):
+    '''
+    Parameters
+    ----------
+    lfp : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    '''
     warn('statistics computed over first axis. not for 2d array data')
-    z = mean(lfp,0)
-    a = abs(z)
-    h = angle(z)
+    z = np.mean(lfp,0)
+    a = np.abs(z)
+    h = np.angle(z)
     w = lfp*exp(-1j*h)
-    s1 = std(imag(w),0)
-    s2 = std(real(w),0)
+    s1 = np.std(np.imag(w),0)
+    s2 = np.std(np.real(w),0)
     return z,a,h,s1,s2
 
 def population_synchrony_linear(population):
+    '''
+    Parameters
+    ----------
+    population : population of oscillator phases; 1D np.complex array
+    
+    Returns
+    -------
+    1/(1-population_synchrony(population))
+    '''
     warn('statistics computed over first axis. not for 2d array data')
     syn = population_synchrony(population)
     return 1/(1-syn)
@@ -140,18 +262,23 @@ def population_phase_coherence(data):
         K x N
         K = No. of channels
         N = No. of timepoints
+    
+    Returns
+    -------
 
     Example
     -------
         s,a,tr = ('SPK120918', 'M1', 16)
         lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
         data = lfp[:,500:600]
-        sliding = arr([population_phase_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
+        sliding = np.array([population_phase_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
     '''
-    h = angle(data)
-    dfdt = (diff(h,axis=-1)+pi)%(2*pi)-pi
-    mdf = median(dfdt,axis=0)
-    return mean(cos(dfdt-mdf),axis=0)
+    if not len(data.shape)==2:
+        raise ValueError('data should be a 2D np.array of phases, type np.complex')
+    h = np.angle(data)
+    dfdt = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
+    mdf = np.median(dfdt,axis=0)
+    return np.mean(cos(dfdt-mdf),axis=0)
 
 def analytic_signal_coherence(data,window=np.hanning):
     '''
@@ -164,23 +291,31 @@ def analytic_signal_coherence(data,window=np.hanning):
         K x N
         K = No. of channels
         N = No. of timepoints
-
+    L : 
+        Window length in samples, optional, default is 100
+    window : function
+        windowing function, optional, default is `np.hanning`
+    
+    Returns
+    -------
+    
     Example
     -------
         s,a,tr = ('SPK120918', 'M1', 16)
         lfp = get_all_analytic_lfp(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
         data = lfp[:,500:600]
-        sliding = arr([population_signal_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
+        sliding = np.array([population_signal_coherence(lfp[:,i:i+100]) for i in range(shape(lfp)[1]-100)])
     '''
-    assert len(shape(data))==2
-    N = shape(data)[-1]
-    h = angle(data)
-    dfdt = (diff(h,axis=-1)+pi)%(2*pi)-pi
-    mdf = median(dfdt,axis=0)
-    weights = abs(data)[:,:-1]
+    if not len(data.shape)==2:
+        raise ValueError('data should be a 2D np.array of phases, type np.complex')
+    N = data.shape[-1]
+    h = np.angle(data)
+    dfdt = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
+    mdf = np.median(dfdt,axis=0)
+    weights = np.abs(data)[:,:-1]
     weights = weights*window(N+1)[1:-1]
-    weights /= sum(weights)
-    return sum(cos(dfdt-mdf)*weights,axis=0)
+    weights /= np.sum(weights)
+    return np.sum(cos(dfdt-mdf)*weights,axis=0)
 
 def population_sliding_signal_coherence(data,L=100,window=np.hanning):
     '''
@@ -193,21 +328,30 @@ def population_sliding_signal_coherence(data,L=100,window=np.hanning):
         K x N
         K = No. of channels
         N = No. of timepoints
+    L : 
+        Window length in samples, optional, default is 100
+    window : function
+        windowing function, optional, default is `np.hanning`
+    
+    Returns
+    -------
+    np.array : 
+        Sliding-window Kuramoto order parameter over data
     '''
-    assert len(shape(data))==2
-    N       = shape(data)[-1]
-    h       = angle(data)
-    dfdt    = (diff(h,axis=-1)+pi)%(2*pi)-pi
-    weights = abs(data)
+    assert len(data.shape)==2
+    N       = data.shape[-1]
+    h       = np.angle(data)
+    dfdt    = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
+    weights = np.abs(data)
     win     = window(L+2)[1:-1]
     slide   = []
     for i in range(0,N-L-1):
         now = dfdt[...,i:i+L]
-        mdf = median(now)
+        mdf = np.median(now)
         w   = weights[...,i:i+L]*win
-        w  /= sum(w)
-        slide.append(sum(cos(now-mdf)*w))
-    return arr(slide)
+        w  /= np.sum(w)
+        slide.append(np.sum(cos(now-mdf)*w))
+    return np.array(slide)
 
 sliding_population_signal_coherence = population_sliding_signal_coherence
 
@@ -222,75 +366,112 @@ def population_normalized_sliding_signal_coherence(data,L=100,window=np.hanning)
         K x N
         K = No. of channels
         N = No. of timepoints
+    L : 
+        Window length in samples, optional, default is 100
+    window : function
+        windowing function, optional, default is `np.hanning`
+    
+    Returns
+    -------
     '''
-    assert len(shape(data))==2
-    N       = shape(data)[-1]
-    h       = angle(data)
-    dfdt    = (diff(h,axis=-1)+pi)%(2*pi)-pi
-    weights = abs(data)
+    assert len(data.shape)==2
+    N       = data.shape[-1]
+    h       = np.angle(data)
+    dfdt    = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
+    weights = np.abs(data)
     win     = window(L+2)[1:-1]
     slide   = []
     for i in range(0,N-L-1):
         now = dfdt[...,i:i+L]
-        mdf = median(now)
+        mdf = np.median(now)
         w   = weights[...,i:i+L]*win
-        w  /= sum(w)
+        w  /= np.sum(w)
         mu,sig = weighted_avg_and_std( (now-mdf)/mdf, w)
         slide.append(sig)
-    return 1/sqrt(1+arr(slide)**2)
+    return 1/np.sqrt(1+np.array(slide)**2)
 
 def population_phase_relative_sliding_kuromoto(data,L=100,window=np.hanning):
     '''
     Uses the phase of each channel in the middle of each block as a
-    reference point. Can separate coherent wave activity from synchrony.
+    reference point. Separates coherent wave activity from synchrony.
+
+    .. math::
     
-    $\textrm{kuromoto order} = \left\langle z/|z| \right\rangle$
+        \\textrm{kuromoto order} = \left\langle z/|z| \\right\\rangle
     
     Assumes constant phase velocity, and a constant per-channel
     phase shift, and then computes the order. This is a notion of 
     relative phase stability.
     
+    Parameters
+    ----------
+    data : np.array
+        Phase data as np.complex
+    L : 
+        Window length in samples, optional, default is 100
+    window : function
+        windowing function, optional, default is `np.hanning`
+    
+    Returns
+    -------
+    
     '''
-    assert len(shape(data))==2
-    K,N     = shape(data)
-    phases  = angle(data)
-    phased  = data/abs(data)
-    dfdt    = (diff(phases,axis=-1)+pi)%(2*pi)-pi
+    assert len(data.shape)==2
+    K,N     = data.shape
+    phases  = np.angle(data)
+    phased  = data/np.abs(data)
+    dfdt    = (np.diff(phases,axis=-1)+np.pi)%(2*np.pi)-np.pi
     win     = window(L+2)[1:-1]
-    win     = win/(K*sum(win))
+    win     = win/(K*np.sum(win))
     slide   = []
     for i in range(0,N-L-1):
         # get the median phase velocity
-        mf = median(dfdt[...,i:i+L])
+        mf = np.median(dfdt[...,i:i+L])
         # get the local phases
         x  = phases[...,i:i+L]
         # dephase the signal in time
-        y  = rewrap(x-cumsum([mf]*L))
+        y  = rewrap(x-np.cumsum([mf]*L))
         # dephase the signal per channel
-        z  = angle(mean(exp(1j*y),axis=-1))
+        z  = np.angle(np.mean(exp(1j*y),axis=-1))
         rephased = (x.T-z).T
         # compute weighted phase order
-        slide.append(abs(sum(exp(1j*rephased)*win)))
-    return arr(slide)
+        slide.append(np.abs(np.sum(exp(1j*rephased)*win)))
+    return np.array(slide)
 
 def population_median_phase_velocity(data):
     '''
     median phase velocity.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
-    assert len(shape(data))==2
-    N       = shape(data)[-1]
-    h       = angle(data)
-    dfdt    = (diff(h,axis=-1)+pi)%(2*pi)-pi
-    medv    = median(dfdt,0)
+    assert len(data.shape)==2
+    N       = data.shape[-1]
+    h       = np.angle(data)
+    dfdt    = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
+    medv    = np.median(dfdt,0)
     return medv
 
 def population_median_frequency(data,Fs=1000):
     '''
     Convert from phase in radians/frame to
     Frequency in cycles/s
+    
+    Parameters
+    ----------
+    data : np.complex array
+        Phase array data
+    Fs : int, default 1000
+        Sampling rate in Hz
+    
+    Returns
+    -------
     '''
     medv = population_median_phase_velocity(data)
-    return medv*(Fs/(2*pi))
+    return medv*(Fs/(2*np.pi))
 
 
 

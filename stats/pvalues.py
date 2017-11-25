@@ -110,6 +110,12 @@ def correct_pvalues(pvalue_dictionary,verbose=0):
 def bootstrap_statistic_two_sided(statistic, test_population, null_population, ntrials=1000):
     '''
     Estimate pvalue using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     n = len(test_population)
     null     = statistic(null_population)
@@ -125,6 +131,12 @@ def bootstrap_statistic_two_sided(statistic, test_population, null_population, n
 def bootstrap_median(test_population, null_population, ntrials=10000):
     '''
     Estimate pvalue for difference in medians using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     return bootstrap_statistic_two_sided(median, test_population, null_population)
 
@@ -132,6 +144,12 @@ def bootstrap_median(test_population, null_population, ntrials=10000):
 def bootstrap_mean(test_population, null_population, ntrials=10000):
     '''
     Estimate pvalue for difference in means using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     return bootstrap_statistic_two_sided(means, test_population, null_population)
 
@@ -139,6 +157,12 @@ def bootstrap_mean(test_population, null_population, ntrials=10000):
 def bootstrap_compare_statistic_two_sided(statistic, population_A, population_B, ntrials=1000):
     '''
     Estimate pvalue using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     nA = len(population_A)
     nB = len(population_B)
@@ -158,7 +182,16 @@ def bootstrap_compare_statistic_two_sided(statistic, population_A, population_B,
     return delta,pvalue
 
 
-def sample_parallel_helper((i,(statistic, population_A, population_B, NA, NB, ntrials))):
+def sample_parallel_helper(params):
+    '''
+    
+    Parameters
+    ----------
+    params: (i,(statistic, population_A, population_B, NA, NB, ntrials))
+    Resturns
+    --------
+    '''
+    (i,(statistic, population_A, population_B, NA, NB, ntrials)) = params
     numpy.random.seed()
     if NA is None:
         NA = len(population_A)
@@ -178,6 +211,12 @@ def sample_parallel_helper((i,(statistic, population_A, population_B, NA, NB, nt
 def bootstrap_compare_statistic_two_sided_parallel(statistic, population_A, population_B, NA=None, NB=None, ntrials=10000):
     '''
     Estimate pvalue using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     problems     = array([(i,(statistic,population_A,population_B,NA,NB,100)) for i in range(ntrials//100+1)])
     null_samples = array(list(flatten(parmap(sample_parallel_helper,problems))))
@@ -192,6 +231,12 @@ def bootstrap_compare_statistic_two_sided_parallel(statistic, population_A, popu
 def bootstrap_compare_median(population_A, population_B, NA=None, NB=None, ntrials=100000):
     '''
     Estimate pvalue for difference in medians using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     return bootstrap_compare_statistic_two_sided_parallel(median, population_A, population_B, NA, NB, ntrials)
 
@@ -199,6 +244,12 @@ def bootstrap_compare_median(population_A, population_B, NA=None, NB=None, ntria
 def bootstrap_compare_mean(population_A, population_B, NA=None, NB=None, ntrials=100000):
     '''
     Estimate pvalue for difference in means using bootstrapping
+    
+    Parameters
+    ----------
+    
+    Resturns
+    --------
     '''
     return bootstrap_compare_statistic_two_sided_parallel(mean, population_A, population_B, NA, NB, ntrials)
     

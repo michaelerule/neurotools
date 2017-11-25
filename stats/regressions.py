@@ -13,6 +13,9 @@ from neurotools.system import *
 Routines to regress spatiotemporal wave shapes to data
 '''
 
+import warnings
+from scipy.stats import linregress
+
 '''
 Regress on the following model for synchrony
 synchrony(x) = np.cos(wx)*np.exp(-x/tau)+b
@@ -66,7 +69,7 @@ def gradient(w,lambda,b):
     dEdb = np.sum(W*H)
     return [dEdw,dEdL,dEdb]
 
-We use the minimize function from scipy.optimize.
+Use the minimize function from scipy.optimize.
 
 scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,
     hessp=None, bounds=None, constraints=(), tol=None, callback=None,
@@ -163,19 +166,25 @@ from neurotools.functions import npdf
 
 def damped_cosine(X,Y,W):
     '''
+    Regress a damped cosine impulse response to point data `X` and `Y` 
+    using weighting `W`.
+    
     Todo: constrain b, L to be positive
 
     Parameters
     ----------
-    X: 
+    X: 1D array-like
         List of distances
-    W: 
-        List of weights
-    Y: 
+    Y: 1D array-like
         List of average pairwise distances
+    W: 1D array-like
+        List of weights
     
     Returns
     -------
+    result : object 
+        Optimization result returned by `scipy.optimize.minimize`.
+        See `scipy.optimize` documentation for details.
 
     Example
     -------
@@ -197,7 +206,7 @@ def damped_cosine(X,Y,W):
         return error
     def gradient(wLb):
         (w,L,b) = wLb
-        # todo: gradient is wrong?
+        # todo: double check this gradient
         z = np.cos(w*X)*np.exp(-X/L)+b
         h = 2*(z-Y)
         dEdw = np.sum(W*h*-np.sin(w*X)*np.exp(-X/L))
@@ -207,10 +216,9 @@ def damped_cosine(X,Y,W):
     result = minimize(objective,[1,1,0])#,jac=gradient)
     if not result.success:
         print(result.message)
-        raise RuntimeError('Optimization failed: %s'%result.message)
+        warnings.warn('Optimization failed: %s'%result.message)
     return result
 
-from scipy.stats import linregress
 def weighted_least_squares(X,Y,W):
     '''
     Initialize power law fit
@@ -226,6 +234,9 @@ def weighted_least_squares(X,Y,W):
     
     Returns
     -------
+    result : object 
+        Optimization result returned by scipy.optimize.minimize. See
+        scipy.optimize documentation for details.
     '''
     X = np.float64(X)
     Y = np.float64(Y)
@@ -236,7 +247,7 @@ def weighted_least_squares(X,Y,W):
     result = minimize(objective,[a,b])
     if not result.success:
         print(result.message)
-        raise RuntimeError('Optimization failed: %s'%result.message)
+        warnings.warn('Optimization failed: %s'%result.message)
     return result
 
 
@@ -299,6 +310,9 @@ def gaussian_function(X,Y):
     
     Returns
     -------
+    result : object 
+        Optimization result returned by scipy.optimize.minimize. See
+        scipy.optimize documentation for details.
         
     '''
     X = np.float64(X)
@@ -341,6 +355,9 @@ def exponential_decay(X,Y):
     Fit exponential decay from an initial value to a final value with 
     some time (or length, etc) constant.
     
+    lamb,scale,dc = exponential_decay(X,Y)
+    z = np.exp(-lamb*X)*scale+dc
+    
     Parameters
     ----------
     X: List of distances
@@ -364,7 +381,7 @@ def exponential_decay(X,Y):
     result = minimize(error,[1,1,1])#,method='BFGS')#Nelder-Mead')
     if not result.success:
         print(result.message)
-        raise RuntimeError('Optimization failed: %s'%result.message)
+        warnings.warn('Optimization failed: %s'%result.message)
     lamb,scale,dc = result.x
     return lamb,scale,dc
     
@@ -380,7 +397,9 @@ def robust_line(X,Y):
     
     Returns
     -------
-    res.x
+    result.x : array-like 
+        Optimization result returned by scipy.optimize.minimize. See
+        scipy.optimize documentation for details.
         
     '''
     X = np.float64(X)
@@ -393,7 +412,7 @@ def robust_line(X,Y):
     res = scipy.optimize.minimize(objective,[1,0],method = 'Nelder-Mead')
     if not result.success:
         print(result.message)
-        raise RuntimeError('Optimization failed: %s'%result.message)
+        warnings.warn('Optimization failed: %s'%result.message)
     return res.x
 
 

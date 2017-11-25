@@ -184,7 +184,7 @@ def hashint64(x,N):
 
 def unhashint64(x,N):
     '''
-    Unpack bits from number b; inverse of `hashbits()`
+    Unpack bits from number b; inverse of `hashint64()`
     Not to be confused with `pylab.unpackbits`
     
     Parameters
@@ -298,7 +298,6 @@ def unhashbits(x,N):
     if N>126:
         raise ValueError('No more than 126 bits can be stored this way')
     x = x.copy()
-    
     if N<=63:
         return unhashint64(np.int64(x.real),N)
     real = unhashint64(np.int64(x.real),63)

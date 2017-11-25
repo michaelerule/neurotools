@@ -46,9 +46,11 @@ def zscore(x):
     '''
     Parameters
     ----------
+    x : data to zscore
     
     Returns
     -------
+    x : z-scored copy of x
     '''
     return (x-np.mean(x,0))/np.std(x,0)
 
@@ -58,9 +60,7 @@ def simpleaxis(ax=None):
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    ax : optiona, defaults to plt.gca() if None
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -74,9 +74,7 @@ def simpleraxis(ax=None):
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    ax : optiona, defaults to plt.gca() if None
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -91,9 +89,7 @@ def noaxis(ax=None):
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    ax : optiona, defaults to plt.gca() if None
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -109,9 +105,8 @@ def nicebp(bp,c):
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    bp : point to boxplot object returned by matplotlib
+    c : color to set boxes to
     '''
     for kk in 'boxes whiskers fliers caps'.split():
         setp(bp[kk], color=c)

@@ -5,16 +5,24 @@ from __future__ import with_statement
 from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
-
-#TODO fix imports
-#from pylab import *
-
 import numpy as np
 import numpy.linalg
 import scipy
 import scipy.linalg
 
+'''
+Functions for generating discrete representations of certain operators. 
+Note: This is partially redundant with `neurotools.spatial.kernels`.
+'''
+
 def laplaceop(N):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     precision = np.zeros((N,))
     if (N%2==1):
         precision[N//2]=2
@@ -26,18 +34,42 @@ def laplaceop(N):
     return x
 
 def wienerop(N):
+    '''
+    Square-root covariance operator for standard 1D Wiener process
+    
+    Parameters
+    ----------
+    N : size of operator
+    
+    Returns
+    -------
+    '''
     x = laplaceop(N)
     x[abs(x)<1e-5]=1
     sqrtcov = 1/sqrt(x)
     return sqrtcov
 
 def diffuseop(N,sigma):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     kernel = np.exp(-.5/(sigma**2)*(np.arange(N)-N//2)**2)
     kernel /= np.sum(kernel)
     kernel = np.roll(kernel,N//2)
     return np.fft(kernel).real
 
 def flatcov(covariance):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # Assuming time-independence, get covariance in time
     N = covariance.shape[0]
     sums = np.zeros(N)
@@ -46,6 +78,13 @@ def flatcov(covariance):
     return sums / N
 
 def delta(N):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # Get discrete delta but make it even
     delta = np.zeros((N,))
     if (N%2==1):
@@ -56,6 +95,13 @@ def delta(N):
     return x
 
 def differentiator(N):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # Fourier space discrete differentiaion
     delta = np.zeros((N,))
     delta[0]=-1
@@ -64,12 +110,26 @@ def differentiator(N):
     return x
 
 def integrator(N):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # Fourier space discrete differentiaion
     delta = differentiator(N)
     delta[abs(delta)<1e-10]=1
     return 1./delta
 
 def covfrom(covariance):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     L = len(covariance)
     covmat = np.zeros((L,L))
     for i in range(L):
@@ -77,6 +137,13 @@ def covfrom(covariance):
     return covmat
 
 def oucov(ssvar,tau,L):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # Get covariance structure of process
     covariance = ssvar*np.exp(-np.abs(np.arange(L)-L//2)/tau)
     covariance = np.roll(covariance,L//2+1)

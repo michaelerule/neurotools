@@ -22,11 +22,10 @@ def laplace_kernel():
     Returns a 3x3 laplacian kernel that is as radially 
     symmetric as possible.
     
-    Parameters
-    ----------
-    
     Returns
     -------
+    3x3 np.array containing the discrete 2D Laplacian kernel
+    
     '''
     return np.array([[  0.5,   2. ,   0.5],
        [  2. , -10. ,   2. ],
@@ -36,19 +35,22 @@ def laplacian(x):
     '''
     Graph laplacian of a 2D mesh with absorbing boundary
         
-    In the middle
-        0  1  0
-        1 -4  1
-        0  1  0
+    In the middle ::
     
-    At edges
-         1  0
-        -3  1
-         1  0
+        [0  1  0]
+        [1 -4  1]
+        [0  1  0]
     
-    At corners
-        -2  1
-         1  0
+    At edges ::
+    
+       [  1  0]
+       [ -3  1]
+       [  1  0]
+    
+    At corners ::
+    
+       [ -2  1]
+       [  1  0]
 
     Example
     -------
@@ -57,11 +59,15 @@ def laplacian(x):
     >>> showim(test)
     >>> showim(laplacian(test))
     
+    
     Parameters
     ----------
+    x : 2D np.array
     
     Returns
     -------
+    np.array 2D graph laplacian applied to data x
+    
     '''
     n,m = x.shape
     # Middle cases
@@ -90,9 +96,12 @@ def gaussian_2D_kernel(sigma):
     
     Parameters
     ----------
-    
+    sigma : positive float
+        Standard deviation of Gaussian kernel
+        
     Returns
     -------
+    2D gaussian kernel
     '''
     radius  = int(np.ceil(sigma*3))
     support = 1+2*radius
@@ -118,27 +127,19 @@ def absorbing_gaussian(x,sigma):
     kernel = gaussian_2D_kernel(sigma)
     return convolve2d(x, kernel, mode='same', boundary='symm')
 
-def laplace_kernel():
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    return np.array([[  0.5,   2. ,   0.5],
-       [  2. , -10. ,   2. ],
-       [  0.5,   2. ,   0.5]])/3.
 
 def absorbing_laplacian(x):
     '''
-    
+    Applies absorbing 2d Laplacian kernel to 2d array data `x`
+
     Parameters
     ----------
+    x : 2D np.array
     
     Returns
     -------
+    np.array : result of applying graph laplacian to `x` with reflected 
+        bounary conditions.
     '''
     kernel = laplace_kernel()
     return np.convolve2d(x, kernel, mode='same', boundary='symm')
@@ -155,11 +156,6 @@ def continuum_kernel(x):
     -------
     '''
     x = np.float64(abs(x))
-    '''
-    if x>1.5: return 0
-    if x>0.5: return 0.5*(x-1.5)**2
-    return 0.75-x**2
-    '''
     return np.piecewise(x,[x>=1.5,(x>=0.5)&(x<1.5),(x>=0.0)&(x<0.5)],\
         [lambda x:0, lambda x:0.5*(x-1.5)**2, lambda x:0.75-x**2])
 

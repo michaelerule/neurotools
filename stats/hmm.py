@@ -702,7 +702,7 @@ class DiffusionGaussian:
     __call__ = fwd
     __mul__ = fwd
 
-class PoissonObservationApproximator(Gaussian):
+class LogGaussianCoxApproximator(Gaussian):
     '''
     Approximate Gaussian distribution to use in abstracted forward-
     backward. Used to condition Gaussian states on Poisson 
@@ -723,7 +723,7 @@ class PoissonObservationApproximator(Gaussian):
             # No information about the state yet.
             # We aren't sure over what domain to perform the integration
             # Use a Laplace approximation of p(x|y) to get appx bounds
-            m0 = (np.log(s.y+1)-s.b)/s.a
+            m0 = (slog(s.y)-s.b)/s.a
             t0 = (s.y+1)*s.a**2
             s0 = np.sqrt(1/t0)
         else:
@@ -731,31 +731,14 @@ class PoissonObservationApproximator(Gaussian):
             m0 = o.m
             s0 = np.sqrt(1/o.t)
         # Integrate within ±4σ of the mean of the prior
-        x = np.linspace(m0-4*s0,m0+4*s0,50)#
-        
-        # Poisson distribution
-        # Best when rate is large and counts are frequenty >1
-        # Get the conditional probability of state given this observation
-        # this is poisson in lambda = np.exp(ax+b)
-        # pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/scipy.special.gamma(s.y+1)
-        # Bernoilli: stable when rate is very low
-        # pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
-        # Multiply pxy by distribution o, 
-        # handling identity as special case
-        # p = pxy*(o if o is 1 else o(x)+1e-10)
-        # p = np.float64(p) #Hmm
-        # assert np.all(np.isfinite(p))
-        # Estimate mean and variance of posterior
-        # return gaussian_quadrature(p,x)
-        
-        #logpxy = s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b) - scipy.special.loggamma(s.y+1)
-        # ignore normalization
-        logpxy = s.y*(s.a*x+s.b)-sexp(s.a*x+s.b)
+        x = np.linspace(m0-4*s0,m0+4*s0,50)
+        lograte = s.a*x+s.b
+        logpxy = s.y*lograte-sexp(lograte)
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.mean(logpxy)
         assert np.all(np.isfinite(logpxy))
         if not o is 1:
-            logpxy += slog(o(x))
+            logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.mean(logpxy)
         assert np.all(np.isfinite(logpxy))
@@ -767,12 +750,12 @@ class PoissonObservationApproximator(Gaussian):
     def __str__(s): 
         return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
 
-class PoissonObservationModel:
+class LogGaussianCoxModel:
     '''
     Poisson observation model
     Returns a density that, when multiplied by a Gaussian,
     returns a numeric approximation of the posterior as a Gaussian
-    see: PoissonObservationApproximator
+    see: LogGaussianCoxApproximator
     '''
     def __init__(s,a,b):
         '''
@@ -783,12 +766,151 @@ class PoissonObservationModel:
         '''
         s.a,s.b = a,b
     def __call__(s,y):
-        return PoissonObservationApproximator(s.a,s.b,y)
+        return LogGaussianCoxApproximator(s.a,s.b,y)
+
+class GaussianCoxApproximator(Gaussian):
+    '''
+    One-dimensional Gaussian Cox-process observation model
+    
+    Parameters
+    ----------
+    a: log-rate gain parameter
+    b: log-rate bias parameter
+    y: The observed count (non-negative integer)
+    '''
+    def __init__(s,a,b,y):
+        s.a,s.b,s.y = (a,b,y)
+    def __mul__(s,o):
+        '''
+        Parameters
+        ----------
+        o : Gaussian object
+            Function for evaluating prior density
+        '''
+        # Estimate integration limits
+        if o is 1 or o.t<1e-6:
+            # No information about the state yet.
+            # We aren't sure over what domain to perform the integration
+            # Use a Laplace approximation of p(x|y) to get appx bounds
+            m0 = (s.y-s.b)/s.a
+            t0 = (s.y+1)*s.a**2
+            s0 = np.sqrt(1/t0)
+        else:
+            # 
+            # Use the prior on x to guess integration limits
+            m0 = o.m# max(1e-9,o.m)
+            s0 = np.sqrt(1/o.t)
+        # Integrate within ±4σ of the mean of the prior
+        a,b = m0-5*s0,m0+5*s0
+        a = max(1e-9,a)
+        x = np.linspace(a,b,50)
+        rate = s.a*x+s.b
+        logpxy = s.y*slog(rate)-rate
+        assert np.all(np.isfinite(logpxy))
+        logpxy -= np.mean(logpxy)
+        assert np.all(np.isfinite(logpxy))
+        if not o is 1:
+            logpxy += o.logpdf(x)
+        assert np.all(np.isfinite(logpxy))
+        logpxy -= np.mean(logpxy)
+        assert np.all(np.isfinite(logpxy))
+        p = sexp(logpxy)
+        assert np.all(np.isfinite(p))
+        # Estimate mean and variance of posterior
+        m = gaussian_quadrature(p,x)
+        #m.m = max(1e-9,m.m)
+        return m
+        
+    def __str__(s): 
+        return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
+class GaussianCoxModel:
+    '''
+    One-dimensional Gaussian Cox-process observation model
+    see: GaussianCoxApproximator
+    '''
+    def __init__(s,a,b):
+        '''
+        Parameters
+        ----------
+        a: gain parameter
+        b: bias parameter
+        '''
+        s.a,s.b = a,b
+    def __call__(s,y):
+        return GaussianCoxApproximator(s.a,s.b,y)
+
+
+
+class ChisquareCoxApproximator(Gaussian):
+    '''
+    One-dimensional Chi-squared Cox-process observation model
+    
+    rate = (s.a*x+s.b)**2
+    rate = a²x²+2abx+b²
+    
+    Parameters
+    ----------
+    a: log-rate gain parameter
+    b: log-rate bias parameter
+    y: The observed count (non-negative integer)
+    '''
+    def __init__(s,a,b,y):
+        s.a,s.b,s.y = (a,b,y)
+    def __mul__(s,o):
+        # Estimate integration limits
+        if o is 1 or o.t<1:
+            # No information about the state yet.
+            # We aren't sure over what domain to perform the integration
+            # Use a Laplace approximation of p(x|y) to get appx bounds
+            m0 = (np.sqrt(s.y)-s.b)/s.a
+            t0 = (s.y+1)*s.a**2
+            s0 = np.sqrt(1/t0)
+        else:
+            # Use the prior on x to guess integration limits
+            m0 = np.abs(o.m)
+            s0 = np.sqrt(1/o.t)
+        # Integrate within ±4σ of the mean of the prior
+        a,b = m0-4*s0,m0+4*s0
+        x = np.linspace(a,b,50)
+        rate = (s.a*x+s.b)**2
+        logpxy = s.y*slog(rate)-rate
+        assert np.all(np.isfinite(logpxy))
+        logpxy -= np.mean(logpxy)
+        assert np.all(np.isfinite(logpxy))
+        if not o is 1:
+            logpxy += o.logpdf(x)
+        assert np.all(np.isfinite(logpxy))
+        logpxy -= np.mean(logpxy)
+        assert np.all(np.isfinite(logpxy))
+        p = sexp(logpxy)
+        assert np.all(np.isfinite(p))
+        # Estimate mean and variance of posterior
+        m = gaussian_quadrature(p,x)
+        m.m = np.abs(m.m)
+        return m
+        
+    def __str__(s): 
+        return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
+class ChisquareCoxModel:
+    '''
+    One-dimensional Chi-squared Cox-process observation model
+    see: GaussianCoxApproximator
+    '''
+    def __init__(s,a,b):
+        '''
+        Parameters
+        ----------
+        a: gain parameter
+        b: bias parameter
+        '''
+        s.a,s.b = a,b
+    def __call__(s,y):
+        return ChisquareCoxApproximator(s.a,s.b,y)
 
 class BernoulliObservationApproximator(Gaussian):
     '''
     Approximate Gaussian distribution to use in abstracted forward-
-    backward. Used to condition Gaussian states on Poisson 
+    backward. Used to condition Gaussian states on Bernoulli 
     observations
     '''
     def __init__(s,a,b,y):
@@ -830,7 +952,7 @@ class BernoulliObservationModel:
     def __call__(s,y):
         return BernoulliObservationApproximator(s.a,s.b,y)
 
-class TruncatedPoissonObservationApproximator(Gaussian):
+class TruncatedLogGaussianCoxApproximator(Gaussian):
     '''
     Approximate Gaussian distribution to use in abstracted forward-
     backward. Used to condition Gaussian states on Poisson 
@@ -869,17 +991,17 @@ class TruncatedPoissonObservationApproximator(Gaussian):
         return gaussian_quadrature(p,x)
     def __str__(s): 
         return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
-class TruncatedPoissonObservationModel:
+class TruncatedLogGaussianCoxModel:
     '''
     Poisson observation model
     Returns a density that, when multiplied by a Gaussian,
     returns a numeric approximation of the posterior as a Gaussian
-    see: PoissonObservationApproximator
+    see: LogGaussianCoxApproximator
     '''
     def __init__(s,a,b):
         s.a,s.b = a,b
     def __call__(s,y):
-        return TruncatedPoissonObservationApproximator(s.a,s.b,y)
+        return TruncatedLogGaussianCoxApproximator(s.a,s.b,y)
 
 from numpy.linalg import solve
 
@@ -966,7 +1088,7 @@ def lgcp_observation_minimizer(y,px,B):
         return np.outer(B,B.T)*np.exp(B.dot(x)) + px.T
     return fun,jac,hess
     
-class MVPoissonObservation():
+class MVLogGaussianCox():
     '''
     y: binary observations
     B: projection vector from multivariate system to log-rate

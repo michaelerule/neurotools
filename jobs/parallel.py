@@ -59,6 +59,8 @@ import inspect
 import neurotools.jobs.decorator
 import neurotools.jobs.closure
 
+import numpy as np
+
 if sys.version_info<(3,0):
     from itertools import imap as map
 
@@ -79,27 +81,37 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
     debug : if True, will run on a single core so exceptions get 
             handeled correctly
     verbose : set to True to print out detailed logging information
+    
+    Returns
+    -------
+    list of results
     '''
     global mypool
     problems = list(problems)
     njobs    = len(problems)
 
     if njobs==0:
-        if verbose: print('NOTHING TO DO?')
+        if verbose: 
+            print('NOTHING TO DO?')
         return []
 
     if not debug and (not 'mypool' in globals() or mypool is None):
-        if verbose: print('NO POOL FOUND. RESTARTING.')
+        if verbose: 
+            print('NO POOL FOUND. RESTARTING.')
         mypool = Pool(cpu_count()-leavefree)
 
     enumerator = map(f,problems) if debug else mypool.imap(f,problems)
     results = {}
     if show_progress:
         sys.stdout.write('\n')
+    lastprogress = 0.0
     for i,result in enumerator:
         if show_progress:
-            sys.stdout.write('\rdone %0.1f%% '%((i+1)*100./njobs))
-            sys.stdout.flush()
+            thisprogress = ((i+1)*100./njobs)
+            if (thisprogress - lastprogress)>0.5:
+                sys.stdout.write('\rdone %0.1f%% '%thisprogress)
+                sys.stdout.flush()
+                lastprogress = thisprogress
         # if it is a one element tuple, unpack it automatically
         if isinstance(result,tuple) and len(result)==1:
             result=result[0]
@@ -111,7 +123,22 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
     return [results[i] if i in results else None \
         for i,k in enumerate(problems)]
 
+def pararraymap(function,problems,debug=False):
+    '''
+    Parmap wrapper for common use-case with Numpy
+    '''
+    # Ensures that all workers can see the newly-defined helper function
+    reset_pool()
+    return np.array(parmap(function,enumerate(problems),debug=debug))
+
 def parmap_dict(f,problems,leavefree=1,debug=False,verbose=False):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     global mypool
     problems = list(problems)
     njobs    = len(problems)
@@ -140,8 +167,6 @@ def parmap_dict(f,problems,leavefree=1,debug=False,verbose=False):
     return results
 
 def parmap_indirect_helper(args):
-    global reference_globals
-    (lookup_mode,function_information,args) = args #py 2.5/3 compat.
     '''
     Multiprocessing doesn't work on functions that weren't accessible from
     the global namespace at the time that the multiprocessing pool was
@@ -156,7 +181,15 @@ def parmap_indirect_helper(args):
     Multiprocessing can already map top level functions by name, but it only
     supports passing iterables to the map functions, which limit functions
     to one argument. This wrapper merely unpacks the argument list.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
+    global reference_globals
+    (lookup_mode,function_information,args) = args #py 2.5/3 compat.
     try:
         if lookup_mode == 'module':
             # Locate function based on module name
@@ -200,6 +233,13 @@ def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
     
         1.   A function is part of a system-wide installed module
         2.   A function can be "regenerated" from source code
+        
+        
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     # don't allow closing over state that is likely to mutate
     # this isn't 100% safe, mutable globals remain an issue.
@@ -234,7 +274,22 @@ def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
         results[i] = NotImplemented
     return results
 
-def reset_pool(leavefree=1,context=None):
+def reset_pool(leavefree=1,context=None,verbose=False):
+    '''
+    Safely halts and restarts the worker-pool. If worker threads are stuck, 
+    then this function will hang. On the other hand, it avoids doing 
+    anything violent to close workers. 
+    
+    Other Parameters
+    ----------------
+    leavefree : `int`, default 1
+        How many cores to "leave free"; The pool size will be the number of
+        system cores minus this value
+    context : python context, default None
+        This context will be used for all workers in the pool
+    verbose : `bool`, default False
+        Whether to print logging information.
+    '''
     global mypool, reference_globals
 
     # try to see what the calling function sees
@@ -242,11 +297,13 @@ def reset_pool(leavefree=1,context=None):
         reference_globals = context
 
     if not 'mypool' in globals() or mypool is None:
-        print('NO POOL FOUND. STARTING')
+        if verbose:
+            print('NO POOL FOUND. STARTING')
         mypool = Pool(cpu_count()-leavefree)
     else:
-        print('POOL FOUND. RESTARTING')
-        print('Attempting to terminate pool, may become unresponsive')
+        if verbose:
+            print('POOL FOUND. RESTARTING')
+            print('Attempting to terminate pool, may become unresponsive')
         # http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate
         def close_pool():
             global mypool
@@ -271,6 +328,12 @@ def parallel_error_handling(f):
     We can't really use exception handling in parallel calls.
     This is a wrapper to just catch errors to prevent them from
     propagating up.
+
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     def parallel_helper(args):
         try:

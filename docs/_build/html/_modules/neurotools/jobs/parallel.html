@@ -89,8 +89,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
             
           
         </div>
@@ -214,6 +217,8 @@
 <span class="kn">import</span> <span class="nn">neurotools.jobs.decorator</span>
 <span class="kn">import</span> <span class="nn">neurotools.jobs.closure</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">imap</span> <span class="k">as</span> <span class="nb">map</span>
 
@@ -234,27 +239,37 @@
 <span class="sd">    debug : if True, will run on a single core so exceptions get </span>
 <span class="sd">            handeled correctly</span>
 <span class="sd">    verbose : set to True to print out detailed logging information</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of results</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">mypool</span>
     <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
     <span class="n">njobs</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">njobs</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTHING TO DO?&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTHING TO DO?&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. RESTARTING.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. RESTARTING.&#39;</span><span class="p">)</span>
         <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
 
     <span class="n">enumerator</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">mypool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">lastprogress</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span> <span class="ow">in</span> <span class="n">enumerator</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">done </span><span class="si">%0.1f%%</span><span class="s1"> &#39;</span><span class="o">%</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mf">100.</span><span class="o">/</span><span class="n">njobs</span><span class="p">))</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">thisprogress</span> <span class="o">=</span> <span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mf">100.</span><span class="o">/</span><span class="n">njobs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">thisprogress</span> <span class="o">-</span> <span class="n">lastprogress</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">done </span><span class="si">%0.1f%%</span><span class="s1"> &#39;</span><span class="o">%</span><span class="n">thisprogress</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                <span class="n">lastprogress</span> <span class="o">=</span> <span class="n">thisprogress</span>
         <span class="c1"># if it is a one element tuple, unpack it automatically</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -266,7 +281,22 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span> \
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">)]</span></div>
 
+<div class="viewcode-block" id="pararraymap"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.pararraymap">[docs]</a><span class="k">def</span> <span class="nf">pararraymap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parmap wrapper for common use-case with Numpy</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Ensures that all workers can see the newly-defined helper function</span>
+    <span class="n">reset_pool</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">parmap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">),</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="parmap_dict"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.parmap_dict">[docs]</a><span class="k">def</span> <span class="nf">parmap_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">mypool</span>
     <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
     <span class="n">njobs</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
@@ -295,8 +325,6 @@
     <span class="k">return</span> <span class="n">results</span></div>
 
 <div class="viewcode-block" id="parmap_indirect_helper"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.parmap_indirect_helper">[docs]</a><span class="k">def</span> <span class="nf">parmap_indirect_helper</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">reference_globals</span>
-    <span class="p">(</span><span class="n">lookup_mode</span><span class="p">,</span><span class="n">function_information</span><span class="p">,</span><span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">args</span> <span class="c1">#py 2.5/3 compat.</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Multiprocessing doesn&#39;t work on functions that weren&#39;t accessible from</span>
 <span class="sd">    the global namespace at the time that the multiprocessing pool was</span>
@@ -311,7 +339,15 @@
 <span class="sd">    Multiprocessing can already map top level functions by name, but it only</span>
 <span class="sd">    supports passing iterables to the map functions, which limit functions</span>
 <span class="sd">    to one argument. This wrapper merely unpacks the argument list.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">reference_globals</span>
+    <span class="p">(</span><span class="n">lookup_mode</span><span class="p">,</span><span class="n">function_information</span><span class="p">,</span><span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">args</span> <span class="c1">#py 2.5/3 compat.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">lookup_mode</span> <span class="o">==</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span>
             <span class="c1"># Locate function based on module name</span>
@@ -355,6 +391,13 @@
 <span class="sd">    </span>
 <span class="sd">        1.   A function is part of a system-wide installed module</span>
 <span class="sd">        2.   A function can be &quot;regenerated&quot; from source code</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># don&#39;t allow closing over state that is likely to mutate</span>
     <span class="c1"># this isn&#39;t 100% safe, mutable globals remain an issue.</span>
@@ -389,7 +432,22 @@
         <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
     <span class="k">return</span> <span class="n">results</span></div>
 
-<div class="viewcode-block" id="reset_pool"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.reset_pool">[docs]</a><span class="k">def</span> <span class="nf">reset_pool</span><span class="p">(</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="reset_pool"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.reset_pool">[docs]</a><span class="k">def</span> <span class="nf">reset_pool</span><span class="p">(</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Safely halts and restarts the worker-pool. If worker threads are stuck, </span>
+<span class="sd">    then this function will hang. On the other hand, it avoids doing </span>
+<span class="sd">    anything violent to close workers. </span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    leavefree : `int`, default 1</span>
+<span class="sd">        How many cores to &quot;leave free&quot;; The pool size will be the number of</span>
+<span class="sd">        system cores minus this value</span>
+<span class="sd">    context : python context, default None</span>
+<span class="sd">        This context will be used for all workers in the pool</span>
+<span class="sd">    verbose : `bool`, default False</span>
+<span class="sd">        Whether to print logging information.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">mypool</span><span class="p">,</span> <span class="n">reference_globals</span>
 
     <span class="c1"># try to see what the calling function sees</span>
@@ -397,11 +455,13 @@
         <span class="n">reference_globals</span> <span class="o">=</span> <span class="n">context</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. STARTING&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. STARTING&#39;</span><span class="p">)</span>
         <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;POOL FOUND. RESTARTING&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting to terminate pool, may become unresponsive&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;POOL FOUND. RESTARTING&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting to terminate pool, may become unresponsive&#39;</span><span class="p">)</span>
         <span class="c1"># http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate</span>
         <span class="k">def</span> <span class="nf">close_pool</span><span class="p">():</span>
             <span class="k">global</span> <span class="n">mypool</span>
@@ -426,6 +486,12 @@
 <span class="sd">    We can&#39;t really use exception handling in parallel calls.</span>
 <span class="sd">    This is a wrapper to just catch errors to prevent them from</span>
 <span class="sd">    propagating up.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">parallel_helper</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>

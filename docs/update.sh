@@ -9,6 +9,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     # do dangerous stuff
     sphinx-apidoc -fe -o . ../
+    #
+    # We don't want to include these, they cause too many errors
+    # 
+    # rm neurotools.nlab.rst
+    # rm neurotools.opto.rst
+    # rm neurotools.models.rbm*.rst
+    # rm neurotools.stats.matzner_bar-gad_PLoS_2015.rst
     #make clean
     #make html
     #make SPHINXOPTS='-W' clean html

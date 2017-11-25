@@ -89,8 +89,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
             
           
         </div>
@@ -857,7 +860,7 @@
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">fwd</span>
     <span class="fm">__mul__</span> <span class="o">=</span> <span class="n">fwd</span></div>
 
-<div class="viewcode-block" id="PoissonObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.PoissonObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">PoissonObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+<div class="viewcode-block" id="LogGaussianCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.LogGaussianCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">LogGaussianCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Approximate Gaussian distribution to use in abstracted forward-</span>
 <span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
@@ -878,7 +881,7 @@
             <span class="c1"># No information about the state yet.</span>
             <span class="c1"># We aren&#39;t sure over what domain to perform the integration</span>
             <span class="c1"># Use a Laplace approximation of p(x|y) to get appx bounds</span>
-            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">slog</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
             <span class="n">t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
             <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">t0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -886,31 +889,14 @@
             <span class="n">m0</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span>
             <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
         <span class="c1"># Integrate within ±4σ of the mean of the prior</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">m0</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span><span class="c1">#</span>
-        
-        <span class="c1"># Poisson distribution</span>
-        <span class="c1"># Best when rate is large and counts are frequenty &gt;1</span>
-        <span class="c1"># Get the conditional probability of state given this observation</span>
-        <span class="c1"># this is poisson in lambda = np.exp(ax+b)</span>
-        <span class="c1"># pxy = np.exp(s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b))/scipy.special.gamma(s.y+1)</span>
-        <span class="c1"># Bernoilli: stable when rate is very low</span>
-        <span class="c1"># pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))</span>
-        <span class="c1"># Multiply pxy by distribution o, </span>
-        <span class="c1"># handling identity as special case</span>
-        <span class="c1"># p = pxy*(o if o is 1 else o(x)+1e-10)</span>
-        <span class="c1"># p = np.float64(p) #Hmm</span>
-        <span class="c1"># assert np.all(np.isfinite(p))</span>
-        <span class="c1"># Estimate mean and variance of posterior</span>
-        <span class="c1"># return gaussian_quadrature(p,x)</span>
-        
-        <span class="c1">#logpxy = s.y*(s.a*x+s.b)-np.exp(s.a*x+s.b) - scipy.special.loggamma(s.y+1)</span>
-        <span class="c1"># ignore normalization</span>
-        <span class="n">logpxy</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="n">sexp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">m0</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">lograte</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span>
+        <span class="n">logpxy</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">lograte</span><span class="o">-</span><span class="n">sexp</span><span class="p">(</span><span class="n">lograte</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
         <span class="n">logpxy</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">logpxy</span> <span class="o">+=</span> <span class="n">slog</span><span class="p">(</span><span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">logpxy</span> <span class="o">+=</span> <span class="n">o</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
         <span class="n">logpxy</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
@@ -922,12 +908,12 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PoissonObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.PoissonObservationModel">[docs]</a><span class="k">class</span> <span class="nc">PoissonObservationModel</span><span class="p">:</span>
+<div class="viewcode-block" id="LogGaussianCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.LogGaussianCoxModel">[docs]</a><span class="k">class</span> <span class="nc">LogGaussianCoxModel</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Poisson observation model</span>
 <span class="sd">    Returns a density that, when multiplied by a Gaussian,</span>
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
-<span class="sd">    see: PoissonObservationApproximator</span>
+<span class="sd">    see: LogGaussianCoxApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -938,12 +924,151 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">PoissonObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">LogGaussianCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.GaussianCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">GaussianCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    One-dimensional Gaussian Cox-process observation model</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: log-rate gain parameter</span>
+<span class="sd">    b: log-rate bias parameter</span>
+<span class="sd">    y: The observed count (non-negative integer)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        o : Gaussian object</span>
+<span class="sd">            Function for evaluating prior density</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Estimate integration limits</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
+            <span class="c1"># No information about the state yet.</span>
+            <span class="c1"># We aren&#39;t sure over what domain to perform the integration</span>
+            <span class="c1"># Use a Laplace approximation of p(x|y) to get appx bounds</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">t0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># </span>
+            <span class="c1"># Use the prior on x to guess integration limits</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="c1"># max(1e-9,o.m)</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># Integrate within ±4σ of the mean of the prior</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">m0</span><span class="o">-</span><span class="mi">5</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">5</span><span class="o">*</span><span class="n">s0</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1e-9</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span>
+        <span class="n">logpxy</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">slog</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span><span class="o">-</span><span class="n">rate</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="n">logpxy</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logpxy</span> <span class="o">+=</span> <span class="n">o</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="n">logpxy</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">sexp</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+        <span class="c1"># Estimate mean and variance of posterior</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1">#m.m = max(1e-9,m.m)</span>
+        <span class="k">return</span> <span class="n">m</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+<div class="viewcode-block" id="GaussianCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.GaussianCoxModel">[docs]</a><span class="k">class</span> <span class="nc">GaussianCoxModel</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    One-dimensional Gaussian Cox-process observation model</span>
+<span class="sd">    see: GaussianCoxApproximator</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a: gain parameter</span>
+<span class="sd">        b: bias parameter</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">GaussianCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ChisquareCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.ChisquareCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">ChisquareCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    One-dimensional Chi-squared Cox-process observation model</span>
+<span class="sd">    </span>
+<span class="sd">    rate = (s.a*x+s.b)**2</span>
+<span class="sd">    rate = a²x²+2abx+b²</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: log-rate gain parameter</span>
+<span class="sd">    b: log-rate bias parameter</span>
+<span class="sd">    y: The observed count (non-negative integer)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="c1"># Estimate integration limits</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># No information about the state yet.</span>
+            <span class="c1"># We aren&#39;t sure over what domain to perform the integration</span>
+            <span class="c1"># Use a Laplace approximation of p(x|y) to get appx bounds</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">t0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use the prior on x to guess integration limits</span>
+            <span class="n">m0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+            <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># Integrate within ±4σ of the mean of the prior</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">m0</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span><span class="p">,</span><span class="n">m0</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">s0</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">logpxy</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">slog</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span><span class="o">-</span><span class="n">rate</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="n">logpxy</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logpxy</span> <span class="o">+=</span> <span class="n">o</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="n">logpxy</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logpxy</span><span class="p">))</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">sexp</span><span class="p">(</span><span class="n">logpxy</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+        <span class="c1"># Estimate mean and variance of posterior</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ChisquareCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.ChisquareCoxModel">[docs]</a><span class="k">class</span> <span class="nc">ChisquareCoxModel</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    One-dimensional Chi-squared Cox-process observation model</span>
+<span class="sd">    see: GaussianCoxApproximator</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a: gain parameter</span>
+<span class="sd">        b: bias parameter</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ChisquareCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BernoulliObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.BernoulliObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">BernoulliObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Approximate Gaussian distribution to use in abstracted forward-</span>
-<span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
+<span class="sd">    backward. Used to condition Gaussian states on Bernoulli </span>
 <span class="sd">    observations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
@@ -985,7 +1110,7 @@
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">BernoulliObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TruncatedPoissonObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedPoissonObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">TruncatedPoissonObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
+<div class="viewcode-block" id="TruncatedLogGaussianCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedLogGaussianCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">TruncatedLogGaussianCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Approximate Gaussian distribution to use in abstracted forward-</span>
 <span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
@@ -1024,17 +1149,17 @@
         <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
-<div class="viewcode-block" id="TruncatedPoissonObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedPoissonObservationModel">[docs]</a><span class="k">class</span> <span class="nc">TruncatedPoissonObservationModel</span><span class="p">:</span>
+<div class="viewcode-block" id="TruncatedLogGaussianCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedLogGaussianCoxModel">[docs]</a><span class="k">class</span> <span class="nc">TruncatedLogGaussianCoxModel</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Poisson observation model</span>
 <span class="sd">    Returns a density that, when multiplied by a Gaussian,</span>
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
-<span class="sd">    see: PoissonObservationApproximator</span>
+<span class="sd">    see: LogGaussianCoxApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">TruncatedPoissonObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">TruncatedLogGaussianCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">solve</span>
 
@@ -1121,14 +1246,14 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">px</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">fun</span><span class="p">,</span><span class="n">jac</span><span class="p">,</span><span class="n">hess</span></div>
     
-<div class="viewcode-block" id="MVPoissonObservation"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVPoissonObservation">[docs]</a><span class="k">class</span> <span class="nc">MVPoissonObservation</span><span class="p">():</span>
+<div class="viewcode-block" id="MVLogGaussianCox"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVLogGaussianCox">[docs]</a><span class="k">class</span> <span class="nc">MVLogGaussianCox</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    y: binary observations</span>
 <span class="sd">    B: projection vector from multivariate system to log-rate</span>
 <span class="sd">    </span>
 <span class="sd">    Uses Laplace approximation for covariance</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-<div class="viewcode-block" id="MVPoissonObservation.MVPoissonApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVPoissonObservation.MVPoissonApproximator">[docs]</a>    <span class="k">class</span> <span class="nc">MVPoissonApproximator</span><span class="p">():</span>
+<div class="viewcode-block" id="MVLogGaussianCox.MVPoissonApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVLogGaussianCox.MVPoissonApproximator">[docs]</a>    <span class="k">class</span> <span class="nc">MVPoissonApproximator</span><span class="p">():</span>
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
             <span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="n">B</span><span class="p">,</span><span class="n">y</span>
         <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>

@@ -103,7 +103,6 @@ def scattercompare(x,y,xl='',yl='',
         t = linspace(*(xlim()+(10,)))
         plot(t,t,color=RUST,lw=2)
         ylim(*yl)
-    
     nicey()
     fudgey(12)
 
@@ -123,11 +122,10 @@ def barcompare(x,y,xl='',yl='',
     '''
     y = np.array(y)
     x = np.array(x)
-    
     bins = array(sorted(x))[::skip]
     nbins = len(bins)-1
     means,stds,sems = [],[],[]
-    Δe = (bins[1:]+bins[:-1])*0.5
+    Deltae = (bins[1:]+bins[:-1])*0.5
     for i in range(nbins):
         a = bins[i]
         b = bins[i+1]
@@ -139,11 +137,11 @@ def barcompare(x,y,xl='',yl='',
         means.append(mean(get))
         stds.append(sqrt(v))
         sems.append(sem*1.96)
-    μ  = array(means)
-    σ  = array(stds)
-    dμ = array(sems)
-    scatter(Δe,μ,0.1)
-    plt.errorbar(Δe, μ, σ, fmt='.', markersize=4, lw=1, label=u'Observations',zorder=inf)
+    mu  = array(means)
+    sigma  = array(stds)
+    dmu = array(sems)
+    scatter(Deltae,mu,0.1)
+    plt.errorbar(Deltae, mu, sigma, fmt='.', markersize=4, lw=1, label=u'Observations',zorder=inf)
     plot(bins,bins,color=RUST)
     ylim(0,20)
     xlim(5,20)
@@ -187,7 +185,6 @@ def barcompare(x,y,xl='',yl='',
         t = linspace(*(xlim()+(10,)))
         plot(t,t,color=RUST,lw=2)
         ylim(*yl)
-    
     nicey()
     fudgey(12)
     

@@ -32,22 +32,22 @@
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    #'sphinx.ext.todo',
-    #'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     ]
 
-
-# Experimental markdown support
-source_parsers = {
-   '.md': 'recommonmark.parser.CommonMarkParser',
-}
-
 # special code to handle different versions of sphinx gracefully
-import sys
+import sys, os
 assert 'sphinx' in sys.modules
+  
+mathjax_path="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+
+
+sys.path.insert(0,os.path.abspath("./_auto/"))
+
+
+#
 
 # due to potential weirdness that may arise with python 
 # environments, it's not clear that the imported version will 
@@ -90,7 +90,6 @@ else:
     else:
         sys.stdout.write('\tPlease update Sphinx to use the github pages module\n')
 
-
 # fix some sphinx warnings?
 #napoleon_use_param = False
 
@@ -100,8 +99,8 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-source_suffix = ['.rst', '.md']
-# source_suffix = '.rst'
+# source_suffix = ['.rst', '.md']
+source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
@@ -130,7 +129,8 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store','extract_doc.py']
+
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -151,7 +151,11 @@ html_theme = "sphinx_rtd_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+# https://stackoverflow.com/questions/27669376/show-entire-toctree-in-read-the-docs-sidebar
+html_theme_options = {
+    'navigation_depth': 5,
+}
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -162,7 +166,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Neurotoolsdoc'
+htmlhelp_basename = 'Neurotools'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -193,16 +197,14 @@ latex_documents = [
      u'M Rule', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'neurotools', u'Neurotools Documentation',
+    (master_doc, 'Neurotools', u'Neurotools Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -214,8 +216,6 @@ texinfo_documents = [
      author, 'Neurotools', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 
 # -- Options for Epub output ----------------------------------------------
 
@@ -236,4 +236,38 @@ epub_copyright = copyright
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
+
+
+
+####### FURHTHER CUSTOMIZATION RTD ########
+
+# https://stackoverflow.com/questions/18969093/how-to-include-the-toctree-in-the-sidebar-of-each-page
+# html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'], }
+
+# https://stackoverflow.com/questions/20939598/enabling-sidebar-on-python-sphinx-documentation-based-on-a-sphinx-bootstrap-them
+html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
+
+
+extensions += ['sphinx.ext.autosummary',]
+autodoc_default_flags = ['members']
+autosummary_gerenerate = True
+exclude_patterns = ['_auto/*']
+autodoc_member_order = 'bysource'
+
+
+# Patch duplicate errors
+# https://github.com/sphinx-doc/sphinx/issues/3866
+
+from sphinx.domains.python import PythonDomain
+
+class PatchedPythonDomain(PythonDomain):
+    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
+        if 'refspecific' in node:
+            del node['refspecific']
+        return super(PatchedPythonDomain, self).resolve_xref(
+            env, fromdocname, builder, typ, target, node, contnode)
+    
+def setup(sphinx):
+    sphinx.override_domain(PatchedPythonDomain)
+
 

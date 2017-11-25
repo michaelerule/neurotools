@@ -25,7 +25,6 @@ F64EPS     = np.float128('1.4012985e-45')
 F64SAFE    = np.sqrt(F64EPS)
 ZERO128    = np.float128('0')
 EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float64).max)))
-
 F128EMAX   = np.sqrt(np.float128('11355.52340629414395'))
 
 lgE        = np.float128('1.442695040888963407359924681001892137426645954152985934135')

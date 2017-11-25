@@ -149,7 +149,7 @@ class PGOM:
     observations. An additional option to combine another Gaussian
     factor into the conditioning has been added. 
     '''
-    class Approximate(hmm.PoissonObservationApproximator):
+    class Approximate(hmm.TruncatedLogGaussianCoxApproximator):
         def __init__(s,y,g,a=1,b=0):
             '''
             Parameters
@@ -158,7 +158,7 @@ class PGOM:
             Returns
             -------
             '''
-            PoissonObservationApproximator.__init__(s,a,b,y)
+            TruncatedLogGaussianCoxApproximator.__init__(s,a,b,y)
             s.g = g
         def __mul__(s,o):
             '''
@@ -170,7 +170,7 @@ class PGOM:
             '''
             # first combine our Gaussian with the other Gaussian
             # then call the integration method in parent class
-            return PoissonObservationApproximator.__mul__(s,s.g if o is 1 else s.g*o)
+            return TruncatedLogGaussianCoxApproximator.__mul__(s,s.g if o is 1 else s.g*o)
     def __init__(s,a=1,b=0):
         '''
         Args:

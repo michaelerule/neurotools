@@ -6,7 +6,8 @@ from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from numpy import *
+#from numpy import *
+import numpy as np
 
 try:
     from spectrum.mtm import dpss
@@ -65,13 +66,13 @@ def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
     ndarray
         average sqrt(power) over tapers.
     '''
-    N = shape(x)[-1]
+    N = x.shape[-1]
     if nodc:
-        x = x-mean(x,axis=-1)[...,None]
+        x = x-np.mean(x,axis=-1)[...,None]
     tapers, eigen = dpss_cached(N,0.4999*k)
-    specs = [abs(fft(x*t)) for t in tapers]
-    freqs = fftfreq(N,1./Fs)
-    return freqs[:N//2],mean(specs,0)[...,:N//2]
+    specs = [np.abs(np.fft(x*t)) for t in tapers]
+    freqs = np.fftfreq(N,1./Fs)
+    return freqs[:N//2],np.mean(specs,0)[...,:N//2]
 
 def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
     '''
@@ -91,13 +92,13 @@ def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
     ndarray
         average squared power over tapers.
     '''
-    N = shape(x)[-1]
+    N = np.shape(x)[-1]
     if nodc:
-        x = x-mean(x,axis=-1)[...,None]
+        x = x-np.mean(x,axis=-1)[...,None]
     tapers, eigen = dpss_cached(N,0.4999*k)
-    specs = [abs(fft(x*t)) for t in tapers]
-    freqs = fftfreq(N,1./Fs)
-    return freqs[:N//2],mean(specs,0)[...,:N//2]**2
+    specs = [np.abs(np.fft(x*t)) for t in tapers]
+    freqs = np.fftfreq(N,1./Fs)
+    return freqs[:N//2],np.mean(specs,0)[...,:N//2]**2
 
 def sliding_multitaper_spectrum(x,window=500,step=100,Fs=1000,BW=5):
     '''

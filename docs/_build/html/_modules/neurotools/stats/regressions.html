@@ -89,8 +89,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
             
           
         </div>
@@ -168,6 +171,9 @@
 <span class="sd">Routines to regress spatiotemporal wave shapes to data</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">linregress</span>
+
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Regress on the following model for synchrony</span>
 <span class="sd">synchrony(x) = np.cos(wx)*np.exp(-x/tau)+b</span>
@@ -221,7 +227,7 @@
 <span class="sd">    dEdb = np.sum(W*H)</span>
 <span class="sd">    return [dEdw,dEdL,dEdb]</span>
 
-<span class="sd">We use the minimize function from scipy.optimize.</span>
+<span class="sd">Use the minimize function from scipy.optimize.</span>
 
 <span class="sd">scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,</span>
 <span class="sd">    hessp=None, bounds=None, constraints=(), tol=None, callback=None,</span>
@@ -318,19 +324,25 @@
 
 <div class="viewcode-block" id="damped_cosine"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.damped_cosine">[docs]</a><span class="k">def</span> <span class="nf">damped_cosine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Regress a damped cosine impulse response to point data `X` and `Y` </span>
+<span class="sd">    using weighting `W`.</span>
+<span class="sd">    </span>
 <span class="sd">    Todo: constrain b, L to be positive</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    X: </span>
+<span class="sd">    X: 1D array-like</span>
 <span class="sd">        List of distances</span>
-<span class="sd">    W: </span>
-<span class="sd">        List of weights</span>
-<span class="sd">    Y: </span>
+<span class="sd">    Y: 1D array-like</span>
 <span class="sd">        List of average pairwise distances</span>
+<span class="sd">    W: 1D array-like</span>
+<span class="sd">        List of weights</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result : object </span>
+<span class="sd">        Optimization result returned by `scipy.optimize.minimize`.</span>
+<span class="sd">        See `scipy.optimize` documentation for details.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -352,7 +364,7 @@
         <span class="k">return</span> <span class="n">error</span>
     <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">wLb</span><span class="p">):</span>
         <span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">wLb</span>
-        <span class="c1"># todo: gradient is wrong?</span>
+        <span class="c1"># todo: double check this gradient</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="p">)</span><span class="o">+</span><span class="n">b</span>
         <span class="n">h</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span>
         <span class="n">dEdw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W</span><span class="o">*</span><span class="n">h</span><span class="o">*-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="p">))</span>
@@ -362,10 +374,9 @@
     <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="c1">#,jac=gradient)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">linregress</span>
 <div class="viewcode-block" id="weighted_least_squares"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.weighted_least_squares">[docs]</a><span class="k">def</span> <span class="nf">weighted_least_squares</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Initialize power law fit</span>
@@ -381,6 +392,9 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result : object </span>
+<span class="sd">        Optimization result returned by scipy.optimize.minimize. See</span>
+<span class="sd">        scipy.optimize documentation for details.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
@@ -391,7 +405,7 @@
     <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">])</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 
@@ -454,6 +468,9 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result : object </span>
+<span class="sd">        Optimization result returned by scipy.optimize.minimize. See</span>
+<span class="sd">        scipy.optimize documentation for details.</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -496,6 +513,9 @@
 <span class="sd">    Fit exponential decay from an initial value to a final value with </span>
 <span class="sd">    some time (or length, etc) constant.</span>
 <span class="sd">    </span>
+<span class="sd">    lamb,scale,dc = exponential_decay(X,Y)</span>
+<span class="sd">    z = np.exp(-lamb*X)*scale+dc</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    X: List of distances</span>
@@ -519,7 +539,7 @@
     <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">error</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="c1">#,method=&#39;BFGS&#39;)#Nelder-Mead&#39;)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
     <span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
     <span class="k">return</span> <span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span></div>
     
@@ -535,7 +555,9 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    res.x</span>
+<span class="sd">    result.x : array-like </span>
+<span class="sd">        Optimization result returned by scipy.optimize.minimize. See</span>
+<span class="sd">        scipy.optimize documentation for details.</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -548,7 +570,7 @@
     <span class="n">res</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span></div>
 
 

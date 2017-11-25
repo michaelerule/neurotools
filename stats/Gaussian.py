@@ -14,6 +14,7 @@ from neurotools.functions import slog
 from neurotools.stats.distributions import poisson_logpdf
 import random
 from scipy.optimize import minimize
+from neurotools.functions import slog,sexp
 
 def gaussian_quadrature(p,domain,eps=1e-12):
     '''
@@ -97,5 +98,5 @@ class Gaussian:
         '''
         The log-pdf of a univariate Gaussian
         '''
-        return -0.5*s.t*(x-s.m)**2 + 0.5*log(s.t)-0.91893853320467267#-0.5*log(2*np.pi)
+        return -0.5*s.t*(x-s.m)**2 + 0.5*slog(s.t)-0.91893853320467267#-0.5*log(2*np.pi)
     

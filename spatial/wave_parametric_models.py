@@ -23,9 +23,8 @@ equation. So what we're actually fitting is
 
 u(x,y,t) = A sin(a*x+b*y-w*t+phi)
 
-Which has 5 free Parameters
-    ---------- amplitude, x/y spatial wavelength, time wavelength,
-and phase offset.
+Which has 5 free Parameters amplitude, x/y spatial wavelength, 
+time wavelength, and phase offset.
 """
 
 import numpy as np

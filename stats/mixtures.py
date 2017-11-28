@@ -11,8 +11,7 @@ from neurotools.system import *
 
 '''
 Functions relating to distributions. Most of this should be available
-in numpy, scipy, and scikits, but occassionally we need our own
-implementations of things.
+in numpy, scipy, and scikits.
 '''
 
 import numpy as np
@@ -22,6 +21,25 @@ def two_class_poisson_mixture_model(counts):
     '''
     Estimates a Poisson mixture model with two distributions
     Originally written as a toy example
+    
+    Parameters
+    ----------
+    counts : np.array
+        Array of count observations. We presume that counts arise from a
+        misture of two Poisson distributions with different means. 
+    
+    Returns
+    -------
+    classes : np.array
+        assigned classes of points
+    mu0 : float
+        mean of class 0
+    mu1 : float
+        mean of class 1
+    pr0 : np.array
+        probability that each count obsrevation belongs to class 0
+    pr1 : np.array
+        probability that each count obsrevation belongs to class 1 
     '''
     # Start with the hypothesis that the top 50% of the data and
     # bottom 50% are drawn from different distributions. Initialize
@@ -83,7 +101,7 @@ def two_class_poisson_mixture_model(counts):
         # - (\lambda_1-\lambda_0)
         # + \ln(\omega_1/\omega_0)
         # \]
-        # This can be factored into a simple multiplier and consant
+        # This can be factored into a multiplier and constant
         multiplier = (lnl1-lnl0)
         constant   = (lnw1-lnw0)-(l1-l0)
 

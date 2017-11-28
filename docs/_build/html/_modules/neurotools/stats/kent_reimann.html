@@ -158,16 +158,9 @@
   <h1>Source code for neurotools.stats.kent_reimann</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
-
 <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">These notes have been reproduced from Wikipedia circa 2012</span>
+
 <span class="sd">The 5-parameter Fisher-Bingham distribution or Kent distribution, named</span>
 <span class="sd">after Ronald Fisher, Christopher Bingham, and John T. Kent, is a probability</span>
 <span class="sd">distribution on the two-dimensional unit sphere &lt;math&gt;S^{2}\,&lt;/math&gt; in</span>
@@ -193,17 +186,56 @@
 <span class="sd">The parameter &lt;math&gt;\kappa\,&lt;/math&gt;  (with &lt;math&gt;\kappa&gt;0\,&lt;/math&gt; ) determines the concentration or spread of the distribution, while  &lt;math&gt;\beta\,&lt;/math&gt;  (with  &lt;math&gt;0\leq2\beta&lt;\kappa&lt;/math&gt; ) determines the ellipticity of the contours of equal probability. The higher the  &lt;math&gt;\kappa\,&lt;/math&gt;  and  &lt;math&gt;\beta\,&lt;/math&gt;  parameters, the more concentrated and elliptical the distribution will be, respectively. Vector  &lt;math&gt;\gamma_{1}\,&lt;/math&gt;  is the mean direction, and vectors  &lt;math&gt;\gamma_{2},\gamma_{3}\,&lt;/math&gt;  are the major and minor axes. The latter two vectors determine the orientation of the equal probability contours on the sphere, while the first vector determines the common center of the contours. The 3x3 matrix &lt;math&gt;(\gamma_{1},\gamma_{2},\gamma_{3})\,&lt;/math&gt; must be orthogonal.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="o">*</span>
-
 <span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="k">import</span> <span class="o">*</span>
 
 <div class="viewcode-block" id="riemann2complex"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.riemann2complex">[docs]</a><span class="k">def</span> <span class="nf">riemann2complex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        x locations of points on sphere</span>
+<span class="sd">    y</span>
+<span class="sd">        y locations of points on sphere</span>
+<span class="sd">    z</span>
+<span class="sd">        z locations of points on sphere</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or np.array</span>
+<span class="sd">        zeta = (x+1j*y)/(1-z)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">normed</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">])</span>
     <span class="n">zeta</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">zeta</span></div>
 
 <div class="viewcode-block" id="complex2riemann"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.complex2riemann">[docs]</a><span class="k">def</span> <span class="nf">complex2riemann</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert complex number or numbers to 3D point on Reimann sphere</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z : np.array</span>
+<span class="sd">        complex number or numbers to convert</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x (np.array)</span>
+<span class="sd">        x locations of points on sphere</span>
+<span class="sd">    y (np.array)</span>
+<span class="sd">        y locations of points on sphere</span>
+<span class="sd">    z (np.array)</span>
+<span class="sd">        z locations of points on sphere</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">X</span><span class="p">,</span><span class="n">Y</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">),</span><span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">Y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">X</span><span class="o">*</span><span class="n">scale</span>
@@ -212,17 +244,57 @@
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span></div>
 
 <div class="viewcode-block" id="kentPDF"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.kentPDF">[docs]</a><span class="k">def</span> <span class="nf">kentPDF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">g123</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    TODO: document</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="p">(</span><span class="n">g1</span><span class="p">,</span><span class="n">g2</span><span class="p">,</span><span class="n">g3</span><span class="p">)</span> <span class="o">=</span> <span class="n">g123</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this is not normalized&#39;</span><span class="p">)</span>
     <span class="n">logpdf</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">dot</span><span class="p">(</span><span class="n">g1</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">g2</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">dot</span><span class="p">(</span><span class="n">g3</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="n">logpdf</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="kentPDFRiemann"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.kentPDFRiemann">[docs]</a><span class="k">def</span> <span class="nf">kentPDFRiemann</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">kbG</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    PDF evaluation for the kent distribution on the sphere, evaluated</span>
+<span class="sd">    by reffering to complex numbers, which specify locations on the</span>
+<span class="sd">    Reimann sphere. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z : np.array</span>
+<span class="sd">        Complex-valued points </span>
+<span class="sd">    kbG</span>
+<span class="sd">        (k,b,G) Kent distribution parameters</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        Kent distribution PDF evaluated at points `z` on the Reimann </span>
+<span class="sd">        sphere.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">G</span><span class="p">)</span> <span class="o">=</span> <span class="n">kbG</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">complex2riemann</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">kentPDF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">G</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="rotatex"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.rotatex">[docs]</a><span class="k">def</span> <span class="nf">rotatex</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rotates points `p` `theta` degrees about the x-axis in 3D.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p</span>
+<span class="sd">    theta</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        rotated points</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ct</span><span class="p">,</span><span class="n">st</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">rotation</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">ct</span><span class="p">,</span><span class="o">-</span><span class="n">st</span><span class="p">],</span>
@@ -230,6 +302,19 @@
     <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span><span class="n">p</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="rotatey"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.rotatey">[docs]</a><span class="k">def</span> <span class="nf">rotatey</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rotates points `p` `theta` degrees about the y-axis in 3D.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p</span>
+<span class="sd">    theta</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        rotated points</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ct</span><span class="p">,</span><span class="n">st</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">rotation</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">ct</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="n">st</span><span class="p">],</span>
                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">],</span>
@@ -237,6 +322,19 @@
     <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span><span class="n">p</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="rotatez"><a class="viewcode-back" href="../../../neurotools.stats.kent_reimann.html#neurotools.stats.kent_reimann.rotatez">[docs]</a><span class="k">def</span> <span class="nf">rotatez</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rotates points `p` `theta` degrees about the z-axis in 3D.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p</span>
+<span class="sd">    theta</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        rotated points</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ct</span><span class="p">,</span><span class="n">st</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">rotation</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">ct</span><span class="p">,</span><span class="o">-</span><span class="n">st</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                     <span class="p">[</span><span class="n">st</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -251,6 +349,7 @@
 <span class="sd">First, an experiment to see if we can get the type of</span>
 <span class="sd">distributions of interest.</span>
 <span class="sd">&#39;&#39;&#39;</span>
+
 <span class="sd">g1 = [1,0,-10]</span>
 <span class="sd">g2 = [0,1,0]</span>
 <span class="sd">g3 = [1,1,0]</span>
@@ -260,8 +359,6 @@
 <span class="sd">    return dot(x,inv(cholesky(dot(x.T,x))))</span>
 <span class="sd">G = orthogonalize(G)</span>
 <span class="sd">G = array(map(normed,[g1,g2,g3]))</span>
-
-
 
 
 <span class="sd">k = 10</span>
@@ -274,9 +371,6 @@
 <span class="sd">    plane = array([[kentPDFRiemann(x+1j*y,(k,b,G)) for x in linspace(-2,2,50)] for y in linspace(-2,2,50)])</span>
 <span class="sd">    imshow(plane)</span>
 <span class="sd">    draw()</span>
-
-
-
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Test riemann projection code</span>

@@ -168,9 +168,8 @@
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">TODO</span>
-
-<span class="sd">Actually implement entropy related routines here</span>
+<span class="sd">A couple entropy functions. </span>
+<span class="sd">These should be merged with the energy functions in the RBM library</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -179,6 +178,17 @@
 <div class="viewcode-block" id="discrete_entropy_samples"><a class="viewcode-back" href="../../../neurotools.stats.entropy.html#neurotools.stats.entropy.discrete_entropy_samples">[docs]</a><span class="k">def</span> <span class="nf">discrete_entropy_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Entropy is in nats</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    samples : array-like</span>
+<span class="sd">        1D array-like iterable of samples. Samples can be of any type, but</span>
+<span class="sd">        must be hashable. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Shannon entropy of samples</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
@@ -186,6 +196,18 @@
     <span class="k">return</span> <span class="n">discrete_entropy_distribution</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="discrete_entropy_distribution"><a class="viewcode-back" href="../../../neurotools.stats.entropy.html#neurotools.stats.entropy.discrete_entropy_distribution">[docs]</a><span class="k">def</span> <span class="nf">discrete_entropy_distribution</span><span class="p">(</span><span class="n">counts</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    counts : iterable of integers</span>
+<span class="sd">        List of frequency counts for discrete states</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Shannon entropy of discrete distribution with observed `counts`</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span><span class="o">*</span><span class="n">counts</span><span class="p">)</span><span class="o">/</span><span class="n">total</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">total</span><span class="p">)</span></div>
 

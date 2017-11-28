@@ -169,16 +169,24 @@
 
 <div class="viewcode-block" id="history_basis"><a class="viewcode-back" href="../../../neurotools.stats.history_basis.html#neurotools.stats.history_basis.history_basis">[docs]</a><span class="k">def</span> <span class="nf">history_basis</span><span class="p">(</span><span class="n">K</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tstop</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    K: number of basis elements</span>
-<span class="sd">    tstop: length of time to cover</span>
-<span class="sd">    scale: affects how &quot;logarithmic&quot; basis scaling looks</span>
-<span class="sd">    normalize: normalize bases to unit or not?</span>
-
+<span class="sd">    Generate raised cosine history basis. </span>
+<span class="sd">    TODO: this function is duplicated in several locations, consolidate.</span>
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; basis = history_basis(4,100,10)</span>
 <span class="sd">    &gt;&gt;&gt; plot(basis.T)</span>
-<span class="sd">    normalization not implemented</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K : int</span>
+<span class="sd">        Number of basis elements. Defaults to 5</span>
+<span class="sd">    tstop : int</span>
+<span class="sd">        Time-point at which to stop. Defaults to 100</span>
+<span class="sd">    scale : int</span>
+<span class="sd">        Exponent basis for logarithmic time rescaline. Defaults to 10</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">assert</span> <span class="n">normalize</span><span class="o">==</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">normalize</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Normalization options have not been implemented yet&#39;</span><span class="p">);</span>
     <span class="n">time</span>    <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="n">tstop</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">logtime</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="n">time</span><span class="o">+</span><span class="n">scale</span><span class="p">)</span>
     <span class="n">a</span><span class="p">,</span><span class="n">b</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">logtime</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">logtime</span><span class="p">)</span>

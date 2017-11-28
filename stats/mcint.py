@@ -25,7 +25,7 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     For simplicit (for now), this casts the return value of f() to a float64 array
     Ensure the return value is compatible with this datatype.
     This uses the standard error of the mean to check for convergence. 
-    It converges very slowly (1/sqrt(n)), so don't ask for too much precision.
+    It converges slowly at 1/sqrt(n)
     
     Parameters
     ----------
@@ -40,11 +40,10 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     -------
     number or array-like:
         Estimate of the mean of f
-    '''
-    '''
-    Test code
-    ---------
-    >>> def f():
+
+    Example
+    -------
+        def f():
             x = randn(2)+array([9,-9])
             return x
         Ex = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)
@@ -107,11 +106,10 @@ def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     Returns
     -------
     Estimate of the mean and second moment of f
-    '''
-    '''
-    Test code
-    ---------
-    >>> def f():
+
+    Example
+    -------
+        def f():
             x = randn(2)+array([9,-9])
             return x
         Ex,Exx = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)

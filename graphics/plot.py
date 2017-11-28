@@ -29,6 +29,8 @@ from   scipy.signal      import butter,filtfilt,lfilter
 from   matplotlib.pyplot import *
 import matplotlib.pyplot as plt
 
+from neurotools.signal.signal import zscore
+
 try: # python 2.x
     from itertools import izip, chain
 except: # python 3
@@ -41,18 +43,6 @@ try:
     import statsmodels.graphics as smgraphics
 except:
     print('could not find statsmodels; some plotting functions missing')
-
-def zscore(x):
-    '''
-    Parameters
-    ----------
-    x : data to zscore
-    
-    Returns
-    -------
-    x : z-scored copy of x
-    '''
-    return (x-np.mean(x,0))/np.std(x,0)
 
 def simpleaxis(ax=None):
     '''

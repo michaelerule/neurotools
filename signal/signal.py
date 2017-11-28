@@ -59,11 +59,34 @@ def zscore(x,axis=0,regularization=1e-30):
     
     Parameters
     ----------
+    x
+        array-like real-valued signal
     Returns
     -------
+    x
+        (x-mean(x))/std(x)
     '''
     ss = np.std(x,axis=axis)+regularization
     return (x-np.mean(x,axis=axis))/ss
+
+
+def unitscale(signal):
+    '''
+    Rescales `signal` so that its minimum is 0 and its maximum is 1.
+
+    Parameters
+    ----------
+    signal
+        array-like real-valued signal
+    Returns
+    -------
+    signal
+        Rescaled signal-min(signal)/(max(signal)-min(signal))
+    '''
+    signal = np.array(signal)
+    signal-= np.min(signal)
+    signal/= np.max(signal)
+    return signal
 
 def local_maxima(x):
     '''

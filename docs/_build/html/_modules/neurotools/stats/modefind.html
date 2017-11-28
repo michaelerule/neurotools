@@ -175,8 +175,23 @@
 
 <div class="viewcode-block" id="modefind"><a class="viewcode-back" href="../../../neurotools.stats.modefind.html#neurotools.stats.modefind.modefind">[docs]</a><span class="k">def</span> <span class="nf">modefind</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">burst</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Removes intervals shorter than 10m</span>
+<span class="sd">    Locate post-event mode in one-dimensional point-processes</span>
+<span class="sd">    with refractoriness, mainly for neuroscience data.</span>
+<span class="sd">    </span>
+<span class="sd">    Removes intervals shorter than 10. </span>
+<span class="sd">    </span>
 <span class="sd">    Finds peak using log-KDE approximation</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : np.array</span>
+<span class="sd">    burst : int</span>
+<span class="sd">        Default is 10. Points smaller than this are excluded</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Estimated mode of the distribution</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">points</span><span class="o">&gt;</span><span class="n">burst</span><span class="p">]</span> <span class="c1"># remove burst</span>
@@ -192,6 +207,15 @@
 <span class="sd">    Accepts list of ISI times.</span>
 <span class="sd">    Finds the mode using a log-KDE density estimate</span>
 <span class="sd">    Plots this along with histogram</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : np.array</span>
+<span class="sd">    burst : int</span>
+<span class="sd">        Default is None. If a number, points smaller than this are excluded</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">burst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -213,6 +237,15 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Accepts list of ISI times.</span>
 <span class="sd">    Finds the mode using a log-KDE density estimate</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : np.array</span>
+<span class="sd">    burst : int</span>
+<span class="sd">        Default is None. If a number, points smaller than this are excluded</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">burst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -225,8 +258,11 @@
 
 <div class="viewcode-block" id="peakfinder5"><a class="viewcode-back" href="../../../neurotools.stats.modefind.html#neurotools.stats.modefind.peakfinder5">[docs]</a><span class="k">def</span> <span class="nf">peakfinder5</span><span class="p">(</span><span class="n">st</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Found this with the old unit classification code.</span>
-<span class="sd">    Haven&#39;t had time to reach it and check out what it does</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>

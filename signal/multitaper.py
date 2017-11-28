@@ -70,8 +70,8 @@ def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
     if nodc:
         x = x-np.mean(x,axis=-1)[...,None]
     tapers, eigen = dpss_cached(N,0.4999*k)
-    specs = [np.abs(np.fft(x*t)) for t in tapers]
-    freqs = np.fftfreq(N,1./Fs)
+    specs = [np.abs(fft(x*t)) for t in tapers]
+    freqs = fftfreq(N,1./Fs)
     return freqs[:N//2],np.mean(specs,0)[...,:N//2]
 
 def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
@@ -96,8 +96,8 @@ def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
     if nodc:
         x = x-np.mean(x,axis=-1)[...,None]
     tapers, eigen = dpss_cached(N,0.4999*k)
-    specs = [np.abs(np.fft(x*t)) for t in tapers]
-    freqs = np.fftfreq(N,1./Fs)
+    specs = [np.abs(fft(x*t)) for t in tapers]
+    freqs = fftfreq(N,1./Fs)
     return freqs[:N//2],np.mean(specs,0)[...,:N//2]**2
 
 def sliding_multitaper_spectrum(x,window=500,step=100,Fs=1000,BW=5):

@@ -282,13 +282,19 @@ conditions.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>Y</strong> (<em>1D array</em>) – Observations (integer states)</li>
 <li><strong>P</strong> (<em>array shape =</em><em> (</em><em>nStates</em><em> ,</em><em>)</em>) – 1D array of priors for initial state</li>
 <li><strong>A</strong> (<em>array</em><em> (</em><em>nStates</em><em>,</em><em>nStates</em><em>)</em>) – State transition matrix</li>
 <li><strong>B</strong> (<em>ndarray K x N</em>) – conditional probability matrix (emission/observation)
 probabilty of each observation given each state</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">One-dimensional array of most likely states</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -303,7 +309,7 @@ probabilty of each observation given each state</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>Y</strong> (<em>1D array</em>) – Observations (integer states)</li>
 <li><strong>logP</strong> (<em>array shape =</em><em> (</em><em>nStates</em><em> ,</em><em>)</em>) – 1D array of priors for initial state
 given in log probability</li>
@@ -311,6 +317,12 @@ given in log probability</li>
 <li><strong>logB</strong> (<em>ndarray K x N</em>) – conditional probability matrix
 log probabilty of each observation given each state</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">One-dimensional array of most likely states</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -321,6 +333,18 @@ log probabilty of each observation given each state</li>
 <dt id="neurotools.stats.hmm.hasNaN">
 <code class="descclassname">neurotools.stats.hmm.</code><code class="descname">hasNaN</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#hasNaN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.hasNaN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Faster way to test if array contains NaN</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>np.array</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Whether <cite>x</cite> contains not-a-number.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -428,15 +452,28 @@ points using the forward-backward algorithm.</p>
 <dt id="neurotools.stats.hmm.sample">
 <code class="descclassname">neurotools.stats.hmm.</code><code class="descname">sample</code><span class="sig-paren">(</span><em>L</em>, <em>T</em>, <em>B</em>, <em>x0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/hmm.html#sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.hmm.sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>x,y = sample(L,T,B,x0)
-Sample from a discrete hidden markov model.
-:param L:
-:type L: number of samples to draw
-:param T:
-:type T: state transition matrix
-:param B:
-:type B: observation (emission) matrix
-:param x0:
-:type x0: initial conditions</p>
+Sample from a discrete hidden markov model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>L</strong> (<em>number of samples to draw</em>) – </li>
+<li><strong>T</strong> (<em>state transition matrix</em>) – </li>
+<li><strong>B</strong> (<em>observation</em><em> (</em><em>emission</em><em>) </em><em>matrix</em>) – </li>
+<li><strong>x0</strong> (<em>initial conditions</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>np.array</strong> (<em>x</em>) – Latent states sampled</li>
+<li><strong>np.array</strong> (<em>y</em>) – Observed states sampled</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -446,7 +483,22 @@ Sample from a discrete hidden markov model.
 hidden markov model with hidden-state transition probabilities T
 and emission probabilities B, and initial state x0.</p>
 <p>Returns the log likelihood, which is more numerically stable
-and avoids overflow</p>
+and avoids overflow.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>T</strong> – </li>
+<li><strong>B</strong> – </li>
+<li><strong>x0</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

@@ -17,8 +17,23 @@ import matplotlib.pyplot as plt
 
 def modefind(points,burst=10):
     '''
-    Removes intervals shorter than 10m
+    Locate post-event mode in one-dimensional point-processes
+    with refractoriness, mainly for neuroscience data.
+    
+    Removes intervals shorter than 10. 
+    
     Finds peak using log-KDE approximation
+    
+    Parameters
+    ----------
+    points : np.array
+    burst : int
+        Default is 10. Points smaller than this are excluded
+    
+    Returns
+    -------
+    float
+        Estimated mode of the distribution
     '''
     points = np.array(points)
     points = points[points>burst] # remove burst
@@ -34,6 +49,15 @@ def logmodeplot(points,K=5,burst=None):
     Accepts list of ISI times.
     Finds the mode using a log-KDE density estimate
     Plots this along with histogram
+    
+    Parameters
+    ----------
+    points : np.array
+    burst : int
+        Default is None. If a number, points smaller than this are excluded
+    
+    Returns
+    -------
     '''
     points = np.array(points)
     if not burst is None:
@@ -55,6 +79,15 @@ def logmode(points,K=5,burst=None):
     '''
     Accepts list of ISI times.
     Finds the mode using a log-KDE density estimate
+    
+    Parameters
+    ----------
+    points : np.array
+    burst : int
+        Default is None. If a number, points smaller than this are excluded
+    
+    Returns
+    -------
     '''
     points = np.array(points)
     if not burst is None:
@@ -67,8 +100,11 @@ def logmode(points,K=5,burst=None):
 
 def peakfinder5(st,K=5):
     '''
-    Found this with the old unit classification code.
-    Haven't had time to reach it and check out what it does
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     points = np.diff(st)
     points = np.array(points)

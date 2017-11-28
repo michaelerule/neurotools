@@ -179,38 +179,95 @@
 
 <span class="n">ELECTRODE_SPACING</span> <span class="o">=</span> <span class="mf">0.4</span>
 
-<div class="viewcode-block" id="array_average_amplitude"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_average_amplitude">[docs]</a><span class="k">def</span> <span class="nf">array_average_amplitude</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using this with interpolated channels will bias amplitude&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this assumes first 2 dimensions are array axis&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
+<div class="viewcode-block" id="array_average_amplitude"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_average_amplitude">[docs]</a><span class="k">def</span> <span class="nf">array_average_amplitude</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames : np.array</span>
+<span class="sd">        ND numpy array of complex-valued signals with phase and amplitude.</span>
+<span class="sd">        Must be at least 2D. The first 2 dimensions are spatial</span>
+<span class="sd">        dimensions (x,y). </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        The average absolute magnitude over the first two axes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_kuramoto"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_kuramoto">[docs]</a><span class="k">def</span> <span class="nf">array_kuramoto</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using this with interpolated channels will inflate synchrony&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this assumes first 2 dimensions are array axis&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames : np.array</span>
+<span class="sd">        ND numpy array of complex-valued signals with phase and amplitude.</span>
+<span class="sd">        Must be at least 2D. The first 2 dimensions are spatial</span>
+<span class="sd">        dimensions (x,y). </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frames</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="array_synchrony"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_synchrony">[docs]</a><span class="k">def</span> <span class="nf">array_synchrony</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using this with interpolated channels will inflate synchrony&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this assumes first 2 dimensions are array axis&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames : np.array</span>
+<span class="sd">        ND numpy array of complex-valued signals with phase and amplitude.</span>
+<span class="sd">        Must be at least 2D. The first 2 dimensions are spatial</span>
+<span class="sd">        dimensions (x,y). </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_kuramoto_standard_deviation"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_kuramoto_standard_deviation">[docs]</a><span class="k">def</span> <span class="nf">array_kuramoto_standard_deviation</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using this with interpolated channels will inflate synchrony&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this assumes first 2 dimensions are array axis&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames : np.array</span>
+<span class="sd">        ND numpy array of complex-valued signals with phase and amplitude.</span>
+<span class="sd">        Must be at least 2D. The first 2 dimensions are spatial</span>
+<span class="sd">        dimensions (x,y). </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">array_kuramoto</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_synchrony_standard_deviation"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_synchrony_standard_deviation">[docs]</a><span class="k">def</span> <span class="nf">array_synchrony_standard_deviation</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using this with interpolated channels will inflate synchrony&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this assumes first 2 dimensions are array axis&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frames : np.array</span>
+<span class="sd">        ND numpy array of complex-valued signals with phase and amplitude.</span>
+<span class="sd">        Must be at least 2D. The first 2 dimensions are spatial</span>
+<span class="sd">        dimensions (x,y). </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">array_synchrony</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="population_kuramoto"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.population_kuramoto">[docs]</a><span class="k">def</span> <span class="nf">population_kuramoto</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Averages over all but the last dimension of the data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;first dimension is channels&#39;</span><span class="p">)</span>
     <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">averageover</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">population</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">population</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">averageover</span><span class="p">))</span></div>
@@ -218,8 +275,13 @@
 <div class="viewcode-block" id="population_synchrony"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.population_synchrony">[docs]</a><span class="k">def</span> <span class="nf">population_synchrony</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Averages over all but the last dimension of the data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;first dimension is channels&#39;</span><span class="p">)</span>
     <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">averageover</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">population</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">averageover</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">population</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">averageover</span><span class="p">)</span></div>
@@ -228,11 +290,25 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Wraps the population_synchrony and transforms result to units of</span>
 <span class="sd">    radians.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">syn</span> <span class="o">=</span> <span class="n">population_synchrony</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">syn</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_linear_synchrony"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_linear_synchrony">[docs]</a><span class="k">def</span> <span class="nf">array_linear_synchrony</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">array_synchrony</span><span class="p">(</span><span class="n">population</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_phase_gradient"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_phase_gradient">[docs]</a><span class="k">def</span> <span class="nf">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
@@ -243,6 +319,12 @@
 <span class="sd">    first dimention is Y second is X ( row major ordering )</span>
 
 <span class="sd">    The differentiation kernel is [-0.5, 0, 0.5]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">frame</span><span class="o">.</span><span class="n">dtype</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span> <span class="ow">or</span>\
         <span class="n">frame</span><span class="o">.</span><span class="n">dtype</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">:</span>
@@ -257,6 +339,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Counting centers -- looks for channels around which phase skips +-pi</span>
 <span class="sd">    will miss rotating centers closer than half the electrode spacing</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># can only handle dim 3 for now</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rawdata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span>
@@ -276,6 +364,12 @@
 <div class="viewcode-block" id="array_count_critical"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_count_critical">[docs]</a><span class="k">def</span> <span class="nf">array_count_critical</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span><span class="n">upsample</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Count critical points in the phase gradient map</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># can only handle dim 3 for now</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">rawdata</span><span class="p">))</span><span class="o">==</span><span class="mi">3</span>
@@ -312,6 +406,12 @@
 <span class="sd">    The average gradient magnitude can be inflated if there is noise</span>
 <span class="sd">    but provides an upper bound on spatial frequency ( lower bound on</span>
 <span class="sd">    wavelength ).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -327,6 +427,12 @@
 <span class="sd">    Returns cycles/mm</span>
 <span class="sd">    i.e.</span>
 <span class="sd">    radians/electrode / (mm/electrode) / (2*pi radians/cycle)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -335,6 +441,12 @@
 <div class="viewcode-block" id="array_phasegradient_magnitude_sigma"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_phasegradient_magnitude_sigma">[docs]</a><span class="k">def</span> <span class="nf">array_phasegradient_magnitude_sigma</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    expects first two dimensions x,y of 2d array data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
@@ -343,6 +455,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Coefficient of variation of the magnitudes of the phase gradients</span>
 <span class="sd">    expects first two dimensions x,y of 2d array data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span>
@@ -358,6 +476,12 @@
 <span class="sd">    Returns cycles/mm</span>
 <span class="sd">    i.e.</span>
 <span class="sd">    radians/electrode / (mm/electrode) / (2*pi radians/cycle)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span>  <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -373,6 +497,12 @@
 <span class="sd">    planar</span>
 
 <span class="sd">    returns mm/cycle</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_pgd_threshold</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">thresh</span><span class="p">)</span></div>
@@ -386,6 +516,12 @@
 <span class="sd">    to assume a minimum spatial scale for the underlying wave dynamics.</span>
 
 <span class="sd">    returns mm/cycle</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span>  <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
@@ -395,8 +531,15 @@
 
 
 <div class="viewcode-block" id="array_speed_pgd_threshold"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_speed_pgd_threshold">[docs]</a><span class="k">def</span> <span class="nf">array_speed_pgd_threshold</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;expects first two dimensions x,y of 2d array data</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    expects first two dimensions x,y of 2d array data</span>
 <span class="sd">    returns speed for plane waves in mm/s</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phasegradient_pgd_threshold</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">thresh</span><span class="p">)</span> <span class="c1">#cycles / mm</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">frame</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))))</span> <span class="c1">#radians/sample</span>
@@ -406,8 +549,15 @@
     <span class="k">return</span> <span class="n">g</span><span class="o">/</span><span class="n">pg</span> <span class="c1"># mm /s</span></div>
 
 <div class="viewcode-block" id="array_speed_upper"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_speed_upper">[docs]</a><span class="k">def</span> <span class="nf">array_speed_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;expects first two dimensions x,y of 2d array data</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    expects first two dimensions x,y of 2d array data</span>
 <span class="sd">    returns speed for plane waves in mm/s</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="mi">0</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;BROKEN DONT USE&#39;</span><span class="p">)</span>
@@ -420,8 +570,15 @@
 
 
 <div class="viewcode-block" id="array_speed_lower"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_speed_lower">[docs]</a><span class="k">def</span> <span class="nf">array_speed_lower</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;expects first two dimensions x,y of 2d array data</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    expects first two dimensions x,y of 2d array data</span>
 <span class="sd">    returns speed for plane waves in mm/s</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phasegradient_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="c1">#cycles / mm</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">frame</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))))</span> <span class="c1">#radians/sample</span>
@@ -438,9 +595,13 @@
 <span class="sd">    there are 0.4mm per electrode</span>
 <span class="sd">    phase gradient / 2 pi is in units of cycles per electrode</span>
 <span class="sd">    electrode spacing / (phase gradient / 2 pi)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this code will break if ELECTRODE_SPACING changes or is inconsistant across datasets&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using something other than mean may make this less sensitive to outliers and noise&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="array_wavelength_upper"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_upper">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
@@ -451,17 +612,26 @@
 <span class="sd">    there are 0.4mm per electrode</span>
 <span class="sd">    phase gradient / 2 pi is in units of cycles per electrode</span>
 <span class="sd">    electrode spacing / (phase gradient / 2 pi)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this code will break if ELECTRODE_SPACING changes or is inconsistant across datasets&#39;</span><span class="p">)</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;using something other than mean may make this less sensitive to outliers and noise&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_lower</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="array_synchrony_pgd"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_synchrony_pgd">[docs]</a><span class="k">def</span> <span class="nf">array_synchrony_pgd</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The phase gradient directionality measure from Rubinto et al 2009 is</span>
 <span class="sd">    abs(mean(pg))/mean(abs(pg))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pg</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
 
@@ -469,24 +639,39 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The phase gradient directionality measure from Rubinto et al 2009 is</span>
 <span class="sd">    abs(mean(pg))/mean(abs(pg))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">array_synchrony_pgd</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_kuramoto_pgd"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_kuramoto_pgd">[docs]</a><span class="k">def</span> <span class="nf">array_kuramoto_pgd</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A related directionality index ignores vector amplitude.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pg</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="array_kuramoto_pgd_standard_deviation"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_kuramoto_pgd_standard_deviation">[docs]</a><span class="k">def</span> <span class="nf">array_kuramoto_pgd_standard_deviation</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A related directionality index ignores vector amplitude.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;expects first two dimensions x,y of 2d array data&#39;</span><span class="p">)</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pg</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span></div>
 
@@ -494,6 +679,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Removes any rows or columns from the array map</span>
 <span class="sd">    that are empty ( have no channels )</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">arrayMap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">)</span>
     <span class="n">notDone</span> <span class="o">=</span> <span class="kc">True</span>
@@ -517,6 +708,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Removes any rows or columns from data if those rows or columns are</span>
 <span class="sd">    empty ( have no channels ) in the arrayMap</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">arrayMap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">)</span>
     <span class="n">notDone</span> <span class="o">=</span> <span class="kc">True</span>
@@ -552,6 +749,12 @@
 <span class="sd">    :param data: NChannel x Ntimes array</span>
 <span class="sd">    :param arrayMap: array map, 1-indexed, 0 for missing electrodes</span>
 <span class="sd">    :return: returns LxKxNtimes 3D array of the interpolated channel data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># first, trim off any empty rows or columns from the arrayMap</span>
     <span class="n">arrayMap</span> <span class="o">=</span> <span class="n">trim_array</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">)</span>

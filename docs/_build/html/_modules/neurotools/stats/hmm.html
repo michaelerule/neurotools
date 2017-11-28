@@ -295,6 +295,11 @@
 <span class="sd">    B : ndarray K x N</span>
 <span class="sd">        conditional probability matrix (emission/observation)</span>
 <span class="sd">        probabilty of each observation given each state</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        One-dimensional array of most likely states</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">logP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
     <span class="n">logA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
@@ -317,6 +322,11 @@
 <span class="sd">    logB : ndarray K x N</span>
 <span class="sd">        conditional probability matrix</span>
 <span class="sd">        log probabilty of each observation given each state</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        One-dimensional array of most likely states</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">logP</span><span class="p">)</span>         <span class="c1"># Number of states</span>
     <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>            <span class="c1"># Number of observations</span>
@@ -359,6 +369,15 @@
 <div class="viewcode-block" id="hasNaN"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.hasNaN">[docs]</a><span class="k">def</span> <span class="nf">hasNaN</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Faster way to test if array contains NaN</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : np.array</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    bool</span>
+<span class="sd">        Whether `x` contains not-a-number. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
@@ -533,12 +552,20 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    x,y = sample(L,T,B,x0)</span>
 <span class="sd">    Sample from a discrete hidden markov model.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    L : number of samples to draw</span>
 <span class="sd">    T : state transition matrix</span>
 <span class="sd">    B : observation (emission) matrix</span>
 <span class="sd">    x0: initial conditions</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array : x</span>
+<span class="sd">        Latent states sampled</span>
+<span class="sd">    np.array : y</span>
+<span class="sd">        Observed states sampled</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Prepare to sample a path for the latent state</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">L</span><span class="p">,),</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
@@ -558,7 +585,18 @@
 <span class="sd">    and emission probabilities B, and initial state x0. </span>
 <span class="sd">    </span>
 <span class="sd">    Returns the log likelihood, which is more numerically stable</span>
-<span class="sd">    and avoids overflow</span>
+<span class="sd">    and avoids overflow.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">    y</span>
+<span class="sd">    T</span>
+<span class="sd">    B</span>
+<span class="sd">    x0</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">L</span><span class="p">,</span><span class="n">n_hid</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">_</span><span class="p">,</span><span class="n">n_obs</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span>
@@ -614,7 +652,6 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
 <span class="sd">    y : </span>
 <span class="sd">        1D array of state observations</span>
 <span class="sd">    n_hid : </span>

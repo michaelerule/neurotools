@@ -137,6 +137,11 @@ def viterbi(Y,P,A,B):
     B : ndarray K x N
         conditional probability matrix (emission/observation)
         probabilty of each observation given each state
+        
+    Returns
+    -------
+    np.array
+        One-dimensional array of most likely states
     '''
     logP = np.log(P)
     logA = np.log(A)
@@ -159,6 +164,11 @@ def viterbi_log(Y,logP,logA,logB):
     logB : ndarray K x N
         conditional probability matrix
         log probabilty of each observation given each state
+
+    Returns
+    -------
+    np.array
+        One-dimensional array of most likely states
     '''
     K = len(logP)         # Number of states
     T = len(Y)            # Number of observations
@@ -201,6 +211,15 @@ def viterbi_log(Y,logP,logA,logB):
 def hasNaN(x):
     '''
     Faster way to test if array contains NaN
+    
+    Parameters
+    ----------
+    x : np.array
+    
+    Returns
+    ------
+    bool
+        Whether `x` contains not-a-number. 
     '''
     return np.isnan(np.sum(x))
 
@@ -375,12 +394,20 @@ def sample(L,T,B,x0):
     '''
     x,y = sample(L,T,B,x0)
     Sample from a discrete hidden markov model.
+    
     Parameters
     ----------
     L : number of samples to draw
     T : state transition matrix
     B : observation (emission) matrix
     x0: initial conditions
+    
+    Returns
+    -------
+    np.array : x
+        Latent states sampled
+    np.array : y
+        Observed states sampled
     '''
     # Prepare to sample a path for the latent state
     x = np.zeros((L,),'int')
@@ -400,7 +427,18 @@ def log_likelihood(x,y,T,B,x0):
     and emission probabilities B, and initial state x0. 
     
     Returns the log likelihood, which is more numerically stable
-    and avoids overflow
+    and avoids overflow.
+    
+    Parameters
+    ----------
+    x
+    y
+    T
+    B
+    x0
+    
+    Returns
+    -------
     '''
     L,n_hid = x.shape
     _,n_obs = B.shape
@@ -456,7 +494,6 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4, miniter=10):
     
     Parameters
     ----------
-    
     y : 
         1D array of state observations
     n_hid : 

@@ -217,11 +217,34 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        array-like real-valued signal</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    x</span>
+<span class="sd">        (x-mean(x))/std(x)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">+</span><span class="n">regularization</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span><span class="o">/</span><span class="n">ss</span></div>
+
+
+<div class="viewcode-block" id="unitscale"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.unitscale">[docs]</a><span class="k">def</span> <span class="nf">unitscale</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rescales `signal` so that its minimum is 0 and its maximum is 1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal</span>
+<span class="sd">        array-like real-valued signal</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    signal</span>
+<span class="sd">        Rescaled signal-min(signal)/(max(signal)-min(signal))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">signal</span></div>
 
 <div class="viewcode-block" id="local_maxima"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.local_maxima">[docs]</a><span class="k">def</span> <span class="nf">local_maxima</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

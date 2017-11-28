@@ -188,6 +188,8 @@ def damped_cosine(X,Y,W):
 
     Example
     -------
+    ::
+    
         X = 0.4*arange(9)
         Y = np.exp(-X/4+1)*np.cos(X)
         Z = Y+randn(*shape(X))

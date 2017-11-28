@@ -39,7 +39,9 @@ def logpolar_gaussian(frame,doplot=False):
     
     Returns
     -------
-        (axis 1, axis 2, 1-sigma ellipse)
+    axis 1 (np.array)
+    axis 2 (np.array)
+    1-sigma ellipse (np.array)
     '''
     # set to zero mean phase
     theta    = np.angle(np.mean(frame))

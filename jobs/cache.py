@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -11,7 +10,6 @@ from __future__ import print_function
 from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 from   collections import defaultdict
 import numpy as np
@@ -41,13 +39,11 @@ except:
 import neurotools.jobs.decorator
 import neurotools.tools
 import neurotools.tools
-
-from neurotools.jobs.closure import verify_function_closure
-
-from neurotools.jobs.filenames import is_dangerous_filename,check_filename
+from   neurotools.jobs.closure   import verify_function_closure
+from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
 
 @neurotools.jobs.decorator.memoize
-def function_hash_with_subroutines(f):
+def function_hash_with_subroutines(f,force=False):
     '''
     Functions may change if their subroutines change. This function computes
     a hash value that is sensitive to changes in the source code, docstring,
@@ -85,8 +81,21 @@ def function_hash_with_subroutines(f):
     Note that this function cannot detect changes in effective function
     behavior that result from changes in global variables or mutable scope
     that has been closed over.
+    
+    Parameters
+    ----------
+    force : bool
+        force muse be true, otherwise this function will fail with a 
+        warning. 
+    
+    Returns
+    -------
+    string
+        Hash of function
     '''
-    raise NotImplementedError("This is actually impossible due to dynamic typing and late binding")
+    if not force:
+        raise NotImplementedError(
+        "It is not, in general, possible to hash a function reliably")
 
     # repeatedly expand list of subroutines
     to_expand = {f}
@@ -454,6 +463,9 @@ def validate_for_matfile(x):
 
 def validate_for_numpy(x):
     '''
+    Check whether an array-like object can safely be stored in a numpy
+    archive. 
+    
     Numpy types: these should be compatible
     ==========  ================================================================================
     Type        Description
@@ -477,9 +489,13 @@ def validate_for_numpy(x):
     
     Parameters
     ----------
+    x : object
+        array-like object; 
     
     Returns
     -------
+    bool
+        True if the data in `x` can be safely stored in a Numpy archive
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
@@ -570,22 +586,23 @@ def disk_cacher(
     cache_root     = cache_location+CACHE_IDENTIFIER
     def cached(f):
         '''
-        Parameters
-        ----------
-        
-        Returns
-        -------
+        This is a wrapper for memoizing results to disk. 
+        This docstring should be overwritten by the docstring of
+        the wrapped function.
         '''
         if not allow_mutable_bindings:
             verify_function_closure(f)
+            
+        # Patch for 2/3 compatibility
+        if __PYTHON_2__:
+            FileNotFoundError = IOError
+            
         @neurotools.jobs.decorator.robust_decorator
         def wrapped(f,*args,**kwargs):
             '''
-            Parameters
-            ----------
-            
-            Returns
-            -------
+            This is a wrapper for memoizing results to disk. 
+            This docstring should be overwritten by the docstring of
+            the wrapped function.
             '''
             t0 = neurotools.tools.current_milli_time()
             try:
@@ -614,7 +631,8 @@ def disk_cacher(
                     print('Retrieved cache at ',path)
                     print('\t%s.%s'%(f.__module__,f.__name__))
                     print('\t%s'%neurotools.jobs.decorator.print_signature(sig))
-            except (EOFError, IOError) as exc:
+            
+            except (EOFError, OSError, IOError, FileNotFoundError) as exc:
                 if verbose:
                     print('Recomputing cache at %s'%cache_location)
                     print('\t%s.%s'%(f.__module__,f.__name__))
@@ -623,7 +641,8 @@ def disk_cacher(
                 time,result = f(*args,**kwargs)
                 neurotools.tools.ensure_dir(path)
 
-                if verbose: print('\tTook %d milliseconds'%time)
+                if verbose: 
+                    print('\tTook %d milliseconds'%time)
 
                 if write_back:
                     if verbose: print('Writing cache at ',path)
@@ -644,7 +663,8 @@ def disk_cacher(
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a numpy file')
                             np.save(location, result)
-                    except (RutoolsError, ValueError, IOError, PicklingError) as exc2:
+                    # RutoolsError?
+                    except (ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
                             print('\t%s.%s'%(f.__module__,f.__name__))
@@ -687,13 +707,17 @@ def disk_cacher(
             return result
         def purge(*args,**kwargs):
             '''
-            Delete cache entries matching arguments.
+            Delete cache entries matching arguments. This is a destructive
+            operation, execute with care.
     
             Parameters
             ----------
-            
-            Returns
-            -------
+            *args
+                Arguments forward to the `locate_cached` function. Matching
+                cache entries will be deleted.
+            **kwargs
+                Keyword arguments forward to the `locate_cached` function
+                Matching cache entries will be deleted.
             '''
             for method in VALID_METHODS:
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
@@ -713,8 +737,7 @@ def disk_cacher(
     return cached
 
 
-def hierarchical_cacher(
-        fast_to_slow,
+def hierarchical_cacher(fast_to_slow,
         method='npy',
         write_back=True,
         verbose=False,

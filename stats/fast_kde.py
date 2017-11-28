@@ -24,37 +24,6 @@ import scipy.signal
 
 import matplotlib.pyplot as plt
 
-def main():
-    x, y = generate_data(1e7)
-    grid, extents, density = fast_kde(x, y, sample=True)
-
-    image_example(grid, extents)
-    scatter_example(x, y, density)
-
-    plt.show()
-
-def generate_data(num):
-    x = 10 * np.random.random(num)
-    y = x**2 + np.random.normal(0, 5, num)**2
-    return x, y
-
-def image_example(grid, extents):
-    fig, ax = plt.subplots()
-    im = ax.imshow(grid, origin='lower', extent=extents, aspect='auto',
-                   cmap='gist_earth_r')
-    fig.colorbar(im)
-
-def scatter_example(x, y, density, num_points=10000):
-    # Randomly draw a subset based on the _inverse_ of the estimated density
-    prob = 1.0 / density
-    prob /= prob.sum()
-    subset = np.random.choice(np.arange(x.size), num_points, False, prob)
-    x, y, density = x[subset], y[subset], density[subset]
-
-    fig, ax = plt.subplots()
-    ax.scatter(x, y, c=density, cmap='gist_earth_r')
-    ax.axis('tight')
-
 def fast_kde(x, y, gridsize=(400, 400), extents=None, weights=None,
              sample=False):
     """
@@ -194,7 +163,18 @@ def fast_kde(x, y, gridsize=(400, 400), extents=None, weights=None,
         return grid, extents
 
 def image_cov(data):
-    """Efficiently calculate the cov matrix of an image."""
+    """
+    Efficiently calculate the cov matrix of an image.
+    
+    Parameters
+    ----------
+    data
+    
+    Returns
+    -------
+    np.array
+        Covariance matrix
+    """
     def raw_moment(data, ix, iy, iord, jord):
         data = data * ix**iord * iy**jord
         return data.sum()
@@ -216,4 +196,47 @@ def image_cov(data):
     return cov
 
 if __name__ == '__main__':
-    main()
+
+    def generate_data(num):
+        '''
+        Generate some random points for demonstrating fast KDE
+        
+        Returns
+        -------
+        x
+            np.array of `x` points
+        y
+            np.array of `y` points
+        '''
+        x = 10 * np.random.random(num)
+        y = x**2 + np.random.normal(0, 5, num)**2
+        return x, y
+
+    def image_example(grid, extents):
+        '''
+        Show image for example routine
+        '''
+        fig, ax = plt.subplots()
+        im = ax.imshow(grid, origin='lower', extent=extents, aspect='auto',
+                       cmap='gist_earth_r')
+        fig.colorbar(im)
+
+    def scatter_example(x, y, density, num_points=10000):
+        # Randomly draw a subset based on the _inverse_ of the estimated density
+        prob = 1.0 / density
+        prob /= prob.sum()
+        subset = np.random.choice(np.arange(x.size), num_points, False, prob)
+        x, y, density = x[subset], y[subset], density[subset]
+
+        fig, ax = plt.subplots()
+        ax.scatter(x, y, c=density, cmap='gist_earth_r')
+        ax.axis('tight')
+
+    '''
+    Run demonstration example for fast KDE
+    '''
+    x, y = generate_data(1e7)
+    grid, extents, density = fast_kde(x, y, sample=True)
+    image_example(grid, extents)
+    scatter_example(x, y, density)
+    plt.show()

@@ -11,16 +11,24 @@ from neurotools.system import *
 
 def history_basis(K=5, tstop=100, scale=10, normalize=0):
     '''
-    K: number of basis elements
-    tstop: length of time to cover
-    scale: affects how "logarithmic" basis scaling looks
-    normalize: normalize bases to unit or not?
-
+    Generate raised cosine history basis. 
+    TODO: this function is duplicated in several locations, consolidate.
+    
     >>> basis = history_basis(4,100,10)
     >>> plot(basis.T)
-    normalization not implemented
+    
+    Parameters
+    ----------
+    K : int
+        Number of basis elements. Defaults to 5
+    tstop : int
+        Time-point at which to stop. Defaults to 100
+    scale : int
+        Exponent basis for logarithmic time rescaline. Defaults to 10
+    
     '''
-    assert normalize==0
+    if not normalize==0:
+        raise NotImplementedError('Normalization options have not been implemented yet');
     time    = arange(tstop)+1
     logtime = log(time+scale)
     a,b     = np.min(logtime),np.max(logtime)

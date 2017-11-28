@@ -169,8 +169,7 @@
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Functions relating to distributions. Most of this should be available</span>
-<span class="sd">in numpy, scipy, and scikits, but occassionally we need our own</span>
-<span class="sd">implementations of things.</span>
+<span class="sd">in numpy, scipy, and scikits.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -180,6 +179,25 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimates a Poisson mixture model with two distributions</span>
 <span class="sd">    Originally written as a toy example</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    counts : np.array</span>
+<span class="sd">        Array of count observations. We presume that counts arise from a</span>
+<span class="sd">        misture of two Poisson distributions with different means. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    classes : np.array</span>
+<span class="sd">        assigned classes of points</span>
+<span class="sd">    mu0 : float</span>
+<span class="sd">        mean of class 0</span>
+<span class="sd">    mu1 : float</span>
+<span class="sd">        mean of class 1</span>
+<span class="sd">    pr0 : np.array</span>
+<span class="sd">        probability that each count obsrevation belongs to class 0</span>
+<span class="sd">    pr1 : np.array</span>
+<span class="sd">        probability that each count obsrevation belongs to class 1 </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Start with the hypothesis that the top 50% of the data and</span>
     <span class="c1"># bottom 50% are drawn from different distributions. Initialize</span>
@@ -241,7 +259,7 @@
         <span class="c1"># - (\lambda_1-\lambda_0)</span>
         <span class="c1"># + \ln(\omega_1/\omega_0)</span>
         <span class="c1"># \]</span>
-        <span class="c1"># This can be factored into a simple multiplier and consant</span>
+        <span class="c1"># This can be factored into a multiplier and constant</span>
         <span class="n">multiplier</span> <span class="o">=</span> <span class="p">(</span><span class="n">lnl1</span><span class="o">-</span><span class="n">lnl0</span><span class="p">)</span>
         <span class="n">constant</span>   <span class="o">=</span> <span class="p">(</span><span class="n">lnw1</span><span class="o">-</span><span class="n">lnw0</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">l1</span><span class="o">-</span><span class="n">l0</span><span class="p">)</span>
 

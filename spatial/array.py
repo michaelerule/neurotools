@@ -21,38 +21,95 @@ from neurotools.signal.signal import rewrap
 
 ELECTRODE_SPACING = 0.4
 
-def array_average_amplitude(frame):
-    warn('using this with interpolated channels will bias amplitude')
-    warn('this assumes first 2 dimensions are array axis')
-    return np.mean(np.abs(frame),axis=(0,1))
+def array_average_amplitude(frames):
+    '''
+    Parameters
+    ----------
+    frames : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+        
+    Returns
+    -------
+    np.array
+        The average absolute magnitude over the first two axes
+    '''
+    return np.mean(np.abs(frames),axis=(0,1))
 
 def array_kuramoto(frames):
-    warn('using this with interpolated channels will inflate synchrony')
-    warn('this assumes first 2 dimensions are array axis')
+    '''
+    Parameters
+    ----------
+    frames : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+        
+    Returns
+    -------
+        
+    '''
     return np.abs(np.mean(frames/np.abs(frames),axis=(0,1)))
 
 def array_synchrony(frames):
-    warn('using this with interpolated channels will inflate synchrony')
-    warn('this assumes first 2 dimensions are array axis')
+    '''
+    Parameters
+    ----------
+    frames : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+        
+    Returns
+    -------
+        
+    '''
     return np.abs(np.mean(frames,axis=(0,1)))/np.mean(np.abs(frames),axis=(0,1))
 
 def array_kuramoto_standard_deviation(frames):
-    warn('using this with interpolated channels will inflate synchrony')
-    warn('this assumes first 2 dimensions are array axis')
+    '''
+    Parameters
+    ----------
+    frames : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+        
+    Returns
+    -------
+        
+    '''
     R = array_kuramoto(frames)
     return np.sqrt(-2*np.log(R))
 
 def array_synchrony_standard_deviation(frames):
-    warn('using this with interpolated channels will inflate synchrony')
-    warn('this assumes first 2 dimensions are array axis')
+    '''
+    Parameters
+    ----------
+    frames : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+        
+    Returns
+    -------
+        
+    '''
     R = array_synchrony(frames)
     return np.sqrt(-2*np.log(R))
 
 def population_kuramoto(population):
     '''
     Averages over all but the last dimension of the data
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
+        
     '''
-    warn('first dimension is channels')
     dimension = len(population.shape)
     averageover = tuple(range(dimension-1))
     return np.abs(np.mean(population/np.abs(population),axis=averageover))
@@ -60,8 +117,13 @@ def population_kuramoto(population):
 def population_synchrony(population):
     '''
     Averages over all but the last dimension of the data
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('first dimension is channels')
     dimension = len(population.shape)
     averageover = tuple(range(dimension-1))
     return np.abs(np.mean(population,axis=averageover))/np.mean(np.abs(population),axis=averageover)
@@ -70,11 +132,25 @@ def population_magnitude_weighted_circular_standard_deviation(population):
     '''
     Wraps the population_synchrony and transforms result to units of
     radians.
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     syn = population_synchrony(population)
     return np.sqrt(-2*np.log(syn))
 
 def array_linear_synchrony(population):
+    '''
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
+    '''
     return 1/(1-array_synchrony(population))
 
 def array_phase_gradient(frame):
@@ -85,6 +161,12 @@ def array_phase_gradient(frame):
     first dimention is Y second is X ( row major ordering )
 
     The differentiation kernel is [-0.5, 0, 0.5]
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     if frame.dtype==np.complex64 or\
         frame.dtype==np.complex128:
@@ -99,6 +181,12 @@ def array_count_centers(rawdata,upsample=3,cut=True,cutoff=0.4):
     '''
     Counting centers -- looks for channels around which phase skips +-pi
     will miss rotating centers closer than half the electrode spacing
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     # can only handle dim 3 for now
     assert len(rawdata.shape)==3
@@ -118,6 +206,12 @@ def array_count_centers(rawdata,upsample=3,cut=True,cutoff=0.4):
 def array_count_critical(rawdata,upsample=3,cut=True,cutoff=0.4):
     '''
     Count critical points in the phase gradient map
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     # can only handle dim 3 for now
     assert len(shape(rawdata))==3
@@ -154,6 +248,12 @@ def array_phasegradient_upper(frame):
     The average gradient magnitude can be inflated if there is noise
     but provides an upper bound on spatial frequency ( lower bound on
     wavelength ).
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
@@ -169,6 +269,12 @@ def array_phasegradient_lower(frame):
     Returns cycles/mm
     i.e.
     radians/electrode / (mm/electrode) / (2*pi radians/cycle)
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
@@ -177,6 +283,12 @@ def array_phasegradient_lower(frame):
 def array_phasegradient_magnitude_sigma(frame):
     '''
     expects first two dimensions x,y of 2d array data
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     pg = array_phase_gradient(frame)
     return np.std(np.abs(pg),axis=(0,1))
@@ -185,6 +297,12 @@ def array_phasegradient_magnitude_cv(frame):
     '''
     Coefficient of variation of the magnitudes of the phase gradients
     expects first two dimensions x,y of 2d array data
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     pg = array_phase_gradient(frame)
     return np.std(np.abs(pg),axis=(0,1))/np.mean(np.abs(pg),
@@ -200,6 +318,12 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5):
     Returns cycles/mm
     i.e.
     radians/electrode / (mm/electrode) / (2*pi radians/cycle)
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg  = array_phase_gradient(frame)
@@ -215,6 +339,12 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     planar
 
     returns mm/cycle
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     warn('expects first two dimensions x,y of 2d array data')
     return 1/array_phasegradient_pgd_threshold(frame,thresh)
@@ -228,6 +358,12 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
     to assume a minimum spatial scale for the underlying wave dynamics.
 
     returns mm/cycle
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg  = array_phase_gradient(frame)
@@ -237,8 +373,15 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
 
 
 def array_speed_pgd_threshold(frame,thresh=0.5):
-    '''expects first two dimensions x,y of 2d array data
+    '''
+    expects first two dimensions x,y of 2d array data
     returns speed for plane waves in mm/s
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     pg = array_phasegradient_pgd_threshold(frame,thresh) #cycles / mm
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
@@ -248,8 +391,15 @@ def array_speed_pgd_threshold(frame,thresh=0.5):
     return g/pg # mm /s
 
 def array_speed_upper(frame):
-    '''expects first two dimensions x,y of 2d array data
+    '''
+    expects first two dimensions x,y of 2d array data
     returns speed for plane waves in mm/s
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     assert 0
     warn('BROKEN DONT USE')
@@ -262,8 +412,15 @@ def array_speed_upper(frame):
 
 
 def array_speed_lower(frame):
-    '''expects first two dimensions x,y of 2d array data
+    '''
+    expects first two dimensions x,y of 2d array data
     returns speed for plane waves in mm/s
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     pg = array_phasegradient_upper(frame) #cycles / mm
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
@@ -280,9 +437,13 @@ def array_wavelength_lower(frame):
     there are 0.4mm per electrode
     phase gradient / 2 pi is in units of cycles per electrode
     electrode spacing / (phase gradient / 2 pi)
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('this code will break if ELECTRODE_SPACING changes or is inconsistant across datasets')
-    warn('using something other than mean may make this less sensitive to outliers and noise')
     return 1/array_phasegradient_upper(frame)
 
 def array_wavelength_upper(frame):
@@ -293,17 +454,26 @@ def array_wavelength_upper(frame):
     there are 0.4mm per electrode
     phase gradient / 2 pi is in units of cycles per electrode
     electrode spacing / (phase gradient / 2 pi)
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('this code will break if ELECTRODE_SPACING changes or is inconsistant across datasets')
-    warn('using something other than mean may make this less sensitive to outliers and noise')
     return 1/array_phasegradient_lower(frame)
 
 def array_synchrony_pgd(frame):
     '''
     The phase gradient directionality measure from Rubinto et al 2009 is
     abs(mean(pg))/mean(abs(pg))
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg,axis=(0,1)))/np.mean(np.abs(pg),axis=(0,1))
 
@@ -311,24 +481,39 @@ def array_synchrony_pgd_standard_deviation(frame):
     '''
     The phase gradient directionality measure from Rubinto et al 2009 is
     abs(mean(pg))/mean(abs(pg))
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('expects first two dimensions x,y of 2d array data')
     R = array_synchrony_pgd(frame)
     return np.sqrt(-2*np.log(R))
 
 def array_kuramoto_pgd(frame):
     '''
     A related directionality index ignores vector amplitude.
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg/np.abs(pg),axis=(0,1)))
 
 def array_kuramoto_pgd_standard_deviation(frame):
     '''
     A related directionality index ignores vector amplitude.
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
-    warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg/np.abs(pg),axis=(0,1)))
 
@@ -336,6 +521,12 @@ def trim_array(arrayMap):
     '''
     Removes any rows or columns from the array map
     that are empty ( have no channels )
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     arrayMap = np.int32(arrayMap)
     notDone = True
@@ -359,6 +550,12 @@ def trim_array_as_if(arrayMap,data):
     '''
     Removes any rows or columns from data if those rows or columns are
     empty ( have no channels ) in the arrayMap
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     arrayMap = np.int32(arrayMap)
     notDone = True
@@ -394,6 +591,12 @@ def pack_array_data(data,arrayMap):
     :param data: NChannel x Ntimes array
     :param arrayMap: array map, 1-indexed, 0 for missing electrodes
     :return: returns LxKxNtimes 3D array of the interpolated channel data
+
+    Parameters
+    ----------
+        
+    Returns
+    -------
     '''
     # first, trim off any empty rows or columns from the arrayMap
     arrayMap = trim_array(arrayMap)

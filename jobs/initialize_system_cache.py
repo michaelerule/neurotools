@@ -1,7 +1,13 @@
 #!/user/bin/env python 
-#!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Static initialization routines accompanying `neurotools.jobs.cache`.
+These routines were written to set up a caching framework for the Oscar
+high performance computing cluster at Brown University, and have not yet
+been modified for general use. They still contain hard-coded user-specific
+paths, for example.
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -12,21 +18,22 @@ from __future__ import print_function
 from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
+import os
+import sys
+IN_SPHINX=False
+if 'sphinx' in sys.modules:
+    print('Inside Sphinx autodoc; NOT loading scipy and pylab namespaces!')
+    IN_SPHINX=True  
 
-from neurotools.jobs.cache import *
+if not IN_SPHINX:
+    CACHE_IDENTIFIER ='.__neurotools_cache__'
+    VERBOSE_CACHING = 0
 
-'''
-Static initialization routines accompanying `neurotools.jobs.cache`.
-These routines were written to set up a caching framework for the Oscar
-high performance computing cluster at Brown University, and have not yet
-been modified for general use. They still contain hard-coded user-specific
-paths, for example.
-'''
-
-CACHE_IDENTIFIER ='.__neurotools_cache__'
-VERBOSE_CACHING = 0
+import neurotools
+import neurotools.jobs
+import neurotools.tools
+import neurotools.jobs.cache
 
 ######################################################################
 # Setup advanced memoization
@@ -40,7 +47,7 @@ def purge_ram_cache():
     This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY
     dangerous. It has been disabled and now raises `NotImplementedError`
     '''
-    raise NotImplementedError('cache purging is too dangerous and has been disabled');
+    raise NotImplementedError('cache purging is dangerous and has been disabled');
     os.system('rm -rf ' + ramdisk_location + os.sep + CACHE_IDENTIFIER)
 
 def purge_ssd_cache():
@@ -52,7 +59,7 @@ def purge_ssd_cache():
     This will `rm -rf` the entire  `ssd_cache_location` and is EXTREMELY
     dangerous. It has been disabled and now raises `NotImplementedError`
     '''
-    raise NotImplementedError('cache purging is too dangerous and has been disabled');
+    raise NotImplementedError('cache purging is dangerous and has been disabled');
     os.system('rm -rf ' + ssd_cache_location + os.sep + CACHE_IDENTIFIER)
 
 def du(location):
@@ -73,19 +80,36 @@ def du(location):
     du = st.st_blocks * st.st_blksize
     return du
 
-def reset_ramdisk():
+def reset_ramdisk(force=False):
     '''
-    This will generate a 500GB ramdisk on debian linux. This allows in RAM 
+    This will create a 500GB ramdisk on debian linux. This allows in RAM 
     inter-process communication using the filesystem metaphore. It should
     be considered dangerous. It runs shell commands that
-    require `sudo` privileges.
+    require `sudo` privileges. In some cases, these commands may not 
+    execute automatically (e.g. if called form a Jupyter or IPython 
+    notebook inside a browser). In this case, one must run the commands
+    by hand. 
+    
+    
+    Parameters
+    ----------
+    force : bool
+        Modifying the configuration of a ramdisk is risky; The function
+        fails with a warning unless force is set to true.
     '''
-    raise NotImplementedError('modifying system ramdisk too dangerous and has been disabled');
+    global ramdisk_location
+    if not force:
+        raise NotImplementedError(
+            'modifying ramdisk is dangerous; use force=True to force');
     print('Initializing public ramdisk at %s'%ramdisk_location)
-    os.system('sudo mkdir -p '+ramdisk_location)
-    os.system('sudo umount %s/'%ramdisk_location)
-    os.system('sudo mount -t tmpfs -o size=500G tmpfs %s/'%ramdisk_location)
-    os.system('sudo chmod -R 777 %s'%ramdisk_location)
+    def call(cmd):
+        print(cmd)
+        os.system(cmd)
+    call('sudo mkdir -p '+ramdisk_location)
+    call('sudo umount %s/'%ramdisk_location)
+    call('sudo mount -t tmpfs -o size=500G tmpfs %s/'%ramdisk_location)
+    call('sudo chmod -R 777 %s'%ramdisk_location)
+    # 
 
 def launch_cache_synchronizers():
     '''
@@ -102,8 +126,8 @@ def launch_cache_synchronizers():
     may need to share all cache values. It is far better to implement
     some sort of lazy protocol. 
     '''
-    raise NotImplementedError(
-    'cache synchronization can overwite files; it is too dangerous and has been disabled');
+    global ramdisk_location,ssd_cache_location,hdd_cache_location
+    raise NotImplementedError('cache synchronization can overwite files; it has been disabled');
     # write_back is disabled for the slow disk caches. To make these
     # persistant, we need to run an rsync job to keep them synchronized.
     disk_cache_hierarchy = (ramdisk_location,ssd_cache_location,hdd_cache_location)
@@ -131,64 +155,97 @@ def launch_cache_synchronizers():
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
 
 
-
-# Static initialization code
-# This should be run with caution
-# TODO: move all static initializers into a more appropriate 
-# location
-
-import os
-myhost = os.uname()[1]
-if myhost in ('moonbase',):
-    ramdisk_location   = '/media/neurotools_ramdisk'
-    ssd_cache_location = '/ssd_1/mrule'
-    hdd_cache_location = '/ldisk_1/mrule'
-elif myhost in ('basecamp',):
-    ramdisk_location   = '/media/neurotools_ramdisk'
-    ssd_cache_location = '/home/mrule'
-elif myhost in ('RobotFortress','petra'):
-    ramdisk_location   = '/Users/mrule/neurotools_ramdisk'
-    ssd_cache_location = '/Users/mrule'
-else:
-    print('New System. Cache Locations will need configuring.')
-    print('TODO: clean this up somehow! hard-coded configurations are not acceptable in public code')
-    ramdisk_location = ssd_cache_location = hdd_cache_location = None
+def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False):
+    '''
+    Static cache initialization code
+    This should be run with caution
     
-if not os.path.isdir(ramdisk_location): 
-    reset_ramdisk()
+    Caches can be set up in a hierarchy from fast to slow.
+    If a cache entry is missing in the fast cache, it can be repopulated
+    from a slower cache. 
 
-'''
-Caches can be set up in a hierarchy from fast to slow.
-If a cache entry is missing in the fast cache, it can be repopulated
-from a slower cache. 
+    For example, a cache hierarchy might include
+    - local RAMdisk for inter-process communication between life processes
+    - local SSD for frequently used intermediate value
+    - local HDD for larger working datasets
+    - network filesystem for large database
+    
+    # neurotools.jobs.decorator.memoize memoizes within the process memory
+    # leviathan (because it is large and slow and buggy) memoizes within
+    # memory, ssd, and possible hdd in a hierarchy. 
+    # this patches neurotools.jobs.decorator.memoize and replaces it
+    # with the disk cacher, causing all dependent code to automatically
+    # implement persistent disk-memoization. 
+    
+    This function will need to be called *before* importing anything
+    hmm!
+    
+    Parameters
+    ----------
+    ramdisk
+        Path to ram disk for caching intermediate results
+    ssd
+        Path to SSD to provide persistent storage (back the ram disk)
+    hdd
+        Optional path to a hard disk; larger but slower storage space. 
+    force
+        The disk caching framework is still experimental and could lead
+        to loss of data if there is a bug (or worse!). By default, 
+        this routine and its subroutines will not run unless forced. 
+        By requiring the user to set force=true excplitly, we hopefully
+        enforce caution when using this functionality. 
+        
+    Returns
+    -------
+    
+    Example
+    -------
+    This code was originalled called from a function like this, set up
+    for specific configurations in the Truccolo lab
+    ::
+    
+        myhost = os.uname()[1]
+        if myhost in ('moonbase',):
+            ramdisk_location   = '/media/neurotools_ramdisk'
+            ssd_cache_location = '/ssd_1/mrule'
+            hdd_cache_location = '/ldisk_1/mrule'
+        elif myhost in ('basecamp',):
+            ramdisk_location   = '/media/neurotools_ramdisk'
+            ssd_cache_location = '/home/mrule'
+        elif myhost in ('RobotFortress','petra'):
+            ramdisk_location   = '/Users/mrule/neurotools_ramdisk'
+            ssd_cache_location = '/Users/mrule'
+        else:
+            print('New System. Cache Locations will need configuring.')
+            ramdisk_location = ssd_cache_location = hdd_cache_location = None
+    '''
+    global ramdisk_location, ssd_cache_location, hdd_cache_location
+    ramdisk_location,ssd_cache_location,hdd_cache_location = ramdisk,ssd,hdd
+    
+    if not os.path.isdir(ramdisk_location): 
+        reset_ramdisk(force)
+    
+    hierarchy = (ramdisk,)
+    if not ssd is None:
+        hierarchy += (ssd,)
+    if not hdd is None:
+        hierarchy += (hdd,)
+    
+    # These caches become global attributes and are used for memoization
+    neurotools.jobs.initialize_system_cache.disk_cached       = neurotools.jobs.cache.disk_cacher('.')
+    neurotools.jobs.initialize_system_cache.leviathan         = neurotools.jobs.cache.hierarchical_cacher(hierarchy,method='npy')
+    neurotools.jobs.initialize_system_cache.unsafe_disk_cache = neurotools.jobs.cache.hierarchical_cacher(hierarchy,method='npy',allow_mutable_bindings=True)
+    neurotools.jobs.initialize_system_cache.pickle_cache      = neurotools.jobs.cache.hierarchical_cacher(hierarchy,method='pickle')
+    neurotools.jobs.initialize_system_cache.old_memoize = neurotools.jobs.decorator.memoize
+    neurotools.jobs.initialize_system_cache.new_memoize = leviathan
+    neurotools.jobs.initialize_system_cache.memoize     = new_memoize
+    neurotools.jobs.decorator.memoize = new_memoize
 
-For example, a cache hierarchy might include
-- local RAMdisk for inter-process communication between life processes
-- local SSD for frequently used intermediate value
-- local HDD for larger working datasets
-- network filesystem for large database
-''' 
-disk_cache_hierarchy = (ramdisk_location,ssd_cache_location)
-
-disk_cached       = disk_cacher('.')
-leviathan         = hierarchical_cacher(disk_cache_hierarchy,method='npy')
-unsafe_disk_cache = hierarchical_cacher(disk_cache_hierarchy,method='npy',allow_mutable_bindings=True)
-pickle_cache      = hierarchical_cacher(disk_cache_hierarchy,method='pickle')
-
-# neurotools.jobs.decorator.memoize memoizes within the process memory
-# leviathan (because it is large and slow and buggy) memoizes within
-# memory, ssd, and possible hdd in a hierarchy. 
-# this monkey patches neurotools.jobs.decorator.memoize and replaces it
-# with the disk cacher, causing all dependent code to automatically
-# implement persistent disk-memoization. 
-old_memoize = neurotools.jobs.decorator.memoize
-new_memoize = leviathan
-memoize     = new_memoize
-neurotools.jobs.decorator.memoize = new_memoize
-
-# Testing code
-if __name__=="__main__":
-
+def cache_test():
+    '''
+    Run a test of the disk cache to see if everything is ok; Called if
+    this script is run as main. 
+    '''
     # test encoding of function arguments as a string
     def example_function(a,b,c=1,d=('ok',),*vargs,**kw):
         ''' This docstring should be preserved by the decorator '''
@@ -225,3 +282,8 @@ if __name__=="__main__":
     fn('a',val,d='d',*['c'])
     fn('a',val,*['c'],**{'d':'d'})
     fn('a',val,'c','d','e','f')
+
+# Testing code
+if not IN_SPHINX and (__name__=="__main__" or __name__=='__MAIN__'):
+    cache_test()
+

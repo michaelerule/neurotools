@@ -73,7 +73,8 @@ def matkern(source):
     
 @memoize
 def matscalar(source):
-    '''For creation of matrix kernels that compute scalar results. 
+    '''
+    For creation of matrix kernels that compute scalar results. 
     Accepts source. Returns a function from (data,cols)->(scalars).
     '''
     source = 'float *in = &data[n*tid];'+source
@@ -113,8 +114,10 @@ convertToZScores = matkern('''
     dev=1.0f/sqrt(dev/n);
     for (int j=0; j<n; j++) in[j]=(in[j]-mean)*dev;
     ''')
-'''Equivalent to mean centering then normalization. This function does
-not return a value, but replaces the contents of the given data.'''
+'''
+Equivalent to mean centering then normalization. This function does
+not return a value, but replaces the contents of the given data.
+'''
     
 meanCenter = matkern('''
     float mean = 0.0f;
@@ -122,8 +125,10 @@ meanCenter = matkern('''
     mean/=n;
     for (int j=0; j<n; j++) in[j]=(in[j]-mean);
     ''')
-'''This will subtract the mean from each row. This function modifies its
-arguments, replacing them with return values'''
+'''
+This will subtract the mean from each row. This function modifies its
+arguments, replacing them with return values
+'''
     
 normalize = matkern('''
     float mag = 0.0f;
@@ -131,28 +136,36 @@ normalize = matkern('''
     mag=1.0f/sqrt(mag);
     for (int j=0; j<n; j++) in[j]=in[j]*mag;
     ''')
-'''This will normalize each row of a matrix on parallel on the GPU'''
+'''
+This will normalize each row of a matrix on parallel on the GPU
+'''
     
 magnitudes = matscalar('''
     float mag = 0.0f;
     for (int j=0; j<n; j++) mag+=in[j]*in[j];
     out[tid]=sqrt(mag);
     ''')
-'''This will return the magnitude of each row'''
+'''
+This will return the magnitude of each row
+'''
     
 sums = matscalar('''
     float sum = 0.0f;
     for (int j=0; j<n; j++) sum+=in[j];
     out[tid]=sum;
     ''')
-'''This will return the sum of each row'''
+'''
+This will return the sum of each row
+'''
 
 means = matscalar('''
     float mag = 0.0f;
     for (int j=0; j<n; j++) mag+=in[j];
     out[tid]=mag/n;
     ''')
-'''This will return the population mean for each row'''
+'''
+This will return the population mean for each row
+'''
 
 variances = matscalar('''
     float mean = 0.0f;
@@ -165,7 +178,9 @@ variances = matscalar('''
     }
     out[tid]=dev/n
     ''')
-'''This will return the population variance for each row'''
+'''
+This will return the population variance for each row
+'''
 
 samplevariances = matscalar('''
     float mean = 0.0f;
@@ -178,7 +193,9 @@ samplevariances = matscalar('''
     }
     out[tid]=dev/(n-1)
     ''')
-'''This will return the sample variance for each row'''
+'''
+This will return the sample variance for each row
+'''
 
 stds = compose(gpumap("sqrt($)"))(variances)
 '''This will return the population standard deviation for each row'''
@@ -202,10 +219,14 @@ dotproducts = matouter('''
 altered'''
 
 correlation = compose(dotproducts)(convertToZScores)
-'''Computes mean centered correlation matrix from a list of vectors'''
+'''
+Computes mean centered correlation matrix from a list of vectors
+'''
     
 correlation2 = compose(dotproducts)(normalize)
-'''Computes the uncentered correlation matrix from a list of vectors'''
+'''
+Computes the uncentered correlation matrix from a list of vectors
+'''
 
 
     

@@ -19,6 +19,7 @@ import neurotools.stats.modefind as modefind
 import numpy as np
 import scipy
 import random
+from scipy.stats.stats         import describe
 
 
 def weighted_avg_and_std(values, weights):
@@ -176,3 +177,76 @@ def pca(x,n_keep=None):
     w,v = w[:n_keep],v[:,:n_keep]
     return w,v
 
+
+class description:
+    '''
+    quick statistical description
+    
+    TODO: move this to stats
+    '''
+    def __init__(self,data):
+        '''
+        
+        Parameters
+        ----------
+        
+        Returns
+        -------
+        '''
+        self.N, (self.min, self.max),self.mean,self.variance,self.skewness,self.kurtosis = describe(data)
+        self.median = np.median(data)
+        self.std  = np.std(data)
+
+        # quartiles
+        self.q1   = np.percentile(data,25)
+        self.q3   = self.median
+        self.q2   = np.percentile(data,75)
+
+        # percentiles
+        self.p01  = np.percentile(data,1)
+        self.p025 = np.percentile(data,2.5)
+        self.p05  = np.percentile(data,5)
+        self.p10  = np.percentile(data,10)
+        self.p90  = np.percentile(data,90)
+        self.p95  = np.percentile(data,95)
+        self.p975 = np.percentile(data,97.5)
+        self.p99  = np.percentile(data,99)
+
+    def __str__(self):
+        '''
+        
+        Parameters
+        ----------
+        
+        Returns
+        -------
+        '''
+        result = ''
+        for stat,value in self.__dict__.iteritems():
+            result += ' %s=%0.2f '%(stat,value)
+        return result
+
+    def short(self):
+        '''
+        Abbreviated statistical summary
+        
+        Parameters
+        ----------
+        
+        Returns
+        -------
+        '''
+        abbreviations = {
+            'N':'N',
+            'min':'mn',
+            'max':'mx',
+            'mean':u'μ',
+            'variance':u'σ²',
+            'skewness':'Sk',
+            'kurtosis':'K'
+        }
+        result = []
+        for stat,value in self.__dict__.iteritems():
+            if stat in abbreviations:
+                result.append('%s:%s '%(abbreviations[stat],shortscientific(value)))
+        return ' '.join(result)

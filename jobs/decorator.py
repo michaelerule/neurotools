@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Robust decorators are provided by the decorator package
+    http://pythonhosted.org/decorator/documentation.html
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,16 +12,9 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 import sys
-# more py2/3 compat
 from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
-
-'''
-Robust decorators are provided by the decorator package
-    http://pythonhosted.org/decorator/documentation.html
-'''
 
 import neurotools.tools
 import os, sys
@@ -40,9 +36,25 @@ except:
     print('could not find typedecorator module; advanced decorator functions missing')
 
 def listit(t):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return list(map(listit, t)) if isinstance(t, (list, tuple)) else t
 
 def tupleit(t):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return tuple(map(tupleit, t)) if isinstance(t, (list, tuple)) else t
 
 def sanitize(sig,mode='liberal'):
@@ -52,6 +64,12 @@ def sanitize(sig,mode='liberal'):
 
     "strict" mode requires that all data be numeric primitives or
     strings containing "very safe" chracters a-zA-Z0-9 and space
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if isinstance(sig,np.ndarray):
         if sig.ndim==0:
@@ -90,7 +108,15 @@ def sanitize(sig,mode='liberal'):
     return sig
 
 def summarize_function(f):
-    '''Prints function information, Used for debugging decorators.'''
+    '''
+    Prints function information, Used for debugging decorators.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     print(f)
     for k in dir(f):
         print('\t',k,'\t',end='')
@@ -108,6 +134,12 @@ def argument_signature(function,*args,**kwargs):
     '''
     Convert the function arguments and values to a unique set.
     Throws ValueError if the provided arguments cannot match argspec.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     named_store = {} # map from parameter names to values
     named,vargname,kwargname,defaults = inspect.getargspec(function)
@@ -155,10 +187,16 @@ def argument_signature(function,*args,**kwargs):
     vals  = tuple(named_store[k] for k in keys)
     return sanitize((tuple(zip(keys,vals)),vargs))
 
-
-
 def print_signature(sig):
-    '''Formats the argument signature for printing.'''
+    '''
+    Formats the argument signature for printing.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     named, vargs = sig
     result = ','.join(['%s=%s'%(k,v) for (k,v) in named])
     if not vargs is None: result += ','+','.join(map(str,vargs))
@@ -168,6 +206,12 @@ def print_signature(sig):
 def timed(f,*args,**kwargs):
     '''
     Timer decorator, modifies return type to include runtime
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     t0      = neurotools.tools.current_milli_time()
     result  = f(*args,**kwargs)
@@ -177,6 +221,12 @@ def timed(f,*args,**kwargs):
 def memoize(f):
     '''
     Memoization decorator
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     cache = {}
     info  = defaultdict(dict)
@@ -196,6 +246,12 @@ def unwrap(f):
     '''
     Strips decorators from a decorated function, provided that the
     decorators were so kind as to set the .__wrapped__ attribute
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     g = f
     while hasattr(g, '__wrapped__'):

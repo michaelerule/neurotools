@@ -19,17 +19,19 @@ import time as systime
 import sys
 
 from matplotlib.cbook          import flatten
-from scipy.stats.stats         import describe
 from neurotools.jobs.decorator import *
 from scipy.io                  import loadmat
 import sys
 from numbers import Number
 from collections import Set, Mapping, deque
+import errno
 
-try: # Python 2
+try: 
+    # Python 2
     zero_depth_bases = (basestring, Number, xrange, bytearray)
     iteritems = 'iteritems'
-except NameError: # Python 3
+except NameError: 
+    # Python 3
     zero_depth_bases = (str, bytes, Number, range, bytearray)
     iteritems = 'items'
 
@@ -166,9 +168,11 @@ class emitter():
 class piper():
     '''
     Piper extends callables such that they can be called by using 
-    infix operators. This is dangerous. Do not use it.
-    '''
-    '''
+    infix operators. 
+    
+    This is dangerous. 
+    Do not use it.
+
     :Example:
     >>> def foo(x):
     >>>     return x+1
@@ -334,58 +338,17 @@ setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b
 mapdict    = lambda data,function: {k:function(v) for k,v in data.iteritems()}
 getdict    = lambda data,index: mapdict(data, lambda v:v[index])
 
-# quick complete statistical description
-class description:
-    def __init__(self,data):
-
-        self.N, (self.min, self.max),self.mean,self.variance,self.skewness,self.kurtosis = describe(data)
-        self.median = median(data)
-        self.std  = std(data)
-
-        # quartiles
-        self.q1   = percentile(data,25)
-        self.q3   = self.median
-        self.q2   = percentile(data,75)
-
-        # percentiles
-        self.p01  = percentile(data,1)
-        self.p025 = percentile(data,2.5)
-        self.p05  = percentile(data,5)
-        self.p10  = percentile(data,10)
-        self.p90  = percentile(data,90)
-        self.p95  = percentile(data,95)
-        self.p975 = percentile(data,97.5)
-        self.p99  = percentile(data,99)
-
-    def __str__(self):
-        result = ''
-        for stat,value in self.__dict__.iteritems():
-            result += ' %s=%0.2f '%(stat,value)
-        return result
-
-    def short(self):
-        '''
-        Abbreviated summary
-        '''
-        abbreviations = {
-            'N':'N',
-            'min':'mn',
-            'max':'mx',
-            'mean':u'μ',
-            'variance':u'σ²',
-            'skewness':'Sk',
-            'kurtosis':'K'
-        }
-        result = []
-        for stat,value in self.__dict__.iteritems():
-            if stat in abbreviations:
-                result.append('%s:%s '%(abbreviations[stat],shortscientific(value)))
-        return ' '.join(result)
 
 def ensure_dir(dirname):
     """
     Ensure that a named directory exists; if it does not, attempt to create it.
     http://stackoverflow.com/questions/944536/efficient-way-of-creating-recursive-paths-python
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     """
     try:
         os.makedirs(dirname)
@@ -397,6 +360,12 @@ def getsize(obj):
     """
     Recursively iterate to sum size of object & members.
     http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python    
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     """
     def inner(obj, _seen_ids = set()):
         obj_id = id(obj)
@@ -445,7 +414,9 @@ this has not been thoroughly tested.
 __saved_context__ = {}
 def saveContext():
     __saved_context__.update(sys.modules[__name__].__dict__)
+
 clear = saveContext
+
 def restoreContext():
     names = sys.modules[__name__].__dict__.keys()
     for n in names:
@@ -494,6 +465,12 @@ def tic(st=''):
     ''' 
     Similar to Matlab tic 
     stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
@@ -510,6 +487,12 @@ def toc(st=''):
     ''' 
     Similar to Matlab toc 
     stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
@@ -525,6 +508,12 @@ def toc(st=''):
 def waitfor(t):
     '''
     Wait for t milliseconds
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     while current_milli_time()<t:
         pass
@@ -537,6 +526,12 @@ def getVariable(path,var):
     '''
     Reads a variable from a .mat or .hdf5 file
     The read result is cached in ram for later access
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if '.mat' in path:
         return loadmat(path,variable_names=[var])[var]

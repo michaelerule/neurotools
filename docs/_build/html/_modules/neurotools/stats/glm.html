@@ -224,8 +224,14 @@
 <span class="sd">        Y: N by 1 point-process counts</span>
 <span class="sd">        penalties: len D-1 list of L2 penalty weights (don&#39;t penalize mean)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        objective, gradient(jacobian), hessian</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    function</span>
+<span class="sd">        objective function for `scipy.optimize.minimize`</span>
+<span class="sd">    function</span>
+<span class="sd">        gradient (jacobian) function for `scipy.optimize.minimize`</span>
+<span class="sd">    function</span>
+<span class="sd">        hessian function for `scipy.optimize.minimize`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">assert</span> <span class="n">N</span><span class="o">&gt;</span><span class="n">D</span>
@@ -281,11 +287,14 @@
 <span class="sd">    case of a Poisson point-process model, where the constant term has</span>
 <span class="sd">    not been explicitly added to the design matrix</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        X: N_observations x N_features design matrix.</span>
-<span class="sd">        Y: Binary point process observations</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        μ, B: the offset and parameter estimates for the GLM model.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: N_observations x N_features design matrix.</span>
+<span class="sd">    Y: Binary point process observations</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    μ, B: the offset and parameter estimates for the GLM model.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># add constant value to X, if the 1st column is not constant</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">0.1</span><span class="p">:</span>
@@ -322,6 +331,26 @@
 
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">permutation</span>
 <div class="viewcode-block" id="crossvalidatedAUC"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.crossvalidatedAUC">[docs]</a><span class="k">def</span> <span class="nf">crossvalidatedAUC</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">NXVAL</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Crossvalidated area under the ROC curve calculation. This routine</span>
+<span class="sd">    uses the non-regularized GLMPenaltyL2 to fit a GLM point-process </span>
+<span class="sd">    model and test accuracy under K-fold crossvalidation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.array</span>
+<span class="sd">        Covariate matrix Nsamples x Nfeatures</span>
+<span class="sd">    Y : np.array</span>
+<span class="sd">        Binary point-process observations, 1D array length Nsamples </span>
+<span class="sd">    NXVAL : positive int</span>
+<span class="sd">        Defaults to 4. Number of cross-validation blocks to use</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Area under the ROC curve, cross-validated, for non-regularized</span>
+<span class="sd">        GLM point process model fit</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">permutation</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">P</span><span class="p">,:]</span>
@@ -346,6 +375,13 @@
 <span class="sd">    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)</span>
 <span class="sd">    </span>
 <span class="sd">    Fit Poisson GLM using gradient descent with hessian</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.array</span>
+<span class="sd">        Covariate matrix Nsamples x Nfeatures</span>
+<span class="sd">    Y : np.array</span>
+<span class="sd">        Binary point-process observations, 1D array length Nsamples </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
     <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>

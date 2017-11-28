@@ -158,7 +158,6 @@
   <h1>Source code for neurotools.jobs.cache</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
@@ -169,7 +168,6 @@
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="n">__PYTHON_2__</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
 
 <span class="kn">from</span>   <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -199,13 +197,11 @@
 <span class="kn">import</span> <span class="nn">neurotools.jobs.decorator</span>
 <span class="kn">import</span> <span class="nn">neurotools.tools</span>
 <span class="kn">import</span> <span class="nn">neurotools.tools</span>
-
-<span class="kn">from</span> <span class="nn">neurotools.jobs.closure</span> <span class="k">import</span> <span class="n">verify_function_closure</span>
-
-<span class="kn">from</span> <span class="nn">neurotools.jobs.filenames</span> <span class="k">import</span> <span class="n">is_dangerous_filename</span><span class="p">,</span><span class="n">check_filename</span>
+<span class="kn">from</span>   <span class="nn">neurotools.jobs.closure</span>   <span class="k">import</span> <span class="n">verify_function_closure</span>
+<span class="kn">from</span>   <span class="nn">neurotools.jobs.filenames</span> <span class="k">import</span> <span class="n">is_dangerous_filename</span><span class="p">,</span> <span class="n">check_filename</span>
 
 <div class="viewcode-block" id="function_hash_with_subroutines"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.function_hash_with_subroutines">[docs]</a><span class="nd">@neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">decorator</span><span class="o">.</span><span class="n">memoize</span>
-<span class="k">def</span> <span class="nf">function_hash_with_subroutines</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">function_hash_with_subroutines</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Functions may change if their subroutines change. This function computes</span>
 <span class="sd">    a hash value that is sensitive to changes in the source code, docstring,</span>
@@ -243,8 +239,21 @@
 <span class="sd">    Note that this function cannot detect changes in effective function</span>
 <span class="sd">    behavior that result from changes in global variables or mutable scope</span>
 <span class="sd">    that has been closed over.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    force : bool</span>
+<span class="sd">        force muse be true, otherwise this function will fail with a </span>
+<span class="sd">        warning. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    string</span>
+<span class="sd">        Hash of function</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This is actually impossible due to dynamic typing and late binding&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+        <span class="s2">&quot;It is not, in general, possible to hash a function reliably&quot;</span><span class="p">)</span>
 
     <span class="c1"># repeatedly expand list of subroutines</span>
     <span class="n">to_expand</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">}</span>
@@ -612,6 +621,9 @@
 
 <div class="viewcode-block" id="validate_for_numpy"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.validate_for_numpy">[docs]</a><span class="k">def</span> <span class="nf">validate_for_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Check whether an array-like object can safely be stored in a numpy</span>
+<span class="sd">    archive. </span>
+<span class="sd">    </span>
 <span class="sd">    Numpy types: these should be compatible</span>
 <span class="sd">    ==========  ================================================================================</span>
 <span class="sd">    Type        Description</span>
@@ -635,9 +647,13 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    x : object</span>
+<span class="sd">        array-like object; </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True if the data in `x` can be safely stored in a Numpy archive</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">safe</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span>  <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span>     <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span> <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span> <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>  <span class="p">,</span>
                   <span class="n">np</span><span class="o">.</span><span class="n">uint8</span>  <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint16</span>   <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
@@ -728,22 +744,23 @@
     <span class="n">cache_root</span>     <span class="o">=</span> <span class="n">cache_location</span><span class="o">+</span><span class="n">CACHE_IDENTIFIER</span>
     <span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        This is a wrapper for memoizing results to disk. </span>
+<span class="sd">        This docstring should be overwritten by the docstring of</span>
+<span class="sd">        the wrapped function.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_mutable_bindings</span><span class="p">:</span>
             <span class="n">verify_function_closure</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            
+        <span class="c1"># Patch for 2/3 compatibility</span>
+        <span class="k">if</span> <span class="n">__PYTHON_2__</span><span class="p">:</span>
+            <span class="ne">FileNotFoundError</span> <span class="o">=</span> <span class="ne">IOError</span>
+            
         <span class="nd">@neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">decorator</span><span class="o">.</span><span class="n">robust_decorator</span>
         <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            Parameters</span>
-<span class="sd">            ----------</span>
-<span class="sd">            </span>
-<span class="sd">            Returns</span>
-<span class="sd">            -------</span>
+<span class="sd">            This is a wrapper for memoizing results to disk. </span>
+<span class="sd">            This docstring should be overwritten by the docstring of</span>
+<span class="sd">            the wrapped function.</span>
 <span class="sd">            &#39;&#39;&#39;</span>
             <span class="n">t0</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">current_milli_time</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
@@ -772,7 +789,8 @@
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Retrieved cache at &#39;</span><span class="p">,</span><span class="n">path</span><span class="p">)</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">decorator</span><span class="o">.</span><span class="n">print_signature</span><span class="p">(</span><span class="n">sig</span><span class="p">))</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            
+            <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Recomputing cache at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">cache_location</span><span class="p">)</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
@@ -781,7 +799,8 @@
                 <span class="n">time</span><span class="p">,</span><span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="n">neurotools</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">ensure_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Took </span><span class="si">%d</span><span class="s1"> milliseconds&#39;</span><span class="o">%</span><span class="n">time</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> 
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Took </span><span class="si">%d</span><span class="s1"> milliseconds&#39;</span><span class="o">%</span><span class="n">time</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">write_back</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Writing cache at &#39;</span><span class="p">,</span><span class="n">path</span><span class="p">)</span>
@@ -802,7 +821,8 @@
                             <span class="k">if</span> <span class="n">validated_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Error: return value cannot be safely packaged in a numpy file&#39;</span><span class="p">)</span>
                             <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="p">(</span><span class="n">RutoolsError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">PicklingError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc2</span><span class="p">:</span>
+                    <span class="c1"># RutoolsError?</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">PicklingError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc2</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving cache at </span><span class="si">%s</span><span class="s1"> FAILED&#39;</span><span class="o">%</span><span class="n">cache_location</span><span class="p">)</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
@@ -845,13 +865,17 @@
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            Delete cache entries matching arguments.</span>
+<span class="sd">            Delete cache entries matching arguments. This is a destructive</span>
+<span class="sd">            operation, execute with care.</span>
 <span class="sd">    </span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
-<span class="sd">            </span>
-<span class="sd">            Returns</span>
-<span class="sd">            -------</span>
+<span class="sd">            *args</span>
+<span class="sd">                Arguments forward to the `locate_cached` function. Matching</span>
+<span class="sd">                cache entries will be deleted.</span>
+<span class="sd">            **kwargs</span>
+<span class="sd">                Keyword arguments forward to the `locate_cached` function</span>
+<span class="sd">                Matching cache entries will be deleted.</span>
 <span class="sd">            &#39;&#39;&#39;</span>
             <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">VALID_METHODS</span><span class="p">:</span>
                 <span class="n">fn</span><span class="p">,</span><span class="n">sig</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">location</span> <span class="o">=</span> <span class="n">locate_cached</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -871,8 +895,7 @@
     <span class="k">return</span> <span class="n">cached</span></div>
 
 
-<div class="viewcode-block" id="hierarchical_cacher"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.hierarchical_cacher">[docs]</a><span class="k">def</span> <span class="nf">hierarchical_cacher</span><span class="p">(</span>
-        <span class="n">fast_to_slow</span><span class="p">,</span>
+<div class="viewcode-block" id="hierarchical_cacher"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.hierarchical_cacher">[docs]</a><span class="k">def</span> <span class="nf">hierarchical_cacher</span><span class="p">(</span><span class="n">fast_to_slow</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
         <span class="n">write_back</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>

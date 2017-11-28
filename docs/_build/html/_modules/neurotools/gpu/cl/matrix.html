@@ -231,7 +231,8 @@
     
 <div class="viewcode-block" id="matscalar"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.matrix.html#neurotools.gpu.cl.matrix.matscalar">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">matscalar</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;For creation of matrix kernels that compute scalar results. </span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    For creation of matrix kernels that compute scalar results. </span>
 <span class="sd">    Accepts source. Returns a function from (data,cols)-&gt;(scalars).</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;float *in = &amp;data[n*tid];&#39;</span><span class="o">+</span><span class="n">source</span>
@@ -271,8 +272,10 @@
 <span class="s1">    dev=1.0f/sqrt(dev/n);</span>
 <span class="s1">    for (int j=0; j&lt;n; j++) in[j]=(in[j]-mean)*dev;</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;Equivalent to mean centering then normalization. This function does</span>
-<span class="sd">not return a value, but replaces the contents of the given data.&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Equivalent to mean centering then normalization. This function does</span>
+<span class="sd">not return a value, but replaces the contents of the given data.</span>
+<span class="sd">&#39;&#39;&#39;</span>
     
 <span class="n">meanCenter</span> <span class="o">=</span> <span class="n">matkern</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float mean = 0.0f;</span>
@@ -280,8 +283,10 @@
 <span class="s1">    mean/=n;</span>
 <span class="s1">    for (int j=0; j&lt;n; j++) in[j]=(in[j]-mean);</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will subtract the mean from each row. This function modifies its</span>
-<span class="sd">arguments, replacing them with return values&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will subtract the mean from each row. This function modifies its</span>
+<span class="sd">arguments, replacing them with return values</span>
+<span class="sd">&#39;&#39;&#39;</span>
     
 <span class="n">normalize</span> <span class="o">=</span> <span class="n">matkern</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float mag = 0.0f;</span>
@@ -289,28 +294,36 @@
 <span class="s1">    mag=1.0f/sqrt(mag);</span>
 <span class="s1">    for (int j=0; j&lt;n; j++) in[j]=in[j]*mag;</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will normalize each row of a matrix on parallel on the GPU&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will normalize each row of a matrix on parallel on the GPU</span>
+<span class="sd">&#39;&#39;&#39;</span>
     
 <span class="n">magnitudes</span> <span class="o">=</span> <span class="n">matscalar</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float mag = 0.0f;</span>
 <span class="s1">    for (int j=0; j&lt;n; j++) mag+=in[j]*in[j];</span>
 <span class="s1">    out[tid]=sqrt(mag);</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will return the magnitude of each row&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will return the magnitude of each row</span>
+<span class="sd">&#39;&#39;&#39;</span>
     
 <span class="n">sums</span> <span class="o">=</span> <span class="n">matscalar</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float sum = 0.0f;</span>
 <span class="s1">    for (int j=0; j&lt;n; j++) sum+=in[j];</span>
 <span class="s1">    out[tid]=sum;</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will return the sum of each row&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will return the sum of each row</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">means</span> <span class="o">=</span> <span class="n">matscalar</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float mag = 0.0f;</span>
 <span class="s1">    for (int j=0; j&lt;n; j++) mag+=in[j];</span>
 <span class="s1">    out[tid]=mag/n;</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will return the population mean for each row&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will return the population mean for each row</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">variances</span> <span class="o">=</span> <span class="n">matscalar</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float mean = 0.0f;</span>
@@ -323,7 +336,9 @@
 <span class="s1">    }</span>
 <span class="s1">    out[tid]=dev/n</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will return the population variance for each row&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will return the population variance for each row</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">samplevariances</span> <span class="o">=</span> <span class="n">matscalar</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    float mean = 0.0f;</span>
@@ -336,7 +351,9 @@
 <span class="s1">    }</span>
 <span class="s1">    out[tid]=dev/(n-1)</span>
 <span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;This will return the sample variance for each row&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will return the sample variance for each row</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">stds</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">gpumap</span><span class="p">(</span><span class="s2">&quot;sqrt($)&quot;</span><span class="p">))(</span><span class="n">variances</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;This will return the population standard deviation for each row&#39;&#39;&#39;</span>
@@ -360,10 +377,14 @@
 <span class="sd">altered&#39;&#39;&#39;</span>
 
 <span class="n">correlation</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">dotproducts</span><span class="p">)(</span><span class="n">convertToZScores</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;Computes mean centered correlation matrix from a list of vectors&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Computes mean centered correlation matrix from a list of vectors</span>
+<span class="sd">&#39;&#39;&#39;</span>
     
 <span class="n">correlation2</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">dotproducts</span><span class="p">)(</span><span class="n">normalize</span><span class="p">)</span>
-<span class="sd">&#39;&#39;&#39;Computes the uncentered correlation matrix from a list of vectors&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Computes the uncentered correlation matrix from a list of vectors</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 
     

@@ -31,7 +31,6 @@ def population_kuromoto(population):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return np.abs(np.mean(population/np.abs(population),axis=0))
 
 def population_synchrony(population):
@@ -43,7 +42,6 @@ def population_synchrony(population):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return np.abs(np.mean(population,axis=0))/np.mean(np.abs(population),axis=0)
 
 def population_polar_std(population):
@@ -55,7 +53,6 @@ def population_polar_std(population):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return np.sqrt(-2*np.log(population_synchrony(population)))
 
 def population_average_amplitude(population):
@@ -67,7 +64,6 @@ def population_average_amplitude(population):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return np.mean(np.abs(population),axis=0)
 
 def population_signal_concentration(lfp):
@@ -79,7 +75,6 @@ def population_signal_concentration(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return population_average_amplitude(lfp)/population_signal_dispersion(lfp)**(-0.25)
 
 def population_signal_precision(lfp):
@@ -91,7 +86,6 @@ def population_signal_precision(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return population_signal_dispersion(lfp)**(-1)
 
 def population_signal_dispersion(lfp):
@@ -103,7 +97,6 @@ def population_signal_dispersion(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     r = np.real(lfp)
     i = np.imag(lfp)
     r = r-np.mean(r,0)
@@ -123,7 +116,6 @@ def population_signal_phase_dispersion(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
     z = np.mean(lfp,axis=0)
     h = (z/np.abs(z))**-1
@@ -143,7 +135,6 @@ def population_signal_phase_std(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
     z = np.mean(lfp,axis=0)
     h = (z/np.abs(z))**-1
@@ -162,7 +153,6 @@ def population_signal_amplitude_std(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
     z = np.mean(lfp,axis=0)
     h = (z/np.abs(z))**-1
@@ -180,7 +170,6 @@ def population_signal_amplitude_dispersion(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     # rotate into best-guess zero phase reference frame
     z = np.mean(lfp,axis=0)
     h = (z/np.abs(z))**-1
@@ -199,7 +188,6 @@ def population_signal_phase_precision(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return 1./population_signal_phase_dispersion(lfp)
 
 def population_signal_amplitude_precision(lfp):
@@ -211,7 +199,6 @@ def population_signal_amplitude_precision(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     return 1./population_signal_amplitude_dispersion(lfp)
 
 def population_signal_description(lfp):
@@ -223,7 +210,6 @@ def population_signal_description(lfp):
     Returns
     -------
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     z = np.mean(lfp,0)
     a = np.abs(z)
     h = np.angle(z)
@@ -242,7 +228,6 @@ def population_synchrony_linear(population):
     -------
     1/(1-population_synchrony(population))
     '''
-    warn('statistics computed over first axis. not for 2d array data')
     syn = population_synchrony(population)
     return 1/(1-syn)
 
@@ -338,7 +323,8 @@ def population_sliding_signal_coherence(data,L=100,window=np.hanning):
     np.array : 
         Sliding-window Kuramoto order parameter over data
     '''
-    assert len(data.shape)==2
+    if not len(data.shape)==2:
+        raise ValueError('data should be a 2D np.array of phases, type np.complex')
     N       = data.shape[-1]
     h       = np.angle(data)
     dfdt    = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
@@ -374,7 +360,8 @@ def population_normalized_sliding_signal_coherence(data,L=100,window=np.hanning)
     Returns
     -------
     '''
-    assert len(data.shape)==2
+    if not len(data.shape)==2:
+        raise ValueError('data should be a 2D np.array of phases, type np.complex')
     N       = data.shape[-1]
     h       = np.angle(data)
     dfdt    = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi
@@ -416,7 +403,8 @@ def population_phase_relative_sliding_kuromoto(data,L=100,window=np.hanning):
     -------
     
     '''
-    assert len(data.shape)==2
+    if not len(data.shape)==2:
+        raise ValueError('data should be a 2D np.array of phases, type np.complex')
     K,N     = data.shape
     phases  = np.angle(data)
     phased  = data/np.abs(data)
@@ -444,11 +432,16 @@ def population_median_phase_velocity(data):
     
     Parameters
     ----------
+    data : np.array
+        2D array of phases; Nchannels x Ntimes
     
     Returns
     -------
+    medv : np.array
+        Median phase velocity within the population for every time point
     '''
-    assert len(data.shape)==2
+    if not len(data.shape)==2:
+        raise ValueError('data should be a 2D np.array of phases, type np.complex')
     N       = data.shape[-1]
     h       = np.angle(data)
     dfdt    = (np.diff(h,axis=-1)+np.pi)%(2*np.pi)-np.pi

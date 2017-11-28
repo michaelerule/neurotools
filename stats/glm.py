@@ -66,8 +66,14 @@ def GLMPenaltyL2(X,Y,penalties=None):
         Y: N by 1 point-process counts
         penalties: len D-1 list of L2 penalty weights (don't penalize mean)
 
-    Returns:
-        objective, gradient(jacobian), hessian
+    Returns
+    -------
+    function
+        objective function for `scipy.optimize.minimize`
+    function
+        gradient (jacobian) function for `scipy.optimize.minimize`
+    function
+        hessian function for `scipy.optimize.minimize`
     '''
     N,D = X.shape
     assert N>D
@@ -123,11 +129,14 @@ def ppglmfit(X,Y):
     case of a Poisson point-process model, where the constant term has
     not been explicitly added to the design matrix
 
-    Args:
-        X: N_observations x N_features design matrix.
-        Y: Binary point process observations
-    Returns:
-        μ, B: the offset and parameter estimates for the GLM model.
+    Parameters
+    ----------
+    X: N_observations x N_features design matrix.
+    Y: Binary point process observations
+
+    Returns
+    -------
+    μ, B: the offset and parameter estimates for the GLM model.
     '''
     # add constant value to X, if the 1st column is not constant
     if np.mean(Y)>0.1:
@@ -164,6 +173,26 @@ def fitGLM(X,Y,L2Penalty=0.0):
 
 from numpy.random import permutation
 def crossvalidatedAUC(X,Y,NXVAL=4):
+    '''
+    Crossvalidated area under the ROC curve calculation. This routine
+    uses the non-regularized GLMPenaltyL2 to fit a GLM point-process 
+    model and test accuracy under K-fold crossvalidation.
+    
+    Parameters
+    ----------
+    X : np.array
+        Covariate matrix Nsamples x Nfeatures
+    Y : np.array
+        Binary point-process observations, 1D array length Nsamples 
+    NXVAL : positive int
+        Defaults to 4. Number of cross-validation blocks to use
+        
+    Returns
+    -------
+    float
+        Area under the ROC curve, cross-validated, for non-regularized
+        GLM point process model fit
+    '''
     N = X.shape[0]
     P = permutation(N)
     X = X[P,:]
@@ -188,6 +217,13 @@ def gradientglmfit(X,Y,L2Penalty=0.0):
     mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)
     
     Fit Poisson GLM using gradient descent with hessian
+    
+    Parameters
+    ----------
+    X : np.array
+        Covariate matrix Nsamples x Nfeatures
+    Y : np.array
+        Binary point-process observations, 1D array length Nsamples 
     '''
     objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
     initial = np.zeros(X.shape[1]+1)

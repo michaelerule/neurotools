@@ -15,10 +15,7 @@ Routines for calculating population summary statistics of LFP phases.
 '''
 
 import numpy as np
-
-# TODO: fix these imports
-# from stat import *
-# from neurotools.tools import *
+from neurotools.signal.signal import rewrap
 
 ELECTRODE_SPACING = 0.4
 

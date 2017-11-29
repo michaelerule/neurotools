@@ -10,33 +10,24 @@ from __future__ import print_function
 Code for identifying critical points in phase gradient maps.
 '''
 
+# TODO: fix imports below
+#from neurotools.spatial.dct import *
+#from neurotools.plot import *\
+
 import numpy as np
 import matplotlib as plt
-import pylab as pl
-
-from neurotools.signal.signal import rewrap
-from scipy.signal import convolve2d
-from neurotools.graphics.plot import *
 
 def plot_phase_gradient(dz):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     plt.cla()
     plt.imshow(np.angle(dz),interpolation='nearest')
     hsv()
     for i,row in list(enumerate(dz))[::1]:
         for j,z in list(enumerate(row))[::1]:
             z *=5
-            plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'w',lw=1)
+            plt.plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'w',lw=1)
     h,w = np.shape(dz)
-    plt.xlim(0-0.5,w-0.5)
-    plt.ylim(h-0.5,0-0.5)
+    plt.plt.xlim(0-0.5,w-0.5)
+    plt.plt.ylim(h-0.5,0-0.5)
 
 def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
     '''
@@ -44,12 +35,6 @@ def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
         dz (complex123): phase gradient
         skip (int): only plot every skip
         lw (numeric): line width
-
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     cla()
     imshow(np.angle(dz),interpolation='nearest')
@@ -57,61 +42,29 @@ def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
     for i,row in list(enumerate(dz))[skip/2::skip]:
         for j,z in list(enumerate(row))[skip/2::skip]:
             z = 0.25*skip*z/np.abs(z)
-            plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'w',lw=lw,zorder=zorder)
+            plt.plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'w',lw=lw,zorder=zorder)
             z = -z
-            plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'k',lw=lw,zorder=zorder)
+            plt.plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'k',lw=lw,zorder=zorder)
     h,w = np.shape(dz)
-    plt.xlim(0-0.5,w-0.5)
-    plt.ylim(h-0.5,0-0.5)
+    plt.plt.xlim(0-0.5,w-0.5)
+    plt.plt.ylim(h-0.5,0-0.5)
 
 def dPhidx(phase):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     dx = rewrap(np.diff(phase,1,0))
     dx = (dx[:,1:]+dx[:,:-1])*0.5
     return dx
 
 def dPhidy(phase):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     dy = rewrap(np.diff(phase,1,1))
     dy = (dy[1:,:]+dy[:-1,:])*0.5
     return dy
 
 def unwrap_indecies(tofind):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    found = pl.find(tofind)
-    h,w   = np.shape(tofind)
+    found = find(tofind)
+    h,w = np.shape(tofind)
     return np.int32([(x%w,x/w) for x in found])
 
 def get_phase_gradient_as_complex(data):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     phase = np.angle(data)
     dx    = dPhidx(phase)
     dy    = dPhidy(phase)
@@ -125,12 +78,6 @@ def getpeaks2d(pp):
     same size as pp but with 1 at points that are local maxima and 0 else.
 
         :pp: a 2D array in which to search for local maxima
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     dx  = np.diff(pp,1,0)[:,:-1]
     dy  = np.diff(pp,1,1)[:-1,:]
@@ -145,12 +92,6 @@ def coalesce(pp,s1=4,s2=None):
     '''
     S1 and S2 are time/frequency smoothing scale.
     This is a major bottleneck.
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     if s2==None: s2=s1
     k1 = gausskern1d(s1,min(np.shape(pp)[1],int(ceil(6*s1))))
@@ -169,7 +110,7 @@ def find_critical_points(data,docoalesce=False):
     Returns
     -------
     clockwise : numpy.ndarray
-    anticlockwise : numpy.ndarray
+    widersyns : numpy.ndarray
     saddles : numpy.ndarray
     peaks : numpy.ndarray
     maxima : numpy.ndarray
@@ -192,7 +133,7 @@ def find_critical_points(data,docoalesce=False):
     ddy       = np.diff(np.sign(dy),1,1)[:-1,:]/2
 
     clockwise = winding>3
-    anticlockwise = winding<-3 # close to pi, sometimes a little
+    widersyns = winding<-3 # close to pi, sometimes a little
     saddles   = (ddx*ddy==-1)*ok
     peaks     = (ddx*ddy== 1)*ok
     maxima    = (ddx*ddy== 1)*(ddx==-1)*ok
@@ -200,69 +141,46 @@ def find_critical_points(data,docoalesce=False):
 
     if docoalesce:
         clockwise = unwrap_indecies(coalesce(clockwise))+1
-        anticlockwise = unwrap_indecies(coalesce(anticlockwise))+1
+        widersyns = unwrap_indecies(coalesce(widersyns))+1
         saddles   = unwrap_indecies(coalesce(saddles  ))+1
         peaks     = unwrap_indecies(coalesce(peaks    ))+1
         maxima    = unwrap_indecies(coalesce(maxima   ))+1
         minima    = unwrap_indecies(coalesce(minima   ))+1
     else:
         clockwise = unwrap_indecies(clockwise)+1
-        anticlockwise = unwrap_indecies(anticlockwise)+1
+        widersyns = unwrap_indecies(widersyns)+1
         saddles   = unwrap_indecies(saddles  )+1
         peaks     = unwrap_indecies(peaks    )+1
         maxima    = unwrap_indecies(maxima   )+1
         minima    = unwrap_indecies(minima   )+1
 
-    return clockwise, anticlockwise, saddles, peaks, maxima, minima
+    return clockwise, widersyns, saddles, peaks, maxima, minima
 
 def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect='auto',extent=None):
     '''
     Parameters:
         skip (int): only plot every [skip] phase gradient vectors
-    
-    Parameters
-    ----------
-    data : np.array
-        2D complex-valued array of phases
-    lw : int, default=1
-        line width for plotting
-    ss : int, default=14
-        plotting point size
-    skip : int, default=5
-        Skip every `skip` points when plotting phase direction map
-    ff=None
-    plotsaddles : bool, defualt=True
-        Whether to plot saddes points
-    aspect : string, default='auto'
-        Aspect-ratio parameter forwarded to matplotlib
-    extent : tuple or None (default)
-        extent parameter forwarded to matplotlib
     '''
-    clockwise,anticlockwise,saddles,peaks,maxima,minima = find_critical_points(data)
+    clockwise,widersyns,saddles,peaks,maxima,minima = find_critical_points(data)
     dx,dy,dz = get_phase_gradient_as_complex(data)
     cla()
     plot_phase_direction(dz,skip=skip,lw=lw,zorder=Inf)
     N = np.shape(data)[0]
-    if ff is None: 
-        ff = arange(N)
+    if ff is None: ff = arange(N)
     else:
         a,b = ff[0],ff[-1]
         K = b-a
         s = K/float(N)
-        for d in [clockwise,anticlockwise,saddles,peaks,maxima,minima]:
+        for d in [clockwise,widersyns,saddles,peaks,maxima,minima]:
             if d.size==0: continue
             d[:,1] = d[:,1]*s+a
     plot_complex(data,extent=extent,onlyphase=1)
-    if len(clockwise)>0: 
-        plt.scatter(*clockwise.T,s=ss**2,color='k',edgecolor='k',lw=lw,label='Clockwise')
-    if len(anticlockwise)>0: 
-        plt.scatter(*anticlockwise.T,s=ss**2,color='w',edgecolor='k',lw=lw,label='Anticlockwise')
-    if len(maxima)>0:    
-        plt.scatter(*maxima.T   ,s=ss**2,color='r',edgecolor='k',lw=lw,label='Maxima')
-    if len(minima)>0:    
-        plt.scatter(*minima.T   ,s=ss**2,color='g',edgecolor='k',lw=lw,label='Minima')
-    if plotsaddles and len(saddles)>0:   
-        plt.scatter(*saddles.T  ,s=ss**2,color=(1,0,1),edgecolor='k',lw=lw,label='Saddles')
+    if len(clockwise)>0: plt.plt.scatter(*clockwise.T,s=ss**2,color='k',edgecolor='k',lw=lw,label='Clockwise')
+    if len(widersyns)>0: plt.plt.scatter(*widersyns.T,s=ss**2,color='w',edgecolor='k',lw=lw,label='Anticlockwise')
+    if len(maxima)>0:    plt.plt.scatter(*maxima.T   ,s=ss**2,color='r',edgecolor='k',lw=lw,label='Maxima')
+    if len(minima)>0:    plt.plt.scatter(*minima.T   ,s=ss**2,color='g',edgecolor='k',lw=lw,label='Minima')
+    if plotsaddles:
+        if len(saddles)>0:   plt.plt.scatter(*saddles.T  ,s=ss**2,color=(1,0,1),edgecolor='k',lw=lw,label='Saddles')
     nice_legend()
 
 
@@ -277,7 +195,7 @@ def find_critical_potential_points(data):
     Returns
     -------
     clockwise : numpy.ndarray
-    anticlockwise : numpy.ndarray
+    widersyns : numpy.ndarray
     saddles : numpy.ndarray
     peaks : numpy.ndarray
     maxima : numpy.ndarray
@@ -314,39 +232,17 @@ def grad(x):
     return resultx,resulty
 
 def quickgrad(x):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     dx = np.diff(x,axis=1)[:-1,:]
     dy = np.diff(x,axis=0)[:,:-1]
     return dx,dy
 
 def getp(x):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     return unwrap_indecies(coalesce(x))+1
 
 def get_critical_spectra(ff,wt):
     '''
     smt and smf are time and frequency smoothing scales
     in units of pixels
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     wt      = squeeze(wt)
     dx,dy   = quickgrad(np.abs(wt))
@@ -367,12 +263,6 @@ def plot_critical_spectra(ff,wt,ss=5,aspect=None):
     '''
     smt and smf are time and frequency smoothing scales
     in units of pixels
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     wt      = squeeze(wt)
     nf,nt = np.shape(wt)
@@ -389,8 +279,8 @@ def plot_critical_spectra(ff,wt,ss=5,aspect=None):
     aminima[:,1] = ff[aminima[:,1]]
     cla()
     plotWTPhase(ff,wt,aspect=aspect)#,interpolation='nearest')
-    if len(amaxima)>0: plt.scatter(*amaxima.T,s=ss**2,color='k',edgecolor='w',lw=1)
-    if len(aminima)>0: plt.scatter(*aminima.T,s=ss**2,color='w',edgecolor='k',lw=1)
+    if len(amaxima)>0: plt.plt.scatter(*amaxima.T,s=ss**2,color='k',edgecolor='w',lw=1)
+    if len(aminima)>0: plt.plt.scatter(*aminima.T,s=ss**2,color='w',edgecolor='k',lw=1)
     draw()
     show()
     return aminima,amaxima
@@ -400,12 +290,6 @@ def cut_array_data(data,arrayMap,cutoff=1.8,spacing=0.4):
     data should be a NChannel x Ntimes array
     arrayMap should be an L x K array of channel IDs,
     1-indexed, with "-1" to indicate missing or bad channels
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     packed = packArrayDataInterpolate(data,arrayMap)
     return dctCut(packed,cutoff,spacing)

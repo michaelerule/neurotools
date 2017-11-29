@@ -14,13 +14,16 @@ Primarily used with fftzeros code for finding critical points in phase gradient 
 
 # TODO fix imports
 #from matplotlib.mlab import find
-#from neurotools.getfftw import *
 #from neurotools.tools import *
 #from neurotools.jobs.parallel import *
 #from neurotools.signal.signal import *
 #from neurotools.signal.conv import *
 
+from neurotools import getfftw as fft
 import numpy as np
+from pylab import find
+from neurotools.signal.conv import reflect2D
+from neurotools.signal.conv import reflect2D_1
 
 def get_mask_antialiased(h_w,aa,spacing,cutoff):
     '''
@@ -45,15 +48,15 @@ def get_mask_antialiased(h_w,aa,spacing,cutoff):
     '''
     h,w = h_w # patch migrating from 2.7 to 3
     assert(aa%2==1)
-    f1     = fftfreq(h*2*aa,spacing)
-    f2     = fftfreq(w*2*aa,spacing)
-    ff     = abs(outer_complex(f1,f2))
+    f1     = fft.fftfreq(h*2*aa,spacing)
+    f2     = fft.fftfreq(w*2*aa,spacing)
+    ff     = np.abs(outer_complex(f1,f2))
     radius = 1./cutoff
     sup    = np.int32(ff<=radius)
     sup    = np.roll(sup,aa*h+aa//2,0)
     sup    = np.roll(sup,aa*w+aa//2,1)
-    mask   = array([[mean(sup[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])
-    mask   = fftshift(mask)
+    mask   = np.array([[np.mean(sup[j*aa:(j+1)*aa,i*aa:(i+1)*aa]) for i in range(w*2)] for j in range(h*2)])
+    mask   = fft.fftshift(mask)
     return mask
 
 def get_mask(h_w,spacing,cutoff):
@@ -66,11 +69,11 @@ def get_mask(h_w,spacing,cutoff):
     return: h*2 x w*2 symmetric mask to be used with DCT for smoothing
     '''
     h,w = h_w # patch migrating from 2.7 to 3
-    f1     = fftfreq(h*2,spacing)
-    f2     = fftfreq(w*2,spacing)
-    ff     = abs(outerComplex(f1,f2))
+    f1     = fft.fftfreq(h*2,spacing)
+    f2     = fft.fftfreq(w*2,spacing)
+    ff     = np.abs(outerComplex(f1,f2))
     radius = 1./cutoff
-    sup    = int32(ff<=radius)
+    sup    = np.int32(ff<=radius)
     return sup
 
 def dct_cut(data,cutoff,spacing=0.4):
@@ -89,9 +92,9 @@ def dct_cut(data,cutoff,spacing=0.4):
     h,w    = np.shape(data)[:2]
     mask   = get_mask((h,w),spacing,cutoff)
     mirror = reflect2D(data)
-    ff2    = fft2(mirror,axes=(0,1))
+    ff2    = fft.fft2(mirror,axes=(0,1))
     cut    = (ff2.T*mask.T).T # weird shape broadcasting constraints
-    result = ifft2(cut,axes=(0,1))[:h,:w,...]
+    result = fft.ifft2(cut,axes=(0,1))[:h,:w,...]
     return result
 
 def outer_complex(a,b):
@@ -155,9 +158,9 @@ def dct_cut_antialias(data,cutoff,spacing=0.4):
     h,w    = np.shape(data)[:2]
     mask   = get_mask_antialiased((h,w),7,spacing,cutoff)
     mirror = reflect2D(data)
-    ff2    = fft2(mirror,axes=(0,1))
+    ff2    = fft.fft2(mirror,axes=(0,1))
     cut    = (ff2.T*mask.T).T # weird shape broadcasting constraints
-    result = ifft2(cut,axes=(0,1))[:h,:w,...]
+    result = fft.ifft2(cut,axes=(0,1))[:h,:w,...]
     return result
 
 def dct_cut_downsampled(data,cutoff,spacing=0.4):
@@ -167,15 +170,15 @@ def dct_cut_downsampled(data,cutoff,spacing=0.4):
     recovered
     '''
     h,w    = np.shape(data)[:2]
-    f1     = fftfreq(h*2,spacing)
-    f2     = fftfreq(w*2,spacing)
-    wl     = 1./abs(reshape(f1,(2*h,1))+1j*reshape(f2,(1,2*w)))
-    mask   = int32(wl>=cutoff)
+    f1     = fft.fftfreq(h*2,spacing)
+    f2     = fft.fftfreq(w*2,spacing)
+    wl     = 1./np.abs(reshape(f1,(2*h,1))+1j*f2.reshape(1,2*w))
+    mask   = np.int32(wl>=cutoff)
     mirror = reflect2D(data)
-    ff     = fft2(mirror,axes=(0,1))
+    ff     = fft.fft2(mirror,axes=(0,1))
     cut    = (ff.T*mask.T).T # weird shape broadcasting constraints
-    empty_cols = find(all(mask==0,0))
-    empty_rows = find(all(mask==0,1))
+    empty_cols = find(np.all(mask==0,0))
+    empty_rows = find(np.all(mask==0,1))
     delete_col = len(empty_cols)/2 #idiv important here
     delete_row = len(empty_rows)/2 #idiv important here
     keep_cols  = w-delete_col
@@ -190,7 +193,7 @@ def dct_cut_downsampled(data,cutoff,spacing=0.4):
     row_mask = row_mask==1
     cut = cut[row_mask,...][:,col_mask,...]
     w,h = keep_cols,keep_rows
-    result = ifft2(cut,axes=(0,1))[:h,:w,...]
+    result = fft.ifft2(cut,axes=(0,1))[:h,:w,...]
     return result
 
 def dct_upsample(data,factor=2):
@@ -218,7 +221,7 @@ def dct_upsample(data,factor=2):
     '''
     h,w = np.shape(data)[:2]
     mirrored = reflect2D_1(data)
-    ff = fft2(mirrored,axes=(0,1))
+    ff = fft.fft2(mirrored,axes=(0,1))
     h2,w2 = np.shape(mirrored)[:2]
     newshape = (h2*factor,w2*factor) + np.shape(data)[2:]
     result = np.zeros(newshape,dtype=ff.dtype)
@@ -228,7 +231,7 @@ def dct_upsample(data,factor=2):
     result[-h:,:W ,...]=ff[-h:, :W,...]
     result[:H ,-w:,...]=ff[:H ,-w:,...]
     result[-h:,-w:,...]=ff[-h:,-w:,...]
-    result = ifft2(result,axes=(0,1))
+    result = fft.ifft2(result,axes=(0,1))
     result = result[:h*factor-factor+1,:w*factor-factor+1,...]
     return result*(factor*factor)
 
@@ -259,18 +262,18 @@ def dct_upsample_notrim(data,factor=2):
     '''
     print('ALIGNMENT BUG DO NOT USE YET')
     assert 0
-    h,w = np.shape(data)[:2]
+    h,w      = np.shape(data)[:2]
     mirrored = reflect2D_1(data)
-    ff = fft2(mirrored,axes=(0,1))
-    h2,w2 = np.shape(mirrored)[:2]
+    ff       = fft.fft2(mirrored,axes=(0,1))
+    h2,w2    = np.shape(mirrored)[:2]
     newshape = (h2*factor,w2*factor) + np.shape(data)[2:]
-    result = np.zeros(newshape,dtype=ff.dtype)
+    result   = np.zeros(newshape,dtype=ff.dtype)
     H = h+1#have to add one more on the left to grab the nyqist term
     W = w+1
     result[:H ,:W ,...]=ff[:H , :W,...]
     result[-h:,:W ,...]=ff[-h:, :W,...]
     result[:H ,-w:,...]=ff[:H ,-w:,...]
     result[-h:,-w:,...]=ff[-h:,-w:,...]
-    result = ifft2(result,axes=(0,1))
+    result = fft.ifft2(result,axes=(0,1))
     result = result[0:h*factor+factor,0:w*factor+factor,...]
     return result*(factor*factor)

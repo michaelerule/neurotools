@@ -429,12 +429,12 @@ def rewrap(x):
     -------
     '''
     x = np.array(x)
-    return (x+pi)%(2*pi)-pi
+    return (x+np.pi)%(2*np.pi)-np.pi
 
 def pdiff(x):
     '''
     Take the derivative of a sequence of phases.
-    Times when this derivative wraps around form 0 to 2*pi are correctly
+    Times when this derivative wraps around form 0 to 2*np.pi are correctly
     handeled.
     
     Parameters
@@ -493,7 +493,7 @@ def ifreq(x,Fs=1000,mode='pad'):
         computed between each pair od points in the original signal.
     '''
     pg = pghilbert(x)
-    pg = pg/(2*pi)*Fs
+    pg = pg/(2*np.pi)*Fs
     if mode=='valid':
         return pg # in Hz
     if mode=='pad':
@@ -503,7 +503,7 @@ def ifreq(x,Fs=1000,mode='pad'):
 def unwrap(h):
     '''
     Unwraps a sequences of phase measurements so that rather than
-    ranging from 0 to 2*pi, the values increase (or decrease) continuously.
+    ranging from 0 to 2*np.pi, the values increase (or decrease) continuously.
     
     Parameters
     ----------
@@ -659,7 +659,7 @@ def phase_rotate(s,f,Fs=1000.):
     Returns
     -------
     '''
-    theta = f*2*pi/Fs
+    theta = f*2*np.pi/Fs
     s *= np.exp(1j*theta)
     return s
 
@@ -811,10 +811,10 @@ def phase_randomize_from_amplitudes(amplitudes):
     N = len(amplitudes)
     x = np.complex128(amplitudes) # need to make a copy
     if N%2==0: # N is even
-        rephase = np.exp(1j*2*pi*rand((N-2)/2))
+        rephase = np.exp(1j*2*np.pi*rand((N-2)/2))
         rephase = np.concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
     else: # N is odd
-        rephase = np.exp(1j*2*pi*rand((N-1)/2))
+        rephase = np.exp(1j*2*np.pi*rand((N-1)/2))
         rephase = np.append(rephase,np.conj(rephase[::-1]))
     rephase = np.append([1],rephase)
     x *= rephase
@@ -951,7 +951,7 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
 
     Sign-changes are heuristically detected basd on the following:
         - An abnormally large skip in phase between two time points,
-          larger than pi/2, that is also a local extremum in phase velocity
+          larger than np.pi/2, that is also a local extremum in phase velocity
         - local minima in the amplitude at low-voltage with high curvature
 
     
@@ -973,8 +973,8 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
 
     amplitude_candidates = find( (amplitude_curvature >= 0.05) & (amplitude < 0.6) )
     amplitude_exclude    = find( (amplitude_curvature <  0.01) | (amplitude > 0.8) )
-    phase_candidates     = find( (phase_curvature     >= 0.05) & (phase_derivative < pi*0.5) )
-    phase_exclude        = find( (phase_derivative > pi*0.9) )
+    phase_candidates     = find( (phase_curvature     >= 0.05) & (phase_derivative < np.pi*0.5) )
+    phase_exclude        = find( (phase_derivative > np.pi*0.9) )
     aminima,_ = local_minima(amplitude)
     pminima,_ = local_minima(phase_derivative)
     pmaxima,_ = local_maxima(phase_derivative)

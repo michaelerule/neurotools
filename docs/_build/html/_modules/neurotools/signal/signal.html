@@ -587,12 +587,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="n">pi</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
 
 <div class="viewcode-block" id="pdiff"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.pdiff">[docs]</a><span class="k">def</span> <span class="nf">pdiff</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Take the derivative of a sequence of phases.</span>
-<span class="sd">    Times when this derivative wraps around form 0 to 2*pi are correctly</span>
+<span class="sd">    Times when this derivative wraps around form 0 to 2*np.pi are correctly</span>
 <span class="sd">    handeled.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -651,7 +651,7 @@
 <span class="sd">        computed between each pair od points in the original signal.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">pg</span> <span class="o">=</span> <span class="n">pghilbert</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">pg</span> <span class="o">=</span> <span class="n">pg</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">Fs</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="n">pg</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">Fs</span>
     <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;valid&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pg</span> <span class="c1"># in Hz</span>
     <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;pad&#39;</span><span class="p">:</span>
@@ -661,7 +661,7 @@
 <div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.unwrap">[docs]</a><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Unwraps a sequences of phase measurements so that rather than</span>
-<span class="sd">    ranging from 0 to 2*pi, the values increase (or decrease) continuously.</span>
+<span class="sd">    ranging from 0 to 2*np.pi, the values increase (or decrease) continuously.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -817,7 +817,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">f</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="n">Fs</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">f</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">Fs</span>
     <span class="n">s</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
@@ -969,10 +969,10 @@
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span> <span class="c1"># need to make a copy</span>
     <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="c1"># N is even</span>
-        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">rephase</span><span class="p">,[</span><span class="n">sign</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)],</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
     <span class="k">else</span><span class="p">:</span> <span class="c1"># N is odd</span>
-        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rephase</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
     <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span><span class="n">rephase</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">*=</span> <span class="n">rephase</span>
@@ -1109,7 +1109,7 @@
 
 <span class="sd">    Sign-changes are heuristically detected basd on the following:</span>
 <span class="sd">        - An abnormally large skip in phase between two time points,</span>
-<span class="sd">          larger than pi/2, that is also a local extremum in phase velocity</span>
+<span class="sd">          larger than np.pi/2, that is also a local extremum in phase velocity</span>
 <span class="sd">        - local minima in the amplitude at low-voltage with high curvature</span>
 
 <span class="sd">    </span>
@@ -1131,8 +1131,8 @@
 
     <span class="n">amplitude_candidates</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">amplitude_curvature</span> <span class="o">&gt;=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">amplitude</span> <span class="o">&lt;</span> <span class="mf">0.6</span><span class="p">)</span> <span class="p">)</span>
     <span class="n">amplitude_exclude</span>    <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">amplitude_curvature</span> <span class="o">&lt;</span>  <span class="mf">0.01</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">amplitude</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">phase_candidates</span>     <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_curvature</span>     <span class="o">&gt;=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">phase_derivative</span> <span class="o">&lt;</span> <span class="n">pi</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">phase_exclude</span>        <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_derivative</span> <span class="o">&gt;</span> <span class="n">pi</span><span class="o">*</span><span class="mf">0.9</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">phase_candidates</span>     <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_curvature</span>     <span class="o">&gt;=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">phase_derivative</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">phase_exclude</span>        <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_derivative</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.9</span><span class="p">)</span> <span class="p">)</span>
     <span class="n">aminima</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">local_minima</span><span class="p">(</span><span class="n">amplitude</span><span class="p">)</span>
     <span class="n">pminima</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">local_minima</span><span class="p">(</span><span class="n">phase_derivative</span><span class="p">)</span>
     <span class="n">pmaxima</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">phase_derivative</span><span class="p">)</span>

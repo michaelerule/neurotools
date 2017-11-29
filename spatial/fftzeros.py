@@ -40,13 +40,14 @@ def plot_phase_gradient(dz):
 
 def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
     '''
-    Parameters:
-        dz (complex123): phase gradient
-        skip (int): only plot every skip
-        lw (numeric): line width
-
     Parameters
     ----------
+        dz (complex123): phase gradient
+        
+    Other Parameters
+    ----------------
+        skip (int): only plot every skip
+        lw (numeric): line width
     
     Returns
     -------
@@ -124,10 +125,9 @@ def getpeaks2d(pp):
     and then looks for zero crossings. It should return an array the
     same size as pp but with 1 at points that are local maxima and 0 else.
 
-        :pp: a 2D array in which to search for local maxima
-    
     Parameters
     ----------
+    pp: a 2D array in which to search for local maxima
     
     Returns
     -------
@@ -164,16 +164,23 @@ def find_critical_points(data,docoalesce=False):
     '''
     Parameters
     ----------
-    data : numeric array, 2D, complex
+    data : np.array
+        2D array complex phase values
 
     Returns
     -------
     clockwise : numpy.ndarray
+        Point locations of centers of clockwise rotating waves
     anticlockwise : numpy.ndarray
+        Point locations of centers of antclockwise rotating waves
     saddles : numpy.ndarray
+        Saddle points in the phase gradient map
     peaks : numpy.ndarray
+        All local minima or maxima in the phase gradient map
     maxima : numpy.ndarray
+        Point locations of local maxima in the phase gradient 
     minima : numpy.ndarray
+        Point locations of local minima in the phase gradient 
     '''
     dx,dy,dz = get_phase_gradient_as_complex(data)
 
@@ -224,13 +231,15 @@ def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect=
     ----------
     data : np.array
         2D complex-valued array of phases
+        
+    Other Parameters
+    ----------------
     lw : int, default=1
         line width for plotting
     ss : int, default=14
         plotting point size
     skip : int, default=5
         Skip every `skip` points when plotting phase direction map
-    ff=None
     plotsaddles : bool, defualt=True
         Whether to plot saddes points
     aspect : string, default='auto'
@@ -240,18 +249,18 @@ def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect=
     '''
     clockwise,anticlockwise,saddles,peaks,maxima,minima = find_critical_points(data)
     dx,dy,dz = get_phase_gradient_as_complex(data)
-    cla()
+    plt.cla()
     plot_phase_direction(dz,skip=skip,lw=lw,zorder=Inf)
     N = np.shape(data)[0]
     if ff is None: 
-        ff = arange(N)
+        ff = np.arange(N)
     else:
         a,b = ff[0],ff[-1]
         K = b-a
         s = K/float(N)
         for d in [clockwise,anticlockwise,saddles,peaks,maxima,minima]:
-            if d.size==0: continue
-            d[:,1] = d[:,1]*s+a
+            if d.size>0:
+                d[:,1] = d[:,1]*s+a
     plot_complex(data,extent=extent,onlyphase=1)
     if len(clockwise)>0: 
         plt.scatter(*clockwise.T,s=ss**2,color='k',edgecolor='k',lw=lw,label='Clockwise')

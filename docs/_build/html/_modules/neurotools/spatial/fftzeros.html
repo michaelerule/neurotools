@@ -198,13 +198,14 @@
 
 <div class="viewcode-block" id="plot_phase_direction"><a class="viewcode-back" href="../../../neurotools.spatial.fftzeros.html#neurotools.spatial.fftzeros.plot_phase_direction">[docs]</a><span class="k">def</span> <span class="nf">plot_phase_direction</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">        dz (complex123): phase gradient</span>
-<span class="sd">        skip (int): only plot every skip</span>
-<span class="sd">        lw (numeric): line width</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">        dz (complex123): phase gradient</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">        skip (int): only plot every skip</span>
+<span class="sd">        lw (numeric): line width</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -282,10 +283,9 @@
 <span class="sd">    and then looks for zero crossings. It should return an array the</span>
 <span class="sd">    same size as pp but with 1 at points that are local maxima and 0 else.</span>
 
-<span class="sd">        :pp: a 2D array in which to search for local maxima</span>
-<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    pp: a 2D array in which to search for local maxima</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -322,16 +322,23 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : numeric array, 2D, complex</span>
+<span class="sd">    data : np.array</span>
+<span class="sd">        2D array complex phase values</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    clockwise : numpy.ndarray</span>
+<span class="sd">        Point locations of centers of clockwise rotating waves</span>
 <span class="sd">    anticlockwise : numpy.ndarray</span>
+<span class="sd">        Point locations of centers of antclockwise rotating waves</span>
 <span class="sd">    saddles : numpy.ndarray</span>
+<span class="sd">        Saddle points in the phase gradient map</span>
 <span class="sd">    peaks : numpy.ndarray</span>
+<span class="sd">        All local minima or maxima in the phase gradient map</span>
 <span class="sd">    maxima : numpy.ndarray</span>
+<span class="sd">        Point locations of local maxima in the phase gradient </span>
 <span class="sd">    minima : numpy.ndarray</span>
+<span class="sd">        Point locations of local minima in the phase gradient </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">dx</span><span class="p">,</span><span class="n">dy</span><span class="p">,</span><span class="n">dz</span> <span class="o">=</span> <span class="n">get_phase_gradient_as_complex</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -382,13 +389,15 @@
 <span class="sd">    ----------</span>
 <span class="sd">    data : np.array</span>
 <span class="sd">        2D complex-valued array of phases</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
 <span class="sd">    lw : int, default=1</span>
 <span class="sd">        line width for plotting</span>
 <span class="sd">    ss : int, default=14</span>
 <span class="sd">        plotting point size</span>
 <span class="sd">    skip : int, default=5</span>
 <span class="sd">        Skip every `skip` points when plotting phase direction map</span>
-<span class="sd">    ff=None</span>
 <span class="sd">    plotsaddles : bool, defualt=True</span>
 <span class="sd">        Whether to plot saddes points</span>
 <span class="sd">    aspect : string, default=&#39;auto&#39;</span>
@@ -398,18 +407,18 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">clockwise</span><span class="p">,</span><span class="n">anticlockwise</span><span class="p">,</span><span class="n">saddles</span><span class="p">,</span><span class="n">peaks</span><span class="p">,</span><span class="n">maxima</span><span class="p">,</span><span class="n">minima</span> <span class="o">=</span> <span class="n">find_critical_points</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">dx</span><span class="p">,</span><span class="n">dy</span><span class="p">,</span><span class="n">dz</span> <span class="o">=</span> <span class="n">get_phase_gradient_as_complex</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
     <span class="n">plot_phase_direction</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">)</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
-        <span class="n">ff</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">ff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ff</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">K</span> <span class="o">=</span> <span class="n">b</span><span class="o">-</span><span class="n">a</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">clockwise</span><span class="p">,</span><span class="n">anticlockwise</span><span class="p">,</span><span class="n">saddles</span><span class="p">,</span><span class="n">peaks</span><span class="p">,</span><span class="n">maxima</span><span class="p">,</span><span class="n">minima</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">continue</span>
-            <span class="n">d</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="n">a</span>
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="n">a</span>
     <span class="n">plot_complex</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span><span class="n">onlyphase</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clockwise</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> 
         <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">clockwise</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">ss</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Clockwise&#39;</span><span class="p">)</span>

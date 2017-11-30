@@ -438,7 +438,8 @@ def population_synchrony_linear(pop,axis=0):
     
     Returns
     -------
-    1/(1-population_synchrony(pop))
+    np.array
+        1/(1-population_synchrony(pop))
     '''
     syn = population_synchrony(pop,axis=axis)
     return 1.0/(1.0-syn)
@@ -464,6 +465,8 @@ def population_phase_coherence(data):
 
     Example
     -------
+    ::
+    
         s,a,tr = ('SPK120918', 'M1', 16)
         pop  = get_all_analytic_pop(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
         data = pop[:,500:600]
@@ -503,6 +506,8 @@ def analytic_signal_coherence(data,window=np.hanning):
     
     Example
     -------
+    ::
+    
         s,a,tr = ('SPK120918', 'M1', 16)
         pop = get_all_analytic_pop(s,a,tr,epoch=(6,-1000,2001),fa=10,fb=45)
         data = pop[:,500:600]

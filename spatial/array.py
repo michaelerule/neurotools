@@ -137,31 +137,6 @@ def array_synchrony_standard_deviation(frames):
     R = array_synchrony(frames)
     return np.sqrt(-2*np.log(R))
 
-def population_magnitude_weighted_circular_standard_deviation(population):
-    '''
-    Calls population_synchrony and transforms result to units of
-    radians.
-
-    Parameters
-    ----------
-        
-    Returns
-    -------
-    '''
-    syn = population_synchrony(population)
-    return np.sqrt(-2*np.log(syn))
-
-def array_linear_synchrony(population):
-    '''
-
-    Parameters
-    ----------
-        
-    Returns
-    -------
-    '''
-    return 1/(1-array_synchrony(population))
-
 def array_phase_gradient(frame):
     '''
     Assumes complex input (analytic signals)

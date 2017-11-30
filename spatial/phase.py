@@ -24,7 +24,7 @@ def population_kuramoto(pop,axis=0):
     
     If an array is provided, the average is taken over the first array
     dimension unless
-        otherwise specified.
+    otherwise specified.
     
     Parameters
     ----------

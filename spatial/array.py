@@ -13,8 +13,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import numpy as np
-from numpy import np.pi, e
-
 from scipy.signal.signaltools import convolve2d
 from neurotools.tools         import warn
 from neurotools.spatial.dct   import dct_upsample,dct_cut_antialias
@@ -298,7 +296,8 @@ def array_phasegradient_upper(frame,ELECTRODE_SPACING=0.4):
         
     Returns
     -------
-    TODO START FILLING IN DOCUMENTATION HERE
+    np.array
+        
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)

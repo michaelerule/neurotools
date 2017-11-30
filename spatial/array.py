@@ -1,21 +1,22 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Statistical routines to extract spatial summary statistics from 2D 
+arrays of complex-valued (phase,amplitude) signals.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-
-'''
-Library of array statistics routines.
-'''
 
 import numpy as np
 from numpy import pi, e
 
 from scipy.signal.signaltools import convolve2d
 from neurotools.tools         import warn
-from neurotools.stats.stats   import *
 from neurotools.spatial.dct   import dct_upsample,dct_cut_antialias
 from neurotools.signal.signal import rewrap
 

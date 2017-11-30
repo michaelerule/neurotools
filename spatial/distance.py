@@ -68,6 +68,12 @@ def distance_angular_deviation(session,area,trial,epoch,threads=1):
     '''
     Computes angular distance function over time, frequency, and distance.
     cos(theta-phi)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if epoch is None: epoch = 6,-1000,6000
     lfp = get_all_raw_lfp(session,area,trial,epoch)
@@ -85,6 +91,13 @@ def distance_angular_deviation(session,area,trial,epoch,threads=1):
     return results
 
 def get_averaged_angular_distance(args):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     (session,area,trial,epoch) = args #py 2.x->3 compatibility
     if epoch is None: epoch = 6,-1000,6000
     lfp = get_all_raw_lfp(session,area,trial,epoch)

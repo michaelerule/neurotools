@@ -224,8 +224,6 @@ def find_critical_points(data,docoalesce=False):
 
 def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect='auto',extent=None):
     '''
-    Parameters:
-        skip (int): only plot every [skip] phase gradient vectors
     
     Parameters
     ----------

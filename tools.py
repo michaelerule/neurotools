@@ -243,7 +243,7 @@ def globalize(function,*args,**krgs):
     nargs = len(args)
     argnames = []
     # print argkeys
-    for i,a in en|argkeys:
+    for i,a in enumerate(argkeys):
         if i>=npositio:
             if i<nargs:
                 newargs.append(args[i])
@@ -266,43 +266,7 @@ def globalize(function,*args,**krgs):
 
 # common aliases
 exists = varexists
-enum = enumerate
-arr = np.array
 concat = np.concatenate
-
-@piper
-def en(x):
-    '''
-    `en | foo` is shorthand for `enumerate(foo)`
-
-    This is dangerous. Do not use it.
-    '''
-    if type(x) is dict: x=x.iteritems()
-    return enumerate(x)
-
-''' z-score operator; TODO: remove! '''
-zc = piper(lambda x: (x-mean(x,0))/std(x,0))
-
-@piper
-def ar(x):
-    '''
-    TODO: remove!
-    '''
-    return array(x)
-
-def enlist(iterable):
-    '''
-    TODO: remove!
-    '''
-    print('\n'.join(map(str,iterable)))
-
-def scat(*args,**kwargs):
-    '''
-    TODO: remove!
-    '''
-    if 's' in kwargs:
-        return kwargs['s'].join(map(str,args))
-    return ' '.join(map(str,args))
 
 matfilecache = {}
 def metaloadmat(path):
@@ -337,7 +301,6 @@ def find_all_extension(d,ext='png'):
 setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b)}
 mapdict    = lambda data,function: {k:function(v) for k,v in data.iteritems()}
 getdict    = lambda data,index: mapdict(data, lambda v:v[index])
-
 
 def ensure_dir(dirname):
     """

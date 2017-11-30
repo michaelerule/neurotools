@@ -401,7 +401,7 @@
     <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
     <span class="n">argnames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># print argkeys</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="n">en</span><span class="o">|</span><span class="n">argkeys</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">argkeys</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">npositio</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">nargs</span><span class="p">:</span>
                 <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -424,43 +424,7 @@
 
 <span class="c1"># common aliases</span>
 <span class="n">exists</span> <span class="o">=</span> <span class="n">varexists</span>
-<span class="n">enum</span> <span class="o">=</span> <span class="nb">enumerate</span>
-<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>
 <span class="n">concat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span>
-
-<span class="nd">@piper</span>
-<span class="k">def</span> <span class="nf">en</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    `en | foo` is shorthand for `enumerate(foo)`</span>
-
-<span class="sd">    This is dangerous. Do not use it.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
-    <span class="k">return</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="sd">&#39;&#39;&#39; z-score operator; TODO: remove! &#39;&#39;&#39;</span>
-<span class="n">zc</span> <span class="o">=</span> <span class="n">piper</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-
-<span class="nd">@piper</span>
-<span class="k">def</span> <span class="nf">ar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    TODO: remove!</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<div class="viewcode-block" id="enlist"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.enlist">[docs]</a><span class="k">def</span> <span class="nf">enlist</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    TODO: remove!</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">iterable</span><span class="p">)))</span></div>
-
-<div class="viewcode-block" id="scat"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.scat">[docs]</a><span class="k">def</span> <span class="nf">scat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    TODO: remove!</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="s1">&#39;s&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">args</span><span class="p">))</span>
-    <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">args</span><span class="p">))</span></div>
 
 <span class="n">matfilecache</span> <span class="o">=</span> <span class="p">{}</span>
 <div class="viewcode-block" id="metaloadmat"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.metaloadmat">[docs]</a><span class="k">def</span> <span class="nf">metaloadmat</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -495,7 +459,6 @@
 <span class="n">setinrange</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">v</span><span class="o">&gt;=</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">v</span><span class="o">&lt;=</span><span class="n">b</span><span class="p">)}</span>
 <span class="n">mapdict</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span><span class="n">function</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">function</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()}</span>
 <span class="n">getdict</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span><span class="n">index</span><span class="p">:</span> <span class="n">mapdict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">v</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-
 
 <div class="viewcode-block" id="ensure_dir"><a class="viewcode-back" href="../../neurotools.tools.html#neurotools.tools.ensure_dir">[docs]</a><span class="k">def</span> <span class="nf">ensure_dir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

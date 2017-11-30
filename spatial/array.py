@@ -34,8 +34,7 @@ def array_average_amplitude(frames):
     Returns
     -------
     np.array
-        The average absolute magnitude 
-        over the first two axes
+        The average absolute magnitude over the first two axes
     '''
     return np.mean(np.abs(frames),axis=(0,1))
 
@@ -55,8 +54,7 @@ def array_kuramoto(frames):
     Returns
     -------
     np.array
-        The Kuramotor order parameter
-        over the first two axes
+        The Kuramotor order parameter over the first two axes
         
     '''
     return np.abs(np.mean(frames/np.abs(frames),axis=(0,1)))
@@ -78,8 +76,7 @@ def array_synchrony(frames):
     Returns
     -------
     np.array
-        The average phase syncrony
-        over the first two axes
+        The average phase syncrony over the first two axes
         
     '''
     return np.abs(np.mean(frames,axis=(0,1)))/np.mean(np.abs(frames),axis=(0,1))
@@ -102,7 +99,6 @@ def array_kuramoto_standard_deviation(frames):
     -------
     np.array
         The Kuramotor order parameter transformed to units of radians
-        over the first two axes
         
     '''
     R = array_kuramoto(frames)
@@ -125,8 +121,7 @@ def array_synchrony_standard_deviation(frames):
     Returns
     -------
     np.array
-        The average phase syncrony
-        over the first two axes
+        The average phase syncrony over the first two axes
         transformed to units of radians
         
     '''
@@ -168,7 +163,7 @@ def array_phase_gradient(frame):
     dx = (dx[1:,:,...]+dx[:-1,:,...])*0.5
     return dx+1j*dy
 
-def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.4):
+def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,electrode_spacing=0.4):
     '''
     Counting centers -- looks for channels around which phase skips +-np.pi
     
@@ -187,7 +182,7 @@ def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.
         Whether to apply a spatial frequency cutoff. 
     cutoff : float, default is 0.4
         Spatial scale cutoff for analysis, in mm
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
     
@@ -202,7 +197,7 @@ def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.
         raise ValueError('Data should be formatted with shape (x,y,t)')
     if cut:
         data = dct_upsample(dct_cut_antialias(
-            data,cutoff,ELECTRODE_SPACING),factor=upsample)
+            data,cutoff,electrode_spacing),factor=upsample)
     else:
         data = dct_upsample(data,factor=upsample)
     dz   = array_phase_gradient(data)
@@ -213,7 +208,7 @@ def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.
     nanticlockwise = np.sum(np.int32(winding<-3),axis=(1,2))
     return nclockwise, nanticlockwise
 
-def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.4):
+def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,electrode_spacing=0.4):
     '''
     Count critical points in the phase gradient map
 
@@ -232,7 +227,7 @@ def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0
         Whether to apply a spatial frequency cutoff. 
     cutoff : float, default is 0.4
         Spatial scale cutoff for analysis. 
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
     
@@ -252,7 +247,7 @@ def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0
     if not len(shape(data))==3:
         raise ValueError('Data should be formatted with shape (x,y,t)')
     if cut:
-        data = dct_upsample(dct_cut_antialias(data,cutoff,ELECTRODE_SPACING),factor=upsample)
+        data = dct_upsample(dct_cut_antialias(data,cutoff,electrode_spacing),factor=upsample)
     else:
         data = dct_upsample(data,factor=upsample)
     dz = array_phase_gradient(data).transpose((2,0,1))
@@ -279,7 +274,7 @@ def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0
     nminima    = sum2(minima   )
     return nclockwise, nanticlockwise, nsaddles, nmaxima, nminima
 
-def array_phasegradient_upper(frame,ELECTRODE_SPACING=0.4):
+def array_phasegradient_upper(frame,electrode_spacing=0.4):
     '''
     The average gradient magnitude provides an upper bound on 
     spatial frequency ( lower bound on wavelength ).
@@ -290,7 +285,7 @@ def array_phasegradient_upper(frame,ELECTRODE_SPACING=0.4):
         ND numpy array of complex-valued signals with phase and amplitude.
         Must be at least 2D. The first 2 dimensions are spatial
         dimensions (x,y). 
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         
@@ -302,9 +297,9 @@ def array_phasegradient_upper(frame,ELECTRODE_SPACING=0.4):
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
-    return np.mean(np.abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*np.pi)
+    return np.mean(np.abs(pg),axis=(0,1))/(electrode_spacing*2*np.pi)
 
-def array_phasegradient_lower(frame,ELECTRODE_SPACING=0.4):
+def array_phasegradient_lower(frame,electrode_spacing=0.4):
     '''
     The magnitude of the average gradient provides an accurate estimate
     of wavelength even in the presence of noise. 
@@ -320,7 +315,7 @@ def array_phasegradient_lower(frame,ELECTRODE_SPACING=0.4):
         ND numpy array of complex-valued signals with phase and amplitude.
         Must be at least 2D. The first 2 dimensions are spatial
         dimensions (x,y). 
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         
@@ -332,7 +327,7 @@ def array_phasegradient_lower(frame,ELECTRODE_SPACING=0.4):
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
-    return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*np.pi)
+    return np.abs(np.mean(pg,axis=(0,1)))/(electrode_spacing*2*np.pi)
 
 def array_phasegradient_magnitude_sigma(frame):
     '''
@@ -379,7 +374,7 @@ def array_phasegradient_magnitude_cv(frame):
     return np.std(np.abs(pg),axis=(0,1))/np.mean(np.abs(pg),
         axis=(0,1))
 
-def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
+def array_phasegradient_pgd_threshold(frame,thresh=0.5,electrode_spacing=0.4):
     '''
     The magnitude of the average gradient provides an accurate estimate
     of wavelength even in the presence of noise.
@@ -401,7 +396,7 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
         The minimum phase-gradient directionality measure. Waves with 
         phase-gradient directionlity below threshold will be removed to
         further reduce the contribution of noise to wavelength estimates.
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         
@@ -416,7 +411,7 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
     pg[:,:,~use] = np.NaN
-    return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*np.pi)
+    return np.abs(np.mean(pg,axis=(0,1)))/(electrode_spacing*2*np.pi)
 
 def array_wavelength_pgd_threshold(frame,thresh=0.5):
     '''
@@ -449,7 +444,7 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     return 1/array_phasegradient_pgd_threshold(frame,thresh)
 
 
-def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
+def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,electrode_spacing=0.4):
     '''
     The average phase gradient magnitude can tolerate non-planar waves, but
     is sensitive to noise. It may be appropriate to combine
@@ -472,7 +467,7 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4)
         The minimum phase-gradient directionality measure. Waves with 
         phase-gradient directionlity below threshold will be removed to
         further reduce the contribution of noise to wavelength estimates.
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         
@@ -486,7 +481,7 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4)
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
     pg[:,:,~use] = np.NaN
-    return 1/np.mean(abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*np.pi)
+    return 1/np.mean(abs(pg),axis=(0,1))/(electrode_spacing*2*np.pi)
 
 
 def array_speed_pgd_threshold(frame,thresh=0.5,FS=1000.0):
@@ -507,7 +502,7 @@ def array_speed_pgd_threshold(frame,thresh=0.5,FS=1000.0):
         The minimum phase-gradient directionality measure. Waves with 
         phase-gradient directionlity below threshold will be removed to
         further reduce the contribution of noise to wavelength estimates.
-    ELECTRODE_SPACING : float, default 0.4
+    electrode_spacing : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         

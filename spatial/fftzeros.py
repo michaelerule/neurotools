@@ -283,8 +283,6 @@ def find_critical_potential_points(data):
 
     Returns
     -------
-    clockwise : numpy.ndarray
-    anticlockwise : numpy.ndarray
     saddles : numpy.ndarray
     peaks : numpy.ndarray
     maxima : numpy.ndarray

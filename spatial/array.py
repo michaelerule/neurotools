@@ -13,14 +13,12 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import numpy as np
-from numpy import pi, e
+from numpy import np.pi, e
 
 from scipy.signal.signaltools import convolve2d
 from neurotools.tools         import warn
 from neurotools.spatial.dct   import dct_upsample,dct_cut_antialias
 from neurotools.signal.signal import rewrap
-
-ELECTRODE_SPACING = 0.4
 
 def array_average_amplitude(frames):
     '''
@@ -144,68 +142,124 @@ def array_phase_gradient(frame):
     Remaining dimensions can be arbitrary
     first dimention is Y second is X ( row major ordering )
 
-    The differentiation kernel is [-0.5, 0, 0.5]
+    The differentiation kernel is [-0.5, 0, 0.5], exept at the boundaries.
+
+    The returned phase gradients are two-dimensional, and encoded as 
+    a complex number (in analogy to the analytic signal). The gradient
+    along the first dimension (x) is encoded in the real part, and the
+    gradient along the second dimension (y) is encoded in the imaginary
+    part. 
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
+    np.array
+        Arra phase gradients encoded as complex numbers
     '''
-    if frame.dtype==np.complex64 or\
-        frame.dtype==np.complex128:
+    if frame.dtype==np.complex64 or frame.dtype==np.complex128:
         frame=np.angle(frame)
-    dy = (frame[1:,:,...]-frame[:-1,:,...]+pi)%(2*pi)-pi
-    dx = (frame[:,1:,...]-frame[:,:-1,...]+pi)%(2*pi)-pi
+    dy = (frame[1:,:,...]-frame[:-1,:,...]+np.pi)%(2*np.pi)-np.pi
+    dx = (frame[:,1:,...]-frame[:,:-1,...]+np.pi)%(2*np.pi)-np.pi
     dy = (dy[:,1:,...]+dy[:,:-1,...])*0.5
     dx = (dx[1:,:,...]+dx[:-1,:,...])*0.5
     return dx+1j*dy
 
-def array_count_centers(rawdata,upsample=3,cut=True,cutoff=0.4):
+def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.4):
     '''
-    Counting centers -- looks for channels around which phase skips +-pi
-    will miss rotating centers closer than half the electrode spacing
-
+    Counting centers -- looks for channels around which phase skips +-np.pi
+    
     Parameters
     ----------
-        
+    data : np.array
+        Data should be sent in a 3-dimensional np.array of complex analytic
+        signals, where the first two dimensions are the (x,y) spatial 
+        dimensions of the multi-electrode array.
+    
+    Other Parameters
+    ----------------
+    upsample : int, default is 3
+        Upsampling factor for interpolating between electrodes
+    cut : bool, default is True
+        Whether to apply a spatial frequency cutoff. 
+    cutoff : float, default is 0.4
+        Spatial scale cutoff for analysis, in mm
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
+    
     Returns
     -------
+    nclockwise : np.array
+        number of clockwise centers found at each time point
+    nanticlockwise : np.array
+        number of anticlockwise centers found at each time point
     '''
     # can only handle dim 3 for now
-    assert len(rawdata.shape)==3
+    assert len(data.shape)==3
     if cut:
         data = dct_upsample(dct_cut_antialias(
-            rawdata,cutoff,ELECTRODE_SPACING),factor=upsample)
+            data,cutoff,ELECTRODE_SPACING),factor=upsample)
     else:
         data = dct_upsample(data,factor=upsample)
-    dz = array_phase_gradient(data)
+    dz   = array_phase_gradient(data)
     curl = np.complex64([[-1-1j,-1+1j],[1-1j,1+1j]])
     curl = np.convolve2d(curl,np.ones((2,2))/4,'full')
     winding = arr([real(np.convolve2d(z,curl,'valid','symm')) for z in dz.transpose((2,0,1))])
-    nclockwise = np.sum(np.int32(winding> 3),axis=(1,2))
-    nwidersyns = np.sum(np.int32(winding<-3),axis=(1,2))
-    return nclockwise, nwidersyns
+    nclockwise     = np.sum(np.int32(winding> 3),axis=(1,2))
+    nanticlockwise = np.sum(np.int32(winding<-3),axis=(1,2))
+    return nclockwise, nanticlockwise
 
-def array_count_critical(rawdata,upsample=3,cut=True,cutoff=0.4):
+def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.4):
     '''
     Count critical points in the phase gradient map
 
     Parameters
     ----------
+    data : np.array
+        Data should be sent in a 3-dimensional np.array of complex analytic
+        signals, where the first two dimensions are the (x,y) spatial 
+        dimensions of the multi-electrode array.
         
+    Other Parameters
+    ----------------
+    upsample : int, default is 3
+        Upsampling factor for interpolating between electrodes
+    cut : bool, default is True
+        Whether to apply a spatial frequency cutoff. 
+    cutoff : float, default is 0.4
+        Spatial scale cutoff for analysis. 
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
+    
     Returns
     -------
+    nclockwise : np.array
+        number of clockwise centers found at each time point
+    nanticlockwise : np.array
+        number of anticlockwise centers found at each time point
+    nsaddles : np.array
+        number of saddle points
+    nmaxima : np.array
+        number of local maxima
+    nminima : np.array
+        number of local minima
     '''
     # can only handle dim 3 for now
-    assert len(shape(rawdata))==3
+    assert len(shape(data))==3
     if cut:
-        data = dct_upsample(dct_cut_antialias(rawdata,cutoff,ELECTRODE_SPACING),factor=upsample)
+        data = dct_upsample(dct_cut_antialias(data,cutoff,ELECTRODE_SPACING),factor=upsample)
     else:
         data = dct_upsample(data,factor=upsample)
     dz = array_phase_gradient(data).transpose((2,0,1))
     # extract curl via a kernal
-    # take real component, centres have curl +- pi
+    # take real component, centres have curl +- np.pi
     curl = np.complex64([[-1-1j,-1+1j],[1-1j,1+1j]])
     curl = np.convolve2d(curl,np.ones((2,2))/4,'full')
     winding = arr([np.convolve2d(z,curl,'same','symm').real for z in dz])
@@ -221,29 +275,36 @@ def array_count_critical(rawdata,upsample=3,cut=True,cutoff=0.4):
     minima    = (ddx*ddy== 1)*(ddx== 1)*ok
     sum2 = lambda x: np.sum(np.int32(x),axis=(1,2))
     nclockwise = sum2(winding>3)
-    nwidersyns = sum2(winding<-3)
+    nanticlockwise = sum2(winding<-3)
     nsaddles   = sum2(saddles  )
     nmaxima    = sum2(maxima   )
     nminima    = sum2(minima   )
-    return nclockwise, nwidersyns, nsaddles, nmaxima, nminima
+    return nclockwise, nanticlockwise, nsaddles, nmaxima, nminima
 
-def array_phasegradient_upper(frame):
+def array_phasegradient_upper(frame,ELECTRODE_SPACING=0.4):
     '''
-    The average gradient magnitude can be inflated if there is noise
-    but provides an upper bound on spatial frequency ( lower bound on
-    wavelength ).
+    The average gradient magnitude provides an upper bound on 
+    spatial frequency ( lower bound on wavelength ).
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
         
     Returns
     -------
+    TODO START FILLING IN DOCUMENTATION HERE
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
-    return np.mean(np.abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*pi)
+    return np.mean(np.abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*np.pi)
 
-def array_phasegradient_lower(frame):
+def array_phasegradient_lower(frame,ELECTRODE_SPACING=0.4):
     '''
     The magnitude of the average gradient provides a very accurate estimate
     of wavelength even in the presence of noise. However, it will
@@ -252,17 +313,24 @@ def array_phasegradient_lower(frame):
 
     Returns cycles/mm
     i.e.
-    radians/electrode / (mm/electrode) / (2*pi radians/cycle)
+    radians/electrode / (mm/electrode) / (2*np.pi radians/cycle)
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
         
     Returns
     -------
     '''
     warn('expects first two dimensions x,y of 2d array data')
     pg = array_phase_gradient(frame)
-    return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*pi)
+    return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*np.pi)
 
 def array_phasegradient_magnitude_sigma(frame):
     '''
@@ -270,6 +338,10 @@ def array_phasegradient_magnitude_sigma(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -284,6 +356,10 @@ def array_phasegradient_magnitude_cv(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -292,7 +368,7 @@ def array_phasegradient_magnitude_cv(frame):
     return np.std(np.abs(pg),axis=(0,1))/np.mean(np.abs(pg),
         axis=(0,1))
 
-def array_phasegradient_pgd_threshold(frame,thresh=0.5):
+def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
     '''
     The magnitude of the average gradient provides a very accurate estimate
     of wavelength even in the presence of noise. However, it will
@@ -301,10 +377,17 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5):
 
     Returns cycles/mm
     i.e.
-    radians/electrode / (mm/electrode) / (2*pi radians/cycle)
+    radians/electrode / (mm/electrode) / (2*np.pi radians/cycle)
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
         
     Returns
     -------
@@ -313,7 +396,7 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5):
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
     pg[:,:,~use] = np.NaN
-    return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*pi)
+    return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*np.pi)
 
 def array_wavelength_pgd_threshold(frame,thresh=0.5):
     '''
@@ -326,6 +409,10 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -334,7 +421,7 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     return 1/array_phasegradient_pgd_threshold(frame,thresh)
 
 
-def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
+def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
     '''
     The average phase gradient magnitude can tolerate non-planar waves, but
     is particularly sensitive to noise. It may be appropriate to combine
@@ -345,6 +432,13 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
         
     Returns
     -------
@@ -353,7 +447,7 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5):
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
     pg[:,:,~use] = np.NaN
-    return 1/np.mean(abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*pi)
+    return 1/np.mean(abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*np.pi)
 
 
 def array_speed_pgd_threshold(frame,thresh=0.5):
@@ -363,6 +457,10 @@ def array_speed_pgd_threshold(frame,thresh=0.5):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -371,7 +469,7 @@ def array_speed_pgd_threshold(frame,thresh=0.5):
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     warn('ASSUMING FS=1000ms HERE!!!')
     f  = df*1000.0 # radians / s
-    g  = f /(2*pi) # cycles / s
+    g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
 def array_speed_upper(frame):
@@ -381,6 +479,10 @@ def array_speed_upper(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -391,7 +493,7 @@ def array_speed_upper(frame):
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     warn('ASSUMING FS=1000ms HERE!!!')
     f  = df*1000.0 # radians / s
-    g  = f /(2*pi) # cycles / s
+    g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
 
@@ -402,6 +504,10 @@ def array_speed_lower(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -410,7 +516,7 @@ def array_speed_lower(frame):
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     warn('ASSUMING FS=1000ms HERE!!!')
     f  = df*1000.0 # radians / s
-    g  = f /(2*pi) # cycles / s
+    g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
 def array_wavelength_lower(frame):
@@ -419,11 +525,15 @@ def array_wavelength_lower(frame):
     we would like units of mm per cycle
     there are 2pi radians per cycle
     there are 0.4mm per electrode
-    phase gradient / 2 pi is in units of cycles per electrode
-    electrode spacing / (phase gradient / 2 pi)
+    phase gradient / 2 np.pi is in units of cycles per electrode
+    electrode spacing / (phase gradient / 2 np.pi)
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -436,11 +546,15 @@ def array_wavelength_upper(frame):
     we would like units of mm per cycle
     there are 2pi radians per cycle
     there are 0.4mm per electrode
-    phase gradient / 2 pi is in units of cycles per electrode
-    electrode spacing / (phase gradient / 2 pi)
+    phase gradient / 2 np.pi is in units of cycles per electrode
+    electrode spacing / (phase gradient / 2 np.pi)
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -454,6 +568,10 @@ def array_synchrony_pgd(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -468,6 +586,10 @@ def array_synchrony_pgd_standard_deviation(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -481,6 +603,10 @@ def array_kuramoto_pgd(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -494,6 +620,10 @@ def array_kuramoto_pgd_standard_deviation(frame):
 
     Parameters
     ----------
+    frame : np.array
+        ND numpy array of complex-valued signals with phase and amplitude.
+        Must be at least 2D. The first 2 dimensions are spatial
+        dimensions (x,y). 
         
     Returns
     -------
@@ -508,9 +638,13 @@ def trim_array(arrayMap):
 
     Parameters
     ----------
+    arrayMap : np.array
+        Array map of channel locations. -1 marks missing channels
         
     Returns
     -------
+    np.array
+        Trimmed map: any rows or columns that are entirely -1 are removed.
     '''
     arrayMap = np.int32(arrayMap)
     notDone = True
@@ -537,6 +671,12 @@ def trim_array_as_if(arrayMap,data):
 
     Parameters
     ----------
+    arrayMap : np.array
+        Array map of channel locations. -1 marks missing channels
+    data : np.array
+        A 3-dimensional np.array
+        where the first two dimensions are the (x,y) spatial 
+        dimensions of the multi-electrode array.
         
     Returns
     -------

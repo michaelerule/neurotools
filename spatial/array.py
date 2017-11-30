@@ -198,8 +198,8 @@ def array_count_centers(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0.
     nanticlockwise : np.array
         number of anticlockwise centers found at each time point
     '''
-    # can only handle dim 3 for now
-    assert len(data.shape)==3
+    if not len(shape(data))==3:
+        raise ValueError('Data should be formatted with shape (x,y,t)')
     if cut:
         data = dct_upsample(dct_cut_antialias(
             data,cutoff,ELECTRODE_SPACING),factor=upsample)
@@ -249,8 +249,8 @@ def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,ELECTRODE_SPACING=0
     nminima : np.array
         number of local minima
     '''
-    # can only handle dim 3 for now
-    assert len(shape(data))==3
+    if not len(shape(data))==3:
+        raise ValueError('Data should be formatted with shape (x,y,t)')
     if cut:
         data = dct_upsample(dct_cut_antialias(data,cutoff,ELECTRODE_SPACING),factor=upsample)
     else:
@@ -297,22 +297,22 @@ def array_phasegradient_upper(frame,ELECTRODE_SPACING=0.4):
     Returns
     -------
     np.array
-        
+        Average phase gradient magniture across array, in cycles/mm
     '''
-    warn('expects first two dimensions x,y of 2d array data')
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
     return np.mean(np.abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*np.pi)
 
 def array_phasegradient_lower(frame,ELECTRODE_SPACING=0.4):
     '''
-    The magnitude of the average gradient provides a very accurate estimate
-    of wavelength even in the presence of noise. However, it will
-    understimate the phase gradient if the wave structure is not perfectly
-    planar
+    The magnitude of the average gradient provides an accurate estimate
+    of wavelength even in the presence of noise. 
+    
+    However, it can slightly understimate the phase gradient if the wave 
+    structure is not perfectly planar, and therefore is a (typically 
+    quite good) lower-bound.
 
-    Returns cycles/mm
-    i.e.
-    radians/electrode / (mm/electrode) / (2*np.pi radians/cycle)
 
     Parameters
     ----------
@@ -326,14 +326,17 @@ def array_phasegradient_lower(frame,ELECTRODE_SPACING=0.4):
         
     Returns
     -------
+    np.array
+        Magnitude of average phase gradient across array, in cycles/mm
     '''
-    warn('expects first two dimensions x,y of 2d array data')
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg,axis=(0,1)))/(ELECTRODE_SPACING*2*np.pi)
 
 def array_phasegradient_magnitude_sigma(frame):
     '''
-    expects first two dimensions x,y of 2d array data
+    Assess standard deviation of phase gradient magnitudes
 
     Parameters
     ----------
@@ -344,14 +347,18 @@ def array_phasegradient_magnitude_sigma(frame):
         
     Returns
     -------
+    np.array
+        The standard-deviation of the absolute magnitude of the 
+        local phase gradient across an array, in cycles/mm
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
     return np.std(np.abs(pg),axis=(0,1))
 
 def array_phasegradient_magnitude_cv(frame):
     '''
     Coefficient of variation of the magnitudes of the phase gradients
-    expects first two dimensions x,y of 2d array data
 
     Parameters
     ----------
@@ -362,21 +369,24 @@ def array_phasegradient_magnitude_cv(frame):
         
     Returns
     -------
+    np.array
+        Coefficient of variation of the magnitudes of the phase gradients, 
+        in cycles/mm
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
     return np.std(np.abs(pg),axis=(0,1))/np.mean(np.abs(pg),
         axis=(0,1))
 
 def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
     '''
-    The magnitude of the average gradient provides a very accurate estimate
-    of wavelength even in the presence of noise. However, it will
-    understimate the phase gradient if the wave structure is not perfectly
-    planar.
+    The magnitude of the average gradient provides an accurate estimate
+    of wavelength even in the presence of noise.
 
-    Returns cycles/mm
-    i.e.
-    radians/electrode / (mm/electrode) / (2*np.pi radians/cycle)
+    Waves with 
+    phase-gradient directionlity below threshold will be removed to
+    further reduce the contribution of noise to wavelength estimates.
 
     Parameters
     ----------
@@ -384,14 +394,25 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
         ND numpy array of complex-valued signals with phase and amplitude.
         Must be at least 2D. The first 2 dimensions are spatial
         dimensions (x,y). 
+        
+    Other Parameters
+    ----------------
+    thresh : float, default 0.5
+        The minimum phase-gradient directionality measure. Waves with 
+        phase-gradient directionlity below threshold will be removed to
+        further reduce the contribution of noise to wavelength estimates.
     ELECTRODE_SPACING : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         
     Returns
     -------
+    np.array
+        Magnitude of average phase gradient across array, in cycles/mm
+        for every time-point
     '''
-    warn('expects first two dimensions x,y of 2d array data')
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
     pg[:,:,~use] = np.NaN
@@ -400,9 +421,9 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
 def array_wavelength_pgd_threshold(frame,thresh=0.5):
     '''
     The magnitude of the average gradient provides a very accurate estimate
-    of wavelength even in the presence of noise. However, it will
-    understimate the phase gradient if the wave structure is not perfectly
-    planar
+    of wavelength even in the presence of noise. We can further restrict
+    analysis to wavelength with a phase-gradient directionality above
+    a certain threshold.
 
     returns mm/cycle
 
@@ -411,23 +432,34 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     frame : np.array
         ND numpy array of complex-valued signals with phase and amplitude.
         Must be at least 2D. The first 2 dimensions are spatial
-        dimensions (x,y). 
+        dimensions (x,y).
+        
+    Other Parameters
+    ----------------
+    thresh : float, default 0.5
+        The minimum phase-gradient directionality measure. Waves with 
+        phase-gradient directionlity below threshold will be removed to
+        further reduce the contribution of noise to wavelength estimates.
         
     Returns
     -------
+    np.array
+        wavelength in mm/cycle for wave events above the PGD threshold
     '''
-    warn('expects first two dimensions x,y of 2d array data')
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     return 1/array_phasegradient_pgd_threshold(frame,thresh)
 
 
 def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4):
     '''
     The average phase gradient magnitude can tolerate non-planar waves, but
-    is particularly sensitive to noise. It may be appropriate to combine
+    is sensitive to noise. It may be appropriate to combine
     this method with spatial smoothing to denoise the data, if it is safe
     to assume a minimum spatial scale for the underlying wave dynamics.
-
-    returns mm/cycle
+    
+    To be conservative, this routine excludes waves with phase-gradient
+    directionality below the provided threshold.
 
     Parameters
     ----------
@@ -435,24 +467,34 @@ def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,ELECTRODE_SPACING=0.4)
         ND numpy array of complex-valued signals with phase and amplitude.
         Must be at least 2D. The first 2 dimensions are spatial
         dimensions (x,y). 
+        
+    Other Parameters
+    ----------------
+    thresh : float, default 0.5
+        The minimum phase-gradient directionality measure. Waves with 
+        phase-gradient directionlity below threshold will be removed to
+        further reduce the contribution of noise to wavelength estimates.
     ELECTRODE_SPACING : float, default 0.4
         Spacing between electrodes in array in mm. Default is 0.4mm for
         the Utah arrays
         
     Returns
     -------
+    np.array
+        wavelength in mm/cycle for wave events above the PGD threshold
     '''
-    warn('expects first two dimensions x,y of 2d array data')
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg  = array_phase_gradient(frame)
     use = array_synchrony_pgd(frame)>=thresh
     pg[:,:,~use] = np.NaN
     return 1/np.mean(abs(pg),axis=(0,1))/(ELECTRODE_SPACING*2*np.pi)
 
 
-def array_speed_pgd_threshold(frame,thresh=0.5):
+def array_speed_pgd_threshold(frame,thresh=0.5,FS=1000.0):
     '''
-    expects first two dimensions x,y of 2d array data
-    returns speed for plane waves in mm/s
+    Calculate an estimated wave speed for waves above the given PGD 
+    threshold.
 
     Parameters
     ----------
@@ -461,20 +503,31 @@ def array_speed_pgd_threshold(frame,thresh=0.5):
         Must be at least 2D. The first 2 dimensions are spatial
         dimensions (x,y). 
         
+    Other Parameters
+    ----------------
+    thresh : float, default 0.5
+        The minimum phase-gradient directionality measure. Waves with 
+        phase-gradient directionlity below threshold will be removed to
+        further reduce the contribution of noise to wavelength estimates.
+    ELECTRODE_SPACING : float, default 0.4
+        Spacing between electrodes in array in mm. Default is 0.4mm for
+        the Utah arrays
+        
     Returns
     -------
+    np.array
+        speed for plane waves in mm/s
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phasegradient_pgd_threshold(frame,thresh) #cycles / mm
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
-    warn('ASSUMING FS=1000ms HERE!!!')
-    f  = df*1000.0 # radians / s
+    f  = df*FS # radians / s
     g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
-def array_speed_upper(frame):
+def array_speed_lower(frame,FS=1000.0):
     '''
-    expects first two dimensions x,y of 2d array data
-    returns speed for plane waves in mm/s
 
     Parameters
     ----------
@@ -483,49 +536,27 @@ def array_speed_upper(frame):
         Must be at least 2D. The first 2 dimensions are spatial
         dimensions (x,y). 
         
-    Returns
-    -------
-    '''
-    assert 0
-    warn('BROKEN DONT USE')
-    pg = array_phasegradient_lower(frame) #cycles / mm
-    df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
-    warn('ASSUMING FS=1000ms HERE!!!')
-    f  = df*1000.0 # radians / s
-    g  = f /(2*np.pi) # cycles / s
-    return g/pg # mm /s
-
-
-def array_speed_lower(frame):
-    '''
-    expects first two dimensions x,y of 2d array data
-    returns speed for plane waves in mm/s
-
-    Parameters
-    ----------
-    frame : np.array
-        ND numpy array of complex-valued signals with phase and amplitude.
-        Must be at least 2D. The first 2 dimensions are spatial
-        dimensions (x,y). 
+    Other Parameters
+    ----------------
+    FS : float, default 1000
+        Sampling rate
         
     Returns
     -------
+    np.array
+        speed for plane waves in mm/s
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phasegradient_upper(frame) #cycles / mm
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
-    warn('ASSUMING FS=1000ms HERE!!!')
-    f  = df*1000.0 # radians / s
+    f  = df*FS # radians / s
     g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
 def array_wavelength_lower(frame):
     '''
     phase gradients are in units of radians per electrode
-    we would like units of mm per cycle
-    there are 2pi radians per cycle
-    there are 0.4mm per electrode
-    phase gradient / 2 np.pi is in units of cycles per electrode
-    electrode spacing / (phase gradient / 2 np.pi)
 
     Parameters
     ----------
@@ -536,17 +567,16 @@ def array_wavelength_lower(frame):
         
     Returns
     -------
+    np.array
+        wavelengths in mm/cycle
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     return 1/array_phasegradient_upper(frame)
 
 def array_wavelength_upper(frame):
     '''
     phase gradients are in units of radians per electrode
-    we would like units of mm per cycle
-    there are 2pi radians per cycle
-    there are 0.4mm per electrode
-    phase gradient / 2 np.pi is in units of cycles per electrode
-    electrode spacing / (phase gradient / 2 np.pi)
 
     Parameters
     ----------
@@ -557,14 +587,18 @@ def array_wavelength_upper(frame):
         
     Returns
     -------
+    np.array
+        wavelengths in mm/cycle
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     return 1/array_phasegradient_lower(frame)
 
 def array_synchrony_pgd(frame):
     '''
     The phase gradient directionality measure from Rubinto et al 2009 is
     abs(mean(pg))/mean(abs(pg))
-
+    
     Parameters
     ----------
     frame : np.array
@@ -574,14 +608,21 @@ def array_synchrony_pgd(frame):
         
     Returns
     -------
+    np.array
+        Phase gradient directionlity measure for each timepoint
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg,axis=(0,1)))/np.mean(np.abs(pg),axis=(0,1))
 
 def array_synchrony_pgd_standard_deviation(frame):
     '''
     The phase gradient directionality measure from Rubinto et al 2009 is
-    abs(mean(pg))/mean(abs(pg))
+    abs(mean(pg))/mean(abs(pg)).
+    
+    This routine applies a nonlinear transformation so that PGD has units
+    of radians, for easier interpretation.
 
     Parameters
     ----------
@@ -592,13 +633,20 @@ def array_synchrony_pgd_standard_deviation(frame):
         
     Returns
     -------
+    np.array
+        Phase gradient directionality, transformed to 
+        have units of radians in analogy to the standard deviation of a
+        circularly wrapped normal distribution. 
     '''
+    if len(frame.shape)<2:
+        raise ValueError('Array data should be packed as (x,y,time)')
     R = array_synchrony_pgd(frame)
     return np.sqrt(-2*np.log(R))
 
 def array_kuramoto_pgd(frame):
     '''
-    A related directionality index ignores vector amplitude.
+    A directionality index based on the Kuramoto order parameter. 
+    Phase gradient magnitude is discarded.
 
     Parameters
     ----------
@@ -609,13 +657,20 @@ def array_kuramoto_pgd(frame):
         
     Returns
     -------
+    np.array
+        Kuramoto gradient directionlity measure for each timepoint
     '''
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg/np.abs(pg),axis=(0,1)))
 
 def array_kuramoto_pgd_standard_deviation(frame):
     '''
-    A related directionality index ignores vector amplitude.
+    A directionality index based on the Kuramoto order parameter. 
+    Phase gradient magnitude is discarded.
+    
+    The resulting order parameter is nonlinearly transformed to have 
+    units of radians in analogy to the standard deviation of a 
+    circularly wrapped normal distribution.
 
     Parameters
     ----------
@@ -626,6 +681,10 @@ def array_kuramoto_pgd_standard_deviation(frame):
         
     Returns
     -------
+    np.array
+        Kuramoto gradient directionlity measure for each timepoint, transformed
+        to units of radians in analogy to the standard deviation of a
+        circularly wrapped normal distribution. 
     '''
     pg = array_phase_gradient(frame)
     return np.abs(np.mean(pg/np.abs(pg),axis=(0,1)))
@@ -666,7 +725,11 @@ def trim_array(arrayMap):
 def trim_array_as_if(arrayMap,data):
     '''
     Removes any rows or columns from data if those rows or columns are
-    empty ( have no channels ) in the arrayMap
+    empty ( have no channels ) in the arrayMap.
+    
+    This routine is useful for cropping larger arrays down to smaller 
+    sizes, to verify that the statistical estimates do not depend on 
+    the array size.
 
     Parameters
     ----------
@@ -679,6 +742,9 @@ def trim_array_as_if(arrayMap,data):
         
     Returns
     -------
+    np.array
+        the data array input, with rows or columns removed where arrayMap
+        is missing channels.
     '''
     arrayMap = np.int32(arrayMap)
     notDone = True
@@ -711,15 +777,17 @@ def pack_array_data(data,arrayMap):
     This will interpolate missing channels as an average of nearest
     neighbors.
 
-    :param data: NChannel x Ntimes array
-    :param arrayMap: array map, 1-indexed, 0 for missing electrodes
-    :return: returns LxKxNtimes 3D array of the interpolated channel data
-
     Parameters
     ----------
+    data: np.array
+        NChannel x Ntimes
+    arrayMap : np.array
+        array map, 1-indexed, 0 for missing electrodes
         
     Returns
     -------
+    np.array
+        LxKxNtimes 3D array of the interpolated channel data
     '''
     # first, trim off any empty rows or columns from the arrayMap
     arrayMap = trim_array(arrayMap)

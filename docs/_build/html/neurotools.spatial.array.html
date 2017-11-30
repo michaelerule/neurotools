@@ -438,10 +438,10 @@ the Utah arrays</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Average phase gradient magniture across array, in cycles/mm</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">TODO START FILLING IN DOCUMENTATION HERE</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -451,24 +451,28 @@ the Utah arrays</li>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_phasegradient_lower">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_phasegradient_lower</code><span class="sig-paren">(</span><em>frame</em>, <em>ELECTRODE_SPACING=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_phasegradient_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_phasegradient_lower" title="Permalink to this definition">¶</a></dt>
-<dd><p>The magnitude of the average gradient provides a very accurate estimate
-of wavelength even in the presence of noise. However, it will
-understimate the phase gradient if the wave structure is not perfectly
-planar</p>
-<p>Returns cycles/mm
-i.e.
-radians/electrode / (mm/electrode) / (2*np.pi radians/cycle)</p>
+<dd><p>The magnitude of the average gradient provides an accurate estimate
+of wavelength even in the presence of noise.</p>
+<p>However, it can slightly understimate the phase gradient if the wave
+structure is not perfectly planar, and therefore is a (typically
+quite good) lower-bound.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</li>
 <li><strong>ELECTRODE_SPACING</strong> (<em>float</em><em>, </em><em>default 0.4</em>) – Spacing between electrodes in array in mm. Default is 0.4mm for
 the Utah arrays</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Magnitude of average phase gradient across array, in cycles/mm</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -478,7 +482,7 @@ the Utah arrays</li>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_phasegradient_magnitude_sigma">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_phasegradient_magnitude_sigma</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_phasegradient_magnitude_sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_phasegradient_magnitude_sigma" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects first two dimensions x,y of 2d array data</p>
+<dd><p>Assess standard deviation of phase gradient magnitudes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -486,6 +490,11 @@ the Utah arrays</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The standard-deviation of the absolute magnitude of the
+local phase gradient across an array, in cycles/mm</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -494,8 +503,7 @@ dimensions (x,y).</td>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_phasegradient_magnitude_cv">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_phasegradient_magnitude_cv</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_phasegradient_magnitude_cv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_phasegradient_magnitude_cv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Coefficient of variation of the magnitudes of the phase gradients
-expects first two dimensions x,y of 2d array data</p>
+<dd><p>Coefficient of variation of the magnitudes of the phase gradients</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -504,6 +512,11 @@ expects first two dimensions x,y of 2d array data</p>
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Coefficient of variation of the magnitudes of the phase gradients,
+in cycles/mm</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -511,24 +524,35 @@ dimensions (x,y).</td>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_phasegradient_pgd_threshold">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_phasegradient_pgd_threshold</code><span class="sig-paren">(</span><em>frame</em>, <em>thresh=0.5</em>, <em>ELECTRODE_SPACING=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_phasegradient_pgd_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_phasegradient_pgd_threshold" title="Permalink to this definition">¶</a></dt>
-<dd><p>The magnitude of the average gradient provides a very accurate estimate
-of wavelength even in the presence of noise. However, it will
-understimate the phase gradient if the wave structure is not perfectly
-planar.</p>
-<p>Returns cycles/mm
-i.e.
-radians/electrode / (mm/electrode) / (2*np.pi radians/cycle)</p>
+<dd><p>The magnitude of the average gradient provides an accurate estimate
+of wavelength even in the presence of noise.</p>
+<p>Waves with
+phase-gradient directionlity below threshold will be removed to
+further reduce the contribution of noise to wavelength estimates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
-dimensions (x,y).</li>
-<li><strong>ELECTRODE_SPACING</strong> (<em>float</em><em>, </em><em>default 0.4</em>) – Spacing between electrodes in array in mm. Default is 0.4mm for
+dimensions (x,y).</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>thresh</strong> (<em>float, default 0.5</em>) – The minimum phase-gradient directionality measure. Waves with
+phase-gradient directionlity below threshold will be removed to
+further reduce the contribution of noise to wavelength estimates.</li>
+<li><strong>ELECTRODE_SPACING</strong> (<em>float, default 0.4</em>) – Spacing between electrodes in array in mm. Default is 0.4mm for
 the Utah arrays</li>
 </ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Magnitude of average phase gradient across array, in cycles/mm
+for every time-point</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -539,9 +563,9 @@ the Utah arrays</li>
 <dt id="neurotools.spatial.array.array_wavelength_pgd_threshold">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_wavelength_pgd_threshold</code><span class="sig-paren">(</span><em>frame</em>, <em>thresh=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_wavelength_pgd_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_wavelength_pgd_threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>The magnitude of the average gradient provides a very accurate estimate
-of wavelength even in the presence of noise. However, it will
-understimate the phase gradient if the wave structure is not perfectly
-planar</p>
+of wavelength even in the presence of noise. We can further restrict
+analysis to wavelength with a phase-gradient directionality above
+a certain threshold.</p>
 <p>returns mm/cycle</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -550,6 +574,15 @@ planar</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>thresh</strong> (<em>float, default 0.5</em>) – The minimum phase-gradient directionality measure. Waves with
+phase-gradient directionlity below threshold will be removed to
+further reduce the contribution of noise to wavelength estimates.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">wavelength in mm/cycle for wave events above the PGD threshold</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -559,21 +592,34 @@ dimensions (x,y).</td>
 <dt id="neurotools.spatial.array.array_wavelength_lower_pgd_threshold">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_wavelength_lower_pgd_threshold</code><span class="sig-paren">(</span><em>frame</em>, <em>thresh=0.5</em>, <em>ELECTRODE_SPACING=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_wavelength_lower_pgd_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_wavelength_lower_pgd_threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>The average phase gradient magnitude can tolerate non-planar waves, but
-is particularly sensitive to noise. It may be appropriate to combine
+is sensitive to noise. It may be appropriate to combine
 this method with spatial smoothing to denoise the data, if it is safe
 to assume a minimum spatial scale for the underlying wave dynamics.</p>
-<p>returns mm/cycle</p>
+<p>To be conservative, this routine excludes waves with phase-gradient
+directionality below the provided threshold.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
-dimensions (x,y).</li>
-<li><strong>ELECTRODE_SPACING</strong> (<em>float</em><em>, </em><em>default 0.4</em>) – Spacing between electrodes in array in mm. Default is 0.4mm for
+dimensions (x,y).</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>thresh</strong> (<em>float, default 0.5</em>) – The minimum phase-gradient directionality measure. Waves with
+phase-gradient directionlity below threshold will be removed to
+further reduce the contribution of noise to wavelength estimates.</li>
+<li><strong>ELECTRODE_SPACING</strong> (<em>float, default 0.4</em>) – Spacing between electrodes in array in mm. Default is 0.4mm for
 the Utah arrays</li>
 </ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">wavelength in mm/cycle for wave events above the PGD threshold</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -582,33 +628,33 @@ the Utah arrays</li>
 
 <dl class="function">
 <dt id="neurotools.spatial.array.array_speed_pgd_threshold">
-<code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_speed_pgd_threshold</code><span class="sig-paren">(</span><em>frame</em>, <em>thresh=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_speed_pgd_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_speed_pgd_threshold" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects first two dimensions x,y of 2d array data
-returns speed for plane waves in mm/s</p>
+<code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_speed_pgd_threshold</code><span class="sig-paren">(</span><em>frame</em>, <em>thresh=0.5</em>, <em>FS=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_speed_pgd_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_speed_pgd_threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate an estimated wave speed for waves above the given PGD
+threshold.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
-dimensions (x,y).</td>
+dimensions (x,y).</p>
+</td>
 </tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.spatial.array.array_speed_upper">
-<code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_speed_upper</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_speed_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_speed_upper" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects first two dimensions x,y of 2d array data
-returns speed for plane waves in mm/s</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
-Must be at least 2D. The first 2 dimensions are spatial
-dimensions (x,y).</td>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>thresh</strong> (<em>float, default 0.5</em>) – The minimum phase-gradient directionality measure. Waves with
+phase-gradient directionlity below threshold will be removed to
+further reduce the contribution of noise to wavelength estimates.</li>
+<li><strong>ELECTRODE_SPACING</strong> (<em>float, default 0.4</em>) – Spacing between electrodes in array in mm. Default is 0.4mm for
+the Utah arrays</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">speed for plane waves in mm/s</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -616,16 +662,21 @@ dimensions (x,y).</td>
 
 <dl class="function">
 <dt id="neurotools.spatial.array.array_speed_lower">
-<code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_speed_lower</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_speed_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_speed_lower" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects first two dimensions x,y of 2d array data
-returns speed for plane waves in mm/s</p>
-<table class="docutils field-list" frame="void" rules="none">
+<code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_speed_lower</code><span class="sig-paren">(</span><em>frame</em>, <em>FS=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_speed_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_speed_lower" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>FS</strong> (<em>float, default 1000</em>) – Sampling rate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">speed for plane waves in mm/s</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -634,12 +685,7 @@ dimensions (x,y).</td>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_wavelength_lower">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_wavelength_lower</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_wavelength_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_wavelength_lower" title="Permalink to this definition">¶</a></dt>
-<dd><p>phase gradients are in units of radians per electrode
-we would like units of mm per cycle
-there are 2pi radians per cycle
-there are 0.4mm per electrode
-phase gradient / 2 np.pi is in units of cycles per electrode
-electrode spacing / (phase gradient / 2 np.pi)</p>
+<dd><p>phase gradients are in units of radians per electrode</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -648,6 +694,10 @@ electrode spacing / (phase gradient / 2 np.pi)</p>
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">wavelengths in mm/cycle</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -655,12 +705,7 @@ dimensions (x,y).</td>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_wavelength_upper">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_wavelength_upper</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_wavelength_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_wavelength_upper" title="Permalink to this definition">¶</a></dt>
-<dd><p>phase gradients are in units of radians per electrode
-we would like units of mm per cycle
-there are 2pi radians per cycle
-there are 0.4mm per electrode
-phase gradient / 2 np.pi is in units of cycles per electrode
-electrode spacing / (phase gradient / 2 np.pi)</p>
+<dd><p>phase gradients are in units of radians per electrode</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -668,6 +713,10 @@ electrode spacing / (phase gradient / 2 np.pi)</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">wavelengths in mm/cycle</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -686,6 +735,10 @@ abs(mean(pg))/mean(abs(pg))</p>
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Phase gradient directionlity measure for each timepoint</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -694,7 +747,9 @@ dimensions (x,y).</td>
 <dt id="neurotools.spatial.array.array_synchrony_pgd_standard_deviation">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_synchrony_pgd_standard_deviation</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_synchrony_pgd_standard_deviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_synchrony_pgd_standard_deviation" title="Permalink to this definition">¶</a></dt>
 <dd><p>The phase gradient directionality measure from Rubinto et al 2009 is
-abs(mean(pg))/mean(abs(pg))</p>
+abs(mean(pg))/mean(abs(pg)).</p>
+<p>This routine applies a nonlinear transformation so that PGD has units
+of radians, for easier interpretation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -702,6 +757,12 @@ abs(mean(pg))/mean(abs(pg))</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Phase gradient directionality, transformed to
+have units of radians in analogy to the standard deviation of a
+circularly wrapped normal distribution.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -710,7 +771,8 @@ dimensions (x,y).</td>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_kuramoto_pgd">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_kuramoto_pgd</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_kuramoto_pgd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_kuramoto_pgd" title="Permalink to this definition">¶</a></dt>
-<dd><p>A related directionality index ignores vector amplitude.</p>
+<dd><p>A directionality index based on the Kuramoto order parameter.
+Phase gradient magnitude is discarded.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -719,6 +781,10 @@ dimensions (x,y).</td>
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Kuramoto gradient directionlity measure for each timepoint</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -726,7 +792,11 @@ dimensions (x,y).</td>
 <dl class="function">
 <dt id="neurotools.spatial.array.array_kuramoto_pgd_standard_deviation">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">array_kuramoto_pgd_standard_deviation</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#array_kuramoto_pgd_standard_deviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.array_kuramoto_pgd_standard_deviation" title="Permalink to this definition">¶</a></dt>
-<dd><p>A related directionality index ignores vector amplitude.</p>
+<dd><p>A directionality index based on the Kuramoto order parameter.
+Phase gradient magnitude is discarded.</p>
+<p>The resulting order parameter is nonlinearly transformed to have
+units of radians in analogy to the standard deviation of a
+circularly wrapped normal distribution.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -734,6 +804,12 @@ dimensions (x,y).</td>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.array</em>) – ND numpy array of complex-valued signals with phase and amplitude.
 Must be at least 2D. The first 2 dimensions are spatial
 dimensions (x,y).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Kuramoto gradient directionlity measure for each timepoint, transformed
+to units of radians in analogy to the standard deviation of a
+circularly wrapped normal distribution.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -762,17 +838,27 @@ that are empty ( have no channels )</p>
 <dt id="neurotools.spatial.array.trim_array_as_if">
 <code class="descclassname">neurotools.spatial.array.</code><code class="descname">trim_array_as_if</code><span class="sig-paren">(</span><em>arrayMap</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/array.html#trim_array_as_if"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.array.trim_array_as_if" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes any rows or columns from data if those rows or columns are
-empty ( have no channels ) in the arrayMap</p>
+empty ( have no channels ) in the arrayMap.</p>
+<p>This routine is useful for cropping larger arrays down to smaller
+sizes, to verify that the statistical estimates do not depend on
+the array size.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>arrayMap</strong> (<em>np.array</em>) – Array map of channel locations. -1 marks missing channels</li>
 <li><strong>data</strong> (<em>np.array</em>) – A 3-dimensional np.array
 where the first two dimensions are the (x,y) spatial
 dimensions of the multi-electrode array.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the data array input, with rows or columns removed where arrayMap
+is missing channels.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>
@@ -792,12 +878,15 @@ neighbors.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> – NChannel x Ntimes array</li>
-<li><strong>arrayMap</strong> – array map, 1-indexed, 0 for missing electrodes</li>
+<li><strong>data</strong> (<em>np.array</em>) – NChannel x Ntimes</li>
+<li><strong>arrayMap</strong> (<em>np.array</em>) – array map, 1-indexed, 0 for missing electrodes</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">returns LxKxNtimes 3D array of the interpolated channel data</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">LxKxNtimes 3D array of the interpolated channel data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
 </td>
 </tr>
 </tbody>

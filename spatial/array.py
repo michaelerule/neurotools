@@ -425,8 +425,6 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     analysis to wavelength with a phase-gradient directionality above
     a certain threshold.
 
-    returns mm/cycle
-
     Parameters
     ----------
     frame : np.array
@@ -528,6 +526,16 @@ def array_speed_pgd_threshold(frame,thresh=0.5,FS=1000.0):
 
 def array_speed_lower(frame,FS=1000.0):
     '''
+    Lower-bound estimate on array speed based on the upper-bound of the
+    phase-gradient magnitude. This estimate is susceptable to noise, 
+    and spatial low-pass filtering may help reduce the impact of noise
+    at the cost of obscuring short wavelengths. 
+    
+    The routine array_speed_pgd_threshold is in general mode accurate.
+    
+    Accuracy can be improved by restricting analysis to waves with high
+    phase-gradient directionality, where the coherent propagation direction
+    between channels allows for more reliable gradient estimates.
 
     Parameters
     ----------

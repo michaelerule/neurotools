@@ -24,6 +24,10 @@ ELECTRODE_SPACING = 0.4
 
 def array_average_amplitude(frames):
     '''
+    Computes the average signal amplitude envelope over multi-electrode
+    array data. 
+    Assumes first two dimensions are (x,y) spatial dimensions.
+    
     Parameters
     ----------
     frames : np.array
@@ -34,12 +38,17 @@ def array_average_amplitude(frames):
     Returns
     -------
     np.array
-        The average absolute magnitude over the first two axes
+        The average absolute magnitude 
+        over the first two axes
     '''
     return np.mean(np.abs(frames),axis=(0,1))
 
 def array_kuramoto(frames):
     '''
+    Computes the Kuramoto order parameter 
+    over 2D multi-electrode array given complex-valued analytic signals.
+    Assumes first two dimensions are (x,y) spatial dimensions.
+    
     Parameters
     ----------
     frames : np.array
@@ -49,12 +58,20 @@ def array_kuramoto(frames):
         
     Returns
     -------
+    np.array
+        The Kuramotor order parameter
+        over the first two axes
         
     '''
     return np.abs(np.mean(frames/np.abs(frames),axis=(0,1)))
 
 def array_synchrony(frames):
     '''
+    Computes the 
+    average phase syncrony
+    over 2D multi-electrode array given complex-valued analytic signals.
+    Assumes first two dimensions are (x,y) spatial dimensions.
+    
     Parameters
     ----------
     frames : np.array
@@ -64,12 +81,20 @@ def array_synchrony(frames):
         
     Returns
     -------
+    np.array
+        The average phase syncrony
+        over the first two axes
         
     '''
     return np.abs(np.mean(frames,axis=(0,1)))/np.mean(np.abs(frames),axis=(0,1))
 
 def array_kuramoto_standard_deviation(frames):
     '''
+    Computes the 
+    Kuramoto order parameter, transformed to units of radians
+    over 2D multi-electrode array given complex-valued analytic signals.
+    Assumes first two dimensions are (x,y) spatial dimensions.
+    
     Parameters
     ----------
     frames : np.array
@@ -79,6 +104,9 @@ def array_kuramoto_standard_deviation(frames):
         
     Returns
     -------
+    np.array
+        The Kuramotor order parameter transformed to units of radians
+        over the first two axes
         
     '''
     R = array_kuramoto(frames)
@@ -86,6 +114,11 @@ def array_kuramoto_standard_deviation(frames):
 
 def array_synchrony_standard_deviation(frames):
     '''
+    Computes the 
+    average phase syncrony, transformed to units of radians
+    over 2D multi-electrode array given complex-valued analytic signals.
+    Assumes first two dimensions are (x,y) spatial dimensions.
+    
     Parameters
     ----------
     frames : np.array
@@ -95,43 +128,18 @@ def array_synchrony_standard_deviation(frames):
         
     Returns
     -------
+    np.array
+        The average phase syncrony
+        over the first two axes
+        transformed to units of radians
         
     '''
     R = array_synchrony(frames)
     return np.sqrt(-2*np.log(R))
 
-def population_kuramoto(population):
-    '''
-    Averages over all but the last dimension of the data
-
-    Parameters
-    ----------
-        
-    Returns
-    -------
-        
-    '''
-    dimension = len(population.shape)
-    averageover = tuple(range(dimension-1))
-    return np.abs(np.mean(population/np.abs(population),axis=averageover))
-
-def population_synchrony(population):
-    '''
-    Averages over all but the last dimension of the data
-
-    Parameters
-    ----------
-        
-    Returns
-    -------
-    '''
-    dimension = len(population.shape)
-    averageover = tuple(range(dimension-1))
-    return np.abs(np.mean(population,axis=averageover))/np.mean(np.abs(population),axis=averageover)
-
 def population_magnitude_weighted_circular_standard_deviation(population):
     '''
-    Wraps the population_synchrony and transforms result to units of
+    Calls population_synchrony and transforms result to units of
     radians.
 
     Parameters

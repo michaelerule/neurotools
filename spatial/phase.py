@@ -17,7 +17,7 @@ from neurotools.signal.signal import rewrap
 
 ELECTRODE_SPACING = 0.4
 
-def population_kuromoto(pop,axis=0):
+def population_kuramoto(pop,axis=0):
     '''
     Compute the Kuramoto order parameter of a population of complex-
     valued phase oscillators. 
@@ -80,7 +80,7 @@ def population_polar_std(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
     
@@ -104,7 +104,7 @@ def population_average_amplitude(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
     
@@ -133,7 +133,7 @@ def population_signal_dispersion(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
     
@@ -170,7 +170,7 @@ def population_signal_concentration(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
     
@@ -195,7 +195,7 @@ def population_signal_precision(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -220,7 +220,7 @@ def population_signal_phase_dispersion(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless 
         otherwise specified.
         
@@ -252,7 +252,7 @@ def population_signal_phase_std(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -283,7 +283,7 @@ def population_signal_amplitude_std(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -313,7 +313,7 @@ def population_signal_amplitude_dispersion(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -365,7 +365,7 @@ def population_signal_amplitude_precision(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -390,7 +390,7 @@ def population_signal_description(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -427,7 +427,7 @@ def population_synchrony_linear(pop,axis=0):
     Parameters
     ----------
     pop : np.array
-        Array of complex-valued phases of a pop of phase oscillators.
+        Array of complex-valued phases of a population of phase oscillators.
         Expectations are taken over the first dimension only unless
         otherwise specified.
         
@@ -610,14 +610,14 @@ def population_normalized_sliding_signal_coherence(data,L=100,window=np.hanning)
         slide.append(sig)
     return 1/np.sqrt(1+np.array(slide)**2)
 
-def population_phase_relative_sliding_kuromoto(data,L=100,window=np.hanning):
+def population_phase_relative_sliding_kuramoto(data,L=100,window=np.hanning):
     '''
     Uses the phase of each channel in the middle of each block as a
     reference point. Separates coherent wave activity from synchrony.
 
     .. math::
     
-        \\textrm{kuromoto order} = \left\langle z/|z| \\right\\rangle
+        \\textrm{kuramoto order} = \left\langle z/|z| \\right\\rangle
     
     Assumes constant phase velocity, and a constant per-channel
     phase shift, and then computes the order. This is a notion of 
@@ -675,7 +675,7 @@ def population_median_phase_velocity(data):
     Returns
     -------
     medv : np.array
-        Median phase velocity within the pop for every time point
+        Median phase velocity within the population for every time point
     '''
     if not len(data.shape)==2:
         raise ValueError('data should be a 2D np.array of phases, type np.complex')

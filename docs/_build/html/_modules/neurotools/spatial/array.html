@@ -182,6 +182,10 @@
 
 <div class="viewcode-block" id="array_average_amplitude"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_average_amplitude">[docs]</a><span class="k">def</span> <span class="nf">array_average_amplitude</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the average signal amplitude envelope over multi-electrode</span>
+<span class="sd">    array data. </span>
+<span class="sd">    Assumes first two dimensions are (x,y) spatial dimensions.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    frames : np.array</span>
@@ -192,12 +196,17 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.array</span>
-<span class="sd">        The average absolute magnitude over the first two axes</span>
+<span class="sd">        The average absolute magnitude </span>
+<span class="sd">        over the first two axes</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_kuramoto"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_kuramoto">[docs]</a><span class="k">def</span> <span class="nf">array_kuramoto</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the Kuramoto order parameter </span>
+<span class="sd">    over 2D multi-electrode array given complex-valued analytic signals.</span>
+<span class="sd">    Assumes first two dimensions are (x,y) spatial dimensions.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    frames : np.array</span>
@@ -207,12 +216,20 @@
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        The Kuramotor order parameter</span>
+<span class="sd">        over the first two axes</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frames</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="array_synchrony"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_synchrony">[docs]</a><span class="k">def</span> <span class="nf">array_synchrony</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the </span>
+<span class="sd">    average phase syncrony</span>
+<span class="sd">    over 2D multi-electrode array given complex-valued analytic signals.</span>
+<span class="sd">    Assumes first two dimensions are (x,y) spatial dimensions.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    frames : np.array</span>
@@ -222,12 +239,20 @@
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        The average phase syncrony</span>
+<span class="sd">        over the first two axes</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="array_kuramoto_standard_deviation"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_kuramoto_standard_deviation">[docs]</a><span class="k">def</span> <span class="nf">array_kuramoto_standard_deviation</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the </span>
+<span class="sd">    Kuramoto order parameter, transformed to units of radians</span>
+<span class="sd">    over 2D multi-electrode array given complex-valued analytic signals.</span>
+<span class="sd">    Assumes first two dimensions are (x,y) spatial dimensions.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    frames : np.array</span>
@@ -237,6 +262,9 @@
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        The Kuramotor order parameter transformed to units of radians</span>
+<span class="sd">        over the first two axes</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">array_kuramoto</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
@@ -244,6 +272,11 @@
 
 <div class="viewcode-block" id="array_synchrony_standard_deviation"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_synchrony_standard_deviation">[docs]</a><span class="k">def</span> <span class="nf">array_synchrony_standard_deviation</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the </span>
+<span class="sd">    average phase syncrony, transformed to units of radians</span>
+<span class="sd">    over 2D multi-electrode array given complex-valued analytic signals.</span>
+<span class="sd">    Assumes first two dimensions are (x,y) spatial dimensions.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    frames : np.array</span>
@@ -253,39 +286,14 @@
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        The average phase syncrony</span>
+<span class="sd">        over the first two axes</span>
+<span class="sd">        transformed to units of radians</span>
 <span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">array_synchrony</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="population_kuramoto"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.population_kuramoto">[docs]</a><span class="k">def</span> <span class="nf">population_kuramoto</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Averages over all but the last dimension of the data</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">averageover</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">population</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">population</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">averageover</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="population_synchrony"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.population_synchrony">[docs]</a><span class="k">def</span> <span class="nf">population_synchrony</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Averages over all but the last dimension of the data</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">averageover</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">population</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">averageover</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">population</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">averageover</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="population_magnitude_weighted_circular_standard_deviation"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.population_magnitude_weighted_circular_standard_deviation">[docs]</a><span class="k">def</span> <span class="nf">population_magnitude_weighted_circular_standard_deviation</span><span class="p">(</span><span class="n">population</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

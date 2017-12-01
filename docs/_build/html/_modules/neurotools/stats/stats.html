@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.stats.stats &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>neurotools.stats.stats</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.stats.stats</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Routines for computing commonly used summary statistics not otherwise</span>
+<span class="sd">available in pylab</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.mlab</span> <span class="k">import</span> <span class="n">find</span>
+<span class="kn">import</span> <span class="nn">neurotools.stats.modefind</span> <span class="k">as</span> <span class="nn">modefind</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">scipy.stats.stats</span>         <span class="k">import</span> <span class="n">describe</span>
+
+
+<div class="viewcode-block" id="weighted_avg_and_std"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.weighted_avg_and_std">[docs]</a><span class="k">def</span> <span class="nf">weighted_avg_and_std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the weighted average and standard deviation.</span>
+<span class="sd">    values, weights -- Numpy ndarrays with the same shape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">average</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">((</span><span class="n">values</span><span class="o">-</span><span class="n">average</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>  <span class="c1"># Fast and numerically precise</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="crossvalidated_least_squares"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.crossvalidated_least_squares">[docs]</a><span class="k">def</span> <span class="nf">crossvalidated_least_squares</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">regress</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    predicts B from A in K-fold cross-validated blocks using linear</span>
+<span class="sd">    least squares</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array-like:</span>
+<span class="sd">        model coefficients x</span>
+<span class="sd">    array-like:</span>
+<span class="sd">        predicted values of b under crossvalidation</span>
+<span class="sd">    number:</span>
+<span class="sd">        correlation coefficient</span>
+<span class="sd">    number:</span>
+<span class="sd">        root mean squared error</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="n">K</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">predict</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">B</span>
+        <span class="n">stop</span>  <span class="o">=</span> <span class="n">start</span><span class="o">+</span><span class="n">B</span>
+        <span class="c1">#if stop&gt;N: stop = N</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">&gt;=</span><span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="n">trainB</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">[:</span><span class="n">start</span>  <span class="p">],</span><span class="n">b</span><span class="p">[</span><span class="n">stop</span><span class="p">:</span>  <span class="p">])</span>
+        <span class="n">trainA</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">start</span><span class="p">,:],</span><span class="n">a</span><span class="p">[</span><span class="n">stop</span><span class="p">:,:],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">testB</span>  <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span>
+        <span class="n">testA</span>  <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">,:]</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">regress</span><span class="p">(</span><span class="n">trainA</span><span class="p">,</span><span class="n">trainB</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">reconstructed</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">testA</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">reconstructed</span><span class="o">-</span><span class="n">testB</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">predict</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">reconstructed</span><span class="p">)</span>
+    <span class="n">cc</span>  <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">predict</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">predict</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">predict</span><span class="p">,</span><span class="n">cc</span><span class="p">,</span><span class="n">rms</span></div>
+
+<div class="viewcode-block" id="print_stats"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.print_stats">[docs]</a><span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    computes, prints, and returns</span>
+<span class="sd">    mean</span>
+<span class="sd">    median</span>
+<span class="sd">    minimum</span>
+<span class="sd">    maximum</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">#mode = modefind.modefind(g,0)</span>
+    <span class="n">mn</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">md</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">mi</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">mx</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="c1">#print(prefix,&#39;mode    %s\t%0.4f&#39;%(name,mode))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="s1">&#39;mean    </span><span class="si">%s</span><span class="se">\t</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">mn</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="s1">&#39;median  </span><span class="si">%s</span><span class="se">\t</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">md</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="s1">&#39;minimum </span><span class="si">%s</span><span class="se">\t</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">mi</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="s1">&#39;maximum </span><span class="si">%s</span><span class="se">\t</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">mx</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">mn</span><span class="p">,</span><span class="n">md</span><span class="p">,</span><span class="n">mi</span><span class="p">,</span><span class="n">mx</span></div>
+
+<div class="viewcode-block" id="outliers"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.outliers">[docs]</a><span class="k">def</span> <span class="nf">outliers</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reject outliers from data based on percentiles.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ndarary</span>
+<span class="sd">        1D numeric array of data values</span>
+<span class="sd">    percent : number</span>
+<span class="sd">        percent between 0 and 100 to remove</span>
+<span class="sd">    side : str</span>
+<span class="sd">        &#39;left&#39; &#39;right&#39; or &#39;both&#39;. Default is &#39;both&#39;. Remove extreme</span>
+<span class="sd">        values from the left / right / both sides of the data</span>
+<span class="sd">        distribution. If both, the percent is halved and removed</span>
+<span class="sd">        from both the left and the right</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray:</span>
+<span class="sd">        Boolean array of same shape as x indicating outliers</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">remove</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+    <span class="k">if</span>   <span class="n">side</span><span class="o">==</span><span class="s1">&#39;left&#39;</span><span class="p">:</span>
+         <span class="n">remove</span> <span class="o">|=</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">side</span><span class="o">==</span><span class="s1">&#39;right&#39;</span><span class="p">:</span>
+         <span class="n">remove</span> <span class="o">|=</span> <span class="n">x</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">100</span><span class="o">-</span><span class="n">percent</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">side</span><span class="o">==</span><span class="s1">&#39;both&#39;</span><span class="p">:</span>
+         <span class="n">remove</span> <span class="o">|=</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span>
+         <span class="n">remove</span> <span class="o">|=</span> <span class="n">x</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">100</span><span class="o">-</span><span class="n">percent</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;side must be left, right, or both&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">remove</span></div>
+
+<div class="viewcode-block" id="reject_outliers"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.reject_outliers">[docs]</a><span class="k">def</span> <span class="nf">reject_outliers</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reject outliers from data based on percentiles.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ndarary</span>
+<span class="sd">        1D numeric array of data values</span>
+<span class="sd">    percent : number</span>
+<span class="sd">        percent between 0 and 100 to remove</span>
+<span class="sd">    side : str</span>
+<span class="sd">        &#39;left&#39; &#39;right&#39; or &#39;both&#39;. Default is &#39;both&#39;. Remove extreme</span>
+<span class="sd">        values from the left / right / both sides of the data</span>
+<span class="sd">        distribution. If both, the percent is halved and removed</span>
+<span class="sd">        from both the left and the right</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Values with outliers removed</span>
+<span class="sd">    kept</span>
+<span class="sd">        Indecies of values kept</span>
+<span class="sd">    removed</span>
+<span class="sd">        Indecies of values removed</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">remove</span> <span class="o">=</span> <span class="n">outliers</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="p">,</span><span class="n">side</span><span class="p">)</span>
+    <span class="n">to_remove</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">remove</span><span class="o">==</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">to_keep</span>   <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">remove</span><span class="o">==</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">to_keep</span><span class="p">],</span> <span class="n">to_keep</span><span class="p">,</span> <span class="n">to_remove</span></div>
+    
+<div class="viewcode-block" id="pca"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.pca">[docs]</a><span class="k">def</span> <span class="nf">pca</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    w,v = pca(x,n_keep=None)</span>
+<span class="sd">    Performs PCA on data x, keeping the first n_keep dimensions</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: ndarray</span>
+<span class="sd">        Nsamples x Nfeatures array on which to perform PCA</span>
+<span class="sd">    n_keep : int</span>
+<span class="sd">        Number of principle components to retain</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    w : weights (eigenvalues)</span>
+<span class="sd">    v : eigenvector (principal components)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span>
+    <span class="n">o</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">o</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">v</span><span class="p">[:,</span><span class="n">o</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+    <span class="k">if</span> <span class="n">n_keep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">n_keep</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">w</span><span class="p">[:</span><span class="n">n_keep</span><span class="p">],</span><span class="n">v</span><span class="p">[:,:</span><span class="n">n_keep</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">w</span><span class="p">,</span><span class="n">v</span></div>
+
+
+<div class="viewcode-block" id="description"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.description">[docs]</a><span class="k">class</span> <span class="nc">description</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    quick statistical description</span>
+<span class="sd">    </span>
+<span class="sd">    TODO: move this to stats</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">skewness</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">kurtosis</span> <span class="o">=</span> <span class="n">describe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">std</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># quartiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q1</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q3</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q2</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">75</span><span class="p">)</span>
+
+        <span class="c1"># percentiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p01</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p025</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mf">2.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p05</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p10</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p90</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p95</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">95</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p975</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mf">97.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p99</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">99</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">stat</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">%s</span><span class="s1">=</span><span class="si">%0.2f</span><span class="s1"> &#39;</span><span class="o">%</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="description.short"><a class="viewcode-back" href="../../../neurotools.stats.stats.html#neurotools.stats.stats.description.short">[docs]</a>    <span class="k">def</span> <span class="nf">short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Abbreviated statistical summary</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">abbreviations</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="s1">&#39;N&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;min&#39;</span><span class="p">:</span><span class="s1">&#39;mn&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;max&#39;</span><span class="p">:</span><span class="s1">&#39;mx&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;mean&#39;</span><span class="p">:</span><span class="sa">u</span><span class="s1">&#39;μ&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;variance&#39;</span><span class="p">:</span><span class="sa">u</span><span class="s1">&#39;σ²&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;skewness&#39;</span><span class="p">:</span><span class="s1">&#39;Sk&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kurtosis&#39;</span><span class="p">:</span><span class="s1">&#39;K&#39;</span>
+        <span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">stat</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">abbreviations</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1"> &#39;</span><span class="o">%</span><span class="p">(</span><span class="n">abbreviations</span><span class="p">[</span><span class="n">stat</span><span class="p">],</span><span class="n">shortscientific</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

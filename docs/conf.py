@@ -35,7 +35,6 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'nbsphinx',
     ]
 
 # special code to handle different versions of sphinx gracefully

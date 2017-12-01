@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.gpu.cl.function &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>neurotools.gpu.cl.function</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.gpu.cl.function</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Contains higher order functions to make creation of GPU functions more </span>
+<span class="sd">succinct and compact. Also contains generic routines for manipulating Cl </span>
+<span class="sd">source objects.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyopencl</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">def</span> <span class="nf">missing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please locate and install the pyOpenCL GPU library&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please locate and install pyOpenCL GPU library&#39;</span><span class="p">)</span>
+    <span class="c1"># TODO: shadow missing function with the above, which raises an error?</span>
+    <span class="n">pyopencl</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.gpu.cl</span> <span class="k">import</span> <span class="o">*</span>   
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pytools</span> <span class="k">import</span> <span class="n">memoize</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please install the pytools module&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting fallback to neurotools&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="k">import</span> <span class="n">memoize</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">log</span><span class="p">,</span><span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+
+<div class="viewcode-block" id="format"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.function.html#neurotools.gpu.cl.function.format">[docs]</a><span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is a kernel source auto-formatter. </span>
+<span class="sd">    It mostly just does auto-indent</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([^@\n]*)@([\n]*)\n&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@\2\n\1\n&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//([^\n]*)\n&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/*\1*/\n&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\n\t ]+&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;[\n\t ]*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;; &#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;+&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[ ]*else[ ]*\{[ ]*\}[ ]*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> {</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;for[ ]*\(([^;]*)\n*;\n*([^;]*)\n*;\n*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;for(\1;\2;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\*/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/\*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[ \t]*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//([^\n]*)\n&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">newcode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">indents</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">code</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+        <span class="n">indents</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">indents</span><span class="p">):</span>
+            <span class="n">newcode</span> <span class="o">+=</span> <span class="s1">&#39;    &#39;</span>
+        <span class="n">indents</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+        <span class="n">newcode</span> <span class="o">+=</span> <span class="n">line</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">newcode</span></div>
+    
+<div class="viewcode-block" id="printKernel"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.function.html#neurotools.gpu.cl.function.printKernel">[docs]</a><span class="k">def</span> <span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This prints out a kernel source with line numbers</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">labeldigits</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">))</span><span class="o">/</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">formatstring</span> <span class="o">=</span> <span class="s2">&quot;%0&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">labeldigits</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d </span><span class="si">%s</span><span class="s2">&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">formatstring</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">line</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="guessGPUType"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.function.html#neurotools.gpu.cl.function.guessGPUType">[docs]</a><span class="k">def</span> <span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;At the moment, this returns numpy.float32 for Python floats and </span>
+<span class="sd">    numpy.int32 for python integers, and is otherwise undefined&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span></div>
+    
+<span class="n">toGPUType</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span><span class="n">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">)(</span><span class="n">arg</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;A little wrapper to auto-cast floats/ints to respective numpy datatypes</span>
+<span class="sd">for use on the GPU. This functionality probably exists elsewhere&#39;&#39;&#39;</span>
+
+<span class="c1"># Substitute __global before pointers</span>
+<span class="c1"># pointers look like</span>
+<span class="c1"># [something without commas, spaces, or *][space][star][something without commas, spaces, or *][optional whitespace][comma]</span>
+<span class="c1"># [something without commas, spaces, or *][star][space][something without commas, spaces, or *][optional whitespace][comma]</span>
+<span class="n">insert_global</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([^,* \t]+) \*([^,* \t]+)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;__global \1 *\2&#39;</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="kernel"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.function.html#neurotools.gpu.cl.function.kernel">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is my easy kernel wrapper. This function accepts a header ( the</span>
+<span class="sd">    list of arguments ), a body ( the core of the loop ), and optionally</span>
+<span class="sd">    a block of helper function code. The core loop should reference &quot;tid&quot; as</span>
+<span class="sd">    the thread index variable. The distribution of threads on the GPU is </span>
+<span class="sd">    automatically managed.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    __kernel void fun(</span><span class="si">%(header)s</span><span class="s2">) {</span>
+<span class="s2">        const int gid = get_global_id(0);</span>
+<span class="s2">        </span><span class="si">%(code)s</span><span class="s2">;</span>
+<span class="s2">    }&quot;&quot;&quot;</span><span class="o">%</span><span class="p">{</span><span class="s1">&#39;header&#39;</span><span class="p">:</span><span class="n">insert_global</span><span class="p">(</span><span class="n">header</span><span class="p">),</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span><span class="n">code</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">other</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">other</span><span class="o">+</span><span class="n">source</span>
+    <span class="n">source</span><span class="o">=</span><span class="nb">format</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">printKernel</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    #pragma extension cl_khr_byte_addressable_store : enable</span>
+<span class="s2">    #pragma extension cl_nv_compiler_options : enable</span>
+<span class="s2">    #pragma extension cl_nv_device_attribute_query : enable</span>
+<span class="s2">    #pragma extension cl_khr_global_int32_base_atomics : enable</span>
+<span class="s2">    #pragma extension cl_khr_global_int32_extended_atomics : enable</span>
+<span class="s2">    #pragma extension cl_khr_local_int32_base_atomics : enable</span>
+<span class="s2">    #pragma extension cl_khr_local_int32_extended_atomics : enable</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="o">+</span><span class="n">source</span>
+    <span class="nd">@memoize</span>
+    <span class="k">def</span> <span class="nf">mykernel</span><span class="p">():</span> <span class="k">return</span> <span class="n">pyopencl</span><span class="o">.</span><span class="n">Program</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="nd">@memoize</span>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">n_units</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">execkern</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span> <span class="k">return</span> <span class="n">mykernel</span><span class="p">()</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="p">(</span><span class="n">n_units</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">execkern</span>
+    <span class="k">return</span> <span class="n">init</span></div>
+
+<div class="viewcode-block" id="elemental"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.function.html#neurotools.gpu.cl.function.elemental">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">elemental</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+    <span class="n">code</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">code</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; \*([^,* \t]+)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span> 
+        <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([^a-zA-Z0-9_]+)</span><span class="si">%s</span><span class="s2">([^a-zA-Z0-9_]+)&quot;</span><span class="o">%</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1</span><span class="si">%s</span><span class="s2">[gid]\2&quot;</span><span class="o">%</span><span class="n">var</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kernel</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span></div>
+    <span class="c1">#def execkern(*args):</span>
+    <span class="c1">#    return kern(len(args[0]))(*args)</span>
+    <span class="c1">#return execkern</span>
+
+<div class="viewcode-block" id="gpumap"><a class="viewcode-back" href="../../../../neurotools.gpu.cl.function.html#neurotools.gpu.cl.function.gpumap">[docs]</a><span class="k">def</span> <span class="nf">gpumap</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpumap under construction&quot;</span><span class="p">)</span></div>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def duckern(header,code):</span>
+<span class="sd">    def get_type_string(a):</span>
+<span class="sd">        try:</span>
+<span class="sd">            return a._type_string</span>
+<span class="sd">        except AttributeError:</span>
+<span class="sd">            return None</span>
+<span class="sd">    def duck(*args):</span>
+<span class="sd">        types = map(args,get_type_string)</span>
+<span class="sd">        print(types)</span>
+<span class="sd">        </span>
+<span class="sd">_assign_op = lambda t:lambda s:lambda a,b:elemental(&quot;%(T)sa,%(T)sb&quot;%{T:t+&quot; *&quot;},&quot;a%s=b;&quot;%s)(len(a))(a,b)</span>
+<span class="sd">_assign_op_float = _assign_op(&#39;float&#39;)</span>
+<span class="sd">_assign_op_int = _assign_op(&#39;int&#39;)</span>
+<span class="sd">_new_op = lambda t:lambda s:lambda a,b,c:elemental(&quot;%(T)sa,%(T)sb,%(T)sc&quot;%{T:t+&quot; *&quot;},&quot;c=a%sb;&quot;%s)(len(a))(a,b,c)</span>
+<span class="sd">_new_op_float = _v_op(&#39;float&#39;)</span>
+<span class="sd">_new_op_int = _new_op(&#39;int&#39;)</span>
+
+<span class="sd">sumeq =  _assign_op_float(&#39;+&#39;)  </span>
+<span class="sd">difeq =  _assign_op_float(&#39;-&#39;)  </span>
+<span class="sd">muleq =  _assign_op_float(&#39;*&#39;)  </span>
+<span class="sd">diveq =  _assign_op_float(&#39;/&#39;)</span>
+<span class="sd">  </span>
+<span class="sd">sumeq =  _assign_op_float(&#39;+&#39;)  </span>
+<span class="sd">difeq =  _assign_op_float(&#39;-&#39;)  </span>
+<span class="sd">muleq =  _assign_op_float(&#39;*&#39;)  </span>
+<span class="sd">diveq =  _assign_op_float(&#39;/&#39;)  </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+
+
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

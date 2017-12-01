@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.dependencies &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>neurotools.dependencies</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.dependencies</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Dependency check for neurotools. </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># Gather a list of builtins if possible. These are implemented as part</span>
+<span class="c1"># of the python interpreter and should always exist.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">builtins</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">builtin_module_names</span>
+    <span class="n">python_version</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The sys package is missing; this is unexpected and fatal.&#39;</span><span class="p">)</span>
+    <span class="n">builtins</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">python_version</span> <span class="o">=</span> <span class="s1">&#39;UNKNOWN&#39;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os.path</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The os.path package is missing; this is unexpected and fatal&#39;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">glob</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The glob package is missing; this is unexpected and fatal&#39;</span><span class="p">)</span>
+
+<span class="c1"># Try to inspect the installed python directory to see what standard</span>
+<span class="c1"># library modules are available. Again, these should never be missing,</span>
+<span class="c1"># but may eventually change over time. Also, their version number should</span>
+<span class="c1"># correspond to the Python version.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">stdlib</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;/lib/python</span><span class="si">%d</span><span class="s2">.</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;/*.py&quot;</span><span class="p">):</span>
+        <span class="n">stdlib</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I tried to inspect the standard library installation but failed&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This is alarming. Nonstandard installation or environment?&#39;</span><span class="p">)</span>
+    <span class="n">stdlib</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Let&#39;s hope we can at least find the package for inspecting packages!</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Somehow the pkg_resources package is missing&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;We need this to robustly check versions for compatibility&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;ll do my best without it...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Pip may come in handy, depending on whether or not you use pip to manage</span>
+<span class="c1"># python packages.</span>
+<span class="n">installed_via_pip</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pip</span>
+    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">pip</span><span class="o">.</span><span class="n">get_installed_distributions</span><span class="p">():</span>
+        <span class="n">installed_via_pip</span><span class="p">[</span><span class="n">package</span><span class="o">.</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">package</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The pip package is missing.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pip is used to manage and inspect installed packages.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Python packages may also be installed manually, via easy_install, or via various system package managers, so it&#39;s not essential.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please see https://pip.pypa.io/en/stable/installing/ to install pip&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Alternatively, an installer script should be available at https://bootstrap.pypa.io/get-pip.py&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Note that pip does not work with OS X 10.8 or older&quot;</span><span class="p">)</span>
+
+<span class="c1"># Finally, check whether this script was called by Sphinx -- if so, then</span>
+<span class="c1"># we don&#39;t want to prompt for user input</span>
+<span class="n">TRYINSTALL</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">)</span>
+
+<span class="c1"># TODO: update these or replace with professional dependency tool</span>
+<span class="c1"># list </span>
+<span class="n">DEPENDENCIES</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="c1"># modules built in to the python interpreter. should always exist</span>
+ <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;itertools&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="c1"># standard library modules. should exist in standard installations</span>
+ <span class="p">(</span><span class="s1">&#39;collections&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;inspect&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;functools&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;os&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;re&#39;</span><span class="p">,</span> <span class="s1">&#39;2.2.1&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;shlex&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;traceback&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;types&#39;</span><span class="p">,</span> <span class="s1">&#39;2.7.6&#39;</span><span class="p">),</span>
+ <span class="c1"># custom libraries -- you may have to install these by hand.</span>
+ <span class="p">(</span><span class="s1">&#39;decorator&#39;</span><span class="p">,</span> <span class="s1">&#39;3.4.0&#39;</span><span class="p">),</span>        <span class="c1"># optional, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span><span class="p">,</span> <span class="s1">&#39;1.3.1&#39;</span><span class="p">),</span>       <span class="c1"># required, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;nitime&#39;</span><span class="p">,</span> <span class="s1">&#39;0.5&#39;</span><span class="p">),</span>             <span class="c1"># required, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;statsmodels&#39;</span><span class="p">,</span> <span class="s1">&#39;0.6.1&#39;</span><span class="p">),</span>      <span class="c1"># required, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;0.70a1&#39;</span><span class="p">),</span> <span class="c1"># optional, can use single-threaded fallback, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;pyfftw&#39;</span><span class="p">,</span> <span class="s1">&#39;0.9.2&#39;</span><span class="p">),</span>           <span class="c1"># optional, can use numpy fallback, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;spectrum&#39;</span><span class="p">,</span> <span class="s1">&#39;0.6.0&#39;</span><span class="p">),</span>         <span class="c1"># required, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;sklearn&#39;</span><span class="p">,</span> <span class="s1">&#39;0.15.2&#39;</span><span class="p">),</span>         <span class="c1"># required, in PYPI</span>
+ <span class="p">(</span><span class="s1">&#39;pygame&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version?</span>
+ <span class="p">(</span><span class="s1">&#39;decorator&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version?</span>
+ <span class="p">(</span><span class="s1">&#39;typedecorator&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version?</span>
+ <span class="p">(</span><span class="s1">&#39;pytools&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version?</span>
+ <span class="p">(</span><span class="s1">&#39;fftw&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version? same as pyfftw?</span>
+ <span class="p">(</span><span class="s1">&#39;h5py&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version?</span>
+ <span class="p">(</span><span class="s1">&#39;spectrum&#39;</span><span class="p">,</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">),</span> <span class="c1">#TODO version?</span>
+ <span class="c1"># Numpy and scipy seem to not reliably install over pip/easy_install</span>
+ <span class="c1"># Possibly due to missing build dependencies? </span>
+ <span class="c1"># These will just need to be handled as a special case.</span>
+ <span class="c1"># http://www.scipy.org/install.html</span>
+ <span class="p">(</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;1.9.2&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="s1">&#39;0.16.0&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">intalled_summary</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">DEPENDENCIES</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">package</span><span class="p">,</span><span class="n">version</span> <span class="o">=</span> <span class="n">entry</span>
+        <span class="n">note</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">package</span><span class="p">,</span><span class="n">version</span><span class="p">,</span><span class="n">note</span> <span class="o">=</span> <span class="n">entry</span>
+    
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">builtins</span><span class="p">:</span>
+        <span class="c1">#sys.stdout.write(&#39;  \tthis is a builtin, it should never be missing&#39;)</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">stdlib</span><span class="p">:</span>
+        <span class="c1">#sys.stdout.write(&#39;  \tthis is part of the standard library&#39;)</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">import failed, </span><span class="si">%s</span><span class="s1"> may not be installed or python path may not me correctly configured</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">package</span><span class="p">)</span>
+        <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+        <span class="k">continue</span> <span class="c1"># move on to next dependency</span>
+
+    <span class="c1"># due to potential weirdness that may arise with python </span>
+    <span class="c1"># environments, it&#39;s not clear that the imported version will </span>
+    <span class="c1"># always match the one reported via pip. For this reason, we</span>
+    <span class="c1"># actually do the import and try to read the version name from </span>
+    <span class="c1"># the package itself. This doesn&#39;t always work, so we use pip</span>
+    <span class="c1"># as a fallback</span>
+    <span class="n">potential_version_variable_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__version__&#39;</span><span class="p">,</span><span class="s1">&#39;__VERSION__&#39;</span><span class="p">,</span><span class="s1">&#39;VERSION&#39;</span><span class="p">,</span><span class="s1">&#39;version&#39;</span><span class="p">,</span><span class="s1">&#39;version_info&#39;</span><span class="p">]</span>
+    <span class="n">loaded_version</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">loaded_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">vname</span> <span class="ow">in</span> <span class="n">potential_version_variable_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vname</span> <span class="ow">in</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+                <span class="c1"># try to find version information, </span>
+                <span class="c1"># just hope and pray it&#39;s a string if it exists</span>
+                <span class="c1"># take only the first line if multiple lines exist</span>
+                <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">vname</span><span class="p">]</span>
+                <span class="k">break</span>
+    <span class="k">if</span> <span class="n">loaded_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">get_distribution</span><span class="p">(</span><span class="n">package</span><span class="p">)</span><span class="o">.</span><span class="n">version</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">loaded_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">installed_via_pip</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">installed_via_pip</span><span class="p">[</span><span class="n">package</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">has_version</span><span class="p">:</span>
+                <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">version</span>
+    
+    <span class="k">if</span> <span class="n">loaded_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">No version information found.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">loaded_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Version &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">loaded_version</span> <span class="p">))</span>
+        <span class="k">if</span> <span class="n">loaded_version</span> <span class="o">&lt;</span> <span class="n">version</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Loaded version older than expected &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">builtins</span><span class="p">:</span>
+        <span class="c1"># default to reporting the python version for builtins</span>
+        <span class="k">if</span> <span class="n">loaded_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">python_version</span>
+        <span class="c1"># if a version number was reported, sanity check that it matches</span>
+        <span class="k">elif</span> <span class="n">loaded_version</span> <span class="o">!=</span> <span class="n">python_version</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">A builtin is reporting a version number (unusual)&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">that differs from the Python version.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">This is unexpected&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">module reported&#39;</span><span class="p">,</span><span class="n">loaded_version</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Python version is&#39;</span><span class="p">,</span><span class="n">python_version</span><span class="p">)</span>
+            <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">python_version</span>
+    <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">stdlib</span><span class="p">:</span>
+        <span class="c1"># default to reporting the python version for the standard library</span>
+        <span class="k">if</span> <span class="n">loaded_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">python_version</span>
+        <span class="c1"># if a version number was reported, sanity check that it matches</span>
+        <span class="k">elif</span> <span class="n">loaded_version</span> <span class="o">!=</span> <span class="n">python_version</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">A standard library module is reporting a version number that differs from the Python version.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">module reported&#39;</span><span class="p">,</span><span class="n">loaded_version</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Python version is&#39;</span><span class="p">,</span><span class="n">python_version</span><span class="p">)</span>
+            <span class="n">loaded_version</span> <span class="o">=</span> <span class="n">python_version</span>
+
+    <span class="n">intalled_summary</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">package</span><span class="p">,</span><span class="n">loaded_version</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="ask"><a class="viewcode-back" href="../../neurotools.dependencies.html#neurotools.dependencies.ask">[docs]</a><span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Yes/no user prompt with defaults</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">no_answer</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="n">no_answer</span><span class="p">:</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">raw_input</span><span class="p">(</span><span class="n">msg</span><span class="o">+</span><span class="p">(</span><span class="s1">&#39; [Y/n]?&#39;</span> <span class="k">if</span> <span class="n">default</span> <span class="k">else</span> <span class="s1">&#39; [y/N]?&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">default</span>
+            <span class="k">break</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="s1">&#39;yn&#39;</span><span class="p">:</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">var</span><span class="o">==</span><span class="s1">&#39;y&#39;</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">default</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;please type n(o), or press enter for y(es)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>       <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;please type y(es), or press enter for n(o)&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">answer</span>    </div>
+
+
+<span class="c1"># check to see which setup tools are available</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">setuptools</span>
+    <span class="kn">from</span> <span class="nn">setuptools.command</span> <span class="k">import</span> <span class="n">easy_install</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">easy_install</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pip</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">pip</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">conda.cli</span> <span class="k">as</span> <span class="nn">ccli</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">ccli</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">if</span> <span class="n">easy_install</span><span class="o">==</span><span class="kc">None</span> <span class="ow">and</span> <span class="n">pip</span><span class="o">==</span><span class="kc">None</span> <span class="ow">and</span> <span class="n">ccli</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Neither pip nor easy_install is available, so I will not try to install missing packages.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please install the following packages manually&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># we can try to install things automatically</span>
+    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">builtins</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This is a bug, </span><span class="si">%s</span><span class="s1"> is a builtin, it is not missing&#39;</span><span class="o">%</span><span class="n">package</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">stdlib</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This is a bug, </span><span class="si">%s</span><span class="s1"> is in the standard library&#39;</span><span class="o">%</span><span class="n">package</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">package</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span><span class="s1">&#39;scipy&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Package </span><span class="si">%s</span><span class="s1"> is missing, but automatic installation not supported.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please search online and follow installation instructions for your platform&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">TRYINSTALL</span> <span class="ow">and</span> <span class="n">ask</span><span class="p">(</span><span class="s1">&#39;Package </span><span class="si">%s</span><span class="s1"> is missing, should I try to install it&#39;</span><span class="o">%</span><span class="n">package</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pip</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pip</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="s1">&#39;install&#39;</span><span class="p">,</span> <span class="n">package</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">easy_install</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pip is missing, I will try easy_install&#39;</span><span class="p">)</span>
+                <span class="n">easy_install</span><span class="o">.</span><span class="n">main</span><span class="p">(</span> <span class="p">[</span><span class="s2">&quot;-U&quot;</span><span class="p">,</span><span class="n">package</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">easy_install</span><span class="o">.</span><span class="n">main</span><span class="p">(</span> <span class="p">[</span><span class="n">package</span><span class="p">]</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;neither pip nor easy_install are available&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;possibly a conda environment in osx&#39;</span><span class="p">)</span>
+                <span class="n">ccli</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="s1">&#39;conda&#39;</span><span class="p">,</span> <span class="s1">&#39;install&#39;</span><span class="p">,</span>  <span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="n">package</span><span class="p">)</span>
+    
+
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

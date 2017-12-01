@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.spatial.phase module &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="index.html"/>
+        <link rel="up" title="neurotools.spatial package" href="neurotools.spatial.html"/>
+        <link rel="next" title="neurotools.spatial.spatialPSD module" href="neurotools.spatial.spatialPSD.html"/>
+        <link rel="prev" title="neurotools.spatial.kernels module" href="neurotools.spatial.kernels.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">neurotools</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="neurotools.html">neurotools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="neurotools.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="neurotools.gpu.html">neurotools.gpu package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.graphics.html">neurotools.graphics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.jobs.html">neurotools.jobs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.linalg.html">neurotools.linalg package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.models.html">neurotools.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.signal.html">neurotools.signal package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="neurotools.spatial.html">neurotools.spatial package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="neurotools.spatial.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.array.html">neurotools.spatial.array module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.dct.html">neurotools.spatial.dct module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.distance.html">neurotools.spatial.distance module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.fftzeros.html">neurotools.spatial.fftzeros module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.kernels.html">neurotools.spatial.kernels module</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">neurotools.spatial.phase module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.spatialPSD.html">neurotools.spatial.spatialPSD module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.spiking.html">neurotools.spatial.spiking module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.wave_parametric_models.html">neurotools.spatial.wave_parametric_models module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="neurotools.spatial.html#module-neurotools.spatial">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spikes.html">neurotools.spikes package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.stats.html">neurotools.stats package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#module-neurotools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">neurotools</a> &raquo;</li>
+        
+          <li><a href="neurotools.html">neurotools package</a> &raquo;</li>
+        
+          <li><a href="neurotools.spatial.html">neurotools.spatial package</a> &raquo;</li>
+        
+      <li>neurotools.spatial.phase module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/neurotools.spatial.phase.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-neurotools.spatial.phase">
+<span id="neurotools-spatial-phase-module"></span><h1>neurotools.spatial.phase module<a class="headerlink" href="#module-neurotools.spatial.phase" title="Permalink to this headline">¶</a></h1>
+<p>Statistics routines to examine population statistics of phases and
+complex-valued (phase,amplitude) analytic signals.</p>
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_kuramoto">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_kuramoto</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_kuramoto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_kuramoto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Kuramoto order parameter of a population of complex-
+valued phase oscillators.</p>
+<p>If an array is provided, the average is taken over the first array
+dimension unless
+otherwise specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Kuramotor order parameter of the population</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_synchrony">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_synchrony</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_synchrony"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_synchrony" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate phase-oscillator population synchrony. This is similar to
+the Kuramoto order parameter, but weights each oscillator by its
+amplitude. Since signal measurements typically have nonzero noise,
+phase estimates from low-amplitude oscillators are less reliable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Oscillator synchrony over the population</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_polar_std">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_polar_std</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_polar_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_polar_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>The circular standard deviation of a collection of phase oscillators.
+This is a transformation of <cite>population_synchrony</cite> with units of
+radians, which is easier to interpret.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Circular standard deviation over the population</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_average_amplitude">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_average_amplitude</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_average_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_average_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the average absolute amplitude of a population of complex-
+valued phase oscillators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Average amplitude over the population</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_dispersion">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_dispersion</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>A standardized measure of the dispersion of a population of complex-
+valued phase oscillators. Computes the determinant of the covariance
+matrix describing the 2D distribution of (phases, amplitudes) in the
+complex plane, raised to the 1/4th power. This has the same units as
+the linear dimension of the signal. For example, if the underlying
+signals are in mV, then this is a standard measure of how dispersed
+the analytic signals are in the complex plane, also in mV.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed
+Standardized measure of dispersion</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_concentration">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_concentration</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_concentration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_concentration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a standardized, unitless measure of the concentration of a
+population of complex-valued (phase,amplitude) oscillators.
+This is analagous to the reciprocal of the coefficient of variation
+for univariate data. Larger values indicate more precise distributions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed
+Standardized measure of concentration</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_precision">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_precision</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 1/σ where σ=population_signal_dispersion is a standardized
+measure of the dispersion in the population.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed
+Standardized measure of precision</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_phase_dispersion">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_phase_dispersion</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_phase_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_phase_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coefficient of variation of phases, estimated using a local
+linearization around the mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_phase_std">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_phase_std</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_phase_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_phase_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard deviation of phases locally linearized around the mean
+phase</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_amplitude_std">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_amplitude_std</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_amplitude_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_amplitude_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard deviation of amplitudes locally linearized around the mean
+phase</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_amplitude_dispersion">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_amplitude_dispersion</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_amplitude_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_amplitude_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coefficient of variation of amplitudes, locally linearized around
+the mean phase</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_phase_precision">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_phase_precision</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_phase_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_phase_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse coefficient of variation of phases, estimated using a local
+linearization around the mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>pop of oscillator phases; 1D np.complex array</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_amplitude_precision">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_amplitude_precision</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_amplitude_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_amplitude_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse coefficient of variation of amplitudes, estimated using a local
+linearization around the mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Depending on whether a 1D or ND array was passed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float or np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_signal_description">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_signal_description</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_signal_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_signal_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a statistical of a population of complex-valued phase
+oscillators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>z</strong> (<em>complex</em>) – Average analytic signals</li>
+<li><strong>a</strong> (<em>float</em>) – Magnitude of average analytic signal</li>
+<li><strong>h</strong> (<em>float</em>) – Mean phase</li>
+<li><em>s1</em> – Standard deviation of linearized phases</li>
+<li><em>s2</em> – Standard deviation of linearized amplitudes</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_synchrony_linear">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_synchrony_linear</code><span class="sig-paren">(</span><em>pop</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_synchrony_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_synchrony_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transformed population synchrony score</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<em>np.array</em>) – Array of complex-valued phases of a population of phase oscillators.
+Expectations are taken over the first dimension only unless
+otherwise specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1/(1-population_synchrony(pop))</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_phase_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_phase_coherence</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_phase_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_phase_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>array-like</em>) – No. of channels × No. of timepoints</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tr</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">pop</span>  <span class="o">=</span> <span class="n">get_all_analytic_pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">2001</span><span class="p">),</span><span class="n">fa</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pop</span><span class="p">[:,</span><span class="mi">500</span><span class="p">:</span><span class="mi">600</span><span class="p">]</span>
+<span class="n">sliding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">population_phase_coherence</span><span class="p">(</span><span class="n">pop</span><span class="p">[:,</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">100</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">pop</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">100</span><span class="p">)])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.analytic_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">analytic_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>window=&lt;function hanning&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#analytic_signal_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.analytic_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>array-like</em>) – K x N
+K = No. of channels
+N = No. of timepoints</li>
+<li><strong>L</strong> – Window length in samples, optional, default is 100</li>
+<li><strong>window</strong> (<em>function</em>) – windowing function, optional, default is <cite>np.hanning</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tr</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">pop</span> <span class="o">=</span> <span class="n">get_all_analytic_pop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">2001</span><span class="p">),</span><span class="n">fa</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pop</span><span class="p">[:,</span><span class="mi">500</span><span class="p">:</span><span class="mi">600</span><span class="p">]</span>
+<span class="n">sliding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">population_signal_coherence</span><span class="p">(</span><span class="n">pop</span><span class="p">[:,</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">100</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">pop</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">100</span><span class="p">)])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_sliding_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_sliding_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;function hanning&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_sliding_signal_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_sliding_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>array-like</em>) – K x N
+K = No. of channels
+N = No. of timepoints</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</li>
+<li><strong>L</strong> – Window length in samples, optional, default is 100</li>
+<li><strong>window</strong> (<em>function</em>) – windowing function, optional, default is <cite>np.hanning</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sliding-window Kuramoto order parameter over data</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.sliding_population_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">sliding_population_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;function hanning&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.phase.sliding_population_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>array-like</em>) – K x N
+K = No. of channels
+N = No. of timepoints</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</li>
+<li><strong>L</strong> – Window length in samples, optional, default is 100</li>
+<li><strong>window</strong> (<em>function</em>) – windowing function, optional, default is <cite>np.hanning</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sliding-window Kuramoto order parameter over data</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_normalized_sliding_signal_coherence">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_normalized_sliding_signal_coherence</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;function hanning&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_normalized_sliding_signal_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_normalized_sliding_signal_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts median frequency. Uses this to unwrap array phases.
+Applies a per-channel phase shift to zero mean phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>array-like</em>) – K x N
+K = No. of channels
+N = No. of timepoints</li>
+<li><strong>L</strong> – Window length in samples, optional, default is 100</li>
+<li><strong>window</strong> (<em>function</em>) – windowing function, optional, default is <cite>np.hanning</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first"><strong>axis</strong> (<em>int, default 0</em>) – Axis over which to operate</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_phase_relative_sliding_kuramoto">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_phase_relative_sliding_kuramoto</code><span class="sig-paren">(</span><em>data</em>, <em>L=100</em>, <em>window=&lt;function hanning&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_phase_relative_sliding_kuramoto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_phase_relative_sliding_kuramoto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the phase of each channel in the middle of each block as a
+reference point. Separates coherent wave activity from synchrony.</p>
+<div class="math">
+\[\textrm{kuramoto order} = \left\langle z/|z| \right\rangle\]</div>
+<p>Assumes constant phase velocity, and a constant per-channel
+phase shift, and then computes the order. This is a notion of
+relative phase stability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>np.array</em>) – Phase data as np.complex</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>L</strong> (<em>int, default is 100</em>) – Window length in samples</li>
+<li><strong>window</strong> (function, default is <cite>np.hanning</cite>) – windowing function, optional</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_median_phase_velocity">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_median_phase_velocity</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_median_phase_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_median_phase_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>median phase velocity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>np.array</em>) – 2D array of phases; Nchannels x Ntimes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>medv</strong> – Median phase velocity within the population for every time point</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.phase.population_median_frequency">
+<code class="descclassname">neurotools.spatial.phase.</code><code class="descname">population_median_frequency</code><span class="sig-paren">(</span><em>data</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/phase.html#population_median_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.phase.population_median_frequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert from phase in radians/frame to
+Frequency in cycles/s</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>np.complex array</em>) – Phase array data</li>
+<li><strong>Fs</strong> (<em>int</em><em>, </em><em>default 1000</em>) – Sampling rate in Hz</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="neurotools.spatial.spatialPSD.html" class="btn btn-neutral float-right" title="neurotools.spatial.spatialPSD module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="neurotools.spatial.kernels.html" class="btn btn-neutral" title="neurotools.spatial.kernels module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

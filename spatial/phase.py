@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 '''
-Statistics routines to examine pop statistics of phases and
+Statistics routines to examine population statistics of phases and
 complex-valued (phase,amplitude) analytic signals.
 '''
 from __future__ import absolute_import

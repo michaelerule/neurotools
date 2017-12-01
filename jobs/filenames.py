@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions to validate filenames
+'''
 # BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
@@ -38,6 +41,11 @@ def validate_argument_signature(sig):
     things to disk. The argument signature must be hashable. It must
     consists of types that can be translated between python, numpy, and
     matlab convenctions.
+    
+    Parameters
+    ----------
+    sig : argument signature
+        Not implemented
     '''
     raise NotImplementedError('Function not yet implemented');
 

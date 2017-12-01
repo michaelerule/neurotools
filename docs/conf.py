@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
+    'sphinx.ext.nbsphinx',
     ]
 
 # special code to handle different versions of sphinx gracefully
@@ -249,10 +250,10 @@ html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
 
 
 extensions += ['sphinx.ext.autosummary',]
-autodoc_default_flags = ['members']
+autodoc_default_flags  = ['members']
 autosummary_gerenerate = True
-exclude_patterns = ['_auto/*']
-autodoc_member_order = 'bysource'
+exclude_patterns       = ['_auto/*']
+autodoc_member_order   = 'bysource'
 
 
 # Patch duplicate errors
@@ -270,4 +271,8 @@ class PatchedPythonDomain(PythonDomain):
 def setup(sphinx):
     sphinx.override_domain(PatchedPythonDomain)
 
+
+# Get notebook support
+# https://nbsphinx.readthedocs.io/en/0.2.17/installation.html
+# python3 -m pip install nbsphinx --user
 

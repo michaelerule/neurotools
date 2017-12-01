@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions related to disk caching (memoization)
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -307,6 +310,13 @@ def signature_to_file_string(f,sig,
                 'caching framework that uses cryptographic hashes\n'+
                 'to solve this problem. For now, we skip the cache.\n\n'+
                 'The offending filename is '+filename)
+    if __PYTHON_2__:
+        try:
+            ascii = filename.encode("utf8","ignore")
+            assert unicode(ascii)==filename
+            filename = ascii
+        except UnicodeDecodeError:
+            pass
     check_filename(filename)
     return filename
 

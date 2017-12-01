@@ -290,7 +290,22 @@ def metaloadmat(path):
 
 def find_all_extension(d,ext='png'):
     '''
-    Locate manually sorted unit classes
+    Locate all files with a given extension
+    
+    Parameters
+    ----------
+    d : string
+        String representing a path in the filesystem
+    
+    Other Parameters
+    ----------------
+    ext : string
+        extension to locate. search is not case-sensitive. 
+        
+    Returns
+    -------
+    found : string
+        List of files with matching extension
     '''
     found = []
     for root,dirs,files in os.walk(d):

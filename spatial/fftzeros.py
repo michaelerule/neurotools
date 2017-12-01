@@ -1,35 +1,39 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import unicode_literals
-from __future__ import print_function
-
 '''
 Code for identifying critical points in phase gradient maps.
 '''
 
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
 import numpy as np
 import matplotlib as plt
 import pylab as pl
-
 from neurotools.signal.signal import rewrap
 from scipy.signal import convolve2d
 from neurotools.graphics.plot import *
 
 def plot_phase_gradient(dz):
     '''
+    Plot a phase-gradient map using a hue wheel to show direction
+    and local flow lines to indicate magnitude
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    dz : np.array
+        Complex-valued square np.array of phase gradient directions.
+        The gradient in the first dimension (x) is in the real component,
+        anf the second dimension (y) in the imaginary component.
     '''
     plt.cla()
     plt.imshow(np.angle(dz),interpolation='nearest')
-    hsv()
+    plt.hsv()
     for i,row in list(enumerate(dz))[::1]:
         for j,z in list(enumerate(row))[::1]:
             z *=5
@@ -40,21 +44,25 @@ def plot_phase_gradient(dz):
 
 def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
     '''
+    Plot a phase-gradient map using a hue wheel to show direction
+    and compass needles. Gradient magnitude is not shown.
+    
     Parameters
     ----------
-        dz (complex123): phase gradient
+    dz : complex128
+        phase gradient
         
     Other Parameters
     ----------------
-        skip (int): only plot every skip
-        lw (numeric): line width
+    skip (int): only plot every skip
+    lw (numeric): line width
     
     Returns
     -------
     '''
-    cla()
-    imshow(np.angle(dz),interpolation='nearest')
-    hsv()
+    plt.cla()
+    plt.imshow(np.angle(dz),interpolation='nearest')
+    plt.hsv()
     for i,row in list(enumerate(dz))[skip/2::skip]:
         for j,z in list(enumerate(row))[skip/2::skip]:
             z = 0.25*skip*z/np.abs(z)
@@ -67,12 +75,19 @@ def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
 
 def dPhidx(phase):
     '''
+    Phase derivative in the x direction. 
+    The returned array is smaller than the input array by one row and 
+    column.
     
     Parameters
     ----------
+    phase : np.array
+        two-dimensional array of phases in *radians*
     
     Returns
     -------
+    np.array
+        phases differentiated along the x-axis (first dimension)
     '''
     dx = rewrap(np.diff(phase,1,0))
     dx = (dx[:,1:]+dx[:,:-1])*0.5
@@ -80,12 +95,19 @@ def dPhidx(phase):
 
 def dPhidy(phase):
     '''
+    Phase derivative in the y direction. 
+    The returned array is smaller than the input array by one row and 
+    column.
     
     Parameters
     ----------
+    phase : np.array
+        two-dimensional array of phases in *radians*
     
     Returns
     -------
+    np.array
+        phases differentiated along the y-axis (second dimension)
     '''
     dy = rewrap(np.diff(phase,1,1))
     dy = (dy[1:,:]+dy[:-1,:])*0.5
@@ -93,6 +115,8 @@ def dPhidy(phase):
 
 def unwrap_indecies(tofind):
     '''
+    Depricated, use np.where.
+    TODO: remove all uses of this function
     
     Parameters
     ----------
@@ -106,12 +130,24 @@ def unwrap_indecies(tofind):
 
 def get_phase_gradient_as_complex(data):
     '''
+    Computes the phase gradient across an array and stores it in a complex
+    number, in analogy to the complex-valued analytic signal. The complex
+    phase indicates gradient direction, and the amplitude gradient 
+    magnitude.
     
     Parameters
     ----------
+    data : np.array
+        Complex-valued array of analytic signals
     
     Returns
     -------
+    dx : np.float
+        Derivative in the x direction (first dimension)
+    dy : np.float
+        Derivative in the y direction (second dimension)
+    dz : np.complex1
+        Phase gradient stored as a complex number
     '''
     phase = np.angle(data)
     dx    = dPhidx(phase)
@@ -122,15 +158,18 @@ def get_phase_gradient_as_complex(data):
 def getpeaks2d(pp):
     '''
     This function differentiates the array pp in the x and y direction
-    and then looks for zero crossings. It should return an array the
+    and then looks for zero crossings. It returns an array the
     same size as pp but with 1 at points that are local maxima and 0 else.
 
     Parameters
     ----------
-    pp: a 2D array in which to search for local maxima
+    pp: np.array
+        a 2D array in which to search for local maxima
     
     Returns
     -------
+    np.array
+        an array with 1 at points that are local maxima and 0 elsewhere.
     '''
     dx  = np.diff(pp,1,0)[:,:-1]
     dy  = np.diff(pp,1,1)[:-1,:]
@@ -143,14 +182,21 @@ def getpeaks2d(pp):
 
 def coalesce(pp,s1=4,s2=None):
     '''
-    S1 and S2 are time/frequency smoothing scale.
-    This is a major bottleneck.
+    Merge nearby peaks 
     
     Parameters
     ----------
     
+    Other Parameters
+    ----------------
+    S1 : float
+        x axis smoothing scale
+    S2 : float
+        y axis smoothing scale
+    
     Returns
     -------
+    pk : np.array
     '''
     if s2==None: s2=s1
     k1 = gausskern1d(s1,min(np.shape(pp)[1],int(ceil(6*s1))))

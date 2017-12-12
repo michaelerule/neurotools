@@ -185,7 +185,6 @@
     <span class="n">IN_SPHINX</span><span class="o">=</span><span class="kc">True</span>  
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">IN_SPHINX</span><span class="p">:</span>
-    <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span>
     <span class="n">VERBOSE_CACHING</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="kn">import</span> <span class="nn">neurotools</span>
@@ -196,11 +195,9 @@
 <span class="c1">######################################################################</span>
 <span class="c1"># Setup advanced memoization</span>
 
-<div class="viewcode-block" id="purge_ram_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ram_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ram_cache</span><span class="p">():</span>
+<div class="viewcode-block" id="purge_ram_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ram_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ram_cache</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Deletes the ramdisk cache. USE WITH CAUTION. This depends on the</span>
-<span class="sd">    global confuration variable `ssd_cache_location` as well as</span>
-<span class="sd">    `CACHE_IDENTIFIER`.</span>
+<span class="sd">    Deletes the ramdisk cache. USE WITH CAUTION. </span>
 <span class="sd">    </span>
 <span class="sd">    This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY</span>
 <span class="sd">    dangerous. It has been disabled and now raises `NotImplementedError`</span>
@@ -208,11 +205,9 @@
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache purging is dangerous and has been disabled&#39;</span><span class="p">);</span>
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span> <span class="o">+</span> <span class="n">ramdisk_location</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="purge_ssd_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ssd_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ssd_cache</span><span class="p">():</span>
+<div class="viewcode-block" id="purge_ssd_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ssd_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ssd_cache</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Deletes the SSD drive cache. USE WITH CAUTION. This depends on the</span>
-<span class="sd">    global confuration variable `ssd_cache_location` as well as</span>
-<span class="sd">    `CACHE_IDENTIFIER`.</span>
+<span class="sd">    Deletes the SSD drive cache. USE WITH CAUTION.</span>
 <span class="sd">    </span>
 <span class="sd">    This will `rm -rf` the entire  `ssd_cache_location` and is EXTREMELY</span>
 <span class="sd">    dangerous. It has been disabled and now raises `NotImplementedError`</span>
@@ -269,14 +264,14 @@
     <span class="n">call</span><span class="p">(</span><span class="s1">&#39;sudo chmod -R 777 </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">ramdisk_location</span><span class="p">)</span></div>
     <span class="c1"># </span>
 
-<div class="viewcode-block" id="launch_cache_synchronizers"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers">[docs]</a><span class="k">def</span> <span class="nf">launch_cache_synchronizers</span><span class="p">():</span>
+<div class="viewcode-block" id="launch_cache_synchronizers"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers">[docs]</a><span class="k">def</span> <span class="nf">launch_cache_synchronizers</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Inter-process communication is mediated via shared caches mapped onto</span>
 <span class="sd">    the file-system. If a collection of processes are distributed over</span>
 <span class="sd">    a large filesystem, they may need to share data. </span>
 <span class="sd">    </span>
-<span class="sd">    This solution is very bad and has been depricated. It now raises a</span>
-<span class="sd">    `NotImplementedError`. </span>
+<span class="sd">    This solution has been depricated. </span>
+<span class="sd">    It now raises a `NotImplementedError`. </span>
 <span class="sd">    </span>
 <span class="sd">    This solution originally spawned rsync jobs to keep a collection of</span>
 <span class="sd">    locations in the filesystem synchronized. This is bad for the following</span>
@@ -313,7 +308,9 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">sudo ps aux | grep rsync | awk &#39;{print $2}&#39; | xargs kill -9&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="initialize_caches"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.initialize_caches">[docs]</a><span class="k">def</span> <span class="nf">initialize_caches</span><span class="p">(</span><span class="n">ramdisk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ssd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hdd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="initialize_caches"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.initialize_caches">[docs]</a><span class="k">def</span> <span class="nf">initialize_caches</span><span class="p">(</span><span class="n">ramdisk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ssd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hdd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Static cache initialization code</span>
 <span class="sd">    This should be run with caution</span>
@@ -335,18 +332,18 @@
 <span class="sd">    # with the disk cacher, causing all dependent code to automatically</span>
 <span class="sd">    # implement persistent disk-memoization. </span>
 <span class="sd">    </span>
-<span class="sd">    This function will need to be called *before* importing anything</span>
-<span class="sd">    hmm!</span>
+<span class="sd">    This function will need to be called *before* importing other</span>
+<span class="sd">    libraries.</span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    ramdisk</span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    ramdisk: str</span>
 <span class="sd">        Path to ram disk for caching intermediate results</span>
-<span class="sd">    ssd</span>
+<span class="sd">    ssd: str</span>
 <span class="sd">        Path to SSD to provide persistent storage (back the ram disk)</span>
-<span class="sd">    hdd</span>
+<span class="sd">    hdd: str</span>
 <span class="sd">        Optional path to a hard disk; larger but slower storage space. </span>
-<span class="sd">    force</span>
+<span class="sd">    force: boolean, False</span>
 <span class="sd">        The disk caching framework is still experimental and could lead</span>
 <span class="sd">        to loss of data if there is a bug (or worse!). By default, </span>
 <span class="sd">        this routine and its subroutines will not run unless forced. </span>
@@ -390,11 +387,30 @@
         <span class="n">hierarchy</span> <span class="o">+=</span> <span class="p">(</span><span class="n">hdd</span><span class="p">,)</span>
     
     <span class="c1"># These caches become global attributes and are used for memoization</span>
-    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">disk_cached</span>       <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">disk_cacher</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">leviathan</span>         <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span><span class="n">hierarchy</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">)</span>
-    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">unsafe_disk_cache</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span><span class="n">hierarchy</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span><span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">pickle_cache</span>      <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span><span class="n">hierarchy</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;pickle&#39;</span><span class="p">)</span>
-    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">old_memoize</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">decorator</span><span class="o">.</span><span class="n">memoize</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">disk_cached</span>       <span class="o">=</span>\
+         <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">disk_cacher</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">leviathan</span>         <span class="o">=</span>\
+         <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span>\
+            <span class="n">hierarchy</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="n">CACHE_IDENTIFIER</span><span class="p">)</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">unsafe_disk_cache</span> <span class="o">=</span>\
+        <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span>\
+            <span class="n">hierarchy</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
+            <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="n">CACHE_IDENTIFIER</span><span class="p">)</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">pickle_cache</span>      <span class="o">=</span>\
+        <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span>\
+            <span class="n">hierarchy</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="n">CACHE_IDENTIFIER</span><span class="p">)</span>
+    <span class="c1"># Replace memoization decorator with disk-cached memoization</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">old_memoize</span> <span class="o">=</span>\
+         <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">decorator</span><span class="o">.</span><span class="n">memoize</span>
     <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">new_memoize</span> <span class="o">=</span> <span class="n">leviathan</span>
     <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">memoize</span>     <span class="o">=</span> <span class="n">new_memoize</span>
     <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">decorator</span><span class="o">.</span><span class="n">memoize</span> <span class="o">=</span> <span class="n">new_memoize</span></div>

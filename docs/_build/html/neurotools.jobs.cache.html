@@ -526,35 +526,39 @@ for the same arguments, leading to invalid cached return values.</li>
 
 <dl class="function">
 <dt id="neurotools.jobs.cache.hierarchical_cacher">
-<code class="descclassname">neurotools.jobs.cache.</code><code class="descname">hierarchical_cacher</code><span class="sig-paren">(</span><em>fast_to_slow</em>, <em>method=u'npy'</em>, <em>write_back=True</em>, <em>verbose=False</em>, <em>allow_mutable_bindings=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#hierarchical_cacher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.cache.hierarchical_cacher" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">neurotools.jobs.cache.</code><code class="descname">hierarchical_cacher</code><span class="sig-paren">(</span><em>fast_to_slow</em>, <em>method=u'npy'</em>, <em>write_back=True</em>, <em>verbose=False</em>, <em>allow_mutable_bindings=False</em>, <em>CACHE_IDENTIFIER=u'.__neurotools_cache__'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#hierarchical_cacher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.cache.hierarchical_cacher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a filesystem cache defined in terms of a hierarchy from
 faster to slower (fallback) caches.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fast_to_slow</strong> (<em>tuple of strings</em>) – list of filesystem paths for disk caches in order from the fast
-(default or main) cache to slower.</li>
-<li><strong>method</strong> (<em>string</em><em>, </em><em>default 'npy'</em>) – cache storing method;</li>
-<li><strong>write_back</strong> (<em>bool</em><em>, </em><em>default True</em>) – whether to automatically copy newly computed cache values to
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fast_to_slow</strong> (<em>tuple of strings</em>) – list of filesystem paths for disk caches in order from the fast
+(default or main) cache to slower.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> (<em>string, default ‘npy’</em>) – cache storing method;</li>
+<li><strong>write_back</strong> (<em>bool, default True</em>) – whether to automatically copy newly computed cache values to
 the slower caches</li>
 <li><strong>verbose</strong> (bool, defaults to <cite>False</cite>) – whether to print detailed logging iformation to standard out
 when manipulating the cache</li>
-<li><strong>allow_mutable_bindings</strong> (<em>bool</em><em>, </em><em>default False</em>) – If true, then “unsafe” namespace bindings, for example user-
+<li><strong>allow_mutable_bindings</strong> (<em>bool, default False</em>) – If true, then “unsafe” namespace bindings, for example user-
 defined functions, will be allowed in disk cached functions.
 If a cached function calls subroutines, and those subroutines
 change, the disk cacher cannot detect the implementation different.
 Consequentially, it cannot tell whether old cached values are
 invalid.</li>
+<li><strong>CACHE_IDENTIFIER</strong> (<em>str, default ‘.__neurotools_cache__’</em>) – (sub)folder name to store cached results</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>hierarchical</strong> – A hierarchical disk-caching decorator that can be used to memoize
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>hierarchical</strong> – A hierarchical disk-caching decorator that can be used to memoize
 functions to the specified disk caching hierarchy.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">decorator</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">decorator</p>
 </td>
 </tr>
 </tbody>

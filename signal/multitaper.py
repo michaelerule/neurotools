@@ -6,19 +6,12 @@ from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
 
-#from numpy import *
 import numpy as np
-
-try:
-    from spectrum.mtm import dpss
-except:
-    print('could not locate the spectrum module; multitaper methods missing')
-    def dpss(*args):
-        raise NotImplementedError("Please install the spectrum module to use multi-taper methods")
-
 from neurotools.getfftw import *
 from neurotools.signal.signal import zscore
 from neurotools.jobs.decorator import memoize
+
+from spectrum.mtm import dpss
 
 @memoize
 def dpss_cached(length,half_bandwidth_parameter):

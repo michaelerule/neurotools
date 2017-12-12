@@ -41,7 +41,6 @@ except:
 
 import neurotools.jobs.decorator
 import neurotools.tools
-import neurotools.tools
 from   neurotools.jobs.closure   import verify_function_closure
 from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
 
@@ -526,10 +525,10 @@ def validate_for_numpy(x):
 
 def disk_cacher(
     cache_location,
-    method='npy',
-    write_back=True,
-    skip_fast=False,
-    verbose=False,
+    method     = 'npy',
+    write_back = True,
+    skip_fast  = False,
+    verbose    = False,
     allow_mutable_bindings=False,
     CACHE_IDENTIFIER='.__neurotools_cache__'):
     '''
@@ -594,6 +593,9 @@ def disk_cacher(
     assert method in VALID_METHODS
     cache_location = os.path.abspath(cache_location)+os.sep
     cache_root     = cache_location+CACHE_IDENTIFIER
+    neurotools.tools.ensure_dir(cache_location)
+    neurotools.tools.ensure_dir(cache_root)
+    print('>>>',cache_root)
     def cached(f):
         '''
         This is a wrapper for memoizing results to disk. 
@@ -673,7 +675,7 @@ def disk_cacher(
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a numpy file')
                             np.save(location, result)
-                    # RutoolsError?
+
                     except (ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
@@ -751,7 +753,8 @@ def hierarchical_cacher(fast_to_slow,
         method='npy',
         write_back=True,
         verbose=False,
-        allow_mutable_bindings=False):
+        allow_mutable_bindings=False,
+        CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
     Construct a filesystem cache defined in terms of a hierarchy from
     faster to slower (fallback) caches.
@@ -761,6 +764,9 @@ def hierarchical_cacher(fast_to_slow,
     fast_to_slow : tuple of strings
         list of filesystem paths for disk caches in order from the fast
         (default or main) cache to slower.
+        
+    Other Parameters
+    ----------------
     method: string, default 'npy'
         cache storing method;
     write_back : bool, default True
@@ -776,6 +782,8 @@ def hierarchical_cacher(fast_to_slow,
         change, the disk cacher cannot detect the implementation different.
         Consequentially, it cannot tell whether old cached values are 
         invalid. 
+    CACHE_IDENTIFIER : str, default '.__neurotools_cache__'
+        (sub)folder name to store cached results
     
     Returns
     -------
@@ -792,7 +800,8 @@ def hierarchical_cacher(fast_to_slow,
                 method=method,
                 write_back=write_back,
                 verbose=verbose,
-                allow_mutable_bindings=allow_mutable_bindings)(f)
+                allow_mutable_bindings=allow_mutable_bindings,
+                CACHE_IDENTIFIER = CACHE_IDENTIFIER)(f)
             all_cachers.append(f)
         # use write-back only on the fast cache
         location = slow_to_fast[-1]
@@ -800,7 +809,8 @@ def hierarchical_cacher(fast_to_slow,
             method=method,
             write_back=True,
             verbose=verbose,
-            allow_mutable_bindings=allow_mutable_bindings)(f)
+            allow_mutable_bindings=allow_mutable_bindings,
+            CACHE_IDENTIFIER = CACHE_IDENTIFIER)(f)
         def purge(*args,**kwargs):
             '''
             Purge each of the constituent cachers

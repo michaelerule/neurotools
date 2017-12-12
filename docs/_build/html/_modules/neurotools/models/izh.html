@@ -169,7 +169,7 @@
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd"># Izhikevich model</span>
+<span class="sd">Izhikevich model</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -177,18 +177,80 @@
 <div class="viewcode-block" id="dv_izh"><a class="viewcode-back" href="../../../neurotools.models.izh.html#neurotools.models.izh.dv_izh">[docs]</a><span class="k">def</span> <span class="nf">dv_izh</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">I</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Time derivative for $v$ variable in Izhikevich model</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u : float</span>
+<span class="sd">        current state of u variable</span>
+<span class="sd">    v : float</span>
+<span class="sd">        current state of v variable</span>
+<span class="sd">    I : float</span>
+<span class="sd">        applied current</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dv : float</span>
+<span class="sd">        dv/dt </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="p">(</span><span class="mf">0.04</span><span class="o">*</span><span class="n">v</span><span class="o">+</span><span class="mf">5.0</span><span class="p">)</span><span class="o">*</span><span class="n">v</span><span class="o">+</span><span class="mf">140.0</span><span class="o">-</span><span class="n">u</span><span class="o">+</span><span class="n">I</span></div>
 
 <div class="viewcode-block" id="du_izh"><a class="viewcode-back" href="../../../neurotools.models.izh.html#neurotools.models.izh.du_izh">[docs]</a><span class="k">def</span> <span class="nf">du_izh</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Time derivative for $u$ variable in Izhikevich model</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u : float</span>
+<span class="sd">        current state of u variable</span>
+<span class="sd">    v : float</span>
+<span class="sd">        current state of v variable</span>
+<span class="sd">    a : float</span>
+<span class="sd">        `a` parameter from Izhikevich model</span>
+<span class="sd">    b : float</span>
+<span class="sd">        `b` parameter from Izhikevich model</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    du : float</span>
+<span class="sd">        du/dt </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">v</span><span class="o">-</span><span class="n">u</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="update_izh"><a class="viewcode-back" href="../../../neurotools.models.izh.html#neurotools.models.izh.update_izh">[docs]</a><span class="k">def</span> <span class="nf">update_izh</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Izhikevich neuron state update</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u : float</span>
+<span class="sd">        current state of u variable</span>
+<span class="sd">    v : float</span>
+<span class="sd">        current state of v variable</span>
+<span class="sd">    a : float</span>
+<span class="sd">        `a` parameter from Izhikevich model</span>
+<span class="sd">    b : float</span>
+<span class="sd">        `b` parameter from Izhikevich model</span>
+<span class="sd">    c : float</span>
+<span class="sd">        `c` parameter from Izhikevich model</span>
+<span class="sd">    d : float</span>
+<span class="sd">        `d` parameter from Izhikevich model</span>
+<span class="sd">    I : float</span>
+<span class="sd">        applied current</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    dt : float, default 1.0</span>
+<span class="sd">        Time step</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    u : float</span>
+<span class="sd">        Updated `u` variable</span>
+<span class="sd">    v : float</span>
+<span class="sd">        Updated `v` variable</span>
+<span class="sd">    y : float</span>
+<span class="sd">        If a spike occurs, y will be a unit-volume probability mass</span>
+<span class="sd">        i.e. 1.0/dt</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">v</span><span class="p">,</span><span class="n">u</span> <span class="o">=</span> <span class="n">v</span><span class="o">+</span><span class="n">dt</span><span class="o">*</span><span class="n">dv_izh</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">I</span><span class="p">),</span> <span class="n">u</span><span class="o">+</span><span class="n">dt</span><span class="o">*</span><span class="n">du_izh</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
@@ -201,6 +263,32 @@
 <div class="viewcode-block" id="sim_izh"><a class="viewcode-back" href="../../../neurotools.models.izh.html#neurotools.models.izh.sim_izh">[docs]</a><span class="k">def</span> <span class="nf">sim_izh</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">signal</span><span class="p">,</span><span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Simulate response of Izhikevich neuron model to signal</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : float</span>
+<span class="sd">        `a` parameter from Izhikevich model</span>
+<span class="sd">    b : float</span>
+<span class="sd">        `b` parameter from Izhikevich model</span>
+<span class="sd">    c : float</span>
+<span class="sd">        `c` parameter from Izhikevich model</span>
+<span class="sd">    d : float</span>
+<span class="sd">        `d` parameter from Izhikevich model</span>
+<span class="sd">    signal : np.array</span>
+<span class="sd">        applied current over time</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    dt : float, default 1.0</span>
+<span class="sd">        Time step</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    state : array</span>
+<span class="sd">        Ntimes x 3 array of model state. </span>
+<span class="sd">        First column is `u` variable</span>
+<span class="sd">        Second column is `v` variable</span>
+<span class="sd">        Third column is spiking density</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
     <span class="n">u</span> <span class="o">=</span> <span class="mi">0</span>

@@ -203,20 +203,16 @@ been modified for general use. They still contain hard-coded user-specific
 paths, for example.</p>
 <dl class="function">
 <dt id="neurotools.jobs.initialize_system_cache.purge_ram_cache">
-<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">purge_ram_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#purge_ram_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.purge_ram_cache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes the ramdisk cache. USE WITH CAUTION. This depends on the
-global confuration variable <cite>ssd_cache_location</cite> as well as
-<cite>CACHE_IDENTIFIER</cite>.</p>
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">purge_ram_cache</code><span class="sig-paren">(</span><em>CACHE_IDENTIFIER=u'.__neurotools_cache__'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#purge_ram_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.purge_ram_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the ramdisk cache. USE WITH CAUTION.</p>
 <p>This will <cite>rm -rf</cite> the entire  <cite>ramdisk_location</cite> and is EXTREMELY
 dangerous. It has been disabled and now raises <cite>NotImplementedError</cite></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="neurotools.jobs.initialize_system_cache.purge_ssd_cache">
-<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">purge_ssd_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#purge_ssd_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.purge_ssd_cache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes the SSD drive cache. USE WITH CAUTION. This depends on the
-global confuration variable <cite>ssd_cache_location</cite> as well as
-<cite>CACHE_IDENTIFIER</cite>.</p>
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">purge_ssd_cache</code><span class="sig-paren">(</span><em>CACHE_IDENTIFIER=u'.__neurotools_cache__'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#purge_ssd_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.purge_ssd_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the SSD drive cache. USE WITH CAUTION.</p>
 <p>This will <cite>rm -rf</cite> the entire  <cite>ssd_cache_location</cite> and is EXTREMELY
 dangerous. It has been disabled and now raises <cite>NotImplementedError</cite></p>
 </dd></dl>
@@ -262,12 +258,12 @@ fails with a warning unless force is set to true.</td>
 
 <dl class="function">
 <dt id="neurotools.jobs.initialize_system_cache.launch_cache_synchronizers">
-<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">launch_cache_synchronizers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#launch_cache_synchronizers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">launch_cache_synchronizers</code><span class="sig-paren">(</span><em>CACHE_IDENTIFIER=u'.__neurotools_cache__'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#launch_cache_synchronizers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inter-process communication is mediated via shared caches mapped onto
 the file-system. If a collection of processes are distributed over
 a large filesystem, they may need to share data.</p>
-<p>This solution is very bad and has been depricated. It now raises a
-<cite>NotImplementedError</cite>.</p>
+<p>This solution has been depricated.
+It now raises a <cite>NotImplementedError</cite>.</p>
 <p>This solution originally spawned rsync jobs to keep a collection of
 locations in the filesystem synchronized. This is bad for the following
 reasons. Mis-configuration can lead to loss of data. Not all jobs
@@ -277,7 +273,7 @@ some sort of lazy protocol.</p>
 
 <dl class="function">
 <dt id="neurotools.jobs.initialize_system_cache.initialize_caches">
-<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">initialize_caches</code><span class="sig-paren">(</span><em>ramdisk=None</em>, <em>ssd=None</em>, <em>hdd=None</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#initialize_caches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.initialize_caches" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">neurotools.jobs.initialize_system_cache.</code><code class="descname">initialize_caches</code><span class="sig-paren">(</span><em>ramdisk=None</em>, <em>ssd=None</em>, <em>hdd=None</em>, <em>force=False</em>, <em>verbose=False</em>, <em>CACHE_IDENTIFIER=u'.__neurotools_cache__'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/initialize_system_cache.html#initialize_caches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.initialize_system_cache.initialize_caches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Static cache initialization code
 This should be run with caution</p>
 <p>Caches can be set up in a hierarchy from fast to slow.
@@ -294,17 +290,18 @@ from a slower cache.</p>
 # this patches neurotools.jobs.decorator.memoize and replaces it
 # with the disk cacher, causing all dependent code to automatically
 # implement persistent disk-memoization.</p>
-<p>This function will need to be called <em>before</em> importing anything
-hmm!</p>
+<p>This function will need to be called <em>before</em> importing other
+libraries.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ramdisk</strong> – Path to ram disk for caching intermediate results</li>
-<li><strong>ssd</strong> – Path to SSD to provide persistent storage (back the ram disk)</li>
-<li><strong>hdd</strong> – Optional path to a hard disk; larger but slower storage space.</li>
-<li><strong>force</strong> – The disk caching framework is still experimental and could lead
+<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first last simple">
+<li><strong>ramdisk</strong> (<em>str</em>) – Path to ram disk for caching intermediate results</li>
+<li><strong>ssd</strong> (<em>str</em>) – Path to SSD to provide persistent storage (back the ram disk)</li>
+<li><strong>hdd</strong> (<em>str</em>) – Optional path to a hard disk; larger but slower storage space.</li>
+<li><strong>force</strong> (<em>boolean, False</em>) – The disk caching framework is still experimental and could lead
 to loss of data if there is a bug (or worse!). By default,
 this routine and its subroutines will not run unless forced.
 By requiring the user to set force=true excplitly, we hopefully

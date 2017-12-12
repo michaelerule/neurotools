@@ -104,8 +104,9 @@ def nicebp(bp,c):
     setp(bp['caps'],     linestyle='solid',linewidth=.5)
     #setp(bp['caps'], color=(0,)*4)
 
-# printing routines
 
+########################################################################
+# printing routines
 
 def percent(n,total):
     '''
@@ -1232,10 +1233,9 @@ def round_to_precision(x,precision=1):
     '''
     if x==0.0: return 0
     magnitude = np.abs(x)
-    digits = np.ceil(np.log10(magnitude))
-    factor = 10.0**(precision-digits)
-    precision *= factor
-    return np.round(x*precision)/precision
+    digits    = np.ceil(np.log10(magnitude))
+    factor    = 10.0**(precision-digits)
+    return np.round(x*factor)/factor
 
 def ceil_to_precision(x,precision=1):
     '''

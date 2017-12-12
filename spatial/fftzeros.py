@@ -182,10 +182,12 @@ def getpeaks2d(pp):
 
 def coalesce(pp,s1=4,s2=None):
     '''
-    Merge nearby peaks 
+    Merge nearby peaks using Gaussian smoothing.
     
     Parameters
     ----------
+    pp : np.array
+        Boolean array with 1 indicating peak locations. 
     
     Other Parameters
     ----------------
@@ -197,6 +199,8 @@ def coalesce(pp,s1=4,s2=None):
     Returns
     -------
     pk : np.array
+        Boolean array with 1 indicating peak location. The smoothing will
+        merge nearvby peaks. 
     '''
     if s2==None: s2=s1
     k1 = gausskern1d(s1,min(np.shape(pp)[1],int(ceil(6*s1))))

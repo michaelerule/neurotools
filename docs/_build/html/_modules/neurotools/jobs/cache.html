@@ -199,7 +199,6 @@
 
 <span class="kn">import</span> <span class="nn">neurotools.jobs.decorator</span>
 <span class="kn">import</span> <span class="nn">neurotools.tools</span>
-<span class="kn">import</span> <span class="nn">neurotools.tools</span>
 <span class="kn">from</span>   <span class="nn">neurotools.jobs.closure</span>   <span class="k">import</span> <span class="n">verify_function_closure</span>
 <span class="kn">from</span>   <span class="nn">neurotools.jobs.filenames</span> <span class="k">import</span> <span class="n">is_dangerous_filename</span><span class="p">,</span> <span class="n">check_filename</span>
 
@@ -684,10 +683,10 @@
 
 <div class="viewcode-block" id="disk_cacher"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.disk_cacher">[docs]</a><span class="k">def</span> <span class="nf">disk_cacher</span><span class="p">(</span>
     <span class="n">cache_location</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
-    <span class="n">write_back</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">skip_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">method</span>     <span class="o">=</span> <span class="s1">&#39;npy&#39;</span><span class="p">,</span>
+    <span class="n">write_back</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">skip_fast</span>  <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span>    <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -752,6 +751,9 @@
     <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">VALID_METHODS</span>
     <span class="n">cache_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">cache_location</span><span class="p">)</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span>
     <span class="n">cache_root</span>     <span class="o">=</span> <span class="n">cache_location</span><span class="o">+</span><span class="n">CACHE_IDENTIFIER</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">ensure_dir</span><span class="p">(</span><span class="n">cache_location</span><span class="p">)</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">ensure_dir</span><span class="p">(</span><span class="n">cache_root</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt;&#39;</span><span class="p">,</span><span class="n">cache_root</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        This is a wrapper for memoizing results to disk. </span>
@@ -831,7 +833,7 @@
                             <span class="k">if</span> <span class="n">validated_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Error: return value cannot be safely packaged in a numpy file&#39;</span><span class="p">)</span>
                             <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-                    <span class="c1"># RutoolsError?</span>
+
                     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">PicklingError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc2</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving cache at </span><span class="si">%s</span><span class="s1"> FAILED&#39;</span><span class="o">%</span><span class="n">cache_location</span><span class="p">)</span>
@@ -909,7 +911,8 @@
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
         <span class="n">write_back</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Construct a filesystem cache defined in terms of a hierarchy from</span>
 <span class="sd">    faster to slower (fallback) caches.</span>
@@ -919,6 +922,9 @@
 <span class="sd">    fast_to_slow : tuple of strings</span>
 <span class="sd">        list of filesystem paths for disk caches in order from the fast</span>
 <span class="sd">        (default or main) cache to slower.</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
 <span class="sd">    method: string, default &#39;npy&#39;</span>
 <span class="sd">        cache storing method;</span>
 <span class="sd">    write_back : bool, default True</span>
@@ -934,6 +940,8 @@
 <span class="sd">        change, the disk cacher cannot detect the implementation different.</span>
 <span class="sd">        Consequentially, it cannot tell whether old cached values are </span>
 <span class="sd">        invalid. </span>
+<span class="sd">    CACHE_IDENTIFIER : str, default &#39;.__neurotools_cache__&#39;</span>
+<span class="sd">        (sub)folder name to store cached results</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -950,7 +958,8 @@
                 <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
                 <span class="n">write_back</span><span class="o">=</span><span class="n">write_back</span><span class="p">,</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="n">allow_mutable_bindings</span><span class="p">)(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="n">allow_mutable_bindings</span><span class="p">,</span>
+                <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span> <span class="n">CACHE_IDENTIFIER</span><span class="p">)(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">all_cachers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="c1"># use write-back only on the fast cache</span>
         <span class="n">location</span> <span class="o">=</span> <span class="n">slow_to_fast</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -958,7 +967,8 @@
             <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
             <span class="n">write_back</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="n">allow_mutable_bindings</span><span class="p">)(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="n">allow_mutable_bindings</span><span class="p">,</span>
+            <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span> <span class="n">CACHE_IDENTIFIER</span><span class="p">)(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            Purge each of the constituent cachers</span>

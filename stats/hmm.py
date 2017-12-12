@@ -490,7 +490,7 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4, miniter=10):
     Baum-Welch algorithm
     
     Use np.expectation maximization to find locally optimal parameters for
-    a hidden markov model.
+    a discrete hidden markov model.
     
     Parameters
     ----------
@@ -587,7 +587,6 @@ def baum_welch(y,n_hid,convergence = 1e-10, eps = 1e-4, miniter=10):
     #
     fwd,bwd,p = forward_backward(y,X0hat,That,Bhat)
     return That,Bhat,X0hat,fwd,bwd,p,llikelihood
-
 
 def forward_abstract(y, x0, T, B):
     '''

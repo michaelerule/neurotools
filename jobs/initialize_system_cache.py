@@ -27,7 +27,6 @@ if 'sphinx' in sys.modules:
     IN_SPHINX=True  
 
 if not IN_SPHINX:
-    CACHE_IDENTIFIER ='.__neurotools_cache__'
     VERBOSE_CACHING = 0
 
 import neurotools
@@ -38,11 +37,9 @@ import neurotools.jobs.cache
 ######################################################################
 # Setup advanced memoization
 
-def purge_ram_cache():
+def purge_ram_cache(CACHE_IDENTIFIER='.__neurotools_cache__'):
     '''
-    Deletes the ramdisk cache. USE WITH CAUTION. This depends on the
-    global confuration variable `ssd_cache_location` as well as
-    `CACHE_IDENTIFIER`.
+    Deletes the ramdisk cache. USE WITH CAUTION. 
     
     This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY
     dangerous. It has been disabled and now raises `NotImplementedError`
@@ -50,11 +47,9 @@ def purge_ram_cache():
     raise NotImplementedError('cache purging is dangerous and has been disabled');
     os.system('rm -rf ' + ramdisk_location + os.sep + CACHE_IDENTIFIER)
 
-def purge_ssd_cache():
+def purge_ssd_cache(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
-    Deletes the SSD drive cache. USE WITH CAUTION. This depends on the
-    global confuration variable `ssd_cache_location` as well as
-    `CACHE_IDENTIFIER`.
+    Deletes the SSD drive cache. USE WITH CAUTION.
     
     This will `rm -rf` the entire  `ssd_cache_location` and is EXTREMELY
     dangerous. It has been disabled and now raises `NotImplementedError`
@@ -111,14 +106,14 @@ def reset_ramdisk(force=False):
     call('sudo chmod -R 777 %s'%ramdisk_location)
     # 
 
-def launch_cache_synchronizers():
+def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
     Inter-process communication is mediated via shared caches mapped onto
     the file-system. If a collection of processes are distributed over
     a large filesystem, they may need to share data. 
     
-    This solution is very bad and has been depricated. It now raises a
-    `NotImplementedError`. 
+    This solution has been depricated. 
+    It now raises a `NotImplementedError`. 
     
     This solution originally spawned rsync jobs to keep a collection of
     locations in the filesystem synchronized. This is bad for the following
@@ -155,7 +150,9 @@ def launch_cache_synchronizers():
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
 
 
-def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False):
+def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False,
+    verbose=False,
+    CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
     Static cache initialization code
     This should be run with caution
@@ -177,18 +174,18 @@ def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False):
     # with the disk cacher, causing all dependent code to automatically
     # implement persistent disk-memoization. 
     
-    This function will need to be called *before* importing anything
-    hmm!
+    This function will need to be called *before* importing other
+    libraries.
     
-    Parameters
-    ----------
-    ramdisk
+    Other Parameters
+    ----------------
+    ramdisk: str
         Path to ram disk for caching intermediate results
-    ssd
+    ssd: str
         Path to SSD to provide persistent storage (back the ram disk)
-    hdd
+    hdd: str
         Optional path to a hard disk; larger but slower storage space. 
-    force
+    force: boolean, False
         The disk caching framework is still experimental and could lead
         to loss of data if there is a bug (or worse!). By default, 
         this routine and its subroutines will not run unless forced. 
@@ -232,11 +229,30 @@ def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False):
         hierarchy += (hdd,)
     
     # These caches become global attributes and are used for memoization
-    neurotools.jobs.initialize_system_cache.disk_cached       = neurotools.jobs.cache.disk_cacher('.')
-    neurotools.jobs.initialize_system_cache.leviathan         = neurotools.jobs.cache.hierarchical_cacher(hierarchy,method='npy')
-    neurotools.jobs.initialize_system_cache.unsafe_disk_cache = neurotools.jobs.cache.hierarchical_cacher(hierarchy,method='npy',allow_mutable_bindings=True)
-    neurotools.jobs.initialize_system_cache.pickle_cache      = neurotools.jobs.cache.hierarchical_cacher(hierarchy,method='pickle')
-    neurotools.jobs.initialize_system_cache.old_memoize = neurotools.jobs.decorator.memoize
+    neurotools.jobs.initialize_system_cache.disk_cached       =\
+         neurotools.jobs.cache.disk_cacher('.',verbose=verbose)
+    neurotools.jobs.initialize_system_cache.leviathan         =\
+         neurotools.jobs.cache.hierarchical_cacher(\
+            hierarchy,
+            method='npy',
+            verbose=verbose,
+            CACHE_IDENTIFIER=CACHE_IDENTIFIER)
+    neurotools.jobs.initialize_system_cache.unsafe_disk_cache =\
+        neurotools.jobs.cache.hierarchical_cacher(\
+            hierarchy,
+            method='npy',
+            allow_mutable_bindings=True,
+            verbose=verbose,
+            CACHE_IDENTIFIER=CACHE_IDENTIFIER)
+    neurotools.jobs.initialize_system_cache.pickle_cache      =\
+        neurotools.jobs.cache.hierarchical_cacher(\
+            hierarchy,
+            method='pickle',
+            verbose=verbose,
+            CACHE_IDENTIFIER=CACHE_IDENTIFIER)
+    # Replace memoization decorator with disk-cached memoization
+    neurotools.jobs.initialize_system_cache.old_memoize =\
+         neurotools.jobs.decorator.memoize
     neurotools.jobs.initialize_system_cache.new_memoize = leviathan
     neurotools.jobs.initialize_system_cache.memoize     = new_memoize
     neurotools.jobs.decorator.memoize = new_memoize

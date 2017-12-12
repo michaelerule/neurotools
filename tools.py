@@ -497,9 +497,6 @@ def waitfor(t):
         pass
     return current_milli_time()
     
-    
-    
-@memoize
 def getVariable(path,var):
     '''
     Reads a variable from a .mat or .hdf5 file

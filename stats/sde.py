@@ -30,6 +30,11 @@ def sample_ou_process(x0,sigma,tau,dt,N,ntrial=1):
         time step
     N     : 
         number of samples to draw
+        
+    Returns
+    -------
+    simulated : np.array
+        time-series of sampled values
     '''
     simulated = np.zeros((N,ntrial),'float')
     x = x0*np.ones((ntrial,),'float')

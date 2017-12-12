@@ -174,6 +174,33 @@
 
 <span class="kn">from</span>   <span class="nn">pylab</span> <span class="k">import</span> <span class="n">find</span>
 
+<div class="viewcode-block" id="geometric_window"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.geometric_window">[docs]</a><span class="k">def</span> <span class="nf">geometric_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Gemoetrically center a window in frequency</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c : float</span>
+<span class="sd">        Center of frequency window</span>
+<span class="sd">    w : float</span>
+<span class="sd">        width of frequency window</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fa : float</span>
+<span class="sd">        low-frequency cutoff</span>
+<span class="sd">    fb : float</span>
+<span class="sd">        high-frequency cutoff</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The center of the window should be positive&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The window size should be non-negative&#39;</span><span class="p">)</span>
+    <span class="n">lgwindow</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">c</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">fa</span>       <span class="o">=</span> <span class="n">c</span><span class="o">/</span><span class="n">lgwindow</span>
+    <span class="n">fb</span>       <span class="o">=</span> <span class="n">c</span><span class="o">*</span><span class="n">lgwindow</span>
+    <span class="k">return</span> <span class="n">fa</span><span class="p">,</span><span class="n">fb</span></div>
+
 <div class="viewcode-block" id="gaussian_kernel"><a class="viewcode-back" href="../../../neurotools.signal.signal.html#neurotools.signal.signal.gaussian_kernel">[docs]</a><span class="k">def</span> <span class="nf">gaussian_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    generate 1D Guassian kernel for smoothing</span>

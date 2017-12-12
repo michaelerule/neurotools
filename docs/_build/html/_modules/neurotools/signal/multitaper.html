@@ -164,19 +164,12 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
-<span class="c1">#from numpy import *</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">spectrum.mtm</span> <span class="k">import</span> <span class="n">dpss</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not locate the spectrum module; multitaper methods missing&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">dpss</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please install the spectrum module to use multi-taper methods&quot;</span><span class="p">)</span>
-
 <span class="kn">from</span> <span class="nn">neurotools.getfftw</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">neurotools.signal.signal</span> <span class="k">import</span> <span class="n">zscore</span>
 <span class="kn">from</span> <span class="nn">neurotools.jobs.decorator</span> <span class="k">import</span> <span class="n">memoize</span>
+
+<span class="kn">from</span> <span class="nn">spectrum.mtm</span> <span class="k">import</span> <span class="n">dpss</span>
 
 <div class="viewcode-block" id="dpss_cached"><a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.dpss_cached">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">dpss_cached</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="n">half_bandwidth_parameter</span><span class="p">):</span>

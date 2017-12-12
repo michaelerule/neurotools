@@ -16,6 +16,33 @@ from scipy.signal import butter, filtfilt, lfilter
 
 from   pylab import find
 
+def geometric_window(c,w):
+    '''
+    Gemoetrically center a window in frequency
+    
+    Parameters
+    ----------
+    c : float
+        Center of frequency window
+    w : float
+        width of frequency window
+        
+    Returns
+    -------
+    fa : float
+        low-frequency cutoff
+    fb : float
+        high-frequency cutoff
+    '''
+    if not c>0:
+        raise ValueError('The center of the window should be positive')
+    if not w>=0:
+        raise ValueError('The window size should be non-negative')
+    lgwindow = (w+np.sqrt(w**2+4*c**2))/(2*c)
+    fa       = c/lgwindow
+    fb       = c*lgwindow
+    return fa,fb
+
 def gaussian_kernel(sigma):
     '''
     generate 1D Guassian kernel for smoothing

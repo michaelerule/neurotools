@@ -413,10 +413,10 @@ def variance_filter(x,window=100,mode='same'):
     Extracts signal variance in a sliding window
 
     mode='same' will compute median even at the edges, where a full window
-        is not available
+    is not available
 
     mode='valid' will compute median only at points where the full window
-        is available
+    is available
     
     Parameters
     ----------
@@ -931,6 +931,14 @@ def peak_within(freqs,spectrum,fa,fb):
     
     Parameters
     ----------
+    freqs : np.array
+        Frequencies
+    spectrum : 
+    fa : float
+        low-frequency cutoff
+    fb : float
+        high-frequency cutoff
+    
     Returns
     -------
     '''
@@ -950,12 +958,29 @@ def local_peak_within(freqs,cc,fa,fb):
     
     Parameters
     ----------
+    freqs : np.array
+        Frequencies
+    cc : np.array
+        Amplitude
+    fa : float
+        low-frequency cutoff
+    fb : float
+        high-frequency cutoff
+    
     Returns
     -------
+    i: 
+        index of peak, or None if no local peak found
+    frequency:
+        frequency at peak, or None if no local peak found
+    peak:
+        amplitude at peak, or None if no local peak found
+    
     '''
     local = local_maxima(cc)[0]
     peaks = list(set(local) & set(find((freqs>=fa) & (freqs<=fb))))
-    if len(peaks)==0: return (None,)*3 # no peaks!
+    if len(peaks)==0: 
+        return (None,)*3 # no peaks!
     i     = peaks[argmax(cc[peaks])]
     return i, freqs[i], cc[i]
 
@@ -965,6 +990,15 @@ def zeromean(x,axis=None):
     
     Parameters
     ----------
+    x : np.array
+        Data to remove mean trend from
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+        Axis over which to take the mean; 
+        forwarded to np.mean axis parameter
+    
     Returns
     -------
     '''
@@ -984,8 +1018,15 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     
     Parameters
     ----------
+    analytic_signal
+    
+    Other Parameters
+    ----------------
+    doplot: boolean, False
+    
     Returns
     -------
+    demodulated
     '''
 
     analytic_signal = zscore(analytic_signal)
@@ -1055,11 +1096,11 @@ def autocorrelation(x,lags=None):
     time-lags using convolution. Autocorrelation is normalized
     such that the zero-lag autocorrelation is 1.
 
-    This was written in haste and needs some work. For long
+    TODO, fix: For long
     lags it uses FFT, but has a different normalization from the
     time-domain implementation for short lags. In practice this
-    will not matter, but formally it's good to be rigorous.
-
+    will not matter.
+    
     Parameters
     ----------
     x : 1d array
@@ -1101,6 +1142,7 @@ def upsample(x,factor=4):
     Uses fourier transform to upsample x by some factor.
 
     Operations:
+    
     1. remove linear trend
     2. mirror to get reflected boundary
     3. take the fourier transform
@@ -1116,6 +1158,11 @@ def upsample(x,factor=4):
     x : array-like
         X is cast to float64 before processing. Complex values are
         not supported.
+        
+    Returns
+    -------
+    x : array
+        upsampled `x`
     '''
     assert type(factor) is int
     assert factor>1
@@ -1137,7 +1184,7 @@ def upsample(x,factor=4):
     up = np.zeros(N*2*factor,dtype=float64)
     up[:N//2+1]=ft[:N//2+1]
     up[-N//2:] =ft[-N//2:]
-    x = (ifft(up).real)[:N*factor]*factor
+    x  = (ifft(up).real)[:N*factor]*factor
     x += dx*np.arange(N*factor)/float(factor)
     x += dc
     return x
@@ -1161,6 +1208,11 @@ def linfilter(A,C,x,initial=None):
     initial : vector
         Optional length N vector of initial filter conditions. Set to 0
         by default
+
+    Returns
+    -------
+    filtered : array
+        filtered data
     '''
     # initial state for filters (no response)
     L = len(x)

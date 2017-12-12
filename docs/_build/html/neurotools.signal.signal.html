@@ -524,12 +524,10 @@ have the full window length will be trimmed</li>
 <dt id="neurotools.signal.signal.variance_filter">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">variance_filter</code><span class="sig-paren">(</span><em>x</em>, <em>window=100</em>, <em>mode=u'same'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#variance_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.variance_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts signal variance in a sliding window</p>
-<dl class="docutils">
-<dt>mode=’same’ will compute median even at the edges, where a full window</dt>
-<dd>is not available</dd>
-<dt>mode=’valid’ will compute median only at points where the full window</dt>
-<dd>is available</dd>
-</dl>
+<p>mode=’same’ will compute median even at the edges, where a full window
+is not available</p>
+<p>mode=’valid’ will compute median only at points where the full window
+is available</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -834,6 +832,20 @@ in the signal.</p>
 <dt id="neurotools.signal.signal.peak_within">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">peak_within</code><span class="sig-paren">(</span><em>freqs</em>, <em>spectrum</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#peak_within"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.peak_within" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find maximum within a band</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>freqs</strong> (<em>np.array</em>) – Frequencies</li>
+<li><strong>spectrum</strong> – </li>
+<li><strong>fa</strong> (<em>float</em>) – low-frequency cutoff</li>
+<li><strong>fb</strong> (<em>float</em>) – high-frequency cutoff</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -841,12 +853,46 @@ in the signal.</p>
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">local_peak_within</code><span class="sig-paren">(</span><em>freqs</em>, <em>cc</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#local_peak_within"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.local_peak_within" title="Permalink to this definition">¶</a></dt>
 <dd><p>For a spectrum, identify the largest local maximum in the frequency
 range [fa,fb].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>freqs</strong> (<em>np.array</em>) – Frequencies</li>
+<li><strong>cc</strong> (<em>np.array</em>) – Amplitude</li>
+<li><strong>fa</strong> (<em>float</em>) – low-frequency cutoff</li>
+<li><strong>fb</strong> (<em>float</em>) – high-frequency cutoff</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>i</em> – index of peak, or None if no local peak found</li>
+<li><em>frequency</em> – frequency at peak, or None if no local peak found</li>
+<li><em>peak</em> – amplitude at peak, or None if no local peak found</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="neurotools.signal.signal.zeromean">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">zeromean</code><span class="sig-paren">(</span><em>x</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#zeromean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.zeromean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the mean trend from data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>np.array</em>) – Data to remove mean trend from</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>axis</strong> (<em>int or tuple, default None</em>) – Axis over which to take the mean;
+forwarded to np.mean axis parameter</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -864,6 +910,21 @@ larger than np.pi/2, that is also a local extremum in phase velocity</li>
 </ul>
 </dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>analytic_signal</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><strong>doplot</strong> (<em>boolean, False</em>)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">demodulated</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -872,10 +933,10 @@ larger than np.pi/2, that is also a local extremum in phase velocity</li>
 <dd><p>Computes the normalized autocorrelation over the specified
 time-lags using convolution. Autocorrelation is normalized
 such that the zero-lag autocorrelation is 1.</p>
-<p>This was written in haste and needs some work. For long
+<p>TODO, fix: For long
 lags it uses FFT, but has a different normalization from the
 time-domain implementation for short lags. In practice this
-will not matter, but formally it’s good to be rigorous.</p>
+will not matter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -901,23 +962,31 @@ is min(200,len(x))</li>
 <dt id="neurotools.signal.signal.upsample">
 <code class="descclassname">neurotools.signal.signal.</code><code class="descname">upsample</code><span class="sig-paren">(</span><em>x</em>, <em>factor=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/signal.html#upsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.signal.upsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses fourier transform to upsample x by some factor.</p>
-<p>Operations:
-1. remove linear trend
-2. mirror to get reflected boundary
-3. take the fourier transform
-4. add padding zeros to FFT to effectively upsample
-5. taking inverse fourier transform
-6. remove mirroring
-7. restore linear tend</p>
+<p>Operations:</p>
+<ol class="arabic simple">
+<li>remove linear trend</li>
+<li>mirror to get reflected boundary</li>
+<li>take the fourier transform</li>
+<li>add padding zeros to FFT to effectively upsample</li>
+<li>taking inverse fourier transform</li>
+<li>remove mirroring</li>
+<li>restore linear tend</li>
+</ol>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>factor</strong> (<em>int</em>) – Integer upsampling factor. Default is 4.</li>
 <li><strong>x</strong> (<em>array-like</em>) – X is cast to float64 before processing. Complex values are
 not supported.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x</strong> – upsampled <cite>x</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
 </td>
 </tr>
 </tbody>
@@ -935,13 +1004,19 @@ $$</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>A</strong> (<em>matrix</em>) – K x K matrix defining linear syste,</li>
 <li><strong>C</strong> (<em>matrix</em>) – K x N matrix defining projection from signal $x$ to linear system</li>
 <li><strong>x</strong> (<em>vector</em><em> or </em><em>matrix</em>) – T x N sequence of states to filter</li>
 <li><strong>initial</strong> (<em>vector</em>) – Optional length N vector of initial filter conditions. Set to 0
 by default</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>filtered</strong> – filtered data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
 </td>
 </tr>
 </tbody>

@@ -165,9 +165,16 @@ def rotate(colors,th):
     
     Parameters
     ----------
+    colors : array-like
+        Iterable of (r,g,b) tuples. Rotation does not affect magnitude, 
+        but may cause resulting colors to fall outside original colorspace.
+    th : float
+        Angle to rotate
     
     Returns
     -------
+    list : results
+        List of hue-rotated (r,g,b) tuples
     '''
     Q1 = np.sin(th)/np.sqrt(3)
     Q2 = (1-np.cos(th))/3

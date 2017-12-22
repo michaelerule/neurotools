@@ -14,6 +14,7 @@ Submodules
    neurotools.spatial.phase
    neurotools.spatial.spatialPSD
    neurotools.spatial.spiking
+   neurotools.spatial.triangulation
    neurotools.spatial.wave_parametric_models
 
 Module contents

@@ -396,8 +396,8 @@ def get_ax_pixel(ax=None,fig=None):
     # w/h in pixels
     w,h = get_ax_size()
     # one px in axis units is the axis span div no. pix
-    dy = diff(ylim())
-    dx = diff(xlim())
+    dy = np.diff(ylim())
+    dx = np.diff(xlim())
     return dx/float(w),dy/float(h)
 
 def pixels_to_xunits(n,ax=None,fig=None):
@@ -446,7 +446,7 @@ def xunits_to_pixels(n,ax=None,fig=None):
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
-    dx = diff(xlim())[0]
+    dx = np.diff(xlim())[0]
     return n*float(w)/dx
 
 def pixels_to_yunits(n,ax=None,fig=None):

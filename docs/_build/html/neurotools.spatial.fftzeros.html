@@ -112,6 +112,7 @@
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.phase.html">neurotools.spatial.phase module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.spatialPSD.html">neurotools.spatial.spatialPSD module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.spiking.html">neurotools.spatial.spiking module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.triangulation.html">neurotools.spatial.triangulation module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.wave_parametric_models.html">neurotools.spatial.wave_parametric_models module</a></li>
 </ul>
 </li>
@@ -350,7 +351,7 @@ same size as pp but with 1 at points that are local maxima and 0 else.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pk</strong> – Boolean array with 1 indicating peak location. The smoothing will
-merge nearvby peaks.</p>
+merge nearby peaks.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
@@ -361,15 +362,48 @@ merge nearvby peaks.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="neurotools.spatial.fftzeros.coalesce_points">
+<code class="descclassname">neurotools.spatial.fftzeros.</code><code class="descname">coalesce_points</code><span class="sig-paren">(</span><em>pp</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/fftzeros.html#coalesce_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.fftzeros.coalesce_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge nearby peaks using nearest-neighbords</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pp</strong> (<em>np.array</em>) – Boolean array with 1 indicating peak locations.</li>
+<li><strong>radius</strong> (<em>float</em>) – Merge radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pk</strong> – Boolean array with 1 indicating peak location. The smoothing will
+merge nearby peaks.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="neurotools.spatial.fftzeros.find_critical_points">
-<code class="descclassname">neurotools.spatial.fftzeros.</code><code class="descname">find_critical_points</code><span class="sig-paren">(</span><em>data</em>, <em>docoalesce=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/fftzeros.html#find_critical_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.fftzeros.find_critical_points" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">neurotools.spatial.fftzeros.</code><code class="descname">find_critical_points</code><span class="sig-paren">(</span><em>data</em>, <em>docoalesce=False</em>, <em>radius=4.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/fftzeros.html#find_critical_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.fftzeros.find_critical_points" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>np.array</em>) – 2D array complex phase values</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>np.array</em>) – 2D array complex phase values</p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>docoalesce</strong> (<em>bool, False</em>) – Whether to merge nearby critical points</li>
+<li><strong>radius</strong> (<em>float, 4.0</em>) – Merge radius to use if <cite>docoalesce</cite> is true</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
 <li><strong>clockwise</strong> (<em>numpy.ndarray</em>) – Point locations of centers of clockwise rotating waves</li>
 <li><strong>anticlockwise</strong> (<em>numpy.ndarray</em>) – Point locations of centers of antclockwise rotating waves</li>
 <li><strong>saddles</strong> (<em>numpy.ndarray</em>) – Saddle points in the phase gradient map</li>
@@ -377,6 +411,7 @@ merge nearvby peaks.</p>
 <li><strong>maxima</strong> (<em>numpy.ndarray</em>) – Point locations of local maxima in the phase gradient</li>
 <li><strong>minima</strong> (<em>numpy.ndarray</em>) – Point locations of local minima in the phase gradient</li>
 </ul>
+</p>
 </td>
 </tr>
 </tbody>

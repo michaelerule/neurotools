@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>neurotools.spatial.spatialPSD module &mdash; Neurotools 2 documentation</title>
+  <title>neurotools.spatial.triangulation module &mdash; Neurotools 2 documentation</title>
   
 
   
@@ -37,8 +37,8 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Neurotools 2 documentation" href="index.html"/>
         <link rel="up" title="neurotools.spatial package" href="neurotools.spatial.html"/>
-        <link rel="next" title="neurotools.spatial.spiking module" href="neurotools.spatial.spiking.html"/>
-        <link rel="prev" title="neurotools.spatial.phase module" href="neurotools.spatial.phase.html"/> 
+        <link rel="next" title="neurotools.spatial.wave_parametric_models module" href="neurotools.spatial.wave_parametric_models.html"/>
+        <link rel="prev" title="neurotools.spatial.spiking module" href="neurotools.spatial.spiking.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -110,9 +110,9 @@
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.fftzeros.html">neurotools.spatial.fftzeros module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.kernels.html">neurotools.spatial.kernels module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.phase.html">neurotools.spatial.phase module</a></li>
-<li class="toctree-l6 current"><a class="current reference internal" href="#">neurotools.spatial.spatialPSD module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.spatialPSD.html">neurotools.spatial.spatialPSD module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.spiking.html">neurotools.spatial.spiking module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.triangulation.html">neurotools.spatial.triangulation module</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">neurotools.spatial.triangulation module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="neurotools.spatial.wave_parametric_models.html">neurotools.spatial.wave_parametric_models module</a></li>
 </ul>
 </li>
@@ -179,13 +179,13 @@
         
           <li><a href="neurotools.spatial.html">neurotools.spatial package</a> &raquo;</li>
         
-      <li>neurotools.spatial.spatialPSD module</li>
+      <li>neurotools.spatial.triangulation module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/neurotools.spatial.spatialPSD.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/neurotools.spatial.triangulation.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -198,46 +198,65 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-neurotools.spatial.spatialPSD">
-<span id="neurotools-spatial-spatialpsd-module"></span><h1>neurotools.spatial.spatialPSD module<a class="headerlink" href="#module-neurotools.spatial.spatialPSD" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.spatial.triangulation">
+<span id="neurotools-spatial-triangulation-module"></span><h1>neurotools.spatial.triangulation module<a class="headerlink" href="#module-neurotools.spatial.triangulation" title="Permalink to this headline">¶</a></h1>
+<p>Routines for meshes and triangulation</p>
 <dl class="function">
-<dt id="neurotools.spatial.spatialPSD.psd2d">
-<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">psd2d</code><span class="sig-paren">(</span><em>data</em>, <em>spacing=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#psd2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.psd2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>2D power spectral density
-accepts HxWx… data
-returns frequencies in 1/mm and power in uV^2</p>
-<p># test code
-data = randn(6,8)
-clf()
-cut = 1
-subplot(221)
-f,x=psd2d(dctCutAA(data,cut))
-scatter(f,x)
-xlim(0,cut*2)
-subplot(222)
-f,x=psd2d(dctCut(data,cut))
-scatter(f,x)
-xlim(0,cut*2)
-subplot(223)
-imshow(getMaskAA(shape(data),3,0.4,cut),interpolation=’nearest’)
-subplot(224)
-imshow(getMask(shape(data),0.4,cut),interpolation=’nearest’)</p>
+<dt id="neurotools.spatial.triangulation.z2xy">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">z2xy</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#z2xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.z2xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an array of complex numbers into two arrays
+representing real and imaginary parts, respectively.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="neurotools.spatial.spatialPSD.spatialPSD_length_scale_spectrum">
-<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">spatialPSD_length_scale_spectrum</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>lowf</em>, <em>highf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#spatialPSD_length_scale_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.spatialPSD_length_scale_spectrum" title="Permalink to this definition">¶</a></dt>
+<dt id="neurotools.spatial.triangulation.uniquerow">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">uniquerow</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#uniquerow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.uniquerow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes duplicate rows from a 2D numpy array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.triangulation.trianglesToEdges">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">trianglesToEdges</code><span class="sig-paren">(</span><em>triangles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#trianglesToEdges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.trianglesToEdges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accepts Ntriangles x 3 array of triangle indeces, the format
+returned by <cite>scipy.spatial.Delaunay(…).simplices</cite>. Returns a
+Nedges x 2 numpy array of unique edges in the triangulation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.triangulation.edgesNearby">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">edgesNearby</code><span class="sig-paren">(</span><em>iz</em>, <em>microd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#edgesNearby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.edgesNearby" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary mapping from
+indecies into point list iz
+(2d locations passed as x+iy complex)
+to a list of nearby point indices</p>
+<p>Computed by thresholding delaunay triangulation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.triangulation.coalesce">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">coalesce</code><span class="sig-paren">(</span><em>iz</em>, <em>edgelist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#coalesce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.coalesce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join connected components as defined in edgelist, and return the centroids
+taken as an average of all point locations in list iz
+(2d locations passed as x+iy complex)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.triangulation.plot_edges">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">plot_edges</code><span class="sig-paren">(</span><em>iz</em>, <em>edges</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#plot_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.plot_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a set of edges given by 2d complex numbers and Nedges x 2 array of edge indices
+keword arguments are forwarded to matplotlib.plot</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.triangulation.plot_triangles">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">plot_triangles</code><span class="sig-paren">(</span><em>iz</em>, <em>triangles</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#plot_triangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.plot_triangles" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="neurotools.spatial.spatialPSD.spatialPSD_parallel_wrapper">
-<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">spatialPSD_parallel_wrapper</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#spatialPSD_parallel_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.spatialPSD_parallel_wrapper" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="neurotools.spatial.spatialPSD.all_spatial_PSD_parallel">
-<code class="descclassname">neurotools.spatial.spatialPSD.</code><code class="descname">all_spatial_PSD_parallel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>lowf</em>, <em>highf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/spatialPSD.html#all_spatial_PSD_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.spatialPSD.all_spatial_PSD_parallel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="neurotools.spatial.triangulation.mergeNearby">
+<code class="descclassname">neurotools.spatial.triangulation.</code><code class="descname">mergeNearby</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/triangulation.html#mergeNearby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.triangulation.mergeNearby" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge nearby points</p>
+</dd></dl>
 
 </div>
 
@@ -251,10 +270,10 @@ imshow(getMask(shape(data),0.4,cut),interpolation=’nearest’)</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="neurotools.spatial.spiking.html" class="btn btn-neutral float-right" title="neurotools.spatial.spiking module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="neurotools.spatial.wave_parametric_models.html" class="btn btn-neutral float-right" title="neurotools.spatial.wave_parametric_models module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="neurotools.spatial.phase.html" class="btn btn-neutral" title="neurotools.spatial.phase module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="neurotools.spatial.spiking.html" class="btn btn-neutral" title="neurotools.spatial.spiking module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

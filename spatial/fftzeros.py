@@ -3,7 +3,6 @@
 '''
 Code for identifying critical points in phase gradient maps.
 '''
-
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -18,6 +17,8 @@ import pylab as pl
 from neurotools.signal.signal import rewrap
 from scipy.signal import convolve2d
 from neurotools.graphics.plot import *
+
+from neurotools.spatial.triangulation import mergeNearby
 
 def plot_phase_gradient(dz):
     '''
@@ -200,7 +201,7 @@ def coalesce(pp,s1=4,s2=None):
     -------
     pk : np.array
         Boolean array with 1 indicating peak location. The smoothing will
-        merge nearvby peaks. 
+        merge nearby peaks. 
     '''
     if s2==None: s2=s1
     k1 = gausskern1d(s1,min(np.shape(pp)[1],int(ceil(6*s1))))
@@ -210,12 +211,44 @@ def coalesce(pp,s1=4,s2=None):
     pk = getpeaks2d(y)
     return pk
 
-def find_critical_points(data,docoalesce=False):
+def coalesce_points(pp,radius):
+    '''
+    Merge nearby peaks using nearest-neighbords
+    
+    Parameters
+    ----------
+    pp : np.array
+        Boolean array with 1 indicating peak locations. 
+    radius : float
+        Merge radius
+    
+    Returns
+    -------
+    pk : np.array
+        Boolean array with 1 indicating peak location. The smoothing will
+        merge nearby peaks. 
+    '''
+    if s2==None: s2=s1
+    k1 = gausskern1d(s1,min(np.shape(pp)[1],int(ceil(6*s1))))
+    k2 = gausskern1d(s2,min(np.shape(pp)[1],int(ceil(6*s2))))
+    y  = np.array([convolve(x,k1,'same') for x in pp])
+    y  = np.array([convolve(x,k2,'same') for x in y.T]).T
+    pk = getpeaks2d(y)
+    return pk
+
+def find_critical_points(data,docoalesce=False,radius=4.0):
     '''
     Parameters
     ----------
     data : np.array
         2D array complex phase values
+        
+    Other Parameters
+    ----------------
+    docoalesce : bool, False
+        Whether to merge nearby critical points
+    radius : float, 4.0
+        Merge radius to use if `docoalesce` is true
 
     Returns
     -------
@@ -256,19 +289,19 @@ def find_critical_points(data,docoalesce=False):
     minima    = (ddx*ddy== 1)*(ddx== 1)*ok
 
     if docoalesce:
-        clockwise = unwrap_indecies(coalesce(clockwise))+1
-        anticlockwise = unwrap_indecies(coalesce(anticlockwise))+1
-        saddles   = unwrap_indecies(coalesce(saddles  ))+1
-        peaks     = unwrap_indecies(coalesce(peaks    ))+1
-        maxima    = unwrap_indecies(coalesce(maxima   ))+1
-        minima    = unwrap_indecies(coalesce(minima   ))+1
-    else:
-        clockwise = unwrap_indecies(clockwise)+1
-        anticlockwise = unwrap_indecies(anticlockwise)+1
-        saddles   = unwrap_indecies(saddles  )+1
-        peaks     = unwrap_indecies(peaks    )+1
-        maxima    = unwrap_indecies(maxima   )+1
-        minima    = unwrap_indecies(minima   )+1
+        clockwise     = coalesce_points(clockwise,radius)
+        anticlockwise = coalesce_points(anticlockwise,radius)
+        saddles       = coalesce_points(saddles,radius)
+        peaks         = coalesce_points(peaks,radius)
+        maxima        = coalesce_points(maxima,radius)
+        minima        = coalesce_points(minima,radius)
+    
+    clockwise     = unwrap_indecies(clockwise)+1
+    anticlockwise = unwrap_indecies(anticlockwise)+1
+    saddles       = unwrap_indecies(saddles  )+1
+    peaks         = unwrap_indecies(peaks    )+1
+    maxima        = unwrap_indecies(maxima   )+1
+    minima        = unwrap_indecies(minima   )+1
 
     return clockwise, anticlockwise, saddles, peaks, maxima, minima
 

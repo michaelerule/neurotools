@@ -98,11 +98,18 @@ def f2(x,returntype=LINALGMAXFLOAT):
     return returntype((q-p)*q*p);
 
 
-
-
 def npdf(mu,sigma,x):
     '''
     Gaussian probability density
+    
+    Parameters
+    ----------
+    mu : float
+        Mean of distribution
+    sigma : float
+        Standard deviation of distribution
+    x : float or array-like 
+        Points at which to evaluate distribution
     '''
     invsigma = 1.0/sigma
     x = (x-mu)*invsigma

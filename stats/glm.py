@@ -77,11 +77,16 @@ def GLMPenaltyL2(X,Y,penalties=None):
     '''
     N,D = X.shape
     assert N>D
-    if penalties is None: penalties = np.zeros((D,),'d')
-    if type(penalties) in (float,int):
+    #print('@',penalties)
+    if penalties is None: 
+        penalties = np.zeros((D,),'d')
+    if type(penalties) in (float,int) or np.prod(np.shape(penalties))==1:
         #print('Penalty parameter is a scalar')
         #print('Penalizing all parameters with α=',penalties)
+        penalties = np.array(penalties).ravel()[0]
         penalties = np.ones((D,),dtype='d')*penalties
+    #print(penalties)
+    assert np.shape(penalties)==(D,)
     assert Y.shape==(N,)
     Y = np.squeeze(Y)
     assert len(Y.shape)==1

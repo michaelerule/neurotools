@@ -274,9 +274,9 @@ def array_count_critical(data,upsample=3,cut=True,cutoff=0.4,electrode_spacing=0
     nminima    = sum2(minima   )
     return nclockwise, nanticlockwise, nsaddles, nmaxima, nminima
 
-def array_phasegradient_upper(frame,electrode_spacing=0.4):
+def array_phasegradient_local(frame,electrode_spacing=0.4):
     '''
-    The average gradient magnitude provides an upper bound on 
+    The average local gradient magnitude provides an upper bound on 
     spatial frequency ( lower bound on wavelength ).
 
     Parameters
@@ -299,16 +299,11 @@ def array_phasegradient_upper(frame,electrode_spacing=0.4):
     pg = array_phase_gradient(frame)
     return np.mean(np.abs(pg),axis=(0,1))/(electrode_spacing*2*np.pi)
 
-def array_phasegradient_lower(frame,electrode_spacing=0.4):
+def array_phasegradient_planar(frame,electrode_spacing=0.4):
     '''
     The magnitude of the average gradient provides an accurate estimate
-    of wavelength even in the presence of noise. 
+    of plane-wave wavelength even in the presence of noise. 
     
-    However, it can slightly understimate the phase gradient if the wave 
-    structure is not perfectly planar, and therefore is a (typically 
-    quite good) lower-bound.
-
-
     Parameters
     ----------
     frame : np.array
@@ -381,7 +376,7 @@ def array_phasegradient_pgd_threshold(frame,thresh=0.5,electrode_spacing=0.4):
 
     Waves with 
     phase-gradient directionlity below threshold will be removed to
-    further reduce the contribution of noise to wavelength estimates.
+    reduce the contribution of noise to wavelength estimates.
 
     Parameters
     ----------
@@ -444,10 +439,10 @@ def array_wavelength_pgd_threshold(frame,thresh=0.5):
     return 1/array_phasegradient_pgd_threshold(frame,thresh)
 
 
-def array_wavelength_lower_pgd_threshold(frame,thresh=0.5,electrode_spacing=0.4):
+def array_wavelength_local_pgd_threshold(frame,thresh=0.5,electrode_spacing=0.4):
     '''
-    The average phase gradient magnitude can tolerate non-planar waves, but
-    is sensitive to noise. It may be appropriate to combine
+    The average phase gradient magnitude can tolerate non-planar waves,
+    but is sensitive to noise. It may be appropriate to combine
     this method with spatial smoothing to denoise the data, if it is safe
     to assume a minimum spatial scale for the underlying wave dynamics.
     
@@ -519,18 +514,12 @@ def array_speed_pgd_threshold(frame,thresh=0.5,FS=1000.0):
     g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
-def array_speed_lower(frame,FS=1000.0):
+def array_speed_local(frame,FS=1000.0):
     '''
-    Lower-bound estimate on array speed based on the upper-bound of the
-    phase-gradient magnitude. This estimate is susceptable to noise, 
-    and spatial low-pass filtering may help reduce the impact of noise
-    at the cost of obscuring short wavelengths. 
-    
-    The routine array_speed_pgd_threshold is in general mode accurate.
-    
     Accuracy can be improved by restricting analysis to waves with high
     phase-gradient directionality, where the coherent propagation direction
-    between channels allows for more reliable gradient estimates.
+    between channels allows for more reliable gradient estimates. High
+    signal-to-noise ratio can also mitigate the impact of noise.
 
     Parameters
     ----------
@@ -551,13 +540,13 @@ def array_speed_lower(frame,FS=1000.0):
     '''
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
-    pg = array_phasegradient_upper(frame) #cycles / mm
+    pg = array_phasegradient_local(frame) #cycles / mm
     df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     f  = df*FS # radians / s
     g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
 
-def array_wavelength_lower(frame):
+def array_wavelength_local(frame):
     '''
     phase gradients are in units of radians per electrode
 
@@ -575,9 +564,9 @@ def array_wavelength_lower(frame):
     '''
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
-    return 1/array_phasegradient_upper(frame)
+    return 1/array_phasegradient_local(frame)
 
-def array_wavelength_upper(frame):
+def array_wavelength_planar(frame):
     '''
     phase gradients are in units of radians per electrode
 
@@ -595,7 +584,7 @@ def array_wavelength_upper(frame):
     '''
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
-    return 1/array_phasegradient_lower(frame)
+    return 1/array_phasegradient_planar(frame)
 
 def array_synchrony_pgd(frame):
     '''

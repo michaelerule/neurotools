@@ -187,7 +187,7 @@ def verify_function_closure(f):
     # Make sure closed-over and bound variables are... reasonable
     for k,v in bound.items():
         if not is_probably_safe(v):
-            raise ValueError('Function %s is not safe for memoization/caching, it binds a mutable %s %s!'%(f.__name__,k,v))
+            raise ValueError('Function %s is not safe for memoization/caching, it closes over the mutable object %s=%s!'%(f.__name__,k,v))
 
     # Free variables are also part of the closed-over state. We really don't
     # want to see these if we need to cache functions. Each of these should

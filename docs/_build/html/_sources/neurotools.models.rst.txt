@@ -1,13 +1,6 @@
 neurotools\.models package
 ==========================
 
-Subpackages
------------
-
-.. toctree::
-
-    neurotools.models.rbm
-
 Submodules
 ----------
 

@@ -595,7 +595,6 @@ def disk_cacher(
     cache_root     = cache_location+CACHE_IDENTIFIER
     neurotools.tools.ensure_dir(cache_location)
     neurotools.tools.ensure_dir(cache_root)
-    print('>>>',cache_root)
     def cached(f):
         '''
         This is a wrapper for memoizing results to disk. 

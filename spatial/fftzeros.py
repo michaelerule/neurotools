@@ -236,7 +236,7 @@ def coalesce_points(pp,radius):
     pk = getpeaks2d(y)
     return pk
 
-def find_critical_points(data,docoalesce=False,radius=4.0):
+def find_critical_points(data,docoalesce=False,radius=4.0,edgeavoid=None):
     '''
     Parameters
     ----------
@@ -249,6 +249,8 @@ def find_critical_points(data,docoalesce=False,radius=4.0):
         Whether to merge nearby critical points
     radius : float, 4.0
         Merge radius to use if `docoalesce` is true
+    edgeavoid : float, None
+        If not `None`, points `edgeavoid` distance to edge are omitted
 
     Returns
     -------
@@ -266,28 +268,28 @@ def find_critical_points(data,docoalesce=False,radius=4.0):
         Point locations of local minima in the phase gradient 
     '''
     dx,dy,dz = get_phase_gradient_as_complex(data)
-
+    
     # extract curl via a kernal
     # take real component, centres have curl +- pi
-    curl = np.complex64([[-1-1j,-1+1j],[1-1j,1+1j]])
-    temp = convolve2d(dz,curl,'same','symm')
+    curl    = np.complex64([[-1-1j,-1+1j],[1-1j,1+1j]])
+    temp    = convolve2d(dz,curl,'same','symm')
     winding = np.real(convolve2d(temp,np.ones((2,2))/4,'valid','symm'))
-
+    
     # extract inflection points ( extrema, saddles )
     # by looking for sign changes in derivatives
     # avoid points close to the known centres
-    avoid     = np.abs(winding)>1e-1
+    avoid     = np.abs(winding)>5e-2
     ok        = ~avoid
     ddx       = np.diff(np.sign(dx),1,0)[:,:-1]/2
     ddy       = np.diff(np.sign(dy),1,1)[:-1,:]/2
-
+    
     clockwise = winding>3
-    anticlockwise = winding<-3 # close to pi, sometimes a little
+    anticlockwise = winding<-3 # close to pi, sometimes a little off
     saddles   = (ddx*ddy==-1)*ok
     peaks     = (ddx*ddy== 1)*ok
     maxima    = (ddx*ddy== 1)*(ddx==-1)*ok
     minima    = (ddx*ddy== 1)*(ddx== 1)*ok
-
+    
     if docoalesce:
         clockwise     = coalesce_points(clockwise,radius)
         anticlockwise = coalesce_points(anticlockwise,radius)
@@ -302,7 +304,23 @@ def find_critical_points(data,docoalesce=False,radius=4.0):
     peaks         = unwrap_indecies(peaks    )+1
     maxima        = unwrap_indecies(maxima   )+1
     minima        = unwrap_indecies(minima   )+1
-
+    
+    if not edgeavoid is None:
+        # remove points near edges
+        Nrow,Ncol = data.shape[:2]
+        def inbounds(pts):
+            if np.prod(pts.shape)==0:
+                # No points to check
+                return pts
+            outofbounds = (pts[:,0]<=edgeavoid)|(pts[:,1]<=edgeavoid)|(pts[:,0]>=Ncol-edgeavoid)|(pts[:,1]>=Nrow-edgeavoid)
+            return pts[~outofbounds,:]
+        anticlockwise = inbounds(anticlockwise)
+        clockwise = inbounds(clockwise)
+        saddles   = inbounds(saddles)
+        peaks     = inbounds(peaks)
+        maxima    = inbounds(maxima)
+        minima    = inbounds(minima)
+        
     return clockwise, anticlockwise, saddles, peaks, maxima, minima
 
 def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect='auto',extent=None):

@@ -432,9 +432,9 @@
     <span class="n">nminima</span>    <span class="o">=</span> <span class="n">sum2</span><span class="p">(</span><span class="n">minima</span>   <span class="p">)</span>
     <span class="k">return</span> <span class="n">nclockwise</span><span class="p">,</span> <span class="n">nanticlockwise</span><span class="p">,</span> <span class="n">nsaddles</span><span class="p">,</span> <span class="n">nmaxima</span><span class="p">,</span> <span class="n">nminima</span></div>
 
-<div class="viewcode-block" id="array_phasegradient_upper"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_phasegradient_upper">[docs]</a><span class="k">def</span> <span class="nf">array_phasegradient_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<div class="viewcode-block" id="array_phasegradient_local"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_phasegradient_local">[docs]</a><span class="k">def</span> <span class="nf">array_phasegradient_local</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    The average gradient magnitude provides an upper bound on </span>
+<span class="sd">    The average local gradient magnitude provides an upper bound on </span>
 <span class="sd">    spatial frequency ( lower bound on wavelength ).</span>
 
 <span class="sd">    Parameters</span>
@@ -457,16 +457,11 @@
     <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pg</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">electrode_spacing</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="array_phasegradient_lower"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_phasegradient_lower">[docs]</a><span class="k">def</span> <span class="nf">array_phasegradient_lower</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<div class="viewcode-block" id="array_phasegradient_planar"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_phasegradient_planar">[docs]</a><span class="k">def</span> <span class="nf">array_phasegradient_planar</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The magnitude of the average gradient provides an accurate estimate</span>
-<span class="sd">    of wavelength even in the presence of noise. </span>
+<span class="sd">    of plane-wave wavelength even in the presence of noise. </span>
 <span class="sd">    </span>
-<span class="sd">    However, it can slightly understimate the phase gradient if the wave </span>
-<span class="sd">    structure is not perfectly planar, and therefore is a (typically </span>
-<span class="sd">    quite good) lower-bound.</span>
-
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    frame : np.array</span>
@@ -539,7 +534,7 @@
 
 <span class="sd">    Waves with </span>
 <span class="sd">    phase-gradient directionlity below threshold will be removed to</span>
-<span class="sd">    further reduce the contribution of noise to wavelength estimates.</span>
+<span class="sd">    reduce the contribution of noise to wavelength estimates.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -602,10 +597,10 @@
     <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_pgd_threshold</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">thresh</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="array_wavelength_lower_pgd_threshold"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_lower_pgd_threshold">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_lower_pgd_threshold</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<div class="viewcode-block" id="array_wavelength_local_pgd_threshold"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_local_pgd_threshold">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_local_pgd_threshold</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    The average phase gradient magnitude can tolerate non-planar waves, but</span>
-<span class="sd">    is sensitive to noise. It may be appropriate to combine</span>
+<span class="sd">    The average phase gradient magnitude can tolerate non-planar waves,</span>
+<span class="sd">    but is sensitive to noise. It may be appropriate to combine</span>
 <span class="sd">    this method with spatial smoothing to denoise the data, if it is safe</span>
 <span class="sd">    to assume a minimum spatial scale for the underlying wave dynamics.</span>
 <span class="sd">    </span>
@@ -677,18 +672,12 @@
     <span class="n">g</span>  <span class="o">=</span> <span class="n">f</span> <span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="c1"># cycles / s</span>
     <span class="k">return</span> <span class="n">g</span><span class="o">/</span><span class="n">pg</span> <span class="c1"># mm /s</span></div>
 
-<div class="viewcode-block" id="array_speed_lower"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_speed_lower">[docs]</a><span class="k">def</span> <span class="nf">array_speed_lower</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">):</span>
+<div class="viewcode-block" id="array_speed_local"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_speed_local">[docs]</a><span class="k">def</span> <span class="nf">array_speed_local</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Lower-bound estimate on array speed based on the upper-bound of the</span>
-<span class="sd">    phase-gradient magnitude. This estimate is susceptable to noise, </span>
-<span class="sd">    and spatial low-pass filtering may help reduce the impact of noise</span>
-<span class="sd">    at the cost of obscuring short wavelengths. </span>
-<span class="sd">    </span>
-<span class="sd">    The routine array_speed_pgd_threshold is in general mode accurate.</span>
-<span class="sd">    </span>
 <span class="sd">    Accuracy can be improved by restricting analysis to waves with high</span>
 <span class="sd">    phase-gradient directionality, where the coherent propagation direction</span>
-<span class="sd">    between channels allows for more reliable gradient estimates.</span>
+<span class="sd">    between channels allows for more reliable gradient estimates. High</span>
+<span class="sd">    signal-to-noise ratio can also mitigate the impact of noise.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -709,13 +698,13 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Array data should be packed as (x,y,time)&#39;</span><span class="p">)</span>
-    <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phasegradient_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="c1">#cycles / mm</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="n">array_phasegradient_local</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="c1">#cycles / mm</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">frame</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))))</span> <span class="c1">#radians/sample</span>
     <span class="n">f</span>  <span class="o">=</span> <span class="n">df</span><span class="o">*</span><span class="n">FS</span> <span class="c1"># radians / s</span>
     <span class="n">g</span>  <span class="o">=</span> <span class="n">f</span> <span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="c1"># cycles / s</span>
     <span class="k">return</span> <span class="n">g</span><span class="o">/</span><span class="n">pg</span> <span class="c1"># mm /s</span></div>
 
-<div class="viewcode-block" id="array_wavelength_lower"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_lower">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_lower</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="array_wavelength_local"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_local">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_local</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    phase gradients are in units of radians per electrode</span>
 
@@ -733,9 +722,9 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Array data should be packed as (x,y,time)&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_local</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="array_wavelength_upper"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_upper">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_upper</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="array_wavelength_planar"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_wavelength_planar">[docs]</a><span class="k">def</span> <span class="nf">array_wavelength_planar</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    phase gradients are in units of radians per electrode</span>
 
@@ -753,7 +742,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Array data should be packed as (x,y,time)&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_lower</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">array_phasegradient_planar</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="array_synchrony_pgd"><a class="viewcode-back" href="../../../neurotools.spatial.array.html#neurotools.spatial.array.array_synchrony_pgd">[docs]</a><span class="k">def</span> <span class="nf">array_synchrony_pgd</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

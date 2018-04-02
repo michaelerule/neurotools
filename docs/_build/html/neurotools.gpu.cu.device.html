@@ -154,49 +154,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-neurotools.gpu.cu.device">
-<span id="neurotools-gpu-cu-device-module"></span><h1>neurotools.gpu.cu.device module<a class="headerlink" href="#module-neurotools.gpu.cu.device" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="neurotools.gpu.cu.device.missing">
-<code class="descclassname">neurotools.gpu.cu.device.</code><code class="descname">missing</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/device.html#missing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.device.missing" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.device.estimateThreadsPerBlock">
-<code class="descclassname">neurotools.gpu.cu.device.</code><code class="descname">estimateThreadsPerBlock</code><span class="sig-paren">(</span><em>cudamodule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/device.html#estimateThreadsPerBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.device.estimateThreadsPerBlock" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function acceptas a cuda module. It will estimate the number of
-threads from this module that can fit in one block in the current context.
-It will return the largest number of threads that do not exceed the
-amount of shared memory, registers, or the hard limit on threads per
-block, rounded down to a multiple of the warp size.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.device.estimateBlocks">
-<code class="descclassname">neurotools.gpu.cu.device.</code><code class="descname">estimateBlocks</code><span class="sig-paren">(</span><em>cudamodule</em>, <em>n_units</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/device.html#estimateBlocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.device.estimateBlocks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called after estimateThreadsPerBlock.
-This function will estimate the number of blocks needed to run n_units.
-It will not return more blocks than there are multiprocessors.</p>
-<p>If there are more blocks than multiprocessors, my convention is to loop
-within the kernel. It is unclear to me weather running more blocks than
-there are processors is more or less efficient than looping within blocks.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.device.estimateLoop">
-<code class="descclassname">neurotools.gpu.cu.device.</code><code class="descname">estimateLoop</code><span class="sig-paren">(</span><em>cudamodule</em>, <em>n_units</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/device.html#estimateLoop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.device.estimateLoop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called after estimateBlocks
-If there are not enough multiprocessors to handle n_units, this will
-return the number of loops within each kernel needed to process all data.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.gpu.cu.device.card_info">
-<code class="descclassname">neurotools.gpu.cu.device.</code><code class="descname">card_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/gpu/cu/device.html#card_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.gpu.cu.device.card_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns information on the current GPU device as known to pycuda as a
-string</p>
-</dd></dl>
-
+  <div class="section" id="neurotools-gpu-cu-device-module">
+<h1>neurotools.gpu.cu.device module<a class="headerlink" href="#neurotools-gpu-cu-device-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

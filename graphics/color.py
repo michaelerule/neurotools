@@ -39,7 +39,7 @@ from   neurotools.signal.signal import gaussian_smooth
 GATHER = [
 '#f1f0e9', # "White"
 '#eb7a59', # "Rust"
-'#eea300', # "Sand"
+'#eea300', # "Ochre"
 '#5aa0df', # "Azure"
 '#00bac9', # "Turquoise"
 '#44525c'] # "Black"

@@ -7,7 +7,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
 
 try:
     from spectrum.mtm import dpss
@@ -17,10 +16,48 @@ except:
 
 import types
 import numpy as np
-from neurotools.tools import warn
-from neurotools.signal.signal import phase_randomize
+from numpy.fft import *
+#from neurotools.tools import warn
+from warnings import warn
+#from neurotools.signal.signal import phase_randomize
 
 __PPC_FP_TYPE__=np.float128
+
+def phase_randomize(signal):
+    '''
+    Phase randomizes a signal by rotating frequency components by a random
+    angle. Negative frequencies are rotated in the opposite direction.
+    The nyquist frequency, if present, has it's sign randomly flipped.
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    assert 1==len(signal.shape)
+    N = len(signal)
+    if N%2==1:
+        # signal length is odd.
+        # ft will have one DC component then symmetric frequency components
+        randomize  = np.exp(1j*np.random.rand((N-1)/2))
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,conjugates)
+    else:
+        # signal length is even
+        # will have one single value at the nyquist frequency
+        # which will be real and can be sign flipped but not rotated
+        flip = 1 if rand(1)<0.5 else -1
+        randomize  = np.exp(1j*rand((N-2)/2))
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,flip)
+        randomize  = np.append(randomize,conjugates)
+    # the DC component is not randomized
+    randomize = np.append(1,randomize)
+    # take FFT and apply phase randomization
+    ff = fft(signal)*randomize
+    # take inverse
+    randomized = ifft(ff)
+    return real(randomized)
 
 def fftppc_biased(snippits,Fs=1000,taper=None):
     # some precision trouble

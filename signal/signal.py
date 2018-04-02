@@ -800,7 +800,7 @@ def phase_randomize(signal):
     Returns
     -------
     '''
-    assert 1==len(signam.shape)
+    assert 1==len(signal.shape)
     N = len(signal)
     if N%2==1:
         # signal length is odd.

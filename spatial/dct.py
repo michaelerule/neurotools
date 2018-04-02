@@ -12,13 +12,6 @@ Discrete cosine transform methods.
 Primarily used with fftzeros code for finding critical points in phase gradient maps.
 '''
 
-# TODO fix imports
-#from matplotlib.mlab import find
-#from neurotools.tools import *
-#from neurotools.jobs.parallel import *
-#from neurotools.signal.signal import *
-#from neurotools.signal.conv import *
-
 from neurotools import getfftw as fft
 import numpy as np
 from pylab import find

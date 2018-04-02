@@ -97,7 +97,6 @@ def f2(x,returntype=LINALGMAXFLOAT):
     q  = np.exp(np.minimum(F128EMAX,logq))
     return returntype((q-p)*q*p);
 
-
 def npdf(mu,sigma,x):
     '''
     Gaussian probability density

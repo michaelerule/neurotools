@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -11,11 +10,9 @@ from __future__ import print_function
 import sys
 if sys.version_info<(3,):
     from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
+#
 from   neurotools.graphics.color   import *
-from   neurotools.getfftw import *
-from   neurotools.tools   import *
 import os
 import pickle
 import scipy
@@ -28,8 +25,7 @@ from   scipy.io          import loadmat
 from   scipy.signal      import butter,filtfilt,lfilter
 from   matplotlib.pyplot import *
 import matplotlib.pyplot as plt
-
-from neurotools.signal.signal import zscore
+from   matplotlib.pylab  import find
 
 try: # python 2.x
     from itertools import izip, chain
@@ -188,13 +184,7 @@ def nicex():
 
 def nicexy():
     '''
-    Mark only the min/max value of y/y axis
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Mark only the min/max value of y/y axis. See `nicex` and `nicey`
     '''
     nicey()
     nicex()
@@ -204,12 +194,6 @@ def positivex():
     Sets the lower x limit to zero, and the upper limit to the largest
     positive value un the current xlimit. If the curent xlim() is
     negative, a value error is raised.
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     top = np.max(xlim())
     if top<=0:
@@ -223,12 +207,6 @@ def positivey():
     Sets the lower y limit to zero, and the upper limit to the largest
     positive value un the current ylimit. If the curent ylim() is
     negative, a value error is raised.
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     top = np.max(ylim())
     if top<=0:
@@ -239,22 +217,20 @@ def positivey():
 
 def positivexy():
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Remove negative range from both x and y axes. See `positivex` and
+    `positivey`
     '''
     positivex()
     positivey()
 
 def xylim(a,b,ax=None):
     '''
+    set x and y axis limits to the smae range
+    
     Parameters
     ----------
-    
-    Returns
-    -------
+    a : lower limit
+    b : upper limit
     '''
     if ax==None: ax = plt.gca()
     ax.set_xlim(a,b)
@@ -262,33 +238,29 @@ def xylim(a,b,ax=None):
 
 def nox():
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Hide x-axis
     '''
     xticks([])
     xlabel('')
 
 def noy():
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Hide y-axis
     '''
     yticks([])
     ylabel('')
 
+def noxyaxes():
+    '''
+    Hide all aspects of x and y axes. See `nox`, `noy`, and `noaxis`
+    '''
+    nox()
+    noy()
+    noaxis()
+
 def righty(ax=None):
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Move the y-axis to the right
     '''
     if ax==None: ax=plt.gca()
     ax.yaxis.tick_right()
@@ -296,22 +268,14 @@ def righty(ax=None):
 
 def unity():
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Set y-axis to unit interval
     '''
     ylim(0,1)
     nicey()
 
 def unitx():
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Set x-axis to unit interval
     '''
     xlim(0,1)
     nicex()
@@ -320,9 +284,7 @@ def force_aspect(aspect=1,a=None):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    aspect : aspect ratio
     '''
     if a is None: a = plt.gca()
     x1,x2=a.get_xlim()
@@ -559,9 +521,10 @@ def nudge_axis_y(dy,ax=None):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    dy : number
+        Amount (in pixels) to adjust axis
+    ax : axis, default None
+        If None, uses gca()
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
@@ -573,9 +536,10 @@ def nudge_axis_x(dx,ax=None):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    dx : number
+        Amount (in pixels) to adjust axis
+    ax : axis, default None
+        If None, uses gca()
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
@@ -587,9 +551,10 @@ def expand_axis_y(dy,ax=None):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    dy : number
+        Amount (in pixels) to adjust axis
+    ax : axis, default None
+        If None, uses gca()
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
@@ -601,9 +566,10 @@ def nudge_axis_baseline(dy,ax=None):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    dy : number
+        Amount (in pixels) to adjust axis
+    ax : axis, default None
+        If None, uses gca()
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
@@ -615,9 +581,10 @@ def nudge_axis_left(dx,ax=None):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    dx : number
+        Amount (in pixels) to adjust axis
+    ax : axis, default None
+        If None, uses gca()
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
@@ -627,11 +594,6 @@ def nudge_axis_left(dx,ax=None):
 
 def zoombox(ax1,ax2,xspan1=None,xspan2=None):
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     # need to do this to get the plot to ... update correctly
     show()
@@ -662,8 +624,6 @@ def fudgex(by=10,ax=None,doshow=False):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     if ax is None: ax=plt.gca()
     ax.xaxis.labelpad = -by
@@ -676,8 +636,6 @@ def fudgey(by=20,ax=None,doshow=False):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     if ax is None: ax=plt.gca()
     ax.yaxis.labelpad = -by
@@ -690,8 +648,6 @@ def fudgexy(by=10,ax=None):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     fudgex(by,ax)
     fudgey(by,ax)
@@ -700,12 +656,6 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
     '''
     Edges of the form (start,stop)
     Shades regions of graph defined by "edges"
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     a,b = ylim()
     c,d = xlim()
@@ -715,51 +665,11 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
     ylim(a,b)
     xlim(c,d)
 
-shade = shade_edges
-
-def ybar(x,**kwargs):
-    '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    a,b = ylim()
-    plot([x,x],[a,b],**kwargs)
-    ylim(a,b)
-
-def xbar(y,**kwargs):
-    '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    a,b = xlim()
-    plot([a,b],[y,y],**kwargs)
-    xlim(a,b)
-
-def allnice():
-    '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    nicex()
-    nicey()
-    nice_legend()
-
 def ybartext(x,t,c1,c2,**kwargs):
     '''
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     a,b = ylim()
     outline = False
@@ -788,8 +698,6 @@ def xbartext(y,t,c1,c2,**kwargs):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     a,b = xlim()
     outline = False
@@ -827,12 +735,6 @@ def nice_legend(*args,**kwargs):
     '''
     Better defaults for the plot legend. TODO: make this into a
     matplotlib style.
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     defaults = {
         'framealpha':0.9,
@@ -850,8 +752,6 @@ def rangeto(rangefun,data):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     rangefun(np.min(data),np.max(data))
 
@@ -860,8 +760,6 @@ def rangeover(data):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     return np.min(data),np.max(data)
 
@@ -870,8 +768,6 @@ def cleartop(x):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     subplots_adjust(top=1-x)
 
@@ -907,8 +803,6 @@ def complex_axis(scale):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     xlim(-scale,scale)
     ylim(-scale,scale)
@@ -927,8 +821,6 @@ def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     Parameters
     ----------
     
-    Returns
-    -------
     '''
     cwt = squeeze(cwt)
     nf,N = shape(cwt)
@@ -955,39 +847,30 @@ def plotWTPhaseFig(ff,cwt,aspect=50,
     Parameters
     ----------
     
-    Returns
-    -------
     '''
-    cwt = squeeze(cwt)
-    nf,N = shape(cwt)
+    cwt  = np.squeeze(cwt)
+    nf,N = np.shape(cwt)
     pwr    = np.abs(cwt)
-    fest   = ff[argmax(pwr,0)]
-    clf()
-    subplot(211)
-    imshow(pwr,aspect=aspect,extent=(0,N,ff[-1],ff[0]),
+    fest   = ff[np.argmax(pwr,0)]
+    plt.clf()
+    plt.subplot(211)
+    plt.imshow(pwr,aspect=aspect,extent=(0,N,ff[-1],ff[0]),
         vmin=vmin,vmax=vmax,cmap=cm,interpolation=interpolation)
-    xlim(0,N)
-    ylim(ff[0],ff[-1])
-    subplot(212)
-    imshow(angle(cwt),aspect=aspect,extent=(0,N,ff[-1],ff[0]),
+    plt.xlim(0,N)
+    plt.ylim(ff[0],ff[-1])
+    plt.subplot(212)
+    plt.imshow(angle(cwt),aspect=aspect,extent=(0,N,ff[-1],ff[0]),
         vmin=vmin,vmax=vmax,cmap=medhue,interpolation=interpolation)
-    xlim(0,N)
-    ylim(ff[0],ff[-1])
+    plt.xlim(0,N)
+    plt.ylim(ff[0],ff[-1])
     try:
-        tight_layout()
+        plt.tight_layout()
     except:
         print('tight_layout missing, you should update')
-    draw()
-    show()
+    plt.draw()
+    plt.show()
 
 def domask(*args):
-    '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
     if len(args)>2:
         return (args[1],)+domask(args[0],*args[2:])
     mm = np.array(args[1])
@@ -1026,8 +909,6 @@ class HandlerSquare(HandlerPatch):
         Parameters
         ----------
         
-        Returns
-        -------
         '''
         center = xdescent + 0.5 * (width-height),ydescent
         p = mpatches.Rectangle(xy=center,width=height,height=height, angle=0.0)
@@ -1156,9 +1037,7 @@ def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
     '''
     Parameters
     ----------
-    
-    Returns
-    -------
+    x : label
     '''
     fontproperties = {
         'family':'Bitstream Vera Sans',
@@ -1329,3 +1208,54 @@ def Gaussian2D_covellipse(M,C,N=60,**kwargs):
     plot(*xy,**kwargs);
     return xy
 
+def stderrplot(m,v,color='k',alpha=0.1,smooth=None,lw=1.5,filled=True,label=None,stdwidth=1.96):
+    '''
+    Parameters
+    ----------
+    m : mean
+    v : variance
+    
+    Other Parameters
+    ----------------
+    color : 
+        Plot color
+    alpha : 
+        Shaded confidence alpha color blending value
+    smooth : int
+        Number of samples over which to smooth the variance
+    '''
+    plot(m, color = color,lw=lw,label=label)
+    e = np.sqrt(v)*stdwidth
+    if not smooth is None and smooth>0:
+        e = neurotools.signal.signal.box_filter(e,smooth)
+        m = neurotools.signal.signal.box_filter(m,smooth)
+    if filled:
+        c = mpl.colors.colorConverter.to_rgb(color)+(alpha ,)
+        fill_between(np.arange(len(m)),m-e,m+e,lw=0,color=c)
+    else:
+        plot(m-e,':',lw=lw*0.5,color=color)
+        plot(m+e,':',lw=lw*0.5,color=color)    
+
+def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None):
+    '''
+    Add vertical scale bar to plot
+    '''
+    yspan = [ycenter-yheight/2.0,ycenter+yheight/2.0]
+    if ax is None:
+        ax = plt.gca()
+    plt.draw() # enforce packing of geometry
+    if x is None:
+        x = -pixels_to_xunits(5)
+    plt.plot([x,x],yspan,color='k',lw=1,clip_on=False)
+    plt.text(x-pixels_to_xunits(2),np.mean(yspan),label,
+        rotation=90,
+        fontsize=9,
+        horizontalalignment='right',
+        verticalalignment='center')
+        
+def addspikes(Y,lw=0.2,color='k'):
+    '''
+    Add vertical lines where Y>0
+    '''
+    for t in find(Y>0): 
+        axvline(t,lw=lw,color=color)

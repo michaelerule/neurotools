@@ -668,14 +668,14 @@ def forward_backward_abstract(y, x0, T, B, prior=1):
     ----------
     y : iterable
         sequence of observations
-    B : y→(P(x)→P(x)), 
-        conditioning on observations P(x|y(t))
     x0: P(x)
         Initial condition
     T.fwd : P(x)→P(x) 
         Operator for the forward  pass
     T.bwd : P(x)→P(x)
         Operator for the backward pass
+    B : y→(P(x)→P(x)), 
+        conditioning on observations P(x|y(t))
     prior : Optional, P(x) 
         Prior to be multiplied with the latent state on every time-step
     '''

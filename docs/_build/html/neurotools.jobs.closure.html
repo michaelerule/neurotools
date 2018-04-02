@@ -154,78 +154,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-neurotools.jobs.closure">
-<span id="neurotools-jobs-closure-module"></span><h1>neurotools.jobs.closure module<a class="headerlink" href="#module-neurotools.jobs.closure" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="neurotools.jobs.closure.is_immutable">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">is_immutable</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#is_immutable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.is_immutable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks whether an object is immutable. It must be composed of the
-built-in types str, int, long, bool, float, and tuple. If it is
-a tuple, each of its elements must be immutable</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.jobs.closure.is_probably_safe">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">is_probably_safe</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#is_probably_safe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.is_probably_safe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Objects are probably “safe” (unlikly to change) if they are
-– immutable
-– functions
-– modules
-Obviously, the latter two may change, but in practice it is likely
-ok. Still, risky!</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.jobs.closure.csv">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">csv</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.csv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="neurotools.jobs.closure.inspect_function_closure">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">inspect_function_closure</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#inspect_function_closure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.inspect_function_closure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if a function is “safe”</p>
-<p>Formally this is quite tricky as not all closures can be avoided.
-Functions MUST close over their namespace in some sense, in order
-to access subroutines. This cannot be avoided, and changes in
-subroutines may cause changes in behavior.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.jobs.closure.verify_function_closure">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">verify_function_closure</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#verify_function_closure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.verify_function_closure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if a function is “safe” (likely immutable)</p>
-<p>Formally this is quite tricky as not all closures can be avoided.
-Functions MUST close over their namespace in order to access
-subroutines later, as Python is by design late-binding. This cannot
-be avoided, and changes in subroutines may cause changes in behavior.</p>
-<p>Levels of safety:</p>
-<dl class="docutils">
-<dt>Safe:</dt>
-<dd>Function references only other functions. All state is passed
-via arguments. Hash values of subroutines are incorporated into
-the hash value for this function.</dd>
-<dt>Risky:</dt>
-<dd>Function may close over state and reference globals, as long as
-those states / globals are themselves immutable. This is risky
-as values may still change across invokation. In theory we could
-snapshot the dependent state and incorporate that into the call
-signature.</dd>
-<dt>Unsafe:</dt>
-<dd>Function contains mutable defaults. Function references mutable
-globals or closes over mutable state. Unsafe conditions will
-cause a ValueError</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="neurotools.jobs.closure.get_subroutines">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">get_subroutines</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#get_subroutines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.get_subroutines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns things that resemble subroutines of function f. These are all
-callable objets that are either named or bound via closures.
-Return value is a set of functions.
-Non-function callable subroutines will cause an error.</p>
-</dd></dl>
-
+  <div class="section" id="neurotools-jobs-closure-module">
+<h1>neurotools.jobs.closure module<a class="headerlink" href="#neurotools-jobs-closure-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

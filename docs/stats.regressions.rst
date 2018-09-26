@@ -1,5 +1,5 @@
-stats\.regressions module
-=========================
+stats.regressions module
+========================
 
 .. automodule:: stats.regressions
     :members:

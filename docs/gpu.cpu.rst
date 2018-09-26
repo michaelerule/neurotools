@@ -1,5 +1,5 @@
-gpu\.cpu package
-================
+gpu.cpu package
+===============
 
 Submodules
 ----------

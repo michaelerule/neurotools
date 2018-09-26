@@ -1,5 +1,5 @@
-signal\.savitskygolay module
-============================
+signal.savitskygolay module
+===========================
 
 .. automodule:: signal.savitskygolay
     :members:

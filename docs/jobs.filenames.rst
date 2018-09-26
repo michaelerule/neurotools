@@ -1,5 +1,5 @@
-jobs\.filenames module
-======================
+jobs.filenames module
+=====================
 
 .. automodule:: jobs.filenames
     :members:

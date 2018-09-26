@@ -1,5 +1,5 @@
-spatial\.triangulation module
-=============================
+spatial.triangulation module
+============================
 
 .. automodule:: spatial.triangulation
     :members:

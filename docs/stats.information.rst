@@ -1,5 +1,5 @@
-stats\.information module
-=========================
+stats.information module
+========================
 
 .. automodule:: stats.information
     :members:

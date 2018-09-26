@@ -1,5 +1,5 @@
-gpu\.cu\.convolution module
-===========================
+gpu.cu.convolution module
+=========================
 
 .. automodule:: gpu.cu.convolution
     :members:

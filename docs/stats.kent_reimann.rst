@@ -1,5 +1,5 @@
-stats\.kent\_reimann module
-===========================
+stats.kent\_reimann module
+==========================
 
 .. automodule:: stats.kent_reimann
     :members:

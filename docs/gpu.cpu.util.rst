@@ -1,5 +1,5 @@
-gpu\.cpu\.util module
-=====================
+gpu.cpu.util module
+===================
 
 .. automodule:: gpu.cpu.util
     :members:

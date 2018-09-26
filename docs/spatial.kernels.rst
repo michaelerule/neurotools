@@ -1,5 +1,5 @@
-spatial\.kernels module
-=======================
+spatial.kernels module
+======================
 
 .. automodule:: spatial.kernels
     :members:

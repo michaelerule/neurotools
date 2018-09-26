@@ -1,5 +1,5 @@
-spatial\.fftzeros module
-========================
+spatial.fftzeros module
+=======================
 
 .. automodule:: spatial.fftzeros
     :members:

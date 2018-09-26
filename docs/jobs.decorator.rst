@@ -1,5 +1,5 @@
-jobs\.decorator module
-======================
+jobs.decorator module
+=====================
 
 .. automodule:: jobs.decorator
     :members:

@@ -1,5 +1,5 @@
-stats\.lessons module
-=====================
+stats.lessons module
+====================
 
 .. automodule:: stats.lessons
     :members:

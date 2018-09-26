@@ -1,5 +1,5 @@
-stats\.Gaussian module
-======================
+stats.Gaussian module
+=====================
 
 .. automodule:: stats.Gaussian
     :members:

@@ -1,5 +1,5 @@
-gpu\.cu\.gpufun module
-======================
+gpu.cu.gpufun module
+====================
 
 .. automodule:: gpu.cu.gpufun
     :members:

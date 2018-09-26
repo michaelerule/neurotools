@@ -1,5 +1,5 @@
-stats\.entropy module
-=====================
+stats.entropy module
+====================
 
 .. automodule:: stats.entropy
     :members:

@@ -1,5 +1,5 @@
-gpu\.cl\.matrix module
-======================
+gpu.cl.matrix module
+====================
 
 .. automodule:: gpu.cl.matrix
     :members:

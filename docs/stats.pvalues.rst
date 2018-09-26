@@ -1,5 +1,5 @@
-stats\.pvalues module
-=====================
+stats.pvalues module
+====================
 
 .. automodule:: stats.pvalues
     :members:

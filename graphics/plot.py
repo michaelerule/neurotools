@@ -27,6 +27,8 @@ from   matplotlib.pyplot import *
 import matplotlib.pyplot as plt
 from   matplotlib.pylab  import find
 
+from neurotools.tools import today
+
 try: # python 2.x
     from itertools import izip, chain
 except: # python 3
@@ -151,6 +153,18 @@ def eformat(f, prec, exp_digits):
     s = mantissa + "e%+0*d"%(exp_digits+1, exponent)
     s = s.replace('+','')
     return s
+
+def v2str(p):
+    '''
+    Format vector as string in short scientific notation
+    '''
+    return '['+','.join([shortscientific(x) for x in p])+']'
+
+def v2str_long(p):
+    '''
+    Format vector as string with maximum precision
+    '''
+    return '['+','.join([np.float128(x).astype(str) for x in p])+']'
 
 def nicey():
     '''

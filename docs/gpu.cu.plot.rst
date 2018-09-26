@@ -1,5 +1,5 @@
-gpu\.cu\.plot module
-====================
+gpu.cu.plot module
+==================
 
 .. automodule:: gpu.cu.plot
     :members:

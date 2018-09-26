@@ -1,5 +1,5 @@
-jobs\.cache module
-==================
+jobs.cache module
+=================
 
 .. automodule:: jobs.cache
     :members:

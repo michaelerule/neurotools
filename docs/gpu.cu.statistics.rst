@@ -1,5 +1,5 @@
-gpu\.cu\.statistics module
-==========================
+gpu.cu.statistics module
+========================
 
 .. automodule:: gpu.cu.statistics
     :members:

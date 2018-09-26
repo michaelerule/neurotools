@@ -1,5 +1,5 @@
-jobs\.closure module
-====================
+jobs.closure module
+===================
 
 .. automodule:: jobs.closure
     :members:

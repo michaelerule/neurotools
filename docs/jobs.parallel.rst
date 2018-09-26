@@ -1,5 +1,5 @@
-jobs\.parallel module
-=====================
+jobs.parallel module
+====================
 
 .. automodule:: jobs.parallel
     :members:

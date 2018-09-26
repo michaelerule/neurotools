@@ -1,5 +1,5 @@
-stats\.GLMFit module
-====================
+stats.GLMFit module
+===================
 
 .. automodule:: stats.GLMFit
     :members:

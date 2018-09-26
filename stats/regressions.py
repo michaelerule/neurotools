@@ -13,6 +13,8 @@ from neurotools.system import *
 Routines to regress spatiotemporal wave shapes to data
 '''
 
+from neurotools.stats.minimize import minimize_retry
+
 import warnings
 from scipy.stats import linregress
 
@@ -380,11 +382,12 @@ def exponential_decay(X,Y):
         (lamb,scale,dc) = theta
         z = np.exp(-lamb*X)*scale+dc
         return np.sum( (z-Y)**2 )
-    result = minimize(error,[1,1,1])#,method='BFGS')#Nelder-Mead')
-    if not result.success:
-        print(result.message)
-        warnings.warn('Optimization failed: %s'%result.message)
-    lamb,scale,dc = result.x
+    result = minimize_retry(error,[1,1,1],verbose=False,printerrors=False)
+    #if not result.success:
+    #    print(result.message)
+    #    warnings.warn('Optimization failed: %s'%result.message)
+    # lamb,scale,dc = result.x
+    lamb,scale,dc = result
     return lamb,scale,dc
     
 def robust_line(X,Y):

@@ -1,5 +1,5 @@
-signal\.multitaper module
-=========================
+signal.multitaper module
+========================
 
 .. automodule:: signal.multitaper
     :members:

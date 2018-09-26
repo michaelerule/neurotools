@@ -1,5 +1,5 @@
-signal\.linenoise module
-========================
+signal.linenoise module
+=======================
 
 .. automodule:: signal.linenoise
     :members:

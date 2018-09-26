@@ -1,5 +1,5 @@
-models\.rbm\.rbm\_utils\.stutils module
-=======================================
+models.rbm.rbm\_utils.stutils module
+====================================
 
 .. automodule:: models.rbm.rbm_utils.stutils
     :members:

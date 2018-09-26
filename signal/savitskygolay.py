@@ -39,37 +39,37 @@ def SGOrd(m,fc,fs):
     return int(round(fc*(3.2*m-4.6)-1))
 
 def SGKern(m,n):
-    x = arange(-m,m+1)
-    y = zeros(shape(x))
+    x = np.arange(-m,m+1)
+    y = np.zeros(np.shape(x))
     y[m]=1
-    k=poly1d(polyfit(x,y,n))(x)
+    k=np.poly1d(np.polyfit(x,y,n))(x)
     return k
 
 def SGKernV(m,n):
-    x = arange(-m,m+1)
-    y = zeros(shape(x))
+    x = np.arange(-m,m+1)
+    y = np.zeros(np.shape(x))
     y[m-1]=.5
     y[m+1]=-.5
-    k=poly1d(polyfit(x,y,n))(x)
+    k=np.poly1d(np.polyfit(x,y,n))(x)
     return k
 
 def SGKernA(m,n):
-    x = arange(-m,m+1)
-    y = zeros(shape(x))
+    x = np.arange(-m,m+1)
+    y = np.zeros(np.shape(x))
     y[m-2]=.25
     y[m]  =-.5
     y[m+2]=.25
-    k=poly1d(polyfit(x,y,n))(x)
+    k=np.poly1d(np.polyfit(x,y,n))(x)
     return k
 
 def SGKernJ(m,n):
-    x = arange(-m,m+1)
-    y = zeros(shape(x))
+    x = np.arange(-m,m+1)
+    y = np.zeros(np.shape(x))
     y[m-3]=.125
     y[m-1]=-.375
     y[m+1]=.375
     y[m+3]=-.125
-    k=poly1d(polyfit(x,y,n))(x)
+    k=np.poly1d(np.polyfit(x,y,n))(x)
     return k
 
 def SGfilt(m,fc,fs):
@@ -103,6 +103,9 @@ def SGjerk(x,m,fc,fs):
     return x*fs*fs*fs
 
 def SGdifferentiate(x,m,fc,fs):
+    '''
+    Differentiate and smooth using a Savitsky-Golay filter
+    '''
     n = len(x)
     x = np.concatenate([x[::-1],x,x[::-1]])
     x = np.convolve(x,SGfiltV(m,fc,fs),mode='same')
@@ -111,7 +114,7 @@ def SGdifferentiate(x,m,fc,fs):
 
 def SGsmooth(x,m,fc,fs):
     '''
-    Uses an inefficient method of handling the boundary conditions
+    Smooth using a Savitsky-Golay filter
     
     Parameters
     ----------

@@ -1,5 +1,5 @@
-stats\.circular module
-======================
+stats.circular module
+=====================
 
 .. automodule:: stats.circular
     :members:

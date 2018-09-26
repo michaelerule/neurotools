@@ -1,5 +1,5 @@
-models\.lif module
-==================
+models.lif module
+=================
 
 .. automodule:: models.lif
     :members:

@@ -1,5 +1,5 @@
-stats\.glm module
-=================
+stats.glm module
+================
 
 .. automodule:: stats.glm
     :members:

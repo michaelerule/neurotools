@@ -37,12 +37,12 @@ def discrete_entropy_samples(samples):
         counts[s]+=1
     return discrete_entropy_distribution(counts.values())
 
-def discrete_entropy_distribution(counts):
+def discrete_entropy_distribution(x,minp=1e-19):
     '''
     Parameters
     ----------
-    counts : iterable of integers
-        List of frequency counts for discrete states
+    x : array like numeric
+        List of frequencies or counts
     
     Returns
     -------
@@ -50,8 +50,11 @@ def discrete_entropy_distribution(counts):
         Shannon entropy of discrete distribution with observed `counts`
     
     '''
-    total = np.sum(counts)
-    return np.sum(np.log(counts)*counts)/total - np.log(total)
+    x = np.array(x)
+    p = x/np.sum(x)
+    p[p<minp] = minp
+    total = np.sum(p)
+    return np.log(total)-np.sum(p*np.log(p))/total
 
 def regularized_discrete_entropy(samples,N):
     '''
@@ -61,4 +64,14 @@ def regularized_discrete_entropy(samples,N):
     
     Maybe extrapolate the energy density?
     '''
-    pass
+    raise NotImplementedError("Not implemented")
+    
+
+from neurotools.stats.distributions import poisson_pdf
+def poisson_entropy_nats(l):
+    '''
+    Approximate the entropy of a Poisson distribution in nats
+    '''
+    cutoff = int(np.ceil(l+4*np.sqrt(l)))+1
+    p = poisson_pdf(arange(cutoff),l)
+    return discrete_entropy_distribution(p)

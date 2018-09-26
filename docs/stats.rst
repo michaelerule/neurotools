@@ -23,6 +23,7 @@ Submodules
    stats.lessons
    stats.matzner_bar-gad_PLoS_2015
    stats.mcint
+   stats.minimize
    stats.mixtures
    stats.modefind
    stats.mvg

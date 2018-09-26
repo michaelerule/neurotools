@@ -1,7 +1,7 @@
-graphics.image module
+stats.minimize module
 =====================
 
-.. automodule:: graphics.image
+.. automodule:: stats.minimize
     :members:
     :undoc-members:
     :show-inheritance:

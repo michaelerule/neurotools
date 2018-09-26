@@ -1,5 +1,5 @@
-gpu\.cu\.graph module
-=====================
+gpu.cu.graph module
+===================
 
 .. automodule:: gpu.cu.graph
     :members:

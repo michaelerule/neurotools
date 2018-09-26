@@ -1,5 +1,5 @@
-graphics\.plot module
-=====================
+graphics.plot module
+====================
 
 .. automodule:: graphics.plot
     :members:

@@ -1,5 +1,5 @@
-graphics\.color module
-======================
+graphics.color module
+=====================
 
 .. automodule:: graphics.color
     :members:

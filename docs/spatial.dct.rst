@@ -1,5 +1,5 @@
-spatial\.dct module
-===================
+spatial.dct module
+==================
 
 .. automodule:: spatial.dct
     :members:

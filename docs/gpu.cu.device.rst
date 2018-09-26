@@ -1,5 +1,5 @@
-gpu\.cu\.device module
-======================
+gpu.cu.device module
+====================
 
 .. automodule:: gpu.cu.device
     :members:

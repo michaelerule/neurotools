@@ -1,5 +1,5 @@
-gpu\.cl package
-===============
+gpu.cl package
+==============
 
 Submodules
 ----------

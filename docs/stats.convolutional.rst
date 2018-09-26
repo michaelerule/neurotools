@@ -1,5 +1,5 @@
-stats\.convolutional module
-===========================
+stats.convolutional module
+==========================
 
 .. automodule:: stats.convolutional
     :members:

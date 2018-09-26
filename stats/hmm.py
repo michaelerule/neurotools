@@ -771,12 +771,12 @@ class LogGaussianCoxApproximator(Gaussian):
         lograte = s.a*x+s.b
         logpxy = s.y*lograte-sexp(lograte)
         assert np.all(np.isfinite(logpxy))
-        logpxy -= np.mean(logpxy)
+        logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
         if not o is 1:
             logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
-        logpxy -= np.mean(logpxy)
+        logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
         p = sexp(logpxy)
         assert np.all(np.isfinite(p))
@@ -810,8 +810,8 @@ class GaussianCoxApproximator(Gaussian):
     
     Parameters
     ----------
-    a: log-rate gain parameter
-    b: log-rate bias parameter
+    a: rate gain parameter
+    b: rate bias parameter
     y: The observed count (non-negative integer)
     '''
     def __init__(s,a,b,y):
@@ -843,12 +843,12 @@ class GaussianCoxApproximator(Gaussian):
         rate = s.a*x+s.b
         logpxy = s.y*slog(rate)-rate
         assert np.all(np.isfinite(logpxy))
-        logpxy -= np.mean(logpxy)
+        logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
         if not o is 1:
             logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
-        logpxy -= np.mean(logpxy)
+        logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
         p = sexp(logpxy)
         assert np.all(np.isfinite(p))
@@ -856,7 +856,6 @@ class GaussianCoxApproximator(Gaussian):
         m = gaussian_quadrature(p,x)
         #m.m = max(1e-9,m.m)
         return m
-        
     def __str__(s): 
         return 'Approximator(%s,%s,%s)'%(s.a,s.b,s.y)
 class GaussianCoxModel:
@@ -911,12 +910,12 @@ class ChisquareCoxApproximator(Gaussian):
         rate = (s.a*x+s.b)**2
         logpxy = s.y*slog(rate)-rate
         assert np.all(np.isfinite(logpxy))
-        logpxy -= np.mean(logpxy)
+        logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
         if not o is 1:
             logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
-        logpxy -= np.mean(logpxy)
+        logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
         p = sexp(logpxy)
         assert np.all(np.isfinite(p))

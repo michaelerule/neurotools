@@ -1,5 +1,5 @@
-models\.rbm\.rbm\_helper module
-===============================
+models.rbm.rbm\_helper module
+=============================
 
 .. automodule:: models.rbm.rbm_helper
     :members:

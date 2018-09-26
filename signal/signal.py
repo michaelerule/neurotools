@@ -14,7 +14,11 @@ import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
 
-from   pylab import find
+# this function is missing
+#from   pylab import find
+
+def find(x):
+    return np.where(x.ravel)[0]
 
 def geometric_window(c,w):
     '''
@@ -124,7 +128,7 @@ def local_maxima(x):
     Returns
     -------
     '''
-    t = find(np.diff(np.sign(np.diff(x)))<0)+1
+    t = np.where(np.diff(np.sign(np.diff(x)))<0)[0]+1
     return t,x[t]
 
 def local_minima(x):

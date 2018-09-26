@@ -1,5 +1,5 @@
-models\.rbm\.rbm\_utils package
-===============================
+models.rbm.rbm\_utils package
+=============================
 
 Submodules
 ----------

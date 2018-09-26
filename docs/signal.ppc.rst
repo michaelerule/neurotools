@@ -1,5 +1,5 @@
-signal\.ppc module
-==================
+signal.ppc module
+=================
 
 .. automodule:: signal.ppc
     :members:

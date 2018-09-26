@@ -1,5 +1,5 @@
-stats\.fast\_kde module
-=======================
+stats.fast\_kde module
+======================
 
 .. automodule:: stats.fast_kde
     :members:

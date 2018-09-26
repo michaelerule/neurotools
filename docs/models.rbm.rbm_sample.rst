@@ -1,5 +1,5 @@
-models\.rbm\.rbm\_sample module
-===============================
+models.rbm.rbm\_sample module
+=============================
 
 .. automodule:: models.rbm.rbm_sample
     :members:

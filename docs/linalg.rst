@@ -6,6 +6,7 @@ Submodules
 
 .. toctree::
 
+   linalg.arguments
    linalg.matrix
    linalg.operators
 

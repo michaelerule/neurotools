@@ -1,5 +1,5 @@
-stats\.mcint module
-===================
+stats.mcint module
+==================
 
 .. automodule:: stats.mcint
     :members:

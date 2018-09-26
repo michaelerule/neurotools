@@ -1,5 +1,5 @@
-spikes\.spikes module
-=====================
+spikes.spikes module
+====================
 
 .. automodule:: spikes.spikes
     :members:

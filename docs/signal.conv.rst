@@ -1,5 +1,5 @@
-signal\.conv module
-===================
+signal.conv module
+==================
 
 .. automodule:: signal.conv
     :members:

@@ -1,5 +1,5 @@
-linalg\.operators module
-========================
+linalg.operators module
+=======================
 
 .. automodule:: linalg.operators
     :members:

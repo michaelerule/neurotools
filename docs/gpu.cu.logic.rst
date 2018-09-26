@@ -1,5 +1,5 @@
-gpu\.cu\.logic module
-=====================
+gpu.cu.logic module
+===================
 
 .. automodule:: gpu.cu.logic
     :members:

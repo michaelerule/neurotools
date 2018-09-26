@@ -1,5 +1,5 @@
-linalg\.matrix module
-=====================
+linalg.matrix module
+====================
 
 .. automodule:: linalg.matrix
     :members:

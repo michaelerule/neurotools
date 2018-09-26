@@ -1,5 +1,5 @@
-stats\.distributions module
-===========================
+stats.distributions module
+==========================
 
 .. automodule:: stats.distributions
     :members:

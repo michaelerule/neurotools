@@ -1,5 +1,5 @@
-graphics\.pygame module
-=======================
+graphics.pygame module
+======================
 
 .. automodule:: graphics.pygame
     :members:

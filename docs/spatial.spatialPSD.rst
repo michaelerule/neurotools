@@ -1,5 +1,5 @@
-spatial\.spatialPSD module
-==========================
+spatial.spatialPSD module
+=========================
 
 .. automodule:: spatial.spatialPSD
     :members:

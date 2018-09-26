@@ -1,5 +1,5 @@
-models\.izh module
-==================
+models.izh module
+=================
 
 .. automodule:: models.izh
     :members:

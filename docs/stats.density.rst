@@ -1,5 +1,5 @@
-stats\.density module
-=====================
+stats.density module
+====================
 
 .. automodule:: stats.density
     :members:

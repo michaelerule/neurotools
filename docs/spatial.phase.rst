@@ -1,5 +1,5 @@
-spatial\.phase module
-=====================
+spatial.phase module
+====================
 
 .. automodule:: spatial.phase
     :members:

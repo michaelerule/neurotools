@@ -1,5 +1,5 @@
-spatial\.distance module
-========================
+spatial.distance module
+=======================
 
 .. automodule:: spatial.distance
     :members:

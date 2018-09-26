@@ -1,5 +1,5 @@
-stats\.hmm module
-=================
+stats.hmm module
+================
 
 .. automodule:: stats.hmm
     :members:

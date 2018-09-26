@@ -1,7 +1,7 @@
-signal.resonator module
+linalg.arguments module
 =======================
 
-.. automodule:: signal.resonator
+.. automodule:: linalg.arguments
     :members:
     :undoc-members:
     :show-inheritance:

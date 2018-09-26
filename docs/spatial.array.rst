@@ -1,5 +1,5 @@
-spatial\.array module
-=====================
+spatial.array module
+====================
 
 .. automodule:: spatial.array
     :members:

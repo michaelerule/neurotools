@@ -1,5 +1,5 @@
-graphics\.matplotlib module
-===========================
+graphics.matplotlib module
+==========================
 
 .. automodule:: graphics.matplotlib
     :members:

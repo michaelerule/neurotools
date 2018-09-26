@@ -1,5 +1,5 @@
-spatial\.spiking module
-=======================
+spatial.spiking module
+======================
 
 .. automodule:: spatial.spiking
     :members:

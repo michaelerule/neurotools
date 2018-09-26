@@ -1,5 +1,5 @@
-signal\.coherence module
-========================
+signal.coherence module
+=======================
 
 .. automodule:: signal.coherence
     :members:

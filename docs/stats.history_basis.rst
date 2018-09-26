@@ -1,5 +1,5 @@
-stats\.history\_basis module
-============================
+stats.history\_basis module
+===========================
 
 .. automodule:: stats.history_basis
     :members:

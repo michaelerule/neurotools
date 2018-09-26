@@ -1,5 +1,12 @@
-models\.rbm package
-===================
+models.rbm package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    models.rbm.rbm_utils
 
 Submodules
 ----------

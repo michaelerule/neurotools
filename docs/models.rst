@@ -1,6 +1,13 @@
 models package
 ==============
 
+Subpackages
+-----------
+
+.. toctree::
+
+    models.rbm
+
 Submodules
 ----------
 

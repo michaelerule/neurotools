@@ -1,5 +1,5 @@
-gpu\.cu\.sequence module
-========================
+gpu.cu.sequence module
+======================
 
 .. automodule:: gpu.cu.sequence
     :members:

@@ -1,5 +1,5 @@
-gpu\.cl\.function module
-========================
+gpu.cl.function module
+======================
 
 .. automodule:: gpu.cl.function
     :members:

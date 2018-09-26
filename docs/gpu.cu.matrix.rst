@@ -1,5 +1,5 @@
-gpu\.cu\.matrix module
-======================
+gpu.cu.matrix module
+====================
 
 .. automodule:: gpu.cu.matrix
     :members:

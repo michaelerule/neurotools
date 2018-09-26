@@ -1,5 +1,5 @@
-stats\.mvg module
-=================
+stats.mvg module
+================
 
 .. automodule:: stats.mvg
     :members:

@@ -1,5 +1,5 @@
-stats\.mixtures module
-======================
+stats.mixtures module
+=====================
 
 .. automodule:: stats.mixtures
     :members:

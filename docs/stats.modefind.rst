@@ -1,5 +1,5 @@
-stats\.modefind module
-======================
+stats.modefind module
+=====================
 
 .. automodule:: stats.modefind
     :members:

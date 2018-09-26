@@ -1,5 +1,5 @@
-stats\.sde module
-=================
+stats.sde module
+================
 
 .. automodule:: stats.sde
     :members:

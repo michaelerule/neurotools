@@ -1,5 +1,5 @@
-signal\.morlet module
-=====================
+signal.morlet module
+====================
 
 .. automodule:: signal.morlet
     :members:

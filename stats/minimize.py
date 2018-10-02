@@ -76,16 +76,22 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     if show_progress:
         sys.stdout.write('\n')
         last_shown = current_milli_time()
+    nonlocals = {}
+    nonlocals['best']=best
+    nonlocals['x0']=x0
+    nonlocals['nfeval']=nfeval
+    nonlocals['ngeval']=ngeval
+    nonlocals['last_shown']=last_shown
     def progress_update():
-        nonlocal best, x0, nfeval, ngeval, last_shown
+        #nonlocal best, x0, nfeval, ngeval, last_shown
         if show_progress: 
-            if current_milli_time() - last_shown > 500:
-                ss = np.float128(best).astype(str)
+            if current_milli_time() - nonlocals['last_shown'] > 500:
+                ss = np.float128(nonlocals['best']).astype(str)
                 ss += ' '*(20-len(ss))
-                out = '\rNo. function evals %6d \tNo. grad evals %6d \tBest value %s'%(nfeval,ngeval,ss)
+                out = '\rNo. function evals %6d \tNo. grad evals %6d \tBest value %s'%(nonlocals['nfeval'],nonlocals['ngeval'],ss)
                 sys.stdout.write(out)
                 sys.stdout.flush()
-                last_shown = current_milli_time()
+                nonlocals['last_shown'] = current_milli_time()
     def clear_progress():
         if show_progress: 
             progress_update()
@@ -99,33 +105,33 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     # callbacks and allow us to print the optimization progress on screen.
     if jac is True:
         def wrapped_objective(params):
-            nonlocal best, x0, nfeval, ngeval
+            #nonlocal best, x0, nfeval, ngeval
             v,g = objective(params)
-            if np.isfinite(v) and v<best:
-                best = v
-                x0   = params
-            nfeval += 1
-            ngeval += 1
+            if np.isfinite(v) and v<nonlocals['best']:
+                nonlocals['best'] = v
+                nonlocals['x0']   = params
+            nonlocals['nfeval'] += 1
+            nonlocals['ngeval'] += 1
             progress_update()
             return v,g
     else:
         def wrapped_objective(params):
-            nonlocal best, x0, nfeval
+            #nonlocal best, x0, nfeval
             v = objective(params)
-            if np.isfinite(v) and v<best:
-                best = v
-                x0   = params
-            nfeval += 1
+            if np.isfinite(v) and v<nonlocals['best']:
+                nonlocals['best'] = v
+                nonlocals['x0']   = params
+            nonlocals['nfeval'] += 1
             progress_update()
             return v 
     if hasattr(jac, '__call__'):
         # Jacobain is function
         original_jac = jac
         def wrapped_jacobian(params):
-            nonlocal best, x0, nfeval, ngeval
-            nonlocal best, x0
+            #nonlocal best, x0, nfeval, ngeval
+            #nonlocal best, x0
             g = original_jac(params)
-            ngeval += 1
+            nonlocals['ngeval'] += 1
             progress_update()
             return g
         jac = wrapped_jacobian
@@ -138,7 +144,7 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     def try_to_optimize(method,validoptions,jac_=None):
         try:
             options = {k:v for (k,v) in kwargs.items() if k in validoptions.split()}
-            result = scipy.optimize.minimize(wrapped_objective,x0.copy(),
+            result = scipy.optimize.minimize(wrapped_objective,nonlocals['x0'].copy(),
                 jac=jac_,hess=hess,method=method,tol=tol,**options)
             _ = wrapped_objective(result.x)
             clear_progress()
@@ -176,21 +182,21 @@ def minimize_retry(objective,initial,jac=None,hess=None,
             # If gradient is provided....
             if not jac is None and not jac is False and not simplex_only:
                 if try_to_optimize('Newton-CG','disp xtol maxiter eps',jac_=jac):
-                    return x0
+                    return nonlocals['x0']
                 if try_to_optimize('BFGS','disp gtol maxiter eps norm',jac_=jac):
-                    return x0
+                    return nonlocals['x0']
             # Without gradient...
             if not simplex_only:
                 if try_to_optimize('BFGS','disp gtol maxiter eps norm',\
                     jac_=True if jac is True else None):
-                    return x0
+                    return nonlocals['x0']
             # Simplex is last resort, slower but robust
             if try_to_optimize('Nelder-Mead',
                     'disp maxiter maxfev initial_simplex xatol fatol',
                     jac_=True if jac is True else None):
-                return x0
+                return nonlocals['x0']
     except (KeyboardInterrupt, SystemExit):
-        print('Best parameters are %s with value %s'%(v2str_long(x0),best))
+        print('Best parameters are %s with value %s'%(v2str_long(nonlocals['x0']),nonlocals['best']))
         raise
     except Exception:
         traceback.print_exc()

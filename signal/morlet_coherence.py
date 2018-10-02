@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -18,7 +18,7 @@ except:
     pass
 
 #from neurotools.tools import memoize
-from neurotools.jobs.decorator import memoize
+from neurotools.jobs.ndecorator import memoize
 
 # from plottools import *
 ############################################################################

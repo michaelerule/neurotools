@@ -54,11 +54,17 @@ def gaussian_kernel(sigma):
     
     Parameters
     ----------
+    sigma : scalar
+        Standard deviation of kernel. Kernel size is automatically 
+        adjusted to ceil(sigma*2)*2+1 (which is a little small but eh)
+
     Returns
     -------
+    K : vector
+        normalized Gaussian kernel 
     '''
     assert sigma>0
-    K = np.ceil(sigma)
+    K = np.ceil(sigma*2)
     N = K*2+1
     K = np.exp( - (np.arange(N)-K)**2 / (2*sigma**2) )
     K *= 1./np.sum(K)
@@ -151,10 +157,14 @@ def amp(x):
     
     Parameters
     ----------
+    x : sequence
+        numeric time-series data
     Returns
     -------
+    result:
+        abs(hilbert(x))
     '''
-    return abs(hilbert(x))
+    return np.abs(hilbert(np.array(x)))
 
 def getsnips(signal,times,window):
     '''
@@ -340,8 +350,10 @@ def bandpass_filter(data,fa=None,fb=None,
     return (filtfilt if zerophase else lfilter)(b,a,padded)[...,N//2:N//2+N]
     assert 0
 
-'''For backward compatibility, bandpass_filter is aliased as bandfilter'''
-bandfilter = bandpass_filter
+#'''
+#For backward compatibility, bandpass_filter is aliased as bandfilter
+#'''
+#bandfilter = bandpass_filter
 
 def box_filter(data,smoothat):
     '''

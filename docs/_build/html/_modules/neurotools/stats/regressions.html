@@ -1,0 +1,631 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.stats.regressions &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>neurotools.stats.regressions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.stats.regressions</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Routines to regress spatiotemporal wave shapes to data</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.stats.minimize</span> <span class="k">import</span> <span class="n">minimize_retry</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">linregress</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Regress on the following model for synchrony</span>
+<span class="sd">synchrony(x) = np.cos(wx)*np.exp(-x/tau)+b</span>
+
+<span class="sd">angular synchrony np.cos(theta_x1-theta_x2) should</span>
+<span class="sd">decay as a damped cosine, with some constant offset b. Note that</span>
+<span class="sd">a nonzero constant offset may not indicate uniform synchrony, for</span>
+<span class="sd">example, the direction of constant phase in a plane wave will contribute</span>
+<span class="sd">a DC component.</span>
+
+<span class="sd">Uses L2 penaly</span>
+
+<span class="sd">X: List of distances</span>
+<span class="sd">W: List of weights</span>
+<span class="sd">Y: List of average pairwise distances</span>
+
+<span class="sd">Model is np.cos(wx)*np.exp(-x/L)+b</span>
+<span class="sd">Generates predictions Z</span>
+<span class="sd">error is \sum W*(Z-Y)^2</span>
+
+<span class="sd">gradient of the error</span>
+<span class="sd">dErr/dw np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)</span>
+<span class="sd">dErr/dL np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)</span>
+<span class="sd">dErr/db np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)</span>
+
+<span class="sd">np.sum(W* dErr/dw (np.cos(w*x)*np.exp(-x/L)+b-Y)**2)</span>
+<span class="sd">np.sum(W* dErr/dL (np.cos(w*x)*np.exp(-x/L)+b-Y)**2)</span>
+<span class="sd">np.sum(W* dErr/db (np.cos(w*x)*np.exp(-x/L)+b-Y)**2)</span>
+
+<span class="sd">np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/dw (np.cos(w*x)*np.exp(-x/L)+b-Y))</span>
+<span class="sd">np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/dL (np.cos(w*x)*np.exp(-x/L)+b-Y))</span>
+<span class="sd">np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/db (np.cos(w*x)*np.exp(-x/L)+b-Y))</span>
+
+<span class="sd">np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) * -np.sin(w*x)*np.exp(-x/L) )</span>
+<span class="sd">np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) *  np.cos(w*x)*(-1/L)*np.exp(-x/L) )</span>
+<span class="sd">np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y))</span>
+
+
+<span class="sd">objective function is</span>
+
+<span class="sd">def objective(w,L,b):</span>
+<span class="sd">    z = np.cos(w*x)*np.exp(-x/L)+b</span>
+<span class="sd">    error = np.sum( W*(z-Y)**2 )</span>
+<span class="sd">    return error</span>
+
+<span class="sd">def gradient(w,lambda,b):</span>
+<span class="sd">    z = np.cos(w*x)*np.exp(-x/L)+b</span>
+<span class="sd">    h = 2*(z-Y)</span>
+<span class="sd">    dEdw = np.sum(W*h*-np.sin(w*x)*np.exp(-x/L))</span>
+<span class="sd">    dEdL = np.sum(W*h* np.cos(w*x)*(-1/L)*np.exp(-x/L))</span>
+<span class="sd">    dEdb = np.sum(W*H)</span>
+<span class="sd">    return [dEdw,dEdL,dEdb]</span>
+
+<span class="sd">Use the minimize function from scipy.optimize.</span>
+
+<span class="sd">scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,</span>
+<span class="sd">    hessp=None, bounds=None, constraints=(), tol=None, callback=None,</span>
+<span class="sd">    options=None)</span>
+
+<span class="sd">    Minimization of scalar function of one or more variables.</span>
+
+<span class="sd">    New in version 0.11.0.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    fun : callable</span>
+<span class="sd">        Objective function.</span>
+<span class="sd">    x0 : ndarray</span>
+<span class="sd">        Initial guess.</span>
+<span class="sd">    args : tuple, optional</span>
+<span class="sd">        Extra arguments passed to the objective function and its derivatives</span>
+<span class="sd">        (Jacobian, Hessian).</span>
+<span class="sd">    method : str or callable, optional</span>
+<span class="sd">        Type of solver. Should be one of</span>
+<span class="sd">            &#39;Nelder-Mead&#39;</span>
+<span class="sd">            &#39;Powell&#39;</span>
+<span class="sd">            &#39;CG&#39;</span>
+<span class="sd">            &#39;BFGS&#39;</span>
+<span class="sd">            &#39;Newton-CG&#39;</span>
+<span class="sd">            &#39;Anneal (deprecated as of scipy version 0.14.0)&#39;</span>
+<span class="sd">            &#39;L-BFGS-B&#39;</span>
+<span class="sd">            &#39;TNC&#39;</span>
+<span class="sd">            &#39;COBYLA&#39;</span>
+<span class="sd">            &#39;SLSQP&#39;</span>
+<span class="sd">            &#39;dogleg&#39;</span>
+<span class="sd">            &#39;trust-ncg&#39;</span>
+<span class="sd">            custom - a callable object (added in version 0.14.0)</span>
+<span class="sd">        If not given, chosen to be one of BFGS, L-BFGS-B, SLSQP, d</span>
+<span class="sd">        epending if the problem has constraints or bounds.</span>
+<span class="sd">    jac : bool or callable, optional</span>
+<span class="sd">        Jacobian (gradient) of objective function. Only for CG, BFGS,</span>
+<span class="sd">        Newton-CG, L-BFGS-B, TNC, SLSQP, dogleg, trust-ncg. If jac is a Boolean</span>
+<span class="sd">        and is True, fun is assumed to return the gradient along with the</span>
+<span class="sd">        objective function. If False, the gradient will be estimated</span>
+<span class="sd">        numerically. jac can also be a callable returning the gradient of the</span>
+<span class="sd">        objective. In this case, it must accept the same arguments as fun.</span>
+<span class="sd">    hess, hessp : callable, optional</span>
+<span class="sd">        Hessian (matrix of second-order derivatives) of objective function or</span>
+<span class="sd">        Hessian of objective function times an arbitrary vector p. Only for</span>
+<span class="sd">        Newton-CG, dogleg, trust-ncg. Only one of hessp or hess needs to be</span>
+<span class="sd">        given. If hess is provided, then hessp will be ignored. If neither hess</span>
+<span class="sd">        nor hessp is provided, then the Hessian product will be approximated</span>
+<span class="sd">        using finite differences on jac. hessp must compute the Hessian times</span>
+<span class="sd">        an arbitrary vector.</span>
+<span class="sd">    bounds : sequence, optional</span>
+<span class="sd">        Bounds for variables (only for L-BFGS-B, TNC and SLSQP). (min, max)</span>
+<span class="sd">        pairs for each element in x, defining the bounds on that parameter. Use</span>
+<span class="sd">        None for one of min or max when there is no bound in that direction.</span>
+<span class="sd">    constraints : dict or sequence of dict, optional</span>
+<span class="sd">        Constraints definition (only for COBYLA and SLSQP). Each constraint is</span>
+<span class="sd">        defined in a dictionary with fields:</span>
+<span class="sd">            type : str</span>
+<span class="sd">                Constraint type: &#39;eq&#39; for equality, &#39;ineq&#39; for inequality.</span>
+<span class="sd">            fun : callable</span>
+<span class="sd">                The function defining the constraint.</span>
+<span class="sd">            jac : callable, optional</span>
+<span class="sd">                The Jacobian of fun (only for SLSQP).</span>
+<span class="sd">            args : sequence, optional</span>
+<span class="sd">                Extra arguments to be passed to the function and Jacobian.</span>
+<span class="sd">        Equality constraint means that the constraint function result is to be</span>
+<span class="sd">        zero whereas inequality means that it is to be non-negative. Note that</span>
+<span class="sd">        COBYLA only supports inequality constraints.</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">        Tolerance for termination. For detailed control, use solver-specific</span>
+<span class="sd">        options.</span>
+<span class="sd">    options : dict, optional</span>
+<span class="sd">        A dictionary of solver options. All methods accept the following</span>
+<span class="sd">        generic options:</span>
+<span class="sd">            maxiter : int</span>
+<span class="sd">                Maximum number of iterations to perform.</span>
+<span class="sd">            disp : bool</span>
+<span class="sd">                Set to True to print convergence messages.</span>
+<span class="sd">        For method-specific options, see show_options.</span>
+<span class="sd">    callback : callable, optional</span>
+<span class="sd">        Called after each iteration, as callback(xk), where xk is the current</span>
+<span class="sd">        parameter vector.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    res : OptimizeResult</span>
+<span class="sd">        The optimization result represented as a OptimizeResult object.</span>
+<span class="sd">        Important attributes are: x the solution array, success a Boolean flag</span>
+<span class="sd">        indicating if the optimizer exited successfully and message which</span>
+<span class="sd">        describes the cause of the termination. See OptimizeResult for a</span>
+<span class="sd">        description of other attributes.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">neurotools.functions</span> <span class="k">import</span> <span class="n">npdf</span>
+
+<div class="viewcode-block" id="damped_cosine"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.damped_cosine">[docs]</a><span class="k">def</span> <span class="nf">damped_cosine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Regress a damped cosine impulse response to point data `X` and `Y` </span>
+<span class="sd">    using weighting `W`.</span>
+<span class="sd">    </span>
+<span class="sd">    Todo: constrain b, L to be positive</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: 1D array-like</span>
+<span class="sd">        List of distances</span>
+<span class="sd">    Y: 1D array-like</span>
+<span class="sd">        List of average pairwise distances</span>
+<span class="sd">    W: 1D array-like</span>
+<span class="sd">        List of weights</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : object </span>
+<span class="sd">        Optimization result returned by `scipy.optimize.minimize`.</span>
+<span class="sd">        See `scipy.optimize` documentation for details.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+<span class="sd">    </span>
+<span class="sd">        X = 0.4*arange(9)</span>
+<span class="sd">        Y = np.exp(-X/4+1)*np.cos(X)</span>
+<span class="sd">        Z = Y+randn(*shape(X))</span>
+<span class="sd">        W = ones(shape(X))</span>
+<span class="sd">        w,L,b = damped_cosine(X,Z,W).x</span>
+<span class="sd">        plot(X,Y)</span>
+<span class="sd">        plot(X,Z)</span>
+<span class="sd">        plot(X,np.cos(w*X)*np.exp(-X/L+b))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">wLb</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">wLb</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">W</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">error</span>
+    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">wLb</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">wLb</span>
+        <span class="c1"># todo: double check this gradient</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="p">)</span><span class="o">+</span><span class="n">b</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">dEdw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W</span><span class="o">*</span><span class="n">h</span><span class="o">*-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="p">))</span>
+        <span class="n">dEdL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W</span><span class="o">*</span><span class="n">h</span><span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">L</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="p">))</span>
+        <span class="n">dEdb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W</span><span class="o">*</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="p">([</span><span class="n">dEdw</span><span class="p">,</span><span class="n">dEdL</span><span class="p">,</span><span class="n">dEdb</span><span class="p">])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="c1">#,jac=gradient)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="weighted_least_squares"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.weighted_least_squares">[docs]</a><span class="k">def</span> <span class="nf">weighted_least_squares</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Initialize power law fit</span>
+<span class="sd">    EPS = 1e-10</span>
+<span class="sd">    use = (X&gt;EPS)&amp;(Y&gt;EPS)</span>
+<span class="sd">    weighted_least_squares(np.log(X+EPS)[use],np.log(Y+EPS)[use],1/(EPS+X[use]))</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: List of distances</span>
+<span class="sd">    Y: List of amplitudes</span>
+<span class="sd">    W: Weights for points </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : object </span>
+<span class="sd">        Optimization result returned by scipy.optimize.minimize. See</span>
+<span class="sd">        scipy.optimize documentation for details.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">ab</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">W</span><span class="o">*</span><span class="p">(</span><span class="n">Y</span><span class="o">-</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="power_law"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.power_law">[docs]</a><span class="k">def</span> <span class="nf">power_law</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fit a power law, but with error terms computed by r^2 in</span>
+<span class="sd">    the original space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: List of distances</span>
+<span class="sd">    Y: List of amplitudes</span>
+<span class="sd">    W: Weights for points   </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    ------- </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    power law form is `np.log(y)=a*np.log(x)+b` or `y = b*x^a`</span>
+
+<span class="sd">    initial best guess using linear regression.</span>
+
+<span class="sd">    result = power_law(X,Y,1/X**16)</span>
+<span class="sd">    a,b = result.x</span>
+
+<span class="sd">    EPS = 1e-10</span>
+<span class="sd">    use = (X&gt;EPS)&amp;(Y&gt;EPS)</span>
+<span class="sd">    a,b = weighted_least_squares(np.log(X)[use],np.log(Y)[use],W[use]).x</span>
+<span class="sd">    plot(sorted(X),b*arr(sorted(X))**a)</span>
+
+<span class="sd">    from numpy.polynomial.polynomial import polyfit</span>
+
+<span class="sd">    X,Y = ravel(f),ravel(y[:,i])</span>
+<span class="sd">    a,b = power_law(X,Y,1/X**2)</span>
+<span class="sd">    plot(sorted(X),b*arr(sorted(X))**a)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">EPS</span> <span class="o">=</span> <span class="mf">1e-10</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="o">&gt;</span><span class="n">EPS</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">Y</span><span class="o">&gt;</span><span class="n">EPS</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="n">use</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Y</span><span class="p">)[</span><span class="n">use</span><span class="p">],</span><span class="mi">1</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="n">W</span><span class="p">[</span><span class="n">use</span><span class="p">])</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    def objective(ab):</span>
+<span class="sd">        a,b = (a,b)</span>
+<span class="sd">        z = np.exp(b+a*np.log(X))</span>
+<span class="sd">        obj = np.sum((W*(Y-z)**2)[use])</span>
+<span class="sd">        print(a,b,obj)</span>
+<span class="sd">        return obj</span>
+<span class="sd">    result = minimize(objective,[a,b])</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gaussian_function"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.gaussian_function">[docs]</a><span class="k">def</span> <span class="nf">gaussian_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: List of distances</span>
+<span class="sd">    Y: List of amplitudes</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : object </span>
+<span class="sd">        Optimization result returned by scipy.optimize.minimize. See</span>
+<span class="sd">        scipy.optimize documentation for details.</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span><span class="p">)</span> <span class="o">=</span> <span class="n">theta</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">npdf</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">scale</span><span class="o">+</span><span class="n">dc</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">error</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="half_gaussian_function"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.half_gaussian_function">[docs]</a><span class="k">def</span> <span class="nf">half_gaussian_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: List of distances</span>
+<span class="sd">    Y: List of amplitudes</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">sigma</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span><span class="p">)</span> <span class="o">=</span> <span class="n">theta</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">npdf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">scale</span><span class="o">+</span><span class="n">dc</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">error</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">sigma</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+    <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span></div>
+
+<div class="viewcode-block" id="exponential_decay"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.exponential_decay">[docs]</a><span class="k">def</span> <span class="nf">exponential_decay</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fit exponential decay from an initial value to a final value with </span>
+<span class="sd">    some time (or length, etc) constant.</span>
+<span class="sd">    </span>
+<span class="sd">    lamb,scale,dc = exponential_decay(X,Y)</span>
+<span class="sd">    z = np.exp(-lamb*X)*scale+dc</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: List of distances</span>
+<span class="sd">    Y: List of amplitudes</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lambda : float</span>
+<span class="sd">        Length constant of fitted exponential fit</span>
+<span class="sd">    scale: float</span>
+<span class="sd">        Scale parameter (magnitude at zero) of exponential fit</span>
+<span class="sd">    dc : float</span>
+<span class="sd">        DC offset of exponential fit (asymptotic value)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span><span class="p">)</span> <span class="o">=</span> <span class="n">theta</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lamb</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">scale</span><span class="o">+</span><span class="n">dc</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize_retry</span><span class="p">(</span><span class="n">error</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">printerrors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1">#if not result.success:</span>
+    <span class="c1">#    print(result.message)</span>
+    <span class="c1">#    warnings.warn(&#39;Optimization failed: %s&#39;%result.message)</span>
+    <span class="c1"># lamb,scale,dc = result.x</span>
+    <span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span> <span class="o">=</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span></div>
+    
+<div class="viewcode-block" id="robust_line"><a class="viewcode-back" href="../../../neurotools.stats.regressions.html#neurotools.stats.regressions.robust_line">[docs]</a><span class="k">def</span> <span class="nf">robust_line</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    2-variable linear regression with L1 penalty</span>
+<span class="sd">    returns the tuple (m,b) for line in y = mx+b format</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: List of distances</span>
+<span class="sd">    Y: List of amplitudes</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result.x : array-like </span>
+<span class="sd">        Optimization result returned by scipy.optimize.minimize. See</span>
+<span class="sd">        scipy.optimize documentation for details.</span>
+<span class="sd">        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">pldist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">m</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">H</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pldist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">))</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)])</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span></div>
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'2',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

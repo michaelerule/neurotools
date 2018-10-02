@@ -56,7 +56,7 @@ import threading
 import functools
 
 import inspect
-import neurotools.jobs.decorator
+import neurotools.jobs.ndecorator
 import neurotools.jobs.closure
 
 import numpy as np
@@ -212,7 +212,7 @@ def parmap_indirect_helper(args):
                 if not reference_globals is None:
                     f = reference_globals[name]
             f.__source__ = source
-            g = neurotools.jobs.decorator.unwrap(f)
+            g = neurotools.jobs.ndecorator.unwrap(f)
             if not g is None:
                 g.__source__ = source
             return f(*args)
@@ -254,7 +254,7 @@ def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
         # send the source code.
         print("Attempting to fall back on source code based solution")
         print("RISKY")
-        source = inspect.getsource(neurotools.jobs.decorator.unwrap(f))
+        source = inspect.getsource(neurotools.jobs.ndecorator.unwrap(f))
         information = source,name
         lookup = 'source'
     # parmap_indirect_helper(lookup_mode,function_information,args)

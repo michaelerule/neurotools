@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>jobs.parallel &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>jobs.parallel</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jobs.parallel</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Parallel tools</span>
+<span class="sd">==============</span>
+
+<span class="sd">Notes on why &quot;parmap&quot; and related functions are awkward in Python:</span>
+
+<span class="sd">Python multiprocessing will raise &quot;cannot pickle&quot;</span>
+<span class="sd">errors if you try to pass general functions as arguments to parallel</span>
+<span class="sd">map. This flaw arises because python multiprocessing is achieved by</span>
+<span class="sd">forking subprocesses that contain a full copy of the interpreter state,</span>
+<span class="sd">mapped in memory with copy-on-write. (incidentally this is also why</span>
+<span class="sd">you don&#39;t want to load large datasets in worker processes, since each</span>
+<span class="sd">process will load the dataset separately, consuming a large amount of</span>
+<span class="sd">memory). Because functions defined after worker-pool initiation depend</span>
+<span class="sd">on the interpreter state of the process in which they were defined, they</span>
+<span class="sd">cannot be sent over to worker processes as we cannot guarantee in</span>
+<span class="sd">general that the context they reference will exist in the worker process.</span>
+<span class="sd">Consequentially, the only way to use a function with the &quot;parmap&quot;</span>
+<span class="sd">function is to define it BEFORE the worker pool is initialized (or to</span>
+<span class="sd">re-initialize the pool once it is defined). The function must be at</span>
+<span class="sd">global scope.</span>
+
+<span class="sd">Furthermore, the work-stealing pool model can only send back the return</span>
+<span class="sd">values of function evaluations from the work queue -- and it does so in</span>
+<span class="sd">no particular order. Therefore, if we want to know which job corresponds</span>
+<span class="sd">to which return value, we must return identifying information. In this</span>
+<span class="sd">case wer return the job number.</span>
+
+<span class="sd">The reason we cannot make a generic function that masks this &quot;return the</span>
+<span class="sd">job ID&quot; issue is that we cannot pass an arbitrary function over to</span>
+<span class="sd">the worker pool processes due to the aforementioned interpreter context</span>
+<span class="sd">issue.</span>
+
+<span class="sd">A more laborous workaround, which we might consider later, would be to</span>
+<span class="sd">re-implement the work-stealing queue so that job IDs are automatically</span>
+<span class="sd">preserved and communicated through inter-process communication.</span>
+
+<span class="sd">This will not solve the problem of needing to define all functions used</span>
+<span class="sd">with &quot;parmap&quot; before the working pool is initailized and at global scope,</span>
+<span class="sd">but it will save us from having to manually track and return the job</span>
+<span class="sd">number, which will lead to more readable and more reusable code.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">cpu_count</span><span class="p">,</span> <span class="n">Pool</span>
+<span class="kn">import</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">neurotools.jobs.ndecorator</span>
+<span class="kn">import</span> <span class="nn">neurotools.jobs.closure</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">imap</span> <span class="k">as</span> <span class="nb">map</span>
+
+<span class="n">__N_CPU__</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
+
+<span class="n">reference_globals</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span>
+
+<div class="viewcode-block" id="parmap"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.parmap">[docs]</a><span class="k">def</span> <span class="nf">parmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">show_progress</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parallel implmenetation of map using multiprocessing</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : function to apply, takes one argument and returns a tuple</span>
+<span class="sd">        (i,result) where i is the index into the problems</span>
+<span class="sd">    problems : list of arguments to f to evaulate in parallel</span>
+<span class="sd">    leavefree : number of cores to leave open</span>
+<span class="sd">    debug : if True, will run on a single core so exceptions get </span>
+<span class="sd">            handeled correctly</span>
+<span class="sd">    verbose : set to True to print out detailed logging information</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of results</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">mypool</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+    <span class="n">njobs</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">njobs</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTHING TO DO?&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. RESTARTING.&#39;</span><span class="p">)</span>
+        <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+
+    <span class="n">enumerator</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">mypool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">lastprogress</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span> <span class="ow">in</span> <span class="n">enumerator</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">thisprogress</span> <span class="o">=</span> <span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mf">100.</span><span class="o">/</span><span class="n">njobs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">thisprogress</span> <span class="o">-</span> <span class="n">lastprogress</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">done </span><span class="si">%0.1f%%</span><span class="s1"> &#39;</span><span class="o">%</span><span class="n">thisprogress</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                <span class="n">lastprogress</span> <span class="o">=</span> <span class="n">thisprogress</span>
+        <span class="c1"># if it is a one element tuple, unpack it automatically</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">result</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">is</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR PROCESSING&#39;</span><span class="p">,</span><span class="n">problems</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">            </span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span> \
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="pararraymap"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.pararraymap">[docs]</a><span class="k">def</span> <span class="nf">pararraymap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parmap wrapper for common use-case with Numpy</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Ensures that all workers can see the newly-defined helper function</span>
+    <span class="n">reset_pool</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">parmap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">),</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="parmap_dict"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.parmap_dict">[docs]</a><span class="k">def</span> <span class="nf">parmap_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">mypool</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+    <span class="n">njobs</span>    <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">njobs</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTHING TO DO?&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. RESTARTING.&#39;</span><span class="p">)</span>
+        <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+
+    <span class="n">enumerator</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">mypool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">result</span> <span class="ow">in</span> <span class="n">enumerator</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">result</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">is</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR PROCESSING&#39;</span><span class="p">,</span><span class="n">problems</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">            </span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">results</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+<div class="viewcode-block" id="parmap_indirect_helper"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.parmap_indirect_helper">[docs]</a><span class="k">def</span> <span class="nf">parmap_indirect_helper</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Multiprocessing doesn&#39;t work on functions that weren&#39;t accessible from</span>
+<span class="sd">    the global namespace at the time that the multiprocessing pool was</span>
+<span class="sd">    created.</span>
+<span class="sd">    </span>
+<span class="sd">    However, it is possible to send a subset of &quot;safe&quot; functions to</span>
+<span class="sd">    worker processes. This can be done either by telling the worker</span>
+<span class="sd">    where to find the function in system-wide libraries, or by sending</span>
+<span class="sd">    over the function source code in the event that it does not depend on</span>
+<span class="sd">    or close over mutable state.</span>
+<span class="sd">    </span>
+<span class="sd">    Multiprocessing can already map top level functions by name, but it only</span>
+<span class="sd">    supports passing iterables to the map functions, which limit functions</span>
+<span class="sd">    to one argument. This wrapper merely unpacks the argument list.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">reference_globals</span>
+    <span class="p">(</span><span class="n">lookup_mode</span><span class="p">,</span><span class="n">function_information</span><span class="p">,</span><span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">args</span> <span class="c1">#py 2.5/3 compat.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lookup_mode</span> <span class="o">==</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span>
+            <span class="c1"># Locate function based on module name</span>
+            <span class="n">module</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="n">function_information</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="nb">locals</span> <span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">module</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">module</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">__import__</span>   <span class="p">(</span><span class="n">module</span><span class="p">),</span>
+                <span class="n">name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lookup_mode</span> <span class="o">==</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span>
+            <span class="c1"># Regenerate function from source. RISKY</span>
+            <span class="n">source</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="n">function_information</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">reference_globals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">exec</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="n">reference_globals</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">exec</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="nb">locals</span> <span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">or</span>
+                 <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">reference_globals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">f</span> <span class="o">=</span> <span class="n">reference_globals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">__source__</span> <span class="o">=</span> <span class="n">source</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">__source__</span> <span class="o">=</span> <span class="n">source</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>\
+                <span class="s2">&quot;indirect call mode </span><span class="si">%s</span><span class="s2"> not implemented&quot;</span><span class="o">%</span><span class="n">lookup_mode</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="c1"># In event of an error, return error info</span>
+        <span class="k">return</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span> <span class="n">exc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="parmap_indirect"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.parmap_indirect">[docs]</a><span class="k">def</span> <span class="nf">parmap_indirect</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Functions cannot be pickled. Multiprocessing routines must be defined</span>
+<span class="sd">    in the global namespace before the pool is initialized, so that the</span>
+<span class="sd">    child processes have access to the function definitions. However, under</span>
+<span class="sd">    some restricted circumstances it may be possible to specify a function</span>
+<span class="sd">    more dynamically, at runtime. This may be the case if:</span>
+<span class="sd">    </span>
+<span class="sd">        1.   A function is part of a system-wide installed module</span>
+<span class="sd">        2.   A function can be &quot;regenerated&quot; from source code</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># don&#39;t allow closing over state that is likely to mutate</span>
+    <span class="c1"># this isn&#39;t 100% safe, mutable globals remain an issue.</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">closure</span><span class="o">.</span><span class="n">verify_function_closure</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">func_name</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">!=</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+        <span class="c1"># can say where to locate function.</span>
+        <span class="n">information</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span><span class="n">name</span>
+        <span class="n">lookup</span> <span class="o">=</span> <span class="s1">&#39;module&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Function is not defined through a module. We might be able to</span>
+        <span class="c1"># send the source code.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attempting to fall back on source code based solution&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RISKY&quot;</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="n">information</span> <span class="o">=</span> <span class="n">source</span><span class="p">,</span><span class="n">name</span>
+        <span class="n">lookup</span> <span class="o">=</span> <span class="s1">&#39;source&#39;</span>
+    <span class="c1"># parmap_indirect_helper(lookup_mode,function_information,args)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">parmap</span><span class="p">(</span>\
+        <span class="n">parmap_indirect_helper</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">lookup</span><span class="p">,</span><span class="n">information</span><span class="p">,</span><span class="n">args</span><span class="p">)</span> <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">problems</span><span class="p">],</span>
+        <span class="n">leavefree</span><span class="o">=</span><span class="n">leavefree</span><span class="p">,</span>
+        <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="c1"># Detect failed jobs, assign them something nasty that&#39;s likely to</span>
+    <span class="c1"># bet detected downstream.</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">args</span><span class="p">,</span><span class="n">result</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">results</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">is</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job </span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> failed&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">args</span><span class="p">))</span>
+            <span class="n">traceback</span><span class="p">,</span> <span class="n">exception</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">args</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">traceback</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+<div class="viewcode-block" id="reset_pool"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.reset_pool">[docs]</a><span class="k">def</span> <span class="nf">reset_pool</span><span class="p">(</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Safely halts and restarts the worker-pool. If worker threads are stuck, </span>
+<span class="sd">    then this function will hang. On the other hand, it avoids doing </span>
+<span class="sd">    anything violent to close workers. </span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    leavefree : `int`, default 1</span>
+<span class="sd">        How many cores to &quot;leave free&quot;; The pool size will be the number of</span>
+<span class="sd">        system cores minus this value</span>
+<span class="sd">    context : python context, default None</span>
+<span class="sd">        This context will be used for all workers in the pool</span>
+<span class="sd">    verbose : `bool`, default False</span>
+<span class="sd">        Whether to print logging information.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">mypool</span><span class="p">,</span> <span class="n">reference_globals</span>
+
+    <span class="c1"># try to see what the calling function sees</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">reference_globals</span> <span class="o">=</span> <span class="n">context</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO POOL FOUND. STARTING&#39;</span><span class="p">)</span>
+        <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;POOL FOUND. RESTARTING&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting to terminate pool, may become unresponsive&#39;</span><span class="p">)</span>
+        <span class="c1"># http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate</span>
+        <span class="k">def</span> <span class="nf">close_pool</span><span class="p">():</span>
+            <span class="k">global</span> <span class="n">mypool</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mypool&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mypool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">mypool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">mypool</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+            <span class="n">mypool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">term</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Stopping...&#39;</span><span class="p">)</span>
+            <span class="n">stoppool</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">close_pool</span><span class="p">)</span>
+            <span class="n">stoppool</span><span class="o">.</span><span class="n">daemon</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">stoppool</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">term</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span>  <span class="n">term</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGQUIT</span><span class="p">,</span> <span class="n">term</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">mypool</span>
+        <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="n">leavefree</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="parallel_error_handling"><a class="viewcode-back" href="../../jobs.parallel.html#jobs.parallel.parallel_error_handling">[docs]</a><span class="k">def</span> <span class="nf">parallel_error_handling</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    We can&#39;t really use exception handling in parallel calls.</span>
+<span class="sd">    This is a wrapper to just catch errors to prevent them from</span>
+<span class="sd">    propagating up.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">parallel_helper</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="k">return</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parallel_helper</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -39,12 +39,12 @@ try:
 except:
     from pickle import PicklingError
 
-import neurotools.jobs.decorator
+import neurotools.jobs.ndecorator
 import neurotools.tools
 from   neurotools.jobs.closure   import verify_function_closure
 from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
 
-@neurotools.jobs.decorator.memoize
+@neurotools.jobs.ndecorator.memoize
 def function_hash_with_subroutines(f,force=False):
     '''
     Functions may change if their subroutines change. This function computes
@@ -133,10 +133,10 @@ def get_source(f):
         # some dynamically created functions may not have source code
         # to bypass this, we can see if the routine that created the
         # function was kind enough to store the source code for us
-        source = neurotools.jobs.decorator.unwrap(f).__source__
+        source = neurotools.jobs.ndecorator.unwrap(f).__source__
     return source
 
-@neurotools.jobs.decorator.memoize
+@neurotools.jobs.ndecorator.memoize
 def function_hash_no_subroutines(f):
     '''
     See function_hash_with_subroutines. This has value is based on the
@@ -167,7 +167,7 @@ def function_hash_no_subroutines(f):
     docstring = inspect.getdoc(f)
     name      = f.__name__
     module    = f.__module__
-    argspec   = neurotools.jobs.decorator.sanitize(inspect.getargspec(f))
+    argspec   = neurotools.jobs.ndecorator.sanitize(inspect.getargspec(f))
     return hash((module,name,docstring,source,argspec,subroutines))
 
 def function_signature(f):
@@ -199,7 +199,7 @@ def function_signature(f):
     docstring = inspect.getdoc(f)
     name      = f.__name__
     module    = f.__module__
-    argspec   = neurotools.jobs.decorator.sanitize(inspect.getargspec(f))
+    argspec   = neurotools.jobs.ndecorator.sanitize(inspect.getargspec(f))
 
     identity  = (module,name)
     signature = (docstring,source,argspec)
@@ -256,7 +256,7 @@ def signature_to_file_string(f,sig,
     Compression is on by defaut
     Signatures are base64 encoded by default
     '''
-    sig = neurotools.jobs.decorator.sanitize(sig)
+    sig = neurotools.jobs.ndecorator.sanitize(sig)
 
     if compressed and not base64encode:
         raise ValueError('If you want compression, turn on base64 encoding')
@@ -414,7 +414,7 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     Returns
     -------
     '''
-    sig = neurotools.jobs.decorator.argument_signature(f,*args,**kwargs)
+    sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
             mode        ='repr',
             compressed  =True,
@@ -608,7 +608,7 @@ def disk_cacher(
         if __PYTHON_2__:
             FileNotFoundError = IOError
             
-        @neurotools.jobs.decorator.robust_decorator
+        @neurotools.jobs.ndecorator.robust_decorator
         def wrapped(f,*args,**kwargs):
             '''
             This is a wrapper for memoizing results to disk. 
@@ -641,13 +641,13 @@ def disk_cacher(
                 if verbose:
                     print('Retrieved cache at ',path)
                     print('\t%s.%s'%(f.__module__,f.__name__))
-                    print('\t%s'%neurotools.jobs.decorator.print_signature(sig))
+                    print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
             
             except (EOFError, OSError, IOError, FileNotFoundError) as exc:
                 if verbose:
                     print('Recomputing cache at %s'%cache_location)
                     print('\t%s.%s'%(f.__module__,f.__name__))
-                    print('\t%s'%neurotools.jobs.decorator.print_signature(sig))
+                    print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
 
                 time,result = f(*args,**kwargs)
                 neurotools.tools.ensure_dir(path)
@@ -680,7 +680,7 @@ def disk_cacher(
                             print('Saving cache at %s FAILED'%cache_location)
                             print('\t%s.%s'%(f.__module__,f.__name__))
                             print('\t%s'%\
-                                neurotools.jobs.decorator.print_signature(sig))
+                                neurotools.jobs.ndecorator.print_signature(sig))
                             print('\n\t'.join(\
                                 traceback.format_exc().split('\n')))
 
@@ -690,7 +690,7 @@ def disk_cacher(
                             print('\tFor function %s.%s'%\
                                 (f.__module__,f.__name__))
                             print('\tArgument signature %s'%\
-                                neurotools.jobs.decorator.print_signature(sig))
+                                neurotools.jobs.ndecorator.print_signature(sig))
                             st        = os.stat(location)
                             du        = st.st_blocks * st.st_blksize
                             t1        = neurotools.tools.current_milli_time()
@@ -742,7 +742,7 @@ def disk_cacher(
                     else:
                         raise
             pass
-        decorated = wrapped(neurotools.jobs.decorator.timed(f))
+        decorated = wrapped(neurotools.jobs.ndecorator.timed(f))
         decorated.purge = purge
         return decorated
     return cached

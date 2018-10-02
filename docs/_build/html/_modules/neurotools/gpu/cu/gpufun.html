@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.gpu.cu.gpufun &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>neurotools.gpu.cu.gpufun</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.gpu.cu.gpufun</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This module contains generically useful GPU clones of several simple functions. Most of these use the orix.function utility library to succinctly wrap GPU functions into python wrapped kernel calls. Note that elementwise c=a op b for op in {+,-,*,/,^} are supported as </span>
+<span class="sd">overloaded operators for gpuarrays and are not duplicated here. Much of this is somewhat useless wrapping of GPUArray and pycuda.cumath into other syntax without adding new functionality.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pycuda</span>
+    <span class="kn">import</span> <span class="nn">pycuda.gpuarray</span> <span class="k">as</span> <span class="nn">gpuarray</span>
+    <span class="kn">import</span> <span class="nn">pycuda.curandom</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">def</span> <span class="nf">missing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please locate and install the pycuda GPU library&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please locate and install pycuda GPU library&#39;</span><span class="p">)</span>
+    <span class="c1"># TODO: shadow missing function with the above, which raises an error?</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.gpu.cu.function</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.gpu.cpu.util</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+
+<span class="c1">##############################################################################</span>
+<span class="c1"># GPU functions</span>
+<span class="c1">##############################################################################</span>
+
+<span class="sd">&#39;&#39;&#39;silly little wrappers for things already in GPUArray or cumath&#39;&#39;&#39;</span>
+<span class="n">gpulcomb</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">:</span><span class="n">gpubin</span><span class="p">(</span><span class="k">lambda</span> <span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">r</span><span class="p">:</span><span class="n">ElementwiseKernel</span><span class="p">(</span>
+    <span class="s2">&quot;float a, float *x, float b, float *y, float *z&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;z[i] = a*x[i] + b*y[i]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lin_comb&quot;</span><span class="p">)(</span><span class="n">c</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">r</span><span class="p">))(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;Wraps a linear combination operator. </span>
+<span class="sd">gpulcomb(weight1,weight2,data1,data2) will return the elementwise linear </span>
+<span class="sd">combination weight1*data1[i]+weight2*data2[i]. Succesive calls do not </span>
+<span class="sd">cause recompiliation of the kernel&#39;&#39;&#39;</span>
+<span class="n">gpumean</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpusum</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;Average of GPU array&#39;&#39;&#39;</span>
+
+<span class="sd">&#39;&#39;&#39;This module is a collection of GPU map kernels implementing common</span>
+<span class="sd">functions not present in pycuda.cumath&#39;&#39;&#39;</span>
+<span class="n">gpunpdf</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="p">:</span><span class="n">gpumap</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">*expf(</span><span class="si">%s</span><span class="s1">*pow($-</span><span class="si">%s</span><span class="s1">,2))&#39;</span><span class="o">%</span><span class="p">(</span><span class="mf">0.39894228</span><span class="o">/</span><span class="n">s</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">s</span><span class="p">),</span><span class="n">m</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;Creates a normal distribution PDF elementwise evaluator. E.g. </span>
+<span class="sd">gpupdf(0,1) will create a zero-mean, unit standard deviation normal </span>
+<span class="sd">distribution. gpupdf(0,1)(data) will evaluate the PDF at all elements of </span>
+<span class="sd">data and return the results in a new array. New calls to gpupdf do cause </span>
+<span class="sd">compiliation of new kernel code, but kernels are memoized so a give </span>
+<span class="sd">(mean,standard_deviation) kernel will only be compiled once&#39;&#39;&#39;</span>
+<span class="n">gpulogpdf</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="p">:</span><span class="n">gpumap</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">+</span><span class="si">%s</span><span class="s1">*pow($-</span><span class="si">%s</span><span class="s1">,2)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="mf">0.39894228</span><span class="o">/</span><span class="n">s</span><span class="p">),</span><span class="o">-</span><span class="mf">0.5</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="n">s</span><span class="p">),</span><span class="n">m</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;This creates an element-wise kernel evaluating the natural log of the </span>
+<span class="sd">PDF of a normal distribtion. E.g. gpulogpdf(0,1) creates an element-wise </span>
+<span class="sd">operator that evaluates the log of the probability for a zero-mean unit </span>
+<span class="sd">standard deviation normal distribution.&#39;&#39;&#39;</span>
+<span class="n">gpuhill</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">gpumap</span><span class="p">(</span><span class="s1">&#39;$/($+</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="n">x</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;Hill equation for noncooperative binding : f(x)=x/(x+c)&#39;&#39;&#39;</span> 
+
+
+<span class="sd">&#39;&#39;&#39;This module contains functions for drawing random numbers from a</span>
+<span class="sd">variety of distributions on the GPU&#39;&#39;&#39;</span>
+<span class="n">gpurandf</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span><span class="n">pycuda</span><span class="o">.</span><span class="n">curandom</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;Wrapper for pycuda.curandom.rand(n)&#39;&#39;&#39;</span>
+<span class="n">gpuuniform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span><span class="n">gpurandf</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">a</span>
+<span class="sd">&#39;&#39;&#39;Curried GPU uniform random number generator. For example, </span>
+<span class="sd">gpuuniform(0,1) will create a function that returns uniform random </span>
+<span class="sd">numbers over [0,1). gpuuniform(0,1)(100) would create a GPU array of 100 </span>
+<span class="sd">draws from a uniform [0,1) distribution&#39;&#39;&#39;</span>
+<span class="n">gpurandexp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span><span class="n">gpumap</span><span class="p">(</span><span class="s1">&#39;log($)&#39;</span><span class="p">)(</span><span class="n">gpurandf</span><span class="p">(</span><span class="n">n</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;Generates exponentially distributed random numbers on the GPU&#39;&#39;&#39;</span>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'2',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

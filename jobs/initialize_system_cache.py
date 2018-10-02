@@ -167,10 +167,10 @@ def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False,
     - local HDD for larger working datasets
     - network filesystem for large database
     
-    # neurotools.jobs.decorator.memoize memoizes within the process memory
+    # neurotools.jobs.ndecorator.memoize memoizes within the process memory
     # leviathan (because it is large and slow and buggy) memoizes within
     # memory, ssd, and possible hdd in a hierarchy. 
-    # this patches neurotools.jobs.decorator.memoize and replaces it
+    # this patches neurotools.jobs.ndecorator.memoize and replaces it
     # with the disk cacher, causing all dependent code to automatically
     # implement persistent disk-memoization. 
     
@@ -252,10 +252,10 @@ def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False,
             CACHE_IDENTIFIER=CACHE_IDENTIFIER)
     # Replace memoization decorator with disk-cached memoization
     neurotools.jobs.initialize_system_cache.old_memoize =\
-         neurotools.jobs.decorator.memoize
+         neurotools.jobs.ndecorator.memoize
     neurotools.jobs.initialize_system_cache.new_memoize = leviathan
     neurotools.jobs.initialize_system_cache.memoize     = new_memoize
-    neurotools.jobs.decorator.memoize = new_memoize
+    neurotools.jobs.ndecorator.memoize = new_memoize
 
 def cache_test():
     '''

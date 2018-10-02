@@ -106,7 +106,7 @@ from neurotools.signal.coherence         import *
 from neurotools.signal.conv              import *
 
 from neurotools.jobs.parallel            import *
-from neurotools.jobs.decorator           import *
+from neurotools.jobs.ndecorator          import *
 
 from neurotools.getfftw                  import *
 

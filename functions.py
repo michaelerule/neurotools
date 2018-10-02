@@ -49,7 +49,8 @@ def slog(x,eps=F64SAFE,returntype=LINALGMAXFLOAT):
 
 def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
-    Safe exponential
+    Safe exponential that limits large values to prevent numerical overflow.
+    Default limit is the square-root of the logarithm of the largest float64
     '''
     return returntype(np.exp(np.minimum(limit,x)))
 

@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stats.mixtures &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>stats.mixtures</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for stats.mixtures</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Functions relating to distributions. Most of this should be available</span>
+<span class="sd">in numpy, scipy, and scikits.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.distributions</span> <span class="k">import</span> <span class="n">poisson_logpdf</span><span class="p">,</span> <span class="n">poisson_pdf</span>
+
+<div class="viewcode-block" id="two_class_poisson_mixture_model"><a class="viewcode-back" href="../../stats.mixtures.html#stats.mixtures.two_class_poisson_mixture_model">[docs]</a><span class="k">def</span> <span class="nf">two_class_poisson_mixture_model</span><span class="p">(</span><span class="n">counts</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Estimates a Poisson mixture model with two distributions</span>
+<span class="sd">    Originally written as a toy example</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    counts : np.array</span>
+<span class="sd">        Array of count observations. We presume that counts arise from a</span>
+<span class="sd">        misture of two Poisson distributions with different means. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    classes : np.array</span>
+<span class="sd">        assigned classes of points</span>
+<span class="sd">    mu0 : float</span>
+<span class="sd">        mean of class 0</span>
+<span class="sd">    mu1 : float</span>
+<span class="sd">        mean of class 1</span>
+<span class="sd">    pr0 : np.array</span>
+<span class="sd">        probability that each count obsrevation belongs to class 0</span>
+<span class="sd">    pr1 : np.array</span>
+<span class="sd">        probability that each count obsrevation belongs to class 1 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Start with the hypothesis that the top 50% of the data and</span>
+    <span class="c1"># bottom 50% are drawn from different distributions. Initialize</span>
+    <span class="c1"># the means (lambda) Of each poisson distribution from the means</span>
+    <span class="c1"># of these classes.</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+
+    <span class="c1"># Buffer to store updated class estimates</span>
+    <span class="n">classes</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,),</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">new_classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">counts</span><span class="o">&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">counts</span><span class="p">))</span>
+
+    <span class="c1"># Iterate until the class labels do not change</span>
+    <span class="n">nIter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">classes</span><span class="o">==</span><span class="n">new_classes</span><span class="p">):</span>
+        <span class="n">classes</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new_classes</span>
+
+        <span class="c1"># Re-estimate distribution parameters based on the proposed</span>
+        <span class="c1"># classes. To define the mixture model we need the means</span>
+        <span class="c1"># (lambda) of each Poisson distribution, as well as the</span>
+        <span class="c1"># weights of each distribution in the mixture (pr1 and pr0</span>
+        <span class="c1"># here)</span>
+        <span class="n">mu0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">counts</span><span class="p">[</span><span class="n">classes</span><span class="o">==</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">mu1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">counts</span><span class="p">[</span><span class="n">classes</span><span class="o">==</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+        <span class="n">pr0</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">-</span><span class="n">pr1</span>
+
+        <span class="c1"># We must compute the likelihood that each observation comes from each</span>
+        <span class="c1"># distribution, so we&#39;ll need the Poisson likelihood.</span>
+        <span class="c1"># Since we&#39;ll just be comparing two likelihoods, any quantity that is</span>
+        <span class="c1"># monotonically related to this likelihood will also work.</span>
+        <span class="c1"># The poisson likelihood is</span>
+        <span class="c1"># \[</span>
+        <span class="c1"># \Pr(x;\lambda) = \frac{\lambda^x}{x!} exp(-\lambda)</span>
+        <span class="c1"># \]</span>
+        <span class="n">l0</span><span class="p">,</span> <span class="n">l1</span> <span class="o">=</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">mu1</span>
+
+        <span class="c1"># For all of our comparisons, x will be fixed (we&#39;ll be testing the same</span>
+        <span class="c1"># point against different distributions) so we can skip the factor x. We</span>
+        <span class="c1"># can also take the logarithm of this expression for better numerical</span>
+        <span class="c1"># stability, and use</span>
+        <span class="c1"># \[</span>
+        <span class="c1"># f(x;\lambda) = x \cdot \ln(\lambda) - \lambda</span>
+        <span class="c1"># \]</span>
+        <span class="n">lnl0</span><span class="p">,</span> <span class="n">lnl1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1e-6</span><span class="o">+</span><span class="n">l0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1e-6</span><span class="o">+</span><span class="n">l1</span><span class="p">)</span>
+
+        <span class="c1"># If we want to allow each distribution in the mixture a different</span>
+        <span class="c1"># weight we need to add that in to the probability as a</span>
+        <span class="c1"># multiplicative parameter. This comes out as an addative parameter.</span>
+        <span class="c1"># \[</span>
+        <span class="c1"># f(x;\lambda) = x \cdot \ln(\lambda) - \lambda + \ln(\omega)</span>
+        <span class="c1"># \]</span>
+        <span class="n">lnw0</span><span class="p">,</span> <span class="n">lnw1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1e-6</span><span class="o">+</span><span class="n">pr0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1e-6</span><span class="o">+</span><span class="n">pr1</span><span class="p">)</span>
+
+        <span class="c1"># When comparing two classes, we really just need to know which</span>
+        <span class="c1"># probability is larger. It suffices to compute the difference</span>
+        <span class="c1"># between the log probabilities</span>
+        <span class="c1"># \[</span>
+        <span class="c1"># x \cdot \ln(\lambda_1/\lambda_0)</span>
+        <span class="c1"># - (\lambda_1-\lambda_0)</span>
+        <span class="c1"># + \ln(\omega_1/\omega_0)</span>
+        <span class="c1"># \]</span>
+        <span class="c1"># This can be factored into a multiplier and constant</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="p">(</span><span class="n">lnl1</span><span class="o">-</span><span class="n">lnl0</span><span class="p">)</span>
+        <span class="n">constant</span>   <span class="o">=</span> <span class="p">(</span><span class="n">lnw1</span><span class="o">-</span><span class="n">lnw0</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">l1</span><span class="o">-</span><span class="n">l0</span><span class="p">)</span>
+
+        <span class="n">new_classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">counts</span><span class="o">*</span><span class="n">multiplier</span><span class="o">+</span><span class="n">constant</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">nIter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">nIter</span><span class="p">,</span><span class="s1">&#39;iterations&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">mu0</span><span class="p">,</span><span class="n">mu1</span><span class="p">,</span><span class="n">pr0</span><span class="p">,</span><span class="n">pr1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">classes</span><span class="p">,</span><span class="n">mu0</span><span class="p">,</span><span class="n">mu1</span><span class="p">,</span><span class="n">pr0</span><span class="p">,</span><span class="n">pr1</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

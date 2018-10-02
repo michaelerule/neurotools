@@ -19,7 +19,7 @@ import time as systime
 import sys
 
 from matplotlib.cbook          import flatten
-from neurotools.jobs.decorator import *
+from neurotools.jobs.ndecorator import *
 from scipy.io                  import loadmat
 import sys
 from numbers import Number
@@ -170,9 +170,6 @@ class piper():
     Piper extends callables such that they can be called by using 
     infix operators. 
     
-    This is dangerous. 
-    Do not use it.
-
     :Example:
     >>> def foo(x):
     >>>     return x+1

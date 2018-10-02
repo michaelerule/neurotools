@@ -1,3 +1,13 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+#from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
 # -*- coding: utf-8 -*-
 #
 # Neurotools documentation build configuration file, created by
@@ -44,10 +54,105 @@ assert 'sphinx' in sys.modules
 mathjax_path="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 
 
-sys.path.insert(0,os.path.abspath("./_auto/"))
+#sys.path.insert(0,os.path.abspath("./_auto/"))
 
+def addpath(p):
+    p = os.path.abspath(p)
+    print('Adding path',p)
+    sys.path.insert(0,p)
 
-#
+#sys.path.insert(0,os.path.abspath("../../"))
+#sys.path.insert(0,os.path.abspath("../"))
+addpath('../')
+addpath('../../')
+
+# Awful hack?
+import neurotools
+from neurotools import *
+from neurotools import stats
+import nlab
+from nlab import *
+
+import neurotools.signal as signal
+import neurotools.stats as stats
+import neurotools.linalg as linalg
+import neurotools.gpu as gpu
+import neurotools.jobs as jobs
+import neurotools.models as models
+import neurotools.spatial as spatial
+import neurotools.encoding as encoding
+import neurotools.graphics as graphics
+
+import imp, traceback
+
+for retry in range(10):
+    for dp,dn,fns in os.walk('../'):
+        p = os.path.abspath(dp)
+        if 'docs' in p: continue
+        if 'source' in p: continue
+        if '__init__.py' in [f.lower() for f in fns]:
+            # directory is a module
+            mn = p.split(os.sep)[-1]
+            if mn in globals(): continue
+            print('Probably a package: ',p,mn)
+            try:
+                globals()[mn] = imp.load_source(mn,p)
+                print('loaded.')
+            except:
+                print('MODUlE LOADING FAILED WITH ERROR')
+                traceback.print_exc()
+
+            parent = os.path.abspath(os.path.join(p, os.pardir))
+            siblings = os.listdir(parent)
+            if not '__init__.py' in [f.lower() for f in siblings]:
+                print('Modules %s DOES NOT SEEM TO HAVE A PACKAGE?'%mn)
+                continue
+            try:
+                # directory is a module
+                pn = parent.split(os.sep)[-1]
+                if not pn in globals():
+                    print('PARENT MODULE %s NOT LOADED'%pn)
+                    continue
+                setattr(globals()[pn],mn,globals()[mn])
+                print('Registered as %s.%s'%(pn,mn))
+                # somehow... build up path?
+            except:
+                print('COULD NOT REGISTER WITH PARENT')
+                traceback.print_exc()
+    for dp,dn,fns in os.walk('../'):
+        p = os.path.abspath(dp)
+        if 'docs' in p: continue
+        if 'source' in p: continue
+        for fn in fns:
+            if not fn[-3:].lower()=='.py': continue
+            if '__init__' in fn.lower(): continue
+            mn = fn.split('.')[0]
+            if mn in globals(): continue
+            fp = p+os.sep+fn
+            print('Probably a module: ',fp,mn)
+            try:
+                globals()[mn] = imp.load_source(mn,fp)
+                print('loaded.')
+                # somehow... build up path?
+            except:
+                print('MODUlE LOADING FAILED WITH ERROR')
+                traceback.print_exc()
+            if not '__init__.py' in [f.lower() for f in fns]:
+                print('Modules %s DOES NOT SEEM TO HAVE A PACKAGE?'%mn)
+                continue
+            try:
+                # directory is a module
+                pn = p.split(os.sep)[-1]
+                if not pn in globals():
+                    print('PARENT MODULE %s NOT LOADED'%pn)
+                    continue
+                setattr(globals()[pn],mn,globals()[mn])
+                print('Registered as %s.%s'%(pn,mn))
+                # somehow... build up path?
+            except:
+                print('COULD NOT REGISTER WITH PARENT')
+                traceback.print_exc()
+#sys.exit('-1')
 
 # due to potential weirdness that may arise with python 
 # environments, it's not clear that the imported version will 
@@ -55,6 +160,7 @@ sys.path.insert(0,os.path.abspath("./_auto/"))
 # actually do the import and try to read the version name from 
 # the package itself. This doesn't always work, so we use pip
 # as a fallback
+'''
 mod = __import__('sphinx')
 potential_version_variable_names = ['__version__','__VERSION__','VERSION','version','version_info']
 loaded_version = None
@@ -89,6 +195,7 @@ else:
         sys.stdout.write('\tAdding github pages module\n')
     else:
         sys.stdout.write('\tPlease update Sphinx to use the github pages module\n')
+'''
 
 # fix some sphinx warnings?
 #napoleon_use_param = False

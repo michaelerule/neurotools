@@ -13,7 +13,7 @@ from neurotools.system import *
 import neurotools.models.rbm.rbm as rb
 from collections import defaultdict
 from scipy.stats import entropy
-from neurotools.jobs.decorator import memoize
+from neurotools.jobs.ndecorator import memoize
 import numpy as np
 
 from neurotools.functions import slog, sexp, g, f, f1, f2

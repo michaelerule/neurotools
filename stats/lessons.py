@@ -26,7 +26,14 @@ plt.rcParams['image.cmap'] = 'parula'
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.origin'] = 'lower'
 plt.rcParams['figure.figsize'] = (10,3)
-plt.rcParams['axes.color_cycle'] = [BLACK,RUST,TURQUOISE,OCHRE,AZURE]
+try:
+    plt.rcParams['axes.color_cycle'] = [BLACK,RUST,TURQUOISE,OCHRE,AZURE]
+except KeyError:
+    pass
+try:
+    plt.rcParams['axes.colorcycle'] = [BLACK,RUST,TURQUOISE,OCHRE,AZURE]
+except KeyError:
+    pass
 plt.rcParams['legend.borderaxespad'] = 0.
 
 def sample_wiener_process(x0,sigma,dt,N,ntrial=1):

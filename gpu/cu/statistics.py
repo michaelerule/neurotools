@@ -1,3 +1,14 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
 '''
 Contains statistical routines. All routines assume float32 arrays as the
 underlying datatype.
@@ -19,43 +30,77 @@ import numpy
 '''This class collects routines that operate on a single float vector. 
 These routines tend to use reductions in the computation and most have
 complexity log(n) where n is the length of the vector'''
+
+
 sdv_kern  = ElementwiseKernel(
     "float *x,float mean,float *z",
     "z[i]=pow(x[i]-mean,2)",
     "sdv_kern")
+
+
 gpusdv   = gpuscalar(sdv_kern)
 '''Computes elementwise squared deviation from a constant value. For
 example, gpusdev(data,c) will return the squared distance of all elements
 in data from c. This is a slightly better way of writing (data-c)**2 as
 it avoids an intermediate array creation and copy'''
+
+
 gpumean  = lambda v:gpusum(v)/float(len(v))
 '''Computes the population mean of a float vector on the GPU'''
+
+
 gpucenter= lambda v:gpushift(v,-gpumean(v))
 '''Mean-centers a vector on the GPU'''
+
+
 gpusqmag = lambda v:gpusum(v**2)
 '''Computes the squared magnitude of a vector'''
+
+
 gpumag   = compose(sqrt)(gpusqmag)
 '''Computes the magnitude of a vector'''
+
+
 gpusqdev = lambda v:gpusum(gpusdv(v,gpumean(v)))
 '''Computes the sum of squared deviation from mean for a vector''' 
+
+
 gpuvar   = lambda v:gpusqdev(v)/float(len(v))
 '''Computes the population variance of a vector'''
+
+
 gpusvar  = lambda v:gpusqdev(v)/(float(len(v))-1)
 '''Computes the sample variance of a vector'''
+
+
 gpustd   = compose(sqrt)(gpuvar)
 '''Computes the population standard deviation of a vector'''
+
+
 gpusstd  = compose(sqrt)(gpusvar)
 '''Computes the sample standard deviation of a vector'''
+
+
 gpucov   = lambda a,b:gpudot(gpucenter(a),gpucenter(b))/float(len(a))
 '''Computes the covariance of two vectors.'''
+
+
 gpucorr  = lambda a,b:gpucov(a,b)/(gpustd(a)*gpustd(b))
 '''Computes the correlation coefficient between two vectors'''
+
+
 gpuscov  = lambda a,b:gpudot(gpucenter(a),gpucenter(b))/float(len(a)-1)
 '''Computes the sample covariance of two vectors'''
+
+
 gpuscorr = lambda a,b:gpuscov(a,b)/(gpusstd(a)*gpusstd(b))
 '''Computes the sample correlation of two vectors'''
+
+
 gpusem   = lambda v:(gpusvar(v)/len(v))**0.5
 '''Computes the standard error of mean for a vector'''
+
+
 gpuzscore= lambda v:gpumul(1.0/gpustd(v))(gpucenter(v))
 '''Computes the z-scores for a vector using sample statistics'''
    
@@ -250,7 +295,7 @@ try:
     gpu_bin.prepare([numpy.intp,numpy.intp,numpy.int32,numpy.int32,numpy.float32,numpy.float32],(256,1,1))
 except Exception as exc:
     import traceback
-    traceback.print_exc(exc)
+    traceback.print_exc()
     print('PyCuda may not be installed, could not initialize')
 
 def gpu_histogram(data,min,max,bins):

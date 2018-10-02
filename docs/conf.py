@@ -85,6 +85,8 @@ import neurotools.graphics as graphics
 
 import imp, traceback
 
+allregistered = []
+
 for retry in range(10):
     for dp,dn,fns in os.walk('../'):
         p = os.path.abspath(dp)
@@ -99,9 +101,15 @@ for retry in range(10):
                 globals()[mn] = imp.load_source(mn,p)
                 print('loaded.')
             except:
-                print('MODUlE LOADING FAILED WITH ERROR')
-                traceback.print_exc()
-
+                p2 = p+os.sep+'__init__.py'
+                try:
+                    globals()[mn] = imp.load_source(mn,p2)
+                    print('loaded.')
+                except:
+                    print('MODUlE LOADING FAILED WITH ERROR')
+                    traceback.print_exc()
+                    continue
+            allregistered.append(mn)
             parent = os.path.abspath(os.path.join(p, os.pardir))
             siblings = os.listdir(parent)
             if not '__init__.py' in [f.lower() for f in siblings]:
@@ -116,9 +124,11 @@ for retry in range(10):
                 setattr(globals()[pn],mn,globals()[mn])
                 print('Registered as %s.%s'%(pn,mn))
                 # somehow... build up path?
+                allregistered.append('%s.%s'%(pn,mn))
             except:
                 print('COULD NOT REGISTER WITH PARENT')
                 traceback.print_exc()
+                continue
     for dp,dn,fns in os.walk('../'):
         p = os.path.abspath(dp)
         if 'docs' in p: continue
@@ -132,11 +142,11 @@ for retry in range(10):
             print('Probably a module: ',fp,mn)
             try:
                 globals()[mn] = imp.load_source(mn,fp)
-                print('loaded.')
-                # somehow... build up path?
+                print('loaded',mn)
             except:
                 print('MODUlE LOADING FAILED WITH ERROR')
                 traceback.print_exc()
+            allregistered.append(mn)
             if not '__init__.py' in [f.lower() for f in fns]:
                 print('Modules %s DOES NOT SEEM TO HAVE A PACKAGE?'%mn)
                 continue
@@ -149,9 +159,18 @@ for retry in range(10):
                 setattr(globals()[pn],mn,globals()[mn])
                 print('Registered as %s.%s'%(pn,mn))
                 # somehow... build up path?
+                allregistered.append('%s.%s'%(pn,mn))
             except:
                 print('COULD NOT REGISTER WITH PARENT')
                 traceback.print_exc()
+
+print('Imported these packages:\n\t'+'\n\t'.join(sorted(allregistered)))
+
+print(signal)
+print(linenoise)
+print(signal.linenoise)
+#import signal.linenoise
+
 #sys.exit('-1')
 
 # due to potential weirdness that may arise with python 

@@ -10,7 +10,7 @@ from __future__ import print_function
 
 import numpy as np
 from neurotools.getfftw import *
-from neurotools.signal.signal import zscore
+from neurotools.signal import zscore
 from neurotools.jobs.ndecorator import memoize
 
 from spectrum.mtm import dpss

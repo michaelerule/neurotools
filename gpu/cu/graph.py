@@ -1,3 +1,14 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
 '''
 This module contains utility for performing graph algorithms on the GPU.
 
@@ -63,7 +74,7 @@ def connect_gaussian(n,k,s,p):
     datagraph = gpuarray.empty((int(n*n*k),),np.int32)
     rngstate  = gpuint(int32(np.random.random_integers(16777215,size=n*n)))   
     string = ('',r'if (nx==x&&ny==y) continue;')[p]
-    print string
+    print(string)
     connect = kernel('int *graph, int n, int k, float sigma, int *rng_state',
         '''
         int x = tid %% n;   
@@ -108,7 +119,7 @@ def gaussian_smallworld(n,k,s,p=True):
     datagraph = gpuarray.empty((int(n*n*k),),np.int32)
     rngstate  = gpuint(int32(np.random.random_integers(16777215,size=n*n)))   
     string = ('',r'if (nx==x&&ny==y) continue;')[p]
-    print string
+    print(string)
     connect = kernel('int *graph, int n, int k, float sigma, int *rng_state',
         '''
         int x = tid %% n;   

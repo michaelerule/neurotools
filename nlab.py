@@ -101,7 +101,7 @@ from neurotools.signal.morlet            import *
 from neurotools.signal.multitaper        import *
 from neurotools.signal.ppc               import *
 from neurotools.signal.savitskygolay     import *
-from neurotools.signal.signal            import *
+from neurotools.signal                   import *
 from neurotools.signal.coherence         import *
 from neurotools.signal.conv              import *
 

@@ -221,10 +221,10 @@ def real_eig(M,eps=1e-9):
     if np.any(abs(np.imag(w))>eps):
         raise ValueError('Eigenvalues with imaginary part >%0.2e; matrix has complex eigenvalues'%eps)
     w = np.real(w)
-    order = np.argsort(w)
+    order = np.argsort(abs(w))[::-1]
     w = w[order]
     v = v[:,order]
-    return w,v
+    return w,v.real
 
 def logdet(C,eps=1e-6,safe=0):
     '''

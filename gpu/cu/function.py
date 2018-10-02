@@ -1,3 +1,19 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
+try:
+    xrange
+except:
+    xrange = range
+
 '''
 Contains higher order functions to make creation of GPU functions more 
 succinct and compact. Also contains generic routines for manipulating CUDA 
@@ -74,7 +90,7 @@ def printKernel(code):
     labeldigits = ceil(log(len(code))/log(10))
     formatstring = "%0"+str(labeldigits)+"d %s"
     for i,line in enumerate(code):
-        print formatstring%(i+2,line)
+        print(formatstring%(i+2,line))
 
 ##############################################################################
 # GPU function generting metafunctions
@@ -152,7 +168,7 @@ def gpuparametermap(exp):
     accepts a parameter list, then the data. The map expession should 
     indic'''
     exp = expsub("$="+exp)
-    print exp
+    print(exp)
     map_kern = lambda:ElementwiseKernel("float *x",exp,"map_kern")  
     def f(v):
         map_kern()(v)

@@ -33,7 +33,7 @@ import matplotlib.colors as mcolors
 from   os.path    import expanduser
 from   matplotlib import cm
 from   numpy      import pi,e
-from   neurotools.signal.signal import gaussian_smooth
+from   neurotools.signal import gaussian_smooth
 
 # This is the color scheme from the painting "gather" by bridget riley
 GATHER = [

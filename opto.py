@@ -77,7 +77,8 @@ def opto_get_lfp(opto_dataset,channel):
         assert channel>=1
         return metaloadmat(opto_dataset)['LFP'][:,channel-1]
 
-def __opto_get_lfp_filtered_helper__((i,data,fa,fb,Fs,order)):
+def __opto_get_lfp_filtered_helper__(params):
+    (i,data,fa,fb,Fs,order) = params
     return i,bandfilter(data,fa,fb,Fs,order)
 
 def opto_get_lfp_filtered(opto_dataset,channel,fa,fb,order=4):
@@ -140,10 +141,11 @@ def opto_get_all_lfp_analytic_quick_parallel(opto_dataset,fa,fb):
     assert 0
     pass
 
-def __opto_get_lfp_analytic_helper__((i,data,fa,fb,Fs,order)):
+def __opto_get_lfp_analytic_helper__(params):
     '''
     Parallel function wrapper for opto_get_lfp_analytic
     '''
+    (i,data,fa,fb,Fs,order) = params
     print(5,i)
     return i,hilbert(bandfilter(data,fa,fb,Fs,order))
 

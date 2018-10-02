@@ -19,7 +19,7 @@ import numpy as np
 from numpy.fft import *
 #from neurotools.tools import warn
 from warnings import warn
-#from neurotools.signal.signal import phase_randomize
+#from neurotools.signal import phase_randomize
 
 __PPC_FP_TYPE__=np.float128
 

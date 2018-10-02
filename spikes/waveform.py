@@ -20,7 +20,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from   mpl_toolkits.mplot3d import Axes3D
-from neurotools.signal.signal import upsample
+from neurotools.signal import upsample
 
 '''
 TODO: update code to make these specific imports

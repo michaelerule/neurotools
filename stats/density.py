@@ -10,7 +10,7 @@ from __future__ import print_function
 from neurotools.system import *
 
 from scipy.stats import gaussian_kde
-from neurotools.signal.signal import get_edges
+from neurotools.signal import get_edges
 
 import numpy as np
 from   pylab import find

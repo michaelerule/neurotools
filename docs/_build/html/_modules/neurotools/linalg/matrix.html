@@ -13,8 +13,6 @@
 
   
   
-  
-  
 
   
 
@@ -24,19 +22,27 @@
 
   
 
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -77,10 +83,7 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+                <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
 </ul>
@@ -94,52 +97,34 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Neurotools</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">Neurotools</a>
       </nav>
 
 
+      
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>neurotools.linalg.matrix</li>
-    
-    
+      
+    <li>neurotools.linalg.matrix</li>
       <li class="wy-breadcrumbs-aside">
         
+          
+        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -369,10 +354,10 @@
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">w</span><span class="p">))</span><span class="o">&gt;</span><span class="n">eps</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Eigenvalues with imaginary part &gt;</span><span class="si">%0.2e</span><span class="s1">; matrix has complex eigenvalues&#39;</span><span class="o">%</span><span class="n">eps</span><span class="p">)</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">w</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span><span class="n">order</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">w</span><span class="p">,</span><span class="n">v</span></div>
+    <span class="k">return</span> <span class="n">w</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">real</span></div>
 
 <div class="viewcode-block" id="logdet"><a class="viewcode-back" href="../../../neurotools.linalg.matrix.html#neurotools.linalg.matrix.logdet">[docs]</a><span class="k">def</span> <span class="nf">logdet</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span><span class="n">safe</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -673,7 +658,6 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
   
@@ -686,7 +670,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -705,11 +689,9 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'2',
-            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -719,13 +701,19 @@
 
   
 
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>

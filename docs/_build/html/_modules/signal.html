@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>signal &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Neurotools</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      
+    <li>signal</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for signal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">_signal</span>
+<span class="kn">from</span> <span class="nn">_signal</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span> <span class="k">as</span> <span class="n">_wraps</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">IntEnum</span> <span class="k">as</span> <span class="n">_IntEnum</span>
+
+<span class="n">_globals</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span>
+
+<span class="n">_IntEnum</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span>
+        <span class="s1">&#39;Signals&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">name</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SIG_&#39;</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CTRL_&#39;</span><span class="p">))</span>
+
+<span class="n">_IntEnum</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span>
+        <span class="s1">&#39;Handlers&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;SIG_DFL&#39;</span><span class="p">,</span> <span class="s1">&#39;SIG_IGN&#39;</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="s1">&#39;pthread_sigmask&#39;</span> <span class="ow">in</span> <span class="n">_globals</span><span class="p">:</span>
+    <span class="n">_IntEnum</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span>
+            <span class="s1">&#39;Sigmasks&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;SIG_BLOCK&#39;</span><span class="p">,</span> <span class="s1">&#39;SIG_UNBLOCK&#39;</span><span class="p">,</span> <span class="s1">&#39;SIG_SETMASK&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_int_to_enum</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">enum_klass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a numeric value to an IntEnum member.</span>
+<span class="sd">    If it&#39;s not a known member, return the numeric value itself.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">enum_klass</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span> <span class="nf">_enum_to_int</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert an IntEnum member to a numeric value.</span>
+<span class="sd">    If it&#39;s not an IntEnum member return the value itself.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="nd">@_wraps</span><span class="p">(</span><span class="n">_signal</span><span class="o">.</span><span class="n">signal</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">signal</span><span class="p">(</span><span class="n">signalnum</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">_enum_to_int</span><span class="p">(</span><span class="n">signalnum</span><span class="p">),</span> <span class="n">_enum_to_int</span><span class="p">(</span><span class="n">handler</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">_int_to_enum</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">Handlers</span><span class="p">)</span>
+
+
+<span class="nd">@_wraps</span><span class="p">(</span><span class="n">_signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">getsignal</span><span class="p">(</span><span class="n">signalnum</span><span class="p">):</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">signalnum</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_int_to_enum</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">Handlers</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="s1">&#39;pthread_sigmask&#39;</span> <span class="ow">in</span> <span class="n">_globals</span><span class="p">:</span>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">_signal</span><span class="o">.</span><span class="n">pthread_sigmask</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">pthread_sigmask</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="n">sigs_set</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">pthread_sigmask</span><span class="p">(</span><span class="n">how</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">_int_to_enum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Signals</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sigs_set</span><span class="p">)</span>
+    <span class="n">pthread_sigmask</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">pthread_sigmask</span><span class="o">.</span><span class="vm">__doc__</span>
+
+
+<span class="k">if</span> <span class="s1">&#39;sigpending&#39;</span> <span class="ow">in</span> <span class="n">_globals</span><span class="p">:</span>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">_signal</span><span class="o">.</span><span class="n">sigpending</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sigpending</span><span class="p">():</span>
+        <span class="n">sigs</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">sigpending</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">_int_to_enum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Signals</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sigs</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="s1">&#39;sigwait&#39;</span> <span class="ow">in</span> <span class="n">_globals</span><span class="p">:</span>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">_signal</span><span class="o">.</span><span class="n">sigwait</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sigwait</span><span class="p">(</span><span class="n">sigset</span><span class="p">):</span>
+        <span class="n">retsig</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">sigwait</span><span class="p">(</span><span class="n">sigset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_int_to_enum</span><span class="p">(</span><span class="n">retsig</span><span class="p">,</span> <span class="n">Signals</span><span class="p">)</span>
+    <span class="n">sigwait</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">_signal</span><span class="o">.</span><span class="n">sigwait</span>
+
+<span class="k">del</span> <span class="n">_globals</span><span class="p">,</span> <span class="n">_wraps</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

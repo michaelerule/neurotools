@@ -14,7 +14,7 @@ from __future__ import print_function
 import numpy as np
 import matplotlib as plt
 import pylab as pl
-from neurotools.signal.signal import rewrap
+from neurotools.signal import rewrap
 from scipy.signal import convolve2d
 from neurotools.graphics.plot import *
 

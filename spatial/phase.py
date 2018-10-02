@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import numpy as np
-from neurotools.signal.signal import rewrap
+from neurotools.signal import rewrap
 
 ELECTRODE_SPACING = 0.4
 

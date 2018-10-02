@@ -13,8 +13,6 @@
 
   
   
-  
-  
 
   
 
@@ -24,19 +22,27 @@
 
   
 
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="Neurotools 2 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
   <script src="../../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -77,10 +83,7 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+                <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">neurotools</a></li>
 </ul>
@@ -94,59 +97,52 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Neurotools</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../../index.html">Neurotools</a>
       </nav>
 
 
+      
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
-      <li>neurotools.gpu.cu.statistics</li>
-    
-    
+      
+    <li>neurotools.gpu.cu.statistics</li>
       <li class="wy-breadcrumbs-aside">
         
+          
+        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for neurotools.gpu.cu.statistics</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Contains statistical routines. All routines assume float32 arrays as the</span>
 <span class="sd">underlying datatype.</span>
 <span class="sd">&#39;&#39;&#39;</span>
@@ -167,43 +163,77 @@
 <span class="sd">&#39;&#39;&#39;This class collects routines that operate on a single float vector. </span>
 <span class="sd">These routines tend to use reductions in the computation and most have</span>
 <span class="sd">complexity log(n) where n is the length of the vector&#39;&#39;&#39;</span>
+
+
 <span class="n">sdv_kern</span>  <span class="o">=</span> <span class="n">ElementwiseKernel</span><span class="p">(</span>
     <span class="s2">&quot;float *x,float mean,float *z&quot;</span><span class="p">,</span>
     <span class="s2">&quot;z[i]=pow(x[i]-mean,2)&quot;</span><span class="p">,</span>
     <span class="s2">&quot;sdv_kern&quot;</span><span class="p">)</span>
+
+
 <span class="n">gpusdv</span>   <span class="o">=</span> <span class="n">gpuscalar</span><span class="p">(</span><span class="n">sdv_kern</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes elementwise squared deviation from a constant value. For</span>
 <span class="sd">example, gpusdev(data,c) will return the squared distance of all elements</span>
 <span class="sd">in data from c. This is a slightly better way of writing (data-c)**2 as</span>
 <span class="sd">it avoids an intermediate array creation and copy&#39;&#39;&#39;</span>
+
+
 <span class="n">gpumean</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpusum</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Computes the population mean of a float vector on the GPU&#39;&#39;&#39;</span>
+
+
 <span class="n">gpucenter</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpushift</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="o">-</span><span class="n">gpumean</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Mean-centers a vector on the GPU&#39;&#39;&#39;</span>
+
+
 <span class="n">gpusqmag</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpusum</span><span class="p">(</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes the squared magnitude of a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpumag</span>   <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)(</span><span class="n">gpusqmag</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes the magnitude of a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpusqdev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpusum</span><span class="p">(</span><span class="n">gpusdv</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">gpumean</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
 <span class="sd">&#39;&#39;&#39;Computes the sum of squared deviation from mean for a vector&#39;&#39;&#39;</span> 
+
+
 <span class="n">gpuvar</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpusqdev</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Computes the population variance of a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpusvar</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpusqdev</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes the sample variance of a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpustd</span>   <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)(</span><span class="n">gpuvar</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes the population standard deviation of a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpusstd</span>  <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)(</span><span class="n">gpusvar</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes the sample standard deviation of a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpucov</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">gpudot</span><span class="p">(</span><span class="n">gpucenter</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">gpucenter</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Computes the covariance of two vectors.&#39;&#39;&#39;</span>
+
+
 <span class="n">gpucorr</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">gpucov</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">gpustd</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">gpustd</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Computes the correlation coefficient between two vectors&#39;&#39;&#39;</span>
+
+
 <span class="n">gpuscov</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">gpudot</span><span class="p">(</span><span class="n">gpucenter</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">gpucenter</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;Computes the sample covariance of two vectors&#39;&#39;&#39;</span>
+
+
 <span class="n">gpuscorr</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">gpuscov</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">gpusstd</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">gpusstd</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Computes the sample correlation of two vectors&#39;&#39;&#39;</span>
+
+
 <span class="n">gpusem</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:(</span><span class="n">gpusvar</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span>
 <span class="sd">&#39;&#39;&#39;Computes the standard error of mean for a vector&#39;&#39;&#39;</span>
+
+
 <span class="n">gpuzscore</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpumul</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">gpustd</span><span class="p">(</span><span class="n">v</span><span class="p">))(</span><span class="n">gpucenter</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 <span class="sd">&#39;&#39;&#39;Computes the z-scores for a vector using sample statistics&#39;&#39;&#39;</span>
    
@@ -398,7 +428,7 @@
     <span class="n">gpu_bin</span><span class="o">.</span><span class="n">prepare</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">],(</span><span class="mi">256</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">traceback</span>
-    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PyCuda may not be installed, could not initialize&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="gpu_histogram"><a class="viewcode-back" href="../../../../neurotools.gpu.cu.statistics.html#neurotools.gpu.cu.statistics.gpu_histogram">[docs]</a><span class="k">def</span> <span class="nf">gpu_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="nb">min</span><span class="p">,</span><span class="nb">max</span><span class="p">,</span><span class="n">bins</span><span class="p">):</span>
@@ -429,7 +459,6 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
   
@@ -442,7 +471,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -461,11 +490,9 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
             VERSION:'2',
-            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
@@ -475,13 +502,19 @@
 
   
 
-  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>

@@ -43,6 +43,7 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
 
     Example
     -------
+    
         def f():
             x = randn(2)+array([9,-9])
             return x
@@ -109,6 +110,7 @@ def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
 
     Example
     -------
+    
         def f():
             x = randn(2)+array([9,-9])
             return x

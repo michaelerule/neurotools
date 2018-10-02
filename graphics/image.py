@@ -20,9 +20,14 @@ A couple image-like subroutines. This may overlap a bit with `stats.spatial`
 import numpy as np
 import matplotlib.pyplot as plt
 
-from skimage import data, img_as_float
-from skimage import exposure
-
+try:
+    import skimage
+    from skimage import data, img_as_float
+    from skimage import exposure
+except:
+    print('Module skimage not found!')
+    print('Please install with, e.g. pip install --user scikit-image')    
+    
 import scipy
 blur = scipy.ndimage.filters.gaussian_filter
 

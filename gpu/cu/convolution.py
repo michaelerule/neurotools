@@ -1,9 +1,22 @@
-'''Utilities for performing certain Naive convolutions in PyCuda. Sadly I 
-have not accelerated anything using the FT yet'''
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
+'''
+Utilities for performing certain Naive convolutions in PyCuda. Sadly I 
+have not accelerated anything using the FT yet
+'''
 
 def gpuboxconv_core(data,size):
     '''
-    HUGE BUG : THE THING DOESN'T WORK IF THE DATA MUST BE SPLIT UP!
+    
     '''
     cells=int(len(data))
     timepoints=int(len(data[0]))
@@ -11,7 +24,7 @@ def gpuboxconv_core(data,size):
     newtimepoints=int(timepoints-size)
     n=int(newtimepoints*cells)
     if (n<=0) :
-        print "ERROR : VALID POST-CONVOLUTION SIZE IS NEGATIVE!!!"
+        print("ERROR : VALID POST-CONVOLUTION SIZE IS NEGATIVE!!!")
         return None
     newdata=gpuarray.zeros(n,np.int32)
     kernel('int *destination, int *source, int size, int cells, int timepoints','''

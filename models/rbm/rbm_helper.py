@@ -69,10 +69,10 @@ def scattercompare(x,y,xl='',yl='',
     plt.scatter(x,y,0.1,color=AZURE)
     if meanline:
         order = np.argsort(x)
-        m  = neurotools.signal.signal.box_filter(y[order],int(np.sqrt(len(x))))
+        m  = neurotools.signal.box_filter(y[order],int(np.sqrt(len(x))))
         plt.plot(x[order],m,color=BLACK,lw=2.5)
         if shadevariance:
-            mm = neurotools.signal.signal.box_filter((y**2)[order],int(np.sqrt(len(x))))
+            mm = neurotools.signal.box_filter((y**2)[order],int(np.sqrt(len(x))))
             v  = mm - m*m
             s  = np.sqrt(v)
             e  = 1.96*s
@@ -150,10 +150,10 @@ def barcompare(x,y,xl='',yl='',
     
     if meanline:
         order = np.argsort(x)
-        m  = neurotools.signal.signal.box_filter(y[order],int(np.sqrt(len(x))))
+        m  = neurotools.signal.box_filter(y[order],int(np.sqrt(len(x))))
         plt.plot(x[order],m,color=BLACK,lw=0.85)
         if shadevariance:
-            mm = neurotools.signal.signal.box_filter((y**2)[order],int(np.sqrt(len(x))))
+            mm = neurotools.signal.box_filter((y**2)[order],int(np.sqrt(len(x))))
             v  = mm - m*m
             s  = np.sqrt(v)
             e  = 1.96*s
@@ -196,7 +196,7 @@ def zipfplot(Eh):
     Eh  = np.array(sorted(Eh))
     HEh = -slog(np.diff(Eh))
     CDF = np.cumsum(Eh)
-    HEh_smoothed = neurotools.signal.signal.box_filter(HEh,int(sqrt(len(HEh))))
+    HEh_smoothed = neurotools.signal.box_filter(HEh,int(sqrt(len(HEh))))
     plot(Eh[1:],HEh_smoothed,color=OCHRE,lw=2,label='PDF method')
     plot(Eh,log(CDF),color=AZURE,lw=2,label='CDF method')
     xlim(min(Eh),max(Eh))

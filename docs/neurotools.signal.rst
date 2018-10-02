@@ -15,7 +15,6 @@ Submodules
    neurotools.signal.ppc
    neurotools.signal.resonator
    neurotools.signal.savitskygolay
-   neurotools.signal.signal
 
 Module contents
 ---------------

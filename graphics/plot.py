@@ -1243,8 +1243,8 @@ def stderrplot(m,v,color='k',alpha=0.1,smooth=None,lw=1.5,filled=True,label=None
     plot(m, color = color,lw=lw,label=label)
     e = np.sqrt(v)*stdwidth
     if not smooth is None and smooth>0:
-        e = neurotools.signal.signal.box_filter(e,smooth)
-        m = neurotools.signal.signal.box_filter(m,smooth)
+        e = neurotools.signal.box_filter(e,smooth)
+        m = neurotools.signal.box_filter(m,smooth)
     if filled:
         c = mpl.colors.colorConverter.to_rgb(color)+(alpha ,)
         fill_between(np.arange(len(m)),m-e,m+e,lw=0,color=c)

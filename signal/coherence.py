@@ -22,7 +22,7 @@ import scipy.stats
 
 from neurotools.signal.morlet     import *
 from neurotools.getfftw           import *
-from neurotools.signal.signal     import zscore
+from neurotools.signal     import zscore
 from neurotools.signal.multitaper import dpss_cached
 from neurotools.stats.circular    import squared_first_circular_moment
 try:

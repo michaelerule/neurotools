@@ -612,8 +612,8 @@ def get_edges(signal):
     '''
     if len(signal)<1:
         return np.array([[],[]])
-    starts = list(find(np.diff(np.int32(signal))==1))
-    stops  = list(find(np.diff(np.int32(signal))==-1))
+    starts = list(np.where(np.diff(np.int32(signal))==1)[0])
+    stops  = list(np.where(np.diff(np.int32(signal))==-1)[0])
     if signal[0 ]: starts = [0]+starts
     if signal[-1]: stops = stops + [len(signal)]
     return np.array([starts, stops])

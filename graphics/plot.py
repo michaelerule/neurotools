@@ -55,6 +55,7 @@ def simpleaxis(ax=None):
     ax.spines['right'].set_visible(False)
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    ax.autoscale(enable=True, axis='x', tight=True)
 
 def simpleraxis(ax=None):
     '''
@@ -70,6 +71,7 @@ def simpleraxis(ax=None):
     ax.spines['bottom'].set_visible(False)
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    ax.autoscale(enable=True, axis='x', tight=True)
 
 def noaxis(ax=None):
     '''

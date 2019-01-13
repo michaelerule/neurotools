@@ -82,8 +82,7 @@ def population_coherence_spectrum(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     take kuromoto or synchrony measure over complex vectors attained
     '''
     assert 0
-    # this measures synchrony not coherence.
-    # disabling it until we understand coherence better
+    # this measures synchrony not coherence!
     freqs, transformed = fft_cwt(lfp.T,fa,fb,w,resolution,Fs)
     coherence = abs(mean(transformed,0))/mean(abs(transformed),0)
     return freqs, coherence

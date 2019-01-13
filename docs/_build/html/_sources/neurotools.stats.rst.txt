@@ -31,7 +31,6 @@ Submodules
    neurotools.stats.regressions
    neurotools.stats.sde
    neurotools.stats.spatiotemporal_glm_utils
-   neurotools.stats.stats
 
 Module contents
 ---------------

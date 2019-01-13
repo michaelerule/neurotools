@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Neurotools 2 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,7 +77,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Contents:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
 </ul>
@@ -97,34 +94,52 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">Neurotools</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      
-    <li>neurotools.signal</li>
+        
+      <li>neurotools.signal</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -149,13 +164,18 @@
 
 <span class="c1"># this function is missing</span>
 <span class="c1">#from   pylab import find</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <div class="viewcode-block" id="find"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.find">[docs]</a><span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Cheap mock-up of pylab&#39;s discontinued `find` function for backwards</span>
+<span class="sd">    compatibility of some code.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="geometric_window"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.geometric_window">[docs]</a><span class="k">def</span> <span class="nf">geometric_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Gemoetrically center a window in frequency</span>
+<span class="sd">    Gemoetrically center a frequency window</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -203,7 +223,7 @@
     <span class="n">K</span> <span class="o">*=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">K</span></div>
 
-<div class="viewcode-block" id="gaussian_smooth"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian_smooth"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span><span class="c1">#,axis=0):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth signal x with gaussian of standard deviation sigma</span>
 
@@ -215,8 +235,86 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">#x = concatenate([x::-1],x,x[::-1])</span>
     <span class="n">K</span> <span class="o">=</span> <span class="n">gaussian_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="s1">&#39;same&#39;</span><span class="p">)</span></div>
+    <span class="c1">#if len(x.shape)==1:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+    <span class="c1">#axes = tuple(sorted(list(set(range(len(x.shape)))-axis)))</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="circular_gaussian_smooth"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.circular_gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">circular_gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Smooth signal x with gaussian of standard deviation sigma</span>
+<span class="sd">    Circularly wrapped using Fourier transform</span>
+<span class="sd">    </span>
+<span class="sd">    sigma: standard deviation</span>
+<span class="sd">    x: 1D array-like signal</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">real</span></div>
+
+
+<div class="viewcode-block" id="circular_gaussian_smooth_2D"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.circular_gaussian_smooth_2D">[docs]</a><span class="k">def</span> <span class="nf">circular_gaussian_smooth_2D</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Smooth signal x with gaussian of standard deviation sigma</span>
+<span class="sd">    Circularly wrapped using Fourier transform</span>
+<span class="sd">    </span>
+<span class="sd">    sigma: standard deviation</span>
+<span class="sd">    x: 1D array-like signal</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">grid</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">+</span><span class="n">grid</span><span class="p">[</span><span class="kc">None</span><span class="p">,:]</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dist</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">real</span></div>
+
+<div class="viewcode-block" id="linear_cosine_basis"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.linear_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">linear_cosine_basis</span><span class="p">(</span><span class="n">TIMERES</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">NBASIS</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Cosine basis tiling unit interval</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">TIMERES</span><span class="p">)</span>
+    <span class="n">bt</span> <span class="o">=</span> <span class="n">times</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">NBASIS</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cos_basis</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mf">0.5</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cos_basis</span><span class="p">(</span><span class="n">bt</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">delta</span><span class="p">)</span> <span class="k">for</span> <span class="n">delta</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NBASIS</span><span class="p">)])</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">B</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+    
+<div class="viewcode-block" id="circular_cosine_basis"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.circular_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">circular_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : number of basis functions</span>
+<span class="sd">    T : grid resolution</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Circularly-wrapped cosine basis</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">wl</span> <span class="o">=</span> <span class="mi">4</span><span class="o">/</span><span class="n">N</span>
+    <span class="n">qc</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">N</span>
+    <span class="n">h</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">h</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">phases</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span><span class="o">%</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wl</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">wl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="zscore"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zscore">[docs]</a><span class="k">def</span> <span class="nf">zscore</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -257,6 +355,13 @@
     <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
     <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">signal</span></div>
+
+<div class="viewcode-block" id="topercentiles"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.topercentiles">[docs]</a><span class="k">def</span> <span class="nf">topercentiles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ranks</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span></div>
 
 <div class="viewcode-block" id="local_maxima"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.local_maxima">[docs]</a><span class="k">def</span> <span class="nf">local_maxima</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -477,10 +582,18 @@
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">bandstop</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">fb</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
         <span class="c1"># low pass</span>
-        <span class="n">b</span><span class="p">,</span><span class="n">a</span>  <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="n">order</span><span class="p">,</span><span class="n">fb</span><span class="o">/</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">Fs</span><span class="p">),</span><span class="n">btype</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">fb</span><span class="o">/</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">Fs</span><span class="p">)</span><span class="o">-</span><span class="mf">1e-10</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The low-frequency cutoff is larger than the nyquist freqency?&#39;</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">,</span><span class="n">a</span>  <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="n">order</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">btype</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">bandstop</span>
     <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Both fa and fb appear to be None&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">filtfilt</span> <span class="k">if</span> <span class="n">zerophase</span> <span class="k">else</span> <span class="n">lfilter</span><span class="p">)(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">padded</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">filtfilt</span> <span class="k">if</span> <span class="n">zerophase</span> <span class="k">else</span> <span class="n">lfilter</span>
+    <span class="c1"># hide the scipy/numpy compatibility future warning</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">padded</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span>
     <span class="k">assert</span> <span class="mi">0</span></div>
 
 <span class="c1">#&#39;&#39;&#39;</span>
@@ -488,7 +601,7 @@
 <span class="c1">#&#39;&#39;&#39;</span>
 <span class="c1">#bandfilter = bandpass_filter</span>
 
-<div class="viewcode-block" id="box_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.box_filter">[docs]</a><span class="k">def</span> <span class="nf">box_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">smoothat</span><span class="p">):</span>
+<div class="viewcode-block" id="box_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.box_filter">[docs]</a><span class="k">def</span> <span class="nf">box_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">smoothat</span><span class="p">,</span><span class="n">padmode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooths data by convolving with a size smoothat box</span>
 <span class="sd">    provide smoothat in units of frames i.e. samples (not ms or seconds)</span>
@@ -513,8 +626,12 @@
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span>
     <span class="n">padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">padded</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span><span class="o">=</span><span class="n">data</span>
-    <span class="n">padded</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">padded</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">:]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">padmode</span><span class="o">==</span><span class="s1">&#39;reflect&#39;</span><span class="p">:</span>
+        <span class="n">padded</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">padded</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">:]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">padded</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">padded</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">:]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">smoothed</span> <span class="o">=</span> <span class="n">fftconvolve</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">smoothat</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">smoothat</span><span class="p">),</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">smoothed</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span></div>
 
@@ -757,11 +874,14 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[],[]])</span>
-    <span class="n">starts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">stops</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">signal</span><span class="p">)))</span><span class="o">==</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;signal should be bool or int∈{0,1}; (did you use ~ on an int array?)&#39;</span><span class="p">)</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool8</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
+    <span class="n">starts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">stops</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">signal</span><span class="p">[</span><span class="mi">0</span> <span class="p">]:</span> <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">starts</span>
     <span class="k">if</span> <span class="n">signal</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="n">stops</span> <span class="o">=</span> <span class="n">stops</span> <span class="o">+</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">starts</span><span class="p">,</span> <span class="n">stops</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">starts</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">stops</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="set_edges"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.set_edges">[docs]</a><span class="k">def</span> <span class="nf">set_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -938,6 +1058,8 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
 
+<span class="kn">import</span> <span class="nn">neurotools.getfftw</span>
+
 <div class="viewcode-block" id="phase_randomize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.phase_randomize">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Phase randomizes a signal by rotating frequency components by a random</span>
@@ -951,28 +1073,31 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="mi">1</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># signal length is odd.</span>
-        <span class="c1"># ft will have one DC component then symmetric frequency components</span>
-        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-        <span class="n">conjugates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">randomize</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">randomize</span><span class="p">,</span><span class="n">conjugates</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># signal length is even</span>
-        <span class="c1"># will have one single value at the nyquist frequency</span>
-        <span class="c1"># which will be real and can be sign flipped but not rotated</span>
-        <span class="n">flip</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">0.5</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-        <span class="n">conjugates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">randomize</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">randomize</span><span class="p">,</span><span class="n">flip</span><span class="p">)</span>
-        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">randomize</span><span class="p">,</span><span class="n">conjugates</span><span class="p">)</span>
-    <span class="c1"># the DC component is not randomized</span>
-    <span class="n">randomize</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">randomize</span><span class="p">)</span>
-    <span class="c1"># take FFT and apply phase randomization</span>
-    <span class="n">ff</span> <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">*</span><span class="n">randomize</span>
-    <span class="c1"># take inverse</span>
-    <span class="n">randomized</span> <span class="o">=</span> <span class="n">ifft</span><span class="p">(</span><span class="n">ff</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">real</span><span class="p">(</span><span class="n">randomized</span><span class="p">)</span></div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    if N%2==1:</span>
+<span class="sd">        # signal length is odd.</span>
+<span class="sd">        # ft will have one DC component then symmetric frequency components</span>
+<span class="sd">        randomize  = np.exp(1j*np.random.rand((N-1)//2))</span>
+<span class="sd">        conjugates = np.conj(randomize)[::-1]</span>
+<span class="sd">        randomize  = np.append(randomize,conjugates)</span>
+<span class="sd">    else:</span>
+<span class="sd">        # signal length is even</span>
+<span class="sd">        # will have one single value at the nyquist frequency</span>
+<span class="sd">        # which will be real and can be sign flipped but not rotated</span>
+<span class="sd">        flip = 1 if np.random.rand(1)&lt;0.5 else -1</span>
+<span class="sd">        randomize  = np.exp(1j*np.random.rand((N-2)//2))</span>
+<span class="sd">        conjugates = np.conj(randomize)[::-1]</span>
+<span class="sd">        randomize  = np.append(randomize,flip)</span>
+<span class="sd">        randomize  = np.append(randomize,conjugates)</span>
+<span class="sd">    # the DC component is not randomized</span>
+<span class="sd">    randomize = np.append(1,randomize)</span>
+<span class="sd">    # take FFT and apply phase randomization</span>
+<span class="sd">    ff = np.fft.fft(signal)*randomize</span>
+<span class="sd">    # take inverse</span>
+<span class="sd">    randomized = np.fft.ifft(ff)</span>
+<span class="sd">    return np.real(randomized)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="phase_randomize_from_amplitudes"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.phase_randomize_from_amplitudes">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -987,14 +1112,14 @@
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span> <span class="c1"># need to make a copy</span>
     <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="c1"># N is even</span>
-        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">rephase</span><span class="p">,[</span><span class="n">sign</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)],</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">rephase</span><span class="p">,[</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)],</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
     <span class="k">else</span><span class="p">:</span> <span class="c1"># N is odd</span>
-        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rephase</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
     <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span><span class="n">rephase</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">*=</span> <span class="n">rephase</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">ifft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="estimate_padding"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.estimate_padding">[docs]</a><span class="k">def</span> <span class="nf">estimate_padding</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -1239,7 +1364,7 @@
     <span class="k">return</span> <span class="n">demodulated</span></div>
 
 
-<div class="viewcode-block" id="autocorrelation"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.autocorrelation">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="autocorrelation"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.autocorrelation">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Computes the normalized autocorrelation over the specified</span>
 <span class="sd">    time-lags using convolution. Autocorrelation is normalized</span>
@@ -1254,9 +1379,16 @@
 <span class="sd">    ----------</span>
 <span class="sd">    x : 1d array</span>
 <span class="sd">        Data for which to compute autocorrelation function</span>
-<span class="sd">    lags : int</span>
+
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    lags : int, default length of signal or 200, whichever is smaller</span>
 <span class="sd">        Number of time-lags over which to compute the ACF. Default</span>
 <span class="sd">        is min(200,len(x))</span>
+<span class="sd">    center : bool, default True</span>
+<span class="sd">        Whether to mean-center data before taking autocorrelation</span>
+<span class="sd">    normalize : bool, default True</span>
+<span class="sd">        Whether to normalize by zero-lag signal variance</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1264,27 +1396,38 @@
 <span class="sd">        Autocorrelation function, length 2*lags + 1</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">center</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">lags</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lags</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
-    <span class="c1"># TODO: TUNE THIS CONSTANT</span>
-    <span class="k">if</span> <span class="n">lags</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="c1"># Use FFT for long lags</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;same&#39;</span><span class="p">))</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
-        <span class="n">result</span> <span class="o">*=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">result</span><span class="p">[</span><span class="n">M</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="n">M</span><span class="o">-</span><span class="n">lags</span><span class="p">:</span><span class="n">M</span><span class="o">+</span><span class="n">lags</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Use time domain for short lags</span>
-        <span class="n">result</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lags</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
-        <span class="n">zerolag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">result</span><span class="p">[</span><span class="n">lags</span><span class="p">]</span> <span class="o">=</span> <span class="n">zerolag</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lags</span><span class="p">):</span>
-            <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">lags</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">lags</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span><span class="o">*</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span><span class="p">])</span>
+    <span class="c1"># TODO: disabling FFT for now; clean up</span>
+    <span class="c1"># For long, scalar-valued timeseries,</span>
+    <span class="c1"># Use FFT to compute autocorrelations</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    if lags&gt;0.5*np.log2(N) and len(x.shape)==1:</span>
+<span class="sd">        # Use FFT for long lags</span>
+<span class="sd">        result = np.float32(fftconvolve(x,x[::-1],&#39;same&#39;))</span>
+<span class="sd">        M = len(result)//2</span>
+<span class="sd">        result *= 1./result[M]</span>
+<span class="sd">        return result[M-lags:M+lags+1]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># For short correlation times or </span>
+    <span class="c1"># vector-valued data, use iteration to compute time-lags</span>
+    <span class="c1"># else:</span>
+    <span class="c1"># Use time domain for short lags</span>
+    <span class="n">result</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lags</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+    <span class="n">zerolag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">result</span><span class="p">[</span><span class="n">lags</span><span class="p">]</span> <span class="o">=</span> <span class="n">zerolag</span>
+    <span class="c1">#for i in range(1,lags+1):</span>
+    <span class="c1">#    result[i+lags] = result[lags-i] = np.nanmean(x[...,i:]*x[...,:-i])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lags</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">lags</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">lags</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">:]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="n">xx</span><span class="o">*</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">N</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">*=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">zerolag</span>
-        <span class="k">return</span> <span class="n">result</span></div>
-
+    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="c1">#assert 0</span>
 
 <div class="viewcode-block" id="upsample"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.upsample">[docs]</a><span class="k">def</span> <span class="nf">upsample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -1343,7 +1486,7 @@
 <span class="sd">    Linear response filter on data $x$ for system</span>
 <span class="sd">    </span>
 <span class="sd">    $$</span>
-<span class="sd">    \partial_t z = A z + C x(t)</span>
+<span class="sd">    \\partial_t z = A z + C x(t)</span>
 <span class="sd">    $$</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -1373,9 +1516,26 @@
         <span class="n">z</span> <span class="o">+=</span> <span class="n">dz</span>
         <span class="n">filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="span"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.span">[docs]</a><span class="k">def</span> <span class="nf">span</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get the range of values (min,max) spanned by a dataset</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : array-like, numeric</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    span: </span>
+<span class="sd">        np.max(data)-np.min(data)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -1384,11 +1544,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, M Rule.
+        &copy; Copyright 2017, M Rule
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1403,35 +1563,25 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

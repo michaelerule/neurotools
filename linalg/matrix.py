@@ -10,9 +10,9 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import sys
 # more py2/3 compat
-from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
+#from neurotools.system import *
+#if sys.version_info<(3,):
+#    from itertools import imap as map
 # END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 '''
@@ -27,10 +27,14 @@ import numpy.linalg
 
 chol = scipy.linalg.cholesky
 
-def triu_elements(M):
+def triu_elements(M,k=0):
     '''
-    Somewhat like matlab's "diag" function, but for upper triangular matrices
-    
+    Somewhat like matlab's "diag" function, but for lower triangular matrices
+
+    Pack N*(N-1) elements into the upper triangle of an NxN Matrix
+    or
+    Return the N*(N-1) elements from the upper triangle as an NxN matrix
+
     triu_elements(randn(D*(D+1)//2))
     '''
     if len(M.shape)==2:
@@ -38,7 +42,7 @@ def triu_elements(M):
         if not M.shape[0]==M.shape[1]:
             raise ValueError("Extracting upper triangle elements supported only on square arrays")
         # Extract upper trianglular elements
-        i = np.triu_indices(M.shape[0])
+        i = np.triu_indices(M.shape[0],k=k)
         return M[i]
     if len(M.shape)==1:
         # M is a vector
@@ -62,9 +66,13 @@ def triu_elements(M):
         return result
     raise ValueError("Must be 2D matrix or 1D vector")
 
-def tril_elements(M):
+def tril_elements(M,k=0):
     '''
     Somewhat like matlab's "diag" function, but for lower triangular matrices
+
+    Pack N*(N-1) elements into the lower triangle of an NxN Matrix
+    or
+    Return the N*(N-1) elements from the lower triangle as an NxN matrix
     
     tril_elements(randn(D*(D+1)//2))
     '''
@@ -73,7 +81,7 @@ def tril_elements(M):
         if not M.shape[0]==M.shape[1]:
             raise ValueError("Extracting upper triangle elements supported only on square arrays")
         # Extract upper trianglular elements
-        i = np.tril_indices(M.shape[0])
+        i = np.tril_indices(M.shape[0],k=k)
         return M[i]
     if len(M.shape)==1:
         # M is a vector
@@ -102,14 +110,14 @@ def column(x):
     Ensure that x is a column vector
     if x is multidimensional, x.ravel() will be calle first
     '''
-    x = x.ravel()
+    x = np.array(x).ravel()
     return x.reshape((x.shape[0],1))
     
 def row(x):
     '''
     Ensure that x is a row vector
     '''
-    x = x.ravel()
+    x = np.array(x).ravel()
     return x.reshape((1,x.shape[0]))
 
 def rcond(x):
@@ -159,7 +167,7 @@ def check_covmat(C,N=None,eps=1e-6):
     if mine<0:
         raise ValueError('Covariance matrix contains negative eigenvalue %0.3e'%mine) 
     if (mine<eps):
-        C = C + eye(N)*(eps-mine)
+        C = C + np.eye(N)*(eps-mine)
     # trucate spectrum at some small value
     # w[w<eps]=eps
     # Very large eigenvalues can also cause numeric problems
@@ -215,7 +223,7 @@ def real_eig(M,eps=1e-9):
     if not (type(M)==np.ndarray):
         raise ValueError("Expected array; type is %s"%type(M))
     if np.any(np.abs(np.imag(M))>eps):
-        raise ValueError("Matrix has imaginary values >%0.2e; will not extract real eigenvalues"%eps)
+        raise ValueError("Matrix has imaginary entries >%0.2e; will not extract real eigenvalues"%eps)
     M = np.real(M)
     w,v = np.linalg.eig(M)
     if np.any(abs(np.imag(w))>eps):
@@ -225,6 +233,19 @@ def real_eig(M,eps=1e-9):
     w = w[order]
     v = v[:,order]
     return w,v.real
+
+def psd_eig(M,eps=1e-9):
+    '''
+    This code expects a real hermetian matrix
+    and should throw a ValueError if not.
+    This is probably redundant to the scipy eigh function.
+    Do not use.
+    '''
+    e,v = real_eig(M,eps)
+    if np.any(e<-eps):
+        raise ValueError('Matrix has negative eigenvalues')
+    e = np.maximum(e,eps)
+    return e,v
 
 def logdet(C,eps=1e-6,safe=0):
     '''
@@ -411,7 +432,7 @@ def nearPDHigham(A, nit=10):
         Xk = _getPs(Rk, W=W)
         deltaS = Xk - Rk
         Yk = _getPu(Xk, W=W)
-    return Yk
+    return np.array(Yk)
 
 def nearPSDRebonatoJackel(A,epsilon=1e-10):
     '''
@@ -521,4 +542,70 @@ def wheremin(a):
     '''
     return np.unravel_index(a.argmin(), a.shape)
     
-    
+def reglstsq(A, B, reg=1e-15):
+    '''
+    Regularized least squares. Solves
+    Ax=B for x with L2 regularization
+    '''
+    Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
+    return np.linalg.solve(Q, A.T.dot(B))
+
+def Ldistance(X,M,L=2,eps=1e-3):
+    X = np.abs(X-M)
+    if L==0:
+        thr = np.median(X)*eps
+        return -np.sum(X>thr,axis=1)
+    return -np.sum(X**L,axis=1)**(1/L)
+
+def Llasso(X,M,L=2,eps=1e-3):
+    X = np.abs(X-M)
+    if L==0:
+        thr = np.median(X)*eps
+        return -np.sum(X>thr,axis=1)
+    return -np.sqrt(np.sum(X**2,axis=1))**L
+
+def rmatrix(h):
+    '''
+    Generate 2D rotation matrix for angle `h`
+    '''
+    ch,sh = np.cos(h),np.sin(h)
+    return np.array([[ch,sh],[-sh,ch]])
+
+def ldiv(A,B):
+    '''
+    Solve AX=B for X = A^{-1}B
+    i.e. find matrix X which when right-multiplied with A is close to B
+    '''
+    return scipy.linalg.lstsq(A,B)[0]
+
+def rdiv(A,B):
+    '''
+    Solves for X=AB^{-1} , i.e. BX = A
+    '''
+    return ldiv(B.T,A.T).T
+
+def autopredict(z,reg=1e-9):
+    '''
+    Solve mutual prediction problem for 
+    T x N covariates z
+    Approximates z = z Q, where diag(Q) is zero
+    '''
+    T,N  = z.shape
+    Sz   = z.T @ z *T**-2 + np.eye(N,N)*reg
+    idxs = np.arange(N)
+    Q    = np.zeros((N,N))
+    for i in idxs:
+        j = sorted(list(set(idxs)-set([i])))
+        Q[i,j] = np.linalg.solve(Sz[j,:][:,j], Sz[j,:][:,i])
+    return Q.T
+
+from scipy.linalg.special_matrices import kron
+def kronsum(A,B):
+    '''
+    Kronecker sum
+    '''
+    A = np.array(A)
+    B = np.array(B)
+    m = B.shape[0]
+    n = A.shape[0]
+    return kron(A,np.eye(m)) + kron(np.eye(n),B)

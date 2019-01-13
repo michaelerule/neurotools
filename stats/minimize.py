@@ -75,7 +75,7 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     # Show progress of the optimization?
     if show_progress:
         sys.stdout.write('\n')
-        last_shown = current_milli_time()
+    last_shown = current_milli_time()
     nonlocals = {}
     nonlocals['best']=best
     nonlocals['x0']=x0

@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Neurotools 2 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,7 +77,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Contents:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
 </ul>
@@ -97,34 +94,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">Neurotools</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      
-    <li>stats.hmm</li>
+        
+          <li><a href="../stats.html">stats</a> &raquo;</li>
+        
+      <li>stats.hmm</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -356,7 +373,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="poisson_viterbi_state_infer"><a class="viewcode-back" href="../../stats.hmm.html#stats.hmm.poisson_viterbi_state_infer">[docs]</a><span class="k">def</span> <span class="nf">poisson_viterbi_state_infer</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="poisson_viterbi_state_infer"><a class="viewcode-back" href="../../stats.hmm.html#stats.hmm.poisson_viterbi_state_infer">[docs]</a><span class="k">def</span> <span class="nf">poisson_viterbi_state_infer</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fit Hidden Markov Model using np.expectation Maximization. For now</span>
 <span class="sd">    it is limited to two latent states. The Viterbi algorithm is</span>
@@ -383,6 +400,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    X : inferred states</span>
 <span class="sd">    params : inferred model parameters</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    maxiter : int, default 1000</span>
+<span class="sd">        Maximum number of iterations when fitting the model</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>  <span class="c1"># Number of observation states</span>
     <span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="c1"># List of available states</span>
@@ -397,7 +420,8 @@
     <span class="c1"># Start with random state</span>
     <span class="c1"># new_X = np.array(urand(size=(len(counts),))&lt;0.5,&#39;float&#39;)</span>
     <span class="n">X</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">new_X</span><span class="p">),</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">X</span><span class="o">==</span><span class="n">new_X</span><span class="p">):</span>
+    <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiter</span><span class="p">):</span>
+        <span class="c1">#while not np.all(X==new_X):</span>
         <span class="n">X</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new_X</span>
         <span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">params</span> <span class="o">=</span> <span class="n">poisson_parameter_guess</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
         <span class="n">new_X</span> <span class="o">=</span> <span class="n">viterbi_log</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">)</span>
@@ -408,6 +432,8 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Inference collapsed to a single class; consider soft-EM instead?&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">hasNaN</span><span class="p">,(</span><span class="n">logP</span><span class="p">,</span><span class="n">logA</span><span class="p">,</span><span class="n">logB</span><span class="p">,</span><span class="n">X</span><span class="p">))):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;NaN encountered&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">X</span><span class="o">==</span><span class="n">new_X</span><span class="p">):</span>
+            <span class="k">break</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">params</span></div>
 
 
@@ -1339,6 +1365,7 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -1347,11 +1374,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, M Rule.
+        &copy; Copyright 2017, M Rule
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1366,35 +1393,25 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -223,7 +223,7 @@ def hasNaN(x):
     '''
     return np.isnan(np.sum(x))
 
-def poisson_viterbi_state_infer(Y,initial=None):
+def poisson_viterbi_state_infer(Y,initial=None,maxiter=100):
     '''
     Fit Hidden Markov Model using np.expectation Maximization. For now
     it is limited to two latent states. The Viterbi algorithm is
@@ -250,6 +250,12 @@ def poisson_viterbi_state_infer(Y,initial=None):
     -------
     X : inferred states
     params : inferred model parameters
+    
+    
+    Other parameters
+    ----------------
+    maxiter : int, default 1000
+        Maximum number of iterations when fitting the model
     '''
     N = np.max(Y)+1  # Number of observation states
     O = np.arange(N) # List of available states
@@ -264,7 +270,8 @@ def poisson_viterbi_state_infer(Y,initial=None):
     # Start with random state
     # new_X = np.array(urand(size=(len(counts),))<0.5,'float')
     X     = np.zeros(np.shape(new_X),'float')
-    while not np.all(X==new_X):
+    for iter in range(maxiter):
+        #while not np.all(X==new_X):
         X[:] = new_X
         logP,logA,logB,params = poisson_parameter_guess(X,Y,N)
         new_X = viterbi_log(Y,logP,logA,logB)
@@ -275,6 +282,8 @@ def poisson_viterbi_state_infer(Y,initial=None):
             raise RuntimeError('Inference collapsed to a single class; consider soft-EM instead?')
         if any(map(hasNaN,(logP,logA,logB,X))):
             raise RuntimeError('NaN encountered')
+        if np.all(X==new_X):
+            break
     return X,params
 
 

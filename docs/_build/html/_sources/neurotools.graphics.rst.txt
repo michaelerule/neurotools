@@ -7,6 +7,7 @@ Submodules
 .. toctree::
 
    neurotools.graphics.color
+   neurotools.graphics.dendron
    neurotools.graphics.image
    neurotools.graphics.matplotlib
    neurotools.graphics.plot

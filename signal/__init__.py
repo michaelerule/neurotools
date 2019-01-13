@@ -16,13 +16,18 @@ from scipy.signal import butter, filtfilt, lfilter
 
 # this function is missing
 #from   pylab import find
+import warnings
 
 def find(x):
+    '''
+    Cheap mock-up of pylab's discontinued `find` function for backwards
+    compatibility of some code.
+    '''
     return np.where(x.ravel)[0]
 
 def geometric_window(c,w):
     '''
-    Gemoetrically center a window in frequency
+    Gemoetrically center a frequency window
     
     Parameters
     ----------
@@ -70,7 +75,7 @@ def gaussian_kernel(sigma):
     K *= 1./np.sum(K)
     return K
 
-def gaussian_smooth(x,sigma):
+def gaussian_smooth(x,sigma,mode='same'):#,axis=0):
     '''
     Smooth signal x with gaussian of standard deviation sigma
 
@@ -82,8 +87,86 @@ def gaussian_smooth(x,sigma):
     Returns
     -------
     '''
+    #x = concatenate([x::-1],x,x[::-1])
     K = gaussian_kernel(sigma)
-    return np.convolve(x,K,'same')
+    #if len(x.shape)==1:
+    x = np.convolve(x,K,mode=mode)
+    #axes = tuple(sorted(list(set(range(len(x.shape)))-axis)))
+    return x
+
+def circular_gaussian_smooth(x,sigma):
+    '''
+    Smooth signal x with gaussian of standard deviation sigma
+    Circularly wrapped using Fourier transform
+    
+    sigma: standard deviation
+    x: 1D array-like signal
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    np.fft.fft(x)
+    N = len(x)
+    g = np.exp(-np.linspace(-N/2,N/2,N)**2/sigma**2)
+    g/= np.sum(g)
+    f = np.fft.fft(g)
+    return np.fft.ifft(np.fft.fft(x)*f).real
+
+
+def circular_gaussian_smooth_2D(x,sigma):
+    '''
+    Smooth signal x with gaussian of standard deviation sigma
+    Circularly wrapped using Fourier transform
+    
+    sigma: standard deviation
+    x: 1D array-like signal
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    np.fft.fft2(x)
+    N = x.shape[0]
+    grid = np.linspace(-N/2,N/2,N)
+    dist = abs(grid[:,None]+grid[None,:]*1j)**2
+    g = np.exp(-dist/sigma**2)
+    g/= np.sum(g)
+    f = np.fft.fft2(g)
+    return np.fft.ifft2(np.fft.fft2(x)*f).real
+
+def linear_cosine_basis(TIMERES=100,NBASIS=10,normalize=True):
+    '''
+    Cosine basis tiling unit interval
+    '''
+    times = np.linspace(0,1,TIMERES)
+    bt = times*np.pi/2*(NBASIS-1)
+    def cos_basis(t):
+        t = np.clip(t,-np.pi,np.pi)
+        return (np.cos(t)+1)*0.5
+    B = np.array([cos_basis(bt-np.pi/2*delta) for delta in np.arange(NBASIS)])
+    if normalize:
+        B/= np.sum(B,axis=0)
+    return B
+    
+def circular_cosine_basis(N,T):
+    '''
+    Parameters
+    ----------
+    N : number of basis functions
+    T : grid resolution
+    
+    Returns
+    -------
+    Circularly-wrapped cosine basis
+    '''
+    wl = 4/N
+    qc = 1/N
+    h      = np.linspace(0,1,T+1)[:-1]
+    phases = np.linspace(0,1,N+1)[:-1]
+    return 1-np.cos(np.clip((h[:,None] + phases[None,:])%1,0,wl)*2*np.pi/wl)
 
 def zscore(x,axis=0,regularization=1e-30):
     '''
@@ -124,6 +207,13 @@ def unitscale(signal):
     signal-= np.min(signal)
     signal/= np.max(signal)
     return signal
+
+def topercentiles(x):
+    n = len(x)
+    x = np.array(x)
+    order = x.argsort()
+    ranks = order.argsort()
+    return ranks/(len(x)-1)*100
 
 def local_maxima(x):
     '''
@@ -344,10 +434,18 @@ def bandpass_filter(data,fa=None,fb=None,
         assert not bandstop
     elif not fb==None:
         # low pass
-        b,a  = butter(order,fb/(0.5*Fs),btype='low')
+        x = fb/(0.5*Fs)-1e-10
+        if x>=1:
+            raise ValueError('The low-frequency cutoff is larger than the nyquist freqency?')
+        b,a  = butter(order,x,btype='low')
         assert not bandstop
     else: raise Exception('Both fa and fb appear to be None')
-    return (filtfilt if zerophase else lfilter)(b,a,padded)[...,N//2:N//2+N]
+    method = filtfilt if zerophase else lfilter
+    # hide the scipy/numpy compatibility future warning
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=FutureWarning)
+        result = method(b,a,padded)
+        return result[...,N//2:N//2+N]
     assert 0
 
 #'''
@@ -355,7 +453,7 @@ def bandpass_filter(data,fa=None,fb=None,
 #'''
 #bandfilter = bandpass_filter
 
-def box_filter(data,smoothat):
+def box_filter(data,smoothat,padmode='reflect'):
     '''
     Smooths data by convolving with a size smoothat box
     provide smoothat in units of frames i.e. samples (not ms or seconds)
@@ -380,8 +478,12 @@ def box_filter(data,smoothat):
     assert len(data.shape)==1
     padded = np.zeros(2*N,dtype=data.dtype)
     padded[N//2:N//2+N]=data
-    padded[:N//2]=data[N//2:0:-1]
-    padded[N//2+N:]=data[-1:N//2-1:-1]
+    if padmode=='reflect':
+        padded[:N//2]=data[N//2:0:-1]
+        padded[N//2+N:]=data[-1:N//2-1:-1]
+    else:
+        padded[:N//2]=data[0]
+        padded[N//2+N:]=data[-1]
     smoothed = fftconvolve(padded,np.ones(smoothat)/float(smoothat),'same')
     return smoothed[N//2:N//2+N]
 
@@ -624,11 +726,14 @@ def get_edges(signal):
     '''
     if len(signal)<1:
         return np.array([[],[]])
-    starts = list(np.where(np.diff(np.int32(signal))==1)[0])
-    stops  = list(np.where(np.diff(np.int32(signal))==-1)[0])
+    if tuple(sorted(np.unique(signal)))==(-2,-1):
+        raise ValueError('signal should be bool or int∈{0,1}; (did you use ~ on an int array?)')
+    signal = np.int32(np.bool8(signal))
+    starts = list(np.where(np.diff(np.int32(signal))==1)[0]+1)
+    stops  = list(np.where(np.diff(np.int32(signal))==-1)[0]+1)
     if signal[0 ]: starts = [0]+starts
     if signal[-1]: stops = stops + [len(signal)]
-    return np.array([starts, stops])
+    return np.array([np.array(starts), np.array(stops)])
 
 def set_edges(edges,N):
     '''
@@ -805,6 +910,8 @@ def median_block(data,N=100):
     '''
     return stats_block(data,np.median,N)
 
+import neurotools.getfftw
+
 def phase_randomize(signal):
     '''
     Phase randomizes a signal by rotating frequency components by a random
@@ -818,28 +925,31 @@ def phase_randomize(signal):
     '''
     assert 1==len(signal.shape)
     N = len(signal)
+    '''
     if N%2==1:
         # signal length is odd.
         # ft will have one DC component then symmetric frequency components
-        randomize  = np.exp(1j*np.random.rand((N-1)/2))
+        randomize  = np.exp(1j*np.random.rand((N-1)//2))
         conjugates = np.conj(randomize)[::-1]
         randomize  = np.append(randomize,conjugates)
     else:
         # signal length is even
         # will have one single value at the nyquist frequency
         # which will be real and can be sign flipped but not rotated
-        flip = 1 if rand(1)<0.5 else -1
-        randomize  = np.exp(1j*rand((N-2)/2))
+        flip = 1 if np.random.rand(1)<0.5 else -1
+        randomize  = np.exp(1j*np.random.rand((N-2)//2))
         conjugates = np.conj(randomize)[::-1]
         randomize  = np.append(randomize,flip)
         randomize  = np.append(randomize,conjugates)
     # the DC component is not randomized
     randomize = np.append(1,randomize)
     # take FFT and apply phase randomization
-    ff = fft(signal)*randomize
+    ff = np.fft.fft(signal)*randomize
     # take inverse
-    randomized = ifft(ff)
-    return real(randomized)
+    randomized = np.fft.ifft(ff)
+    return np.real(randomized)
+    '''
+    return phase_randomize_from_amplitudes(np.abs(np.fft.fft(signal)))
 
 def phase_randomize_from_amplitudes(amplitudes):
     '''
@@ -854,14 +964,14 @@ def phase_randomize_from_amplitudes(amplitudes):
     N = len(amplitudes)
     x = np.complex128(amplitudes) # need to make a copy
     if N%2==0: # N is even
-        rephase = np.exp(1j*2*np.pi*rand((N-2)/2))
-        rephase = np.concatenate([rephase,[sign(rand()-0.5)],conj(rephase[::-1])])
+        rephase = np.exp(1j*2*np.pi*np.random.rand((N-2)//2))
+        rephase = np.concatenate([rephase,[np.sign(np.random.rand()-0.5)],np.conj(rephase[::-1])])
     else: # N is odd
-        rephase = np.exp(1j*2*np.pi*rand((N-1)/2))
+        rephase = np.exp(1j*2*np.pi*np.random.rand((N-1)//2))
         rephase = np.append(rephase,np.conj(rephase[::-1]))
     rephase = np.append([1],rephase)
     x *= rephase
-    return np.real(ifft(x))
+    return np.real(np.fft.ifft(x))
 
 def estimate_padding(fa,fb,Fs=1000):
     '''
@@ -1106,7 +1216,7 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     return demodulated
 
 
-def autocorrelation(x,lags=None):
+def autocorrelation(x,lags=None,center=True,normalize=True):
     '''
     Computes the normalized autocorrelation over the specified
     time-lags using convolution. Autocorrelation is normalized
@@ -1121,9 +1231,16 @@ def autocorrelation(x,lags=None):
     ----------
     x : 1d array
         Data for which to compute autocorrelation function
-    lags : int
+
+    Other Parameters
+    ----------------
+    lags : int, default length of signal or 200, whichever is smaller
         Number of time-lags over which to compute the ACF. Default
         is min(200,len(x))
+    center : bool, default True
+        Whether to mean-center data before taking autocorrelation
+    normalize : bool, default True
+        Whether to normalize by zero-lag signal variance
 
     Returns
     -------
@@ -1131,27 +1248,38 @@ def autocorrelation(x,lags=None):
         Autocorrelation function, length 2*lags + 1
     '''
     x = np.array(x)
-    x -= np.mean(x)
+    if center:
+        x -= np.mean(x)
     N = len(x)
     if lags is None:
         lags = min(200,N)
-    # TODO: TUNE THIS CONSTANT
-    if lags>0.5*np.log2(N):
+    # TODO: disabling FFT for now; clean up
+    # For long, scalar-valued timeseries,
+    # Use FFT to compute autocorrelations
+    '''
+    if lags>0.5*np.log2(N) and len(x.shape)==1:
         # Use FFT for long lags
         result = np.float32(fftconvolve(x,x[::-1],'same'))
         M = len(result)//2
         result *= 1./result[M]
         return result[M-lags:M+lags+1]
-    else:
-        # Use time domain for short lags
-        result  = np.zeros(lags*2+1,'float')
-        zerolag = np.var(x)
-        result[lags] = zerolag
-        for i in range(1,lags):
-            result[i+lags] = result[lags-i] = np.mean(x[i:]*x[:-i])
+    '''
+    # For short correlation times or 
+    # vector-valued data, use iteration to compute time-lags
+    # else:
+    # Use time domain for short lags
+    result  = np.zeros(lags*2+1,'float')
+    zerolag = np.var(x)
+    xx = np.mean(x)**2
+    result[lags] = zerolag
+    #for i in range(1,lags+1):
+    #    result[i+lags] = result[lags-i] = np.nanmean(x[...,i:]*x[...,:-i])
+    for i in range(1,lags+1):
+        result[i+lags] = result[lags-i] = (np.nanmean(x[...,i:]*x[...,:-i])*(N-i)+xx*i)/N
+    if normalize:
         result *= 1./zerolag
-        return result
-
+    return result
+    #assert 0
 
 def upsample(x,factor=4):
     '''
@@ -1210,7 +1338,7 @@ def linfilter(A,C,x,initial=None):
     Linear response filter on data $x$ for system
     
     $$
-    \partial_t z = A z + C x(t)
+    \\partial_t z = A z + C x(t)
     $$
     
     Parameters
@@ -1240,3 +1368,19 @@ def linfilter(A,C,x,initial=None):
         z += dz
         filtered.append(z.copy())
     return np.squeeze(np.array(filtered))
+
+def span(data):
+    '''
+    Get the range of values (min,max) spanned by a dataset
+    
+    Parameters
+    ----------
+    data : array-like, numeric
+    
+    Returns
+    -------
+    span: 
+        np.max(data)-np.min(data)
+    '''
+    data = np.array(data).ravel()
+    return np.max(data)-np.min(data)

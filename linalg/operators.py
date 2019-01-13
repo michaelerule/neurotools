@@ -30,7 +30,7 @@ def laplaceop(N):
     else:
         precision[N//2+1]=precision[N//2]=1
         precision[N//2+2]=precision[N//2-1]=-1
-    x = np.fft(precision)
+    x = np.fft.fft(precision)
     return x
 
 def wienerop(N):
@@ -60,7 +60,7 @@ def diffuseop(N,sigma):
     kernel = np.exp(-.5/(sigma**2)*(np.arange(N)-N//2)**2)
     kernel /= np.sum(kernel)
     kernel = np.roll(kernel,N//2)
-    return np.fft(kernel).real
+    return np.fft.fft(kernel).real
 
 def flatcov(covariance):
     '''
@@ -91,7 +91,7 @@ def delta(N):
         delta[N//2]=1
     else:
         delta[N//2+1]=delta[N//2]=0.5
-    x = np.fft(delta)
+    x = np.fft.fft(delta)
     return x
 
 def differentiator(N):
@@ -106,7 +106,7 @@ def differentiator(N):
     delta = np.zeros((N,))
     delta[0]=-1
     delta[-1]=1
-    x = np.fft(delta)
+    x = np.fft.fft(delta)
     return x
 
 def integrator(N):

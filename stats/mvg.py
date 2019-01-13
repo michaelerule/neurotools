@@ -20,10 +20,11 @@ import numpy.random
 from   numpy.random import randn
 from   numpy import pi
 
-from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_finite_real
+from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_finite_real, logdet
 from neurotools.stats.Gaussian import *
 # TODO fix imports
 #from neurotools.matrix import *
+
 
 def MVG_check(M,C,eps=1e-6):
     '''
@@ -37,6 +38,9 @@ def MVG_check(M,C,eps=1e-6):
 
 def MVG_logPDF(X,M,P=None,C=None):
     '''
+    N: dimension of distribution
+    K: number of samples
+
     Args:
         X : KxN vector of samples for which to compute the PDF
         M : N mean vector
@@ -63,7 +67,7 @@ def MVG_logPDF(X,M,P=None,C=None):
         # Using least-squares, rather than inverting the matrix
         MVG_check(M,C)
         norm = normd-0.5*logdet(C)
-        xMP  = np.linalg.lstsq(C,xM.T)[0].T
+        xMP  = np.linalg.lstsq(C,xM.T,rcond=None)[0].T
     if C is None:
         # Use precision
         MVG_check(M,P)

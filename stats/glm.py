@@ -76,7 +76,8 @@ def GLMPenaltyL2(X,Y,penalties=None):
         hessian function for `scipy.optimize.minimize`
     '''
     N,D = X.shape
-    assert N>D
+    if N<D:
+        raise ValueError('Number of samples should be larger than number of features; perhaps input is transposed?')
     #print('@',penalties)
     if penalties is None: 
         penalties = np.zeros((D,),'d')
@@ -86,13 +87,15 @@ def GLMPenaltyL2(X,Y,penalties=None):
         penalties = np.array(penalties).ravel()[0]
         penalties = np.ones((D,),dtype='d')*penalties
     #print(penalties)
-    assert np.shape(penalties)==(D,)
-    assert Y.shape==(N,)
+    if not np.shape(penalties)==(D,):
+        raise ValueError('Regularization penalty, if provided, should eiher be a scalar or a vector of one penalty per fecture.');
     Y = np.squeeze(Y)
-    assert len(Y.shape)==1
+    if not Y.shape==(N,) and len(Y.shape)==1:
+        raise ValueError('Y should consist of a single binary vector with the same number of samples as the features.');
+    #Y = np.int32(Y>0.5)     # binarize    
     X = np.float64(X)       # use double precision
     K = np.sum(Y)           # total number of events
-    Z = np.sum(X[Y==1,:],0) # event-conditioned sums of X
+    Z = np.sum(X*Y[:,None],0) # event-conditioned sums of X
     scale = 1./N         # normalized by the amount of data. can be tweaked?
     def objective(H):
         mu = H[0]

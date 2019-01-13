@@ -10,6 +10,8 @@ from __future__ import print_function
 
 # I'm not sure I understand python2.x imports
 # but these seem to be necessary?
+import neurotools
+from   neurotools import *
 import neurotools.signal as signal
 import neurotools.stats as stats
 import neurotools.linalg as linalg

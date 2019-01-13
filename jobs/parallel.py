@@ -127,8 +127,6 @@ def pararraymap(function,problems,debug=False):
     '''
     Parmap wrapper for common use-case with Numpy
     '''
-    # Ensures that all workers can see the newly-defined helper function
-    reset_pool()
     return np.array(parmap(function,enumerate(problems),debug=debug))
 
 def parmap_dict(f,problems,leavefree=1,debug=False,verbose=False):

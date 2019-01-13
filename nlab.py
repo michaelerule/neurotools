@@ -37,6 +37,7 @@ from   scipy.interpolate import *
 from   scipy.io          import *
 from   scipy.signal      import butter,filtfilt,lfilter
 
+
 #from   pylab             import *
 #set_printoptions(precision=2)
 
@@ -80,6 +81,8 @@ from neurotools.spatial.phase            import *
 from neurotools.spatial.spiking          import *
 from neurotools.spatial.kernels          import *
 
+import neurotools.stats
+from neurotools.stats                    import *
 from neurotools.stats.density            import *
 from neurotools.stats.distributions      import *
 from neurotools.stats.mixtures           import *
@@ -90,7 +93,6 @@ from neurotools.stats.hmm                import *
 from neurotools.stats.gmm                import *
 from neurotools.stats.history_basis      import *
 from neurotools.stats.kent_reimann       import *
-from neurotools.stats.stats              import *
 from neurotools.stats.modefind           import *
 from neurotools.stats.regressions        import *
 from neurotools.stats.circular           import *
@@ -110,6 +112,8 @@ from neurotools.jobs.ndecorator          import *
 
 from neurotools.getfftw                  import *
 
+from neurotools.hdfmat                   import *
+
 # suppress verbose warning messages
 nowarn()
 
@@ -126,3 +130,15 @@ from pylab import *
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import *
+from numpy import *
+from pylab import *
+from matplotlib.pyplot import *
+import scipy
+from scipy import *
+from scipy.special import *
+from scipy.linalg import *
+
+# Mess with matplotlib
+rcParams['figure.dpi']=120
+plt.rcParams['image.cmap'] = 'parula'
+

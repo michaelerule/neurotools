@@ -32,8 +32,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from   os.path    import expanduser
 from   matplotlib import cm
-from   numpy      import pi,e
-from   neurotools.signal import gaussian_smooth
+from   numpy      import pi
 
 # This is the color scheme from the painting "gather" by bridget riley
 GATHER = [
@@ -43,15 +42,67 @@ GATHER = [
 '#5aa0df', # "Azure"
 '#00bac9', # "Turquoise"
 '#44525c'] # "Black"
+
+GATHER = np.array(list(map(mpl.colors.to_rgb,GATHER)))
 WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK = GATHER
 
 # completes the Gather spectrum
-MOSS  = '#77ae64'
-MAUVE = '#956f9b'
+MOSS  = mpl.colors.to_rgb('#77ae64')
+#MAUVE = mpl.colors.to_rgb('#956f9b')
+MAUVE = mpl.colors.to_rgb('#b56ab6')
 INDEGO     = [.37843053,  .4296282 ,  .76422011]
 VERIDIAN   = [.06695279,  .74361409,  .55425139]
 CHARTREUSE = [.71152929,  .62526339,  .10289384]
-CRIMSON    = [.84309675,  .37806273,  .32147779]
+#CRIMSON    = [.84309675,  .37806273,  .32147779]
+CRIMSON    = mpl.colors.to_rgb('#b41d4d')
+VIOLET     = mpl.colors.to_rgb('#8d5ccd')
+
+def rgb2hex(r,g,b):
+    return "#{:02x}{:02x}{:02x}".format(r,g,b)
+
+def hex2rgb(hexcode):
+    return tuple(map(ord,hexcode[1:].decode('hex')))
+
+def gaussian_kernel(sigma):
+    '''
+    generate 1D Guassian kernel for smoothing
+    sigma: standard deviation, >0
+    
+    Parameters
+    ----------
+    sigma : scalar
+        Standard deviation of kernel. Kernel size is automatically 
+        adjusted to ceil(sigma*2)*2+1 (which is a little small but eh)
+
+    Returns
+    -------
+    K : vector
+        normalized Gaussian kernel 
+    '''
+    assert sigma>0
+    K = np.ceil(sigma*2)
+    N = K*2+1
+    K = np.exp( - (np.arange(N)-K)**2 / (2*sigma**2) )
+    K *= 1./np.sum(K)
+    return K
+"""
+def gaussian_smooth(x,sigma):
+    '''
+    Smooth signal x with gaussian of standard deviation sigma
+
+    sigma: standard deviation
+    x: 1D array-like signal
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    K = gaussian_kernel(sigma)
+    return np.convolve(x,K,'same')
+"""
+
+from neurotools.signal import gaussian_smooth
 
 ######################################################################
 # Hue / Saturation / Luminance color space code
@@ -200,9 +251,9 @@ def RGBtoHCL(r,g,b,method='perceived'):
     -------
     '''
     alpha  = .5*(2*r-g-b)
-    beta   = sqrt(3)/2*(g-b)
-    hue    = arctan2(beta,alpha)
-    chroma = sqrt(alpha**2+beta**2)
+    beta   = np.sqrt(3)/2*(g-b)
+    hue    = np.arctan2(beta,alpha)
+    chroma = np.sqrt(alpha**2+beta**2)
     L = lightness(r,g,b)
     return hue,chroma,L
 
@@ -254,6 +305,8 @@ def hcl2rgb(h,c,l,target = 1.0, method='standard'):
     RGB = np.array([R,G,B])
     return np.clip(RGB,0,1)
 
+from neurotools.signal import circular_gaussian_smooth
+
 def circularly_smooth_colormap(cm,s):
     '''
     Smooth a colormap with cirular boundary conditions
@@ -270,13 +323,12 @@ def circularly_smooth_colormap(cm,s):
     # Do circular boundary conditions the lazy way
     cm = np.array(cm)
     N = cm.shape[0]
-    cm = np.concatenate([cm,cm,cm])
     R,G,B = cm.T
-    R = gaussian_smooth(R,s)
-    G = gaussian_smooth(G,s)
-    B = gaussian_smooth(B,s)
+    R = circular_gaussian_smooth(R,s)
+    G = circular_gaussian_smooth(G,s)
+    B = circular_gaussian_smooth(B,s)
     RGB = np.array([R,G,B]).T
-    return RGB[N:N*2,:]
+    return RGB
 
 def isoluminance1(h,l=.5):
     '''

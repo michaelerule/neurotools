@@ -58,8 +58,30 @@ def sigmoid(x,returntype=LINALGMAXFLOAT):
     '''
     Soft-threshold function (rescaled hyperbolic tangent)
     More numerically stable version 
+
+    1/(1+exp(-x))
     '''
     return returntype(sexp(-np.logaddexp(ZERO128,-np.float128(x))))
+
+def inversesigmoid(x,returntype=LINALGMAXFLOAT):
+    '''
+    Inverse of 
+    soft-threshold function (rescaled hyperbolic tangent)
+    More numerically stable version 
+
+    -[log(1-x)+log(x)]
+    '''
+    return returntype(slog(x)-slog(1-x))
+
+def dsigmoid(x,returntype=LINALGMAXFLOAT): 
+    '''
+    Fist derivative of sigmoid
+    '''
+    x = np.float128(x)
+    return sexp(\
+        -np.logaddexp(ZERO128,-x)\
+        -np.logaddexp(ZERO128,x),
+        returntype=returntype)
 
 # Sigmoid and derivatives
 

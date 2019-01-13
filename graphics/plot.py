@@ -179,9 +179,10 @@ def nicey():
     -------
     '''
     if ylim()[0]<0:
-        yticks([ylim()[0],0,ylim()[1]])
+        plt.yticks([plt.ylim()[0],0,plt.ylim()[1]])
     else:
-        yticks([ylim()[0],ylim()[1]])
+        plt.yticks([plt.ylim()[0],plt.ylim()[1]])
+    fudgey()
 
 def nicex():
     '''
@@ -194,16 +195,17 @@ def nicex():
     -------
     '''
     if xlim()[0]<0:
-        xticks([xlim()[0],0,xlim()[1]])
+        plt.xticks([plt.xlim()[0],0,plt.xlim()[1]])
     else:
-        xticks([xlim()[0],xlim()[1]])
+        plt.xticks([plt.xlim()[0],plt.xlim()[1]])
+    fudgex()
 
 def nicexy():
     '''
     Mark only the min/max value of y/y axis. See `nicex` and `nicey`
     '''
-    nicey()
     nicex()
+    nicey()
 
 def positivex():
     '''
@@ -215,7 +217,7 @@ def positivex():
     if top<=0:
         raise ValueError('Current axis view lies within negative '+
             'numbers, cannot crop to a positive range')
-    xlim(0,top)
+    plt.xlim(0,top)
     nicex()
 
 def positivey():
@@ -228,7 +230,7 @@ def positivey():
     if top<=0:
         raise ValueError('Current axis view lies within negative '+
             'numbers, cannot crop to a positive range')
-    ylim(0,top)
+    plt.ylim(0,top)
     nicey()
 
 def positivexy():
@@ -256,15 +258,15 @@ def nox():
     '''
     Hide x-axis
     '''
-    xticks([])
-    xlabel('')
+    plt.xticks([])
+    plt.xlabel('')
 
 def noy():
     '''
     Hide y-axis
     '''
-    yticks([])
-    ylabel('')
+    plt.yticks([])
+    plt.ylabel('')
 
 def noxyaxes():
     '''
@@ -374,9 +376,22 @@ def get_ax_pixel(ax=None,fig=None):
     # w/h in pixels
     w,h = get_ax_size()
     # one px in axis units is the axis span div no. pix
-    dy = np.diff(ylim())
-    dx = np.diff(xlim())
+    dy = np.diff(ylim())[0]
+    dx = np.diff(xlim())[0]
     return dx/float(w),dy/float(h)
+
+def get_ax_pixel_ratio(ax=None,fig=None):
+    '''
+    Gets tha axis aspect ratio from pixel size
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    a,b = get_ax_pixel(ax,fig)
+    return a/b
 
 def pixels_to_xunits(n,ax=None,fig=None):
     '''
@@ -608,38 +623,40 @@ def nudge_axis_left(dx,ax=None):
     dx = pixels_to_xfigureunits(dx,ax)
     ax.set_position((x+dx,y,w-dx,h))
 
-def zoombox(ax1,ax2,xspan1=None,xspan2=None):
+def zoombox(ax1,ax2,xspan1=None,xspan2=None,draw_left=True,draw_right=True,lw=1,color='k'):
     '''
     '''
     # need to do this to get the plot to ... update correctly
-    show()
     draw()
-    show()
     fig = plt.gcf()
 
     if xspan1==None:
         xspan1 = ax1.get_xlim()
     if xspan2==None:
         xspan2 = ax2.get_xlim()
-
     transFigure = fig.transFigure.inverted()
-    coord1 = transFigure.transform(ax1.transData.transform([xspan1[0],ax1.get_ylim()[1]]))
-    coord2 = transFigure.transform(ax2.transData.transform([xspan2[0],ax2.get_ylim()[0]]))
-    line = matplotlib.lines.Line2D((coord1[0],coord2[0]),(coord1[1],coord2[1]),
-                                   transform=fig.transFigure,lw=1,color='k')
-    fig.lines.append(line)
-    coord1 = transFigure.transform(ax1.transData.transform([xspan1[1],ax1.get_ylim()[1]]))
-    coord2 = transFigure.transform(ax2.transData.transform([xspan2[1],ax2.get_ylim()[0]]))
-    line = matplotlib.lines.Line2D((coord1[0],coord2[0]),(coord1[1],coord2[1]),
-                                   transform=fig.transFigure,lw=1,color='k')
-    fig.lines.append(line)
-    show()
+    if draw_left:
+        coord1 = transFigure.transform(ax1.transData.transform([xspan1[0],ax1.get_ylim()[1]]))
+        coord2 = transFigure.transform(ax2.transData.transform([xspan2[0],ax2.get_ylim()[0]]))
+        line = matplotlib.lines.Line2D((coord1[0],coord2[0]),(coord1[1],coord2[1]),
+                                       transform=fig.transFigure,lw=lw,color=color)
+        fig.lines.append(line)
+    if draw_right:
+        coord1 = transFigure.transform(ax1.transData.transform([xspan1[1],ax1.get_ylim()[1]]))
+        coord2 = transFigure.transform(ax2.transData.transform([xspan2[1],ax2.get_ylim()[0]]))
+        line = matplotlib.lines.Line2D((coord1[0],coord2[0]),(coord1[1],coord2[1]),
+                                       transform=fig.transFigure,lw=lw,color=color)
+        fig.lines.append(line)
 
 def fudgex(by=10,ax=None,doshow=False):
     '''
+    Adjust x label spacing in pixels
+
     Parameters
     ----------
-    
+    by : number of pixels
+    axis : axis object to change; defaults to current axis
+    dishow : boolean; if true, calls plt.show()
     '''
     if ax is None: ax=plt.gca()
     ax.xaxis.labelpad = -by
@@ -647,11 +664,15 @@ def fudgex(by=10,ax=None,doshow=False):
     if doshow:
         plt.show()
 
-def fudgey(by=20,ax=None,doshow=False):
+def fudgey(by=10,ax=None,doshow=False):
     '''
+    Adjust y label spacing in pixels
+
     Parameters
     ----------
-    
+    by : number of pixels
+    axis : axis object to change; defaults to current axis
+    dishow : boolean; if true, calls plt.show()
     '''
     if ax is None: ax=plt.gca()
     ax.yaxis.labelpad = -by
@@ -661,9 +682,13 @@ def fudgey(by=20,ax=None,doshow=False):
 
 def fudgexy(by=10,ax=None):
     '''
+    Adjust x and y label spacing in pixels
+
     Parameters
     ----------
-    
+    by : number of pixels
+    axis : axis object to change; defaults to current axis
+    dishow : boolean; if true, calls plt.show()
     '''
     fudgex(by,ax)
     fudgey(by,ax)
@@ -981,7 +1006,7 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
     for frame in z:
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
-def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,
+def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
     border=True,spacing=5,fontsize=12):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
@@ -998,8 +1023,14 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,
     Returns:
         axis: colorbar axis
     '''
+    if type(vmin)==matplotlib.image.AxesImage:
+        img = vmin
+        cmap = img.get_cmap()
+        vmin = img.get_clim()[0]
+        vmax = img.get_clim()[1]
+        ax   = img.axes
     oldax = plt.gca() #remember previously active axis
-    if ax==None: 
+    if ax is None: 
         ax=plt.gca()
     # WIDTH   = 0.05
     SPACING = pixels_to_xfigureunits(spacing,ax=ax)
@@ -1030,7 +1061,11 @@ def good_colorbar(vmin,vmax,cmap,title='',ax=None,sideways=False,
             verticalalignment  ='center')
     else:
         plt.ylabel(title,fontsize=fontsize)
+    # Hide ticks
+    noaxis()
+    cax.tick_params('both', length=0, width=0, which='major')
     cax.yaxis.set_label_position("right")
+    cax.yaxis.tick_right()
     plt.sca(oldax) #restore previously active axis
     return cax
 
@@ -1063,17 +1098,24 @@ def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
         'horizontalalignment':'right'}
     text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,**fontproperties)
 
-def sigbar(x1,x2,y,pvalue,dy=5,LABELSIZE=10):
+def sigbar(x1,x2,y,pvalue=None,dy=5,LABELSIZE=10,**kwargs):
     '''
     draw a significance bar between position x1 and x2 at height y 
     
     Parameters
     ----------
+    x1 : 
+    x2 : 
     '''
     dy = pixels_to_yunits(dy)
     height = y+2*dy
-    plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],lw=0.5,color=BLACK)
-    text(np.mean([x1,x2]),height+dy,shortscientific(pvalue),fontsize=LABELSIZE,horizontalalignment='center')
+    if not 'lw' in kwargs:
+        kwargs['lw']=0.5
+    plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],color=BLACK,clip_on=False,**kwargs)
+    if not pvalue is None:
+        if not type(pvalue) is str:
+            pvalue = shortscientific(pvalue)
+        text(np.mean([x1,x2]),height+dy,pvalue,fontsize=LABELSIZE,horizontalalignment='center')
 
 def savefigure(name):
     '''
@@ -1262,12 +1304,20 @@ def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None):
     plt.draw() # enforce packing of geometry
     if x is None:
         x = -pixels_to_xunits(5)
-    plt.plot([x,x],yspan,color='k',lw=1,clip_on=False)
+    xl = ax.get_xlim()
+    yl = ax.get_ylim()
+    plt.plot([x,x],yspan,
+        color='k',
+        lw=1,
+        clip_on=False)
     plt.text(x-pixels_to_xunits(2),np.mean(yspan),label,
         rotation=90,
-        fontsize=9,
+        fontsize=fontsize,
         horizontalalignment='right',
-        verticalalignment='center')
+        verticalalignment='center',
+        clip_on=False)
+    ax.set_xlim(*xl)
+    ax.set_ylim(*yl)
         
 def addspikes(Y,lw=0.2,color='k'):
     '''
@@ -1275,3 +1325,37 @@ def addspikes(Y,lw=0.2,color='k'):
     '''
     for t in find(Y>0): 
         axvline(t,lw=lw,color=color)
+        
+def unit_crosshairs():
+    '''
+    '''
+    # Isotropic circle thing for plotting
+    circle = np.exp(1j*np.linspace(0,2*np.pi,181))
+    line1  = 1j*np.linspace(-1,1,5)
+    line2  = np.linspace(-1,1,5)
+    lines  = np.array(list(circle)+[np.nan]+list(line1)+[np.nan]+list(line2))
+    lines  = np.array([lines.real,lines.imag])
+    return lines
+
+def covariance_crosshairs(S):
+    e,v = scipy.linalg.decomp.eigh(S)
+    lines = unit_crosshairs()
+    lines *= (e**0.5)[:,None]
+    return scipy.linalg.pinv(v).dot(lines)
+
+from matplotlib.patches import Arc, RegularPolygon
+def drawCirc(radius,centX,centY,angle_,theta2_,arrowsize=1,ax=None,cap_start=1,cap_end=1,**kwargs):
+    if ax is None:
+        ax = plt.gca()
+    arc = Arc([centX,centY],radius,radius,angle=angle_*180/np.pi,
+          theta1=0,theta2=theta2_*180/np.pi,capstyle='round',linestyle='-',**kwargs)
+    ax.add_patch(arc)
+    if cap_end:
+        endX=centX+(radius/2)*np.cos(theta2_+angle_)
+        endY=centY+(radius/2)*np.sin(theta2_+angle_)
+        ax.add_patch(RegularPolygon((endX,endY),3,arrowsize,angle_+theta2_,**kwargs))
+    if cap_start:
+        endX=centX+(radius/2)*np.cos(angle_)
+        endY=centY+(radius/2)*np.sin(angle_)
+        ax.add_patch(RegularPolygon((endX,endY),3,arrowsize,angle_+np.pi,**kwargs))
+

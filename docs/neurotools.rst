@@ -25,6 +25,7 @@ Submodules
    neurotools.dependencies
    neurotools.functions
    neurotools.getfftw
+   neurotools.hdfmat
    neurotools.nlab
    neurotools.opto
    neurotools.system

@@ -109,7 +109,11 @@ def SGdifferentiate(x,m,fc,fs):
     Differentiate and smooth using a Savitsky-Golay filter
     '''
     n = len(x)
-    x = np.concatenate([x[::-1],x,x[::-1]])
+    before = x[::-1]
+    after = -x[::-1]
+    after+= x[-1]-after[0]
+    before += x[0]-before[-1]
+    x = np.concatenate([before,x,after])
     x = np.convolve(x,SGfiltV(m,fc,fs),mode='same')
     x = x[n:n*2]
     return x*fs

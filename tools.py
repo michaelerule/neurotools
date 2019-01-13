@@ -112,13 +112,13 @@ def zeroslike(x):
     '''
     Create numpy array of zeros the same shape and type as x
     '''
-    return zeros(x.shape,dtype=x.dtype)
+    return np.zeros(x.shape,dtype=x.dtype)
 
 def oneslike(x):
     '''
     Create numpy array of ones the same shape and type as x
     '''
-    return ones(x.shape,dtype=x.dtype)
+    return np.ones(x.shape,dtype=x.dtype)
 
 def history(n):
     '''
@@ -136,7 +136,7 @@ def c2p(z):
     ''' 
     Convert complex point to tuple
     '''
-    return arr([z.real,z.imag])
+    return np.array([z.real,z.imag])
 
 class emitter():
     '''
@@ -206,12 +206,7 @@ def globalize(function,*args,**krgs):
     truncated. 
     
     Missing arguments will be filled in by name from the
-    globals dictionary. This is actually very handy for the functions
-    that reference data by session and area. Arguments can be omitted to
-    these functions if the session and area are defined in global scope.
-
-    This is dangerous. Do not use it.
-    
+    globals dictionary.
     '''
     '''
     :Example:
@@ -511,3 +506,41 @@ def getVariable(path,var):
         with h5py.File(path) as f:
             return f[var].value
     raise ValueError('Path is neither .mat nor .hdf5')
+
+def hcat(*args,**kwargs):
+    '''
+    Horizontally concatenate two string objects that contain newlines
+    '''
+    sep = kwargs['sep'] if 'sep' in kwargs else '  '
+    TABWIDTH = kwargs['TABWIDTH'] if 'TABWIDTH' in kwargs else 4
+    S = [str(s).replace('\t',' '*TABWIDTH).split('\n') for s in args]
+    L = [np.max(list(map(len,s))) for s in S]
+    S = [[ln.ljust(l) for ln in s] for (s,l) in zip(S,L)]
+    h = np.max(list(map(len,S)))
+    S = [s+list(('',)*(len(s)-h)) for s in S]
+    return '\n'.join([sep.join(z) for z in zip(*S)])
+
+def arraymap(f,*iterables,**kwargs):
+    '''
+    Map functionality over numpy arrays
+    replaces depricated arraymap from pylab.
+    '''
+    depth = kwargs['depth'] if 'depth' in kwargs else 0
+    if depth<=1:
+        return np.array([f(*list(map(np.array,args))) for args in zip(*iterables)])
+    kwargs['depth']=depth-1
+    def fun(*args):
+        return arraymap(f,*args,**kwargs)
+    return arraymap(fun,*iterables,**{'depth':0})
+
+def invert_permutation(p):
+    '''
+    Return inverse of a permutation
+    '''
+    p = np.array(p)
+    s = np.empty(p.size, p.dtype)
+    s[p] = np.arange(p.size)
+    return s
+    
+def find(x):
+    return np.where(x)[0]

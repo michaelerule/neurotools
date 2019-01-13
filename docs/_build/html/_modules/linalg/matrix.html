@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -22,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Neurotools 2 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,7 +77,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Contents:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
 </ul>
@@ -97,34 +94,52 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">Neurotools</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      
-    <li>linalg.matrix</li>
+        
+      <li>linalg.matrix</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -143,9 +158,9 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="c1"># more py2/3 compat</span>
-<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
-    <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">imap</span> <span class="k">as</span> <span class="nb">map</span>
+<span class="c1">#from neurotools.system import *</span>
+<span class="c1">#if sys.version_info&lt;(3,):</span>
+<span class="c1">#    from itertools import imap as map</span>
 <span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
@@ -160,10 +175,14 @@
 
 <span class="n">chol</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span>
 
-<div class="viewcode-block" id="triu_elements"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.triu_elements">[docs]</a><span class="k">def</span> <span class="nf">triu_elements</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+<div class="viewcode-block" id="triu_elements"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.triu_elements">[docs]</a><span class="k">def</span> <span class="nf">triu_elements</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Somewhat like matlab&#39;s &quot;diag&quot; function, but for upper triangular matrices</span>
-<span class="sd">    </span>
+<span class="sd">    Somewhat like matlab&#39;s &quot;diag&quot; function, but for lower triangular matrices</span>
+
+<span class="sd">    Pack N*(N-1) elements into the upper triangle of an NxN Matrix</span>
+<span class="sd">    or</span>
+<span class="sd">    Return the N*(N-1) elements from the upper triangle as an NxN matrix</span>
+
 <span class="sd">    triu_elements(randn(D*(D+1)//2))</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
@@ -171,7 +190,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Extracting upper triangle elements supported only on square arrays&quot;</span><span class="p">)</span>
         <span class="c1"># Extract upper trianglular elements</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
         <span class="c1"># M is a vector</span>
@@ -195,9 +214,13 @@
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be 2D matrix or 1D vector&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tril_elements"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.tril_elements">[docs]</a><span class="k">def</span> <span class="nf">tril_elements</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+<div class="viewcode-block" id="tril_elements"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.tril_elements">[docs]</a><span class="k">def</span> <span class="nf">tril_elements</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Somewhat like matlab&#39;s &quot;diag&quot; function, but for lower triangular matrices</span>
+
+<span class="sd">    Pack N*(N-1) elements into the lower triangle of an NxN Matrix</span>
+<span class="sd">    or</span>
+<span class="sd">    Return the N*(N-1) elements from the lower triangle as an NxN matrix</span>
 <span class="sd">    </span>
 <span class="sd">    tril_elements(randn(D*(D+1)//2))</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -206,7 +229,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Extracting upper triangle elements supported only on square arrays&quot;</span><span class="p">)</span>
         <span class="c1"># Extract upper trianglular elements</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril_indices</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril_indices</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
         <span class="c1"># M is a vector</span>
@@ -235,14 +258,14 @@
 <span class="sd">    Ensure that x is a column vector</span>
 <span class="sd">    if x is multidimensional, x.ravel() will be calle first</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span></div>
     
 <div class="viewcode-block" id="row"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.row">[docs]</a><span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Ensure that x is a row vector</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="rcond"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.rcond">[docs]</a><span class="k">def</span> <span class="nf">rcond</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -292,7 +315,7 @@
     <span class="k">if</span> <span class="n">mine</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Covariance matrix contains negative eigenvalue </span><span class="si">%0.3e</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">mine</span><span class="p">)</span> 
     <span class="k">if</span> <span class="p">(</span><span class="n">mine</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">):</span>
-        <span class="n">C</span> <span class="o">=</span> <span class="n">C</span> <span class="o">+</span> <span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">eps</span><span class="o">-</span><span class="n">mine</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">C</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">eps</span><span class="o">-</span><span class="n">mine</span><span class="p">)</span>
     <span class="c1"># trucate spectrum at some small value</span>
     <span class="c1"># w[w&lt;eps]=eps</span>
     <span class="c1"># Very large eigenvalues can also cause numeric problems</span>
@@ -348,7 +371,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expected array; type is </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">M</span><span class="p">))</span><span class="o">&gt;</span><span class="n">eps</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Matrix has imaginary values &gt;</span><span class="si">%0.2e</span><span class="s2">; will not extract real eigenvalues&quot;</span><span class="o">%</span><span class="n">eps</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Matrix has imaginary entries &gt;</span><span class="si">%0.2e</span><span class="s2">; will not extract real eigenvalues&quot;</span><span class="o">%</span><span class="n">eps</span><span class="p">)</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
     <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">w</span><span class="p">))</span><span class="o">&gt;</span><span class="n">eps</span><span class="p">):</span>
@@ -358,6 +381,19 @@
     <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span><span class="n">order</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">w</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">real</span></div>
+
+<div class="viewcode-block" id="psd_eig"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.psd_eig">[docs]</a><span class="k">def</span> <span class="nf">psd_eig</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This code expects a real hermetian matrix</span>
+<span class="sd">    and should throw a ValueError if not.</span>
+<span class="sd">    This is probably redundant to the scipy eigh function.</span>
+<span class="sd">    Do not use.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">real_eig</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">eps</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">e</span><span class="o">&lt;-</span><span class="n">eps</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Matrix has negative eigenvalues&#39;</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">eps</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">e</span><span class="p">,</span><span class="n">v</span></div>
 
 <div class="viewcode-block" id="logdet"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.logdet">[docs]</a><span class="k">def</span> <span class="nf">logdet</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span><span class="n">safe</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -544,7 +580,7 @@
         <span class="n">Xk</span> <span class="o">=</span> <span class="n">_getPs</span><span class="p">(</span><span class="n">Rk</span><span class="p">,</span> <span class="n">W</span><span class="o">=</span><span class="n">W</span><span class="p">)</span>
         <span class="n">deltaS</span> <span class="o">=</span> <span class="n">Xk</span> <span class="o">-</span> <span class="n">Rk</span>
         <span class="n">Yk</span> <span class="o">=</span> <span class="n">_getPu</span><span class="p">(</span><span class="n">Xk</span><span class="p">,</span> <span class="n">W</span><span class="o">=</span><span class="n">W</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Yk</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Yk</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="nearPSDRebonatoJackel"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.nearPSDRebonatoJackel">[docs]</a><span class="k">def</span> <span class="nf">nearPSDRebonatoJackel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -654,10 +690,77 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">argmin</span><span class="p">(),</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
     
-    
+<div class="viewcode-block" id="reglstsq"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.reglstsq">[docs]</a><span class="k">def</span> <span class="nf">reglstsq</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Regularized least squares. Solves</span>
+<span class="sd">    Ax=B for x with L2 regularization</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">reg</span><span class="o">*</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Ldistance"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.Ldistance">[docs]</a><span class="k">def</span> <span class="nf">Ldistance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">L</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="n">M</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">L</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">thr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">eps</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">&gt;</span><span class="n">thr</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="n">L</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">L</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Llasso"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.Llasso">[docs]</a><span class="k">def</span> <span class="nf">Llasso</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">L</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="n">M</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">L</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">thr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">eps</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">&gt;</span><span class="n">thr</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="n">L</span></div>
+
+<div class="viewcode-block" id="rmatrix"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.rmatrix">[docs]</a><span class="k">def</span> <span class="nf">rmatrix</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generate 2D rotation matrix for angle `h`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ch</span><span class="p">,</span><span class="n">sh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">h</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">ch</span><span class="p">,</span><span class="n">sh</span><span class="p">],[</span><span class="o">-</span><span class="n">sh</span><span class="p">,</span><span class="n">ch</span><span class="p">]])</span></div>
+
+<div class="viewcode-block" id="ldiv"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.ldiv">[docs]</a><span class="k">def</span> <span class="nf">ldiv</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Solve AX=B for X = A^{-1}B</span>
+<span class="sd">    i.e. find matrix X which when right-multiplied with A is close to B</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="rdiv"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.rdiv">[docs]</a><span class="k">def</span> <span class="nf">rdiv</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Solves for X=AB^{-1} , i.e. BX = A</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">ldiv</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
+
+<div class="viewcode-block" id="autopredict"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.autopredict">[docs]</a><span class="k">def</span> <span class="nf">autopredict</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Solve mutual prediction problem for </span>
+<span class="sd">    T x N covariates z</span>
+<span class="sd">    Approximates z = z Q, where diag(Q) is zero</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">T</span><span class="p">,</span><span class="n">N</span>  <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">Sz</span>   <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">z</span> <span class="o">*</span><span class="n">T</span><span class="o">**-</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">reg</span>
+    <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">Q</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idxs</span><span class="p">:</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">])))</span>
+        <span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Sz</span><span class="p">[</span><span class="n">j</span><span class="p">,:][:,</span><span class="n">j</span><span class="p">],</span> <span class="n">Sz</span><span class="p">[</span><span class="n">j</span><span class="p">,:][:,</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">T</span></div>
+
+<span class="kn">from</span> <span class="nn">scipy.linalg.special_matrices</span> <span class="k">import</span> <span class="n">kron</span>
+<div class="viewcode-block" id="kronsum"><a class="viewcode-back" href="../../linalg.matrix.html#linalg.matrix.kronsum">[docs]</a><span class="k">def</span> <span class="nf">kronsum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Kronecker sum</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">m</span><span class="p">))</span> <span class="o">+</span> <span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="n">B</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -666,11 +769,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, M Rule.
+        &copy; Copyright 2017, M Rule
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -685,35 +788,25 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

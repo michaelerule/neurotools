@@ -1,5 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+"""
+Routines for handling the new-style `.mat` files, which are secretly `.hdf` files
+"""
+
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -16,7 +21,7 @@ def getHDFvalue(hdf,d,squeeze=True,detectString=True,detectScalar=True):
     Unpack a value from a HDF5 file
     '''
     try:
-        value = d if type(d) is numpy.ndarray else d.value
+        value = d if type(d) is numpy.ndarray else d[()]#.value
     except AttributeError:
         # It's probably a file node
         return d
@@ -95,7 +100,7 @@ def hdf2dict(d):
     if type(d) is numpy.ndarray:
         return d
     if 'value' in dir(d):
-        return d.value
+        return d[()]#.value
     # directory node: recursively convert
     # (Skip the #refs# variable if we encounter it)
     return {k:hdf2dict(v) for (k,v) in d.items() if k!=u'#refs#'}
@@ -117,7 +122,7 @@ def recursive_printmatHDF5(d,prefix=' '):
             variables[k] = v
         else:
             try:
-                variables[k]=v.value
+                variables[k]=v[()]#.value
             except AttributeError:
                 try:
                     dict_vars[k] = dict(v)

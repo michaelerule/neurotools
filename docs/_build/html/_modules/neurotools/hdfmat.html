@@ -148,6 +148,11 @@
   <h1>Source code for neurotools.hdfmat</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Routines for handling the new-style `.mat` files, which are secretly `.hdf` files</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
@@ -164,7 +169,7 @@
 <span class="sd">    Unpack a value from a HDF5 file</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">d</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">is</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">d</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">d</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">is</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">else</span> <span class="n">d</span><span class="p">[()]</span><span class="c1">#.value</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="c1"># It&#39;s probably a file node</span>
         <span class="k">return</span> <span class="n">d</span>
@@ -243,7 +248,7 @@
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">is</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">d</span>
     <span class="k">if</span> <span class="s1">&#39;value&#39;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">d</span><span class="p">[()]</span><span class="c1">#.value</span>
     <span class="c1"># directory node: recursively convert</span>
     <span class="c1"># (Skip the #refs# variable if we encounter it)</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">hdf2dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">!=</span><span class="sa">u</span><span class="s1">&#39;#refs#&#39;</span><span class="p">}</span></div>
@@ -265,7 +270,7 @@
             <span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span><span class="p">[()]</span><span class="c1">#.value</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">dict_vars</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>

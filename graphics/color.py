@@ -28,6 +28,7 @@ from   neurotools import signal
 from   neurotools import tools
 import matplotlib as mpl
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from   os.path    import expanduser
@@ -328,7 +329,7 @@ def circularly_smooth_colormap(cm,s):
     G = circular_gaussian_smooth(G,s)
     B = circular_gaussian_smooth(B,s)
     RGB = np.array([R,G,B]).T
-    return RGB
+    return np.array([np.fft.fftshift(c) for c in RGB.T]).T
 
 def isoluminance1(h,l=.5):
     '''
@@ -723,8 +724,16 @@ try:
     parula_data = np.float32(parula_data)
 except:
     parula=None
+    pass 
+   #sphinx
+#
+try:
+    riley  = matplotlib.colors.LinearSegmentedColormap.from_list('riley',[VIOLET,MAUVE,RUST,OCHRE,MOSS,TURQUOISE,AZURE,VIOLET])
+    colors = circularly_smooth_colormap(np.array(riley(np.linspace(0,1,1000)))[:,:3],50)
+    riley  = matplotlib.colors.LinearSegmentedColormap.from_list('riley',colors)
+except:
+    riley=None
     pass
-    #sphinx
 
 #############################################################################
 # A parula-like color map, extended all the way to black at one end

@@ -168,6 +168,21 @@ def v2str_long(p):
     '''
     return '['+','.join([np.float128(x).astype(str) for x in p])+']'
 
+def nicetable(data,format='%4.4f',ncols=8,prefix='',sep=' '):
+    '''
+    Format a numeric vector as an evenly-spaced table
+    '''
+    N = len(data)
+    nrows = int(np.ceil(N/ncols))
+    lines = []
+    for r in range(nrows):
+        d = data[r*ncols:(r+1)*ncols]
+        formatted = [format%i for i in d]
+        joined = sep.join(formatted)
+        line = prefix+joined
+        lines += [line]
+    return '\n'.join(lines)
+
 def nicey():
     '''
     Mark only the min/max value of y axis

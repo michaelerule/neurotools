@@ -22,7 +22,6 @@ from   scipy.stats.stats import describe
 def nrmse(estimate,true,axis=None):
     '''
     Normalized root mean-squared error.
-    
     Parameters
     ----------
     estimate : array-like
@@ -45,42 +44,67 @@ def weighted_avg_and_std(values, weights):
     variance = np.average((values-average)**2, weights=weights)  # Fast and numerically precise
     return (average, np.sqrt(variance))
 
-def crossvalidated_least_squares(a,b,K,regress=np.linalg.lstsq):
+def crossvalidated_least_squares(a,b,K,regress=None):
     '''
     predicts B from A in K-fold cross-validated blocks using linear
     least squares
+
+    Parameters
+    ----------
+    a : array
+        Independent variables; First dimension should be time
+        or number of samples, etc. 
+    b : vector
+        dependent variables
+    K : int
+        Number of cross-validation blocks
+    regress : function
+        Regression function, defaults to `np.linalg.lstsq`
+        (if providing another function, please match the 
+        call signature of `np.linalg.lstsq`)
     
     Returns
     -------
-    array-like:
+    w, array-like:
         model coefficients x
-    array-like:
+    xhat, array-like:
         predicted values of b under crossvalidation
-    number:
+    cc, number:
         correlation coefficient
-    number:
-        root mean squared error
+    rms, number:
+        root mean squared erroro
     '''
-    N = len(b)
-    B = N/K
+    a = np.array(a)
+    b = np.array(b)
+    N,h = np.shape(a)
+    if N<h: 
+        raise ValueError('1st axis of `a` must be time. is `a` transposed?')
+    B = N//K
     x = {}
     predict = []
+    if regress is None:
+        def regress(trainA,trainB):
+            return np.linalg.lstsq(trainA,trainB,rcond=None)[0]
     for k in range(K):
         start = k*B
         stop  = start+B
         #if stop>N: stop = N
         if k>=K-1: stop = N
-        trainB = append(b[:start  ],b[stop:  ])
-        trainA = append(a[:start,:],a[stop:,:],axis=0)
-        testB  = b[start:stop]
+        trainB = np.append(b[:start,...],b[stop:,...],axis=0)
+        trainA = np.append(a[:start,:],a[stop:,:],axis=0)
+        testB  = b[start:stop,...]
         testA  = a[start:stop,:]
-        x[k] = regress(trainA,trainB)[0]
-        reconstructed = dot(testA,x[k])
+        x[k] = regress(trainA,trainB)
+        reconstructed = np.dot(testA,x[k])
         error = np.mean((reconstructed-testB)**2)
         predict.extend(reconstructed)
-    cc  = pearsonr(b,predict)[0]
+    predict = np.array(predict)
+    if len(np.shape(b))==1:
+        cc = scipy.stats.stats.pearsonr(b,predict)[0]
+    else:
+        cc = [scipy.stats.stats.pearsonr(bi,pi)[0] for bi,pi in zip(b.T,predict.T)]
     rms = np.sqrt(np.mean((np.array(b)-np.array(predict))**2))
-    return x,predict,cc,rms
+    return np.array(x),np.array(predict),cc,rms
 
 def print_stats(g,name='',prefix=''):
     '''
@@ -191,6 +215,23 @@ def pca(x,n_keep=None):
     w,v = w[:n_keep],v[:,:n_keep]
     return w,v
 
+def covariance(x,sample_deficient=False,reg=0.0):
+    '''
+    Covariance matrix for `Nsamples` x `Nfeatures` matrix.
+    Data are *not* centered before computing covariance.
+
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    a,b = x.shape
+    if not sample_deficient and b>a:
+        raise ValueError('x should be Nsample x Nfeature where Nsamples >= Nfeatures');
+    C = x.T.dot(x)/x.shape[0]
+    C = C + np.eye(C.shape[0])*reg
+    return C
 
 class description:
     '''

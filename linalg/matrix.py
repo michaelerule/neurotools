@@ -544,8 +544,8 @@ def wheremin(a):
     
 def reglstsq(A, B, reg=1e-15):
     '''
-    Regularized least squares. Solves
-    Ax=B for x with L2 regularization
+    Regularized least squares. 
+    Solves Ax=B for x with L2 regularization
     '''
     Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
     return np.linalg.solve(Q, A.T.dot(B))
@@ -609,3 +609,19 @@ def kronsum(A,B):
     m = B.shape[0]
     n = A.shape[0]
     return kron(A,np.eye(m)) + kron(np.eye(n),B)
+
+def top_v(C):
+    '''
+    Return the leading eigenvector of a covariance matrix
+    '''
+    N = C.shape[0]
+    e,v = scipy.linalg.eigh(C,eigvals=(N-1,N-1))
+    return v.squeeze()
+
+def normedcovariance(C):
+    '''
+    Divide a covariance matrix by its largest eigenvalue
+    '''
+    N = C.shape[0]
+    e,v = scipy.linalg.eigh(C,eigvals=(N-1,N-1))
+    return C/e

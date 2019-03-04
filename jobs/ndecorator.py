@@ -237,16 +237,32 @@ def timed(f,*args,**kwargs):
     t1      = neurotools.tools.current_milli_time()
     return float(t1-t0), result
 
+
+__memoization_caches__ = dict()
+
+def clear_memoized(verbose=False):
+    '''
+    Clear the caches of all memoized functions
+    '''
+    global __memoization_caches__
+    if verbose:
+        print('Purging all memoization caches')
+    for f,cache in __memoization_caches__.items():
+        cache.clear()
+
 def memoize(f):
     '''
     Memoization decorator
     
+    Note: should create a way to purge all caches
+
     Parameters
     ----------
     
     Returns
     -------
     '''
+    global __memoization_caches__
     cache = {}
     info  = defaultdict(dict)
     @robust_decorator
@@ -259,7 +275,9 @@ def memoize(f):
         return cache[sig]
     wrapped.__cache__ = cache
     wrapped.__info__  = info
-    return wrapped(timed(f))
+    result = wrapped(timed(f))
+    __memoization_caches__[result] = cache
+    return result
 
 def unwrap(f):
     '''

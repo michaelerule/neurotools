@@ -24,7 +24,7 @@ from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_fini
 from neurotools.stats.Gaussian import *
 # TODO fix imports
 #from neurotools.matrix import *
-
+from neurotools.linalg.matrix import real_eig
 
 def MVG_check(M,C,eps=1e-6):
     '''
@@ -105,14 +105,14 @@ def MVG_sample(M,P=None,C=None,N=1,safe=1):
         if safe:
             MVG_check(M,C)
         w,v = real_eig(C)
-        Q   = v.dot(diag(sqrt(w*(w>0)))).dot(v.T)
+        Q   = v.dot(np.diag(np.sqrt(w*(w>0)))).dot(v.T)
         return M[:,None]+Q.dot(randn(len(M),N))
     if C is None:
         # Use precision
         if safe:
             MVG_check(M,P)
         w,v = real_eig(P)
-        Q   = v.dot(diag((w*(w>0))**-0.5)).dot(v.T)
+        Q   = v.dot(np.diag((w*(w>0))**-0.5)).dot(v.T)
         return M[:,None]+Q.dot(randn(len(M),N))
 
 def MVG_multiply(M1,P1,M2,P2,safe=1):
@@ -158,7 +158,7 @@ def MVG_divide(M1,P1,M2,P2,eps=1e-6,handle_negative='repair',verbose=0):
     if any(w<eps):
         if handle_negative=='repair':
             w[w<eps]=eps
-            P = v.dot(diag(w)).dot(v.T)
+            P = v.dot(np.diag(w)).dot(v.T)
             if verbose:
                 print('Warning: non-positive precision in Gaussian division')
         elif handle_negative=='ignore':

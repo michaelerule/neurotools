@@ -171,6 +171,11 @@ def fitGLM(X,Y,L2Penalty=0.0):
         binary spike observations
     L2Penalty : scalar
         optional L2 penalty on features, defaults to 0
+        
+    Returns
+    -------
+    mu : mean offset parameter
+    B : feature weights
     '''
     objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
     initial = np.zeros(X.shape[1]+1)

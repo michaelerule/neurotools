@@ -168,28 +168,6 @@ def circular_cosine_basis(N,T):
     phases = np.linspace(0,1,N+1)[:-1]
     return 1-np.cos(np.clip((h[:,None] + phases[None,:])%1,0,wl)*2*np.pi/wl)
 
-def zscore(x,axis=0,regularization=1e-30):
-    '''
-    Z-scores data, defaults to the first axis.
-    A regularization factor is added to the standard deviation to preven
-    numerical instability when the standard deviation is extremely small.
-    The default refularization is 1e-30.
-    x: NDarray
-    axis: axis to zscore; default 0
-    
-    Parameters
-    ----------
-    x
-        array-like real-valued signal
-    Returns
-    -------
-    x
-        (x-mean(x))/std(x)
-    '''
-    ss = np.std(x,axis=axis)+regularization
-    return (x-np.mean(x,axis=axis))/ss
-
-
 def unitscale(signal):
     '''
     Rescales `signal` so that its minimum is 0 and its maximum is 1.
@@ -1110,7 +1088,29 @@ def local_peak_within(freqs,cc,fa,fb):
     i     = peaks[argmax(cc[peaks])]
     return i, freqs[i], cc[i]
 
-def zeromean(x,axis=None):
+def make_rebroadcast_slice(x,axis=0,verbose=False):
+    '''
+    '''
+    x = np.array(x)
+    naxes = len(np.shape(x))
+    if verbose:
+        print('x.shape=',np.shape(x))
+        print('naxes=',naxes)
+    if axis<0:
+        axis=naxes+axis
+    if axis==0:
+        theslice = (None,...)
+    elif axis==naxes-1:
+        theslice = (...,None)
+    else:
+        a = axis
+        b = naxes - a - 1
+        theslice = (np.s_[:],)*a + (None,) + (np.s_[:],)*b
+    if verbose:
+        print('axis=',axis)
+    return theslice
+
+def zeromean(x,axis=0,verbose=False):
     '''
     Remove the mean trend from data
     
@@ -1128,7 +1128,54 @@ def zeromean(x,axis=None):
     Returns
     -------
     '''
-    return x-np.mean(x,axis=axis)
+    x = np.array(x)
+    theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    return x-np.mean(x,axis=axis)[theslice]
+
+def zscore(x,axis=0,regularization=1e-30,verbose=False):
+    '''
+    Z-scores data, defaults to the first axis.
+    A regularization factor is added to the standard deviation to preven
+    numerical instability when the standard deviation is extremely small.
+    The default refularization is 1e-30.
+    x: NDarray
+    axis: axis to zscore; default 0
+    
+    Parameters
+    ----------
+    x
+        array-like real-valued signal
+    Returns
+    -------
+    x
+        (x-mean(x))/std(x)
+    '''
+    x = np.array(x)
+    theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    ss = np.std(x,axis=axis)+regularization
+    return x/ss[theslice]
+
+def unit_length(x,axis=0):
+    '''
+    Interpret given axis of multidimensional array as vectors,
+    and normalize them to unit length.
+    
+    Parameters
+    ----------
+    x : np.array
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+    
+    Returns
+    -------
+    u : np.array
+        vectors in `x` normalized to unit length
+    '''
+    x = np.array(x)
+    theslice = make_rebroadcast_slice(x,axis=axis)
+    return x*(np.sum(x**2,axis=axis)**-.5)[theslice]
 
 def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     '''
@@ -1136,7 +1183,7 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     Correctly flipping the sign of the signal when it crosses zero,
     rather than returning a rectified result.
 
-    Sign-changes are heuristically detected basd on the following:
+    Sign-changes are heuriddddstically detected basd on the following:
         - An abnormally large skip in phase between two time points,
           larger than np.pi/2, that is also a local extremum in phase velocity
         - local minima in the amplitude at low-voltage with high curvature
@@ -1384,3 +1431,14 @@ def span(data):
     '''
     data = np.array(data).ravel()
     return np.max(data)-np.min(data)
+
+
+
+def make_lagged(x,NLAGS=5,LAGSPACE=1):
+    '''
+    Create shifted/lagged copies of a 1D signal
+    '''
+    if not len(x.shape)==1:
+        raise ValueError('Signal should be one-dimensional')
+    t = arange(len(x))
+    return array([np.interp(t-LAG,t,x) for LAG in arange(NLAGS)*LAGSPACE])

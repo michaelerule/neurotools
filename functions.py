@@ -39,37 +39,28 @@ invsqrttau = np.float128('0.3989422804014326779399460599343818684758586311649346
 # can support
 LINALGMAXFLOAT = np.float64
 
+
 def slog(x,eps=F64SAFE,returntype=LINALGMAXFLOAT):
     '''
-    Safe natural logarithm
-    Natural logarithm that truncates inputs to small positive value
-    epsilon (eps, default 1e-6) to avoid underflow in the output.
+    "safe" natural logarithm function, clips values avoiding NaN and inf
     '''
     return returntype(np.log(np.maximum(eps,x)))
 
 def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
-    Safe exponential that limits large values to prevent numerical overflow.
-    Default limit is the square-root of the logarithm of the largest float64
+    "safe" exponential function, clips values avoiding NaN and inf
     '''
     return returntype(np.exp(np.minimum(limit,x)))
 
 def sigmoid(x,returntype=LINALGMAXFLOAT):
     '''
-    Soft-threshold function (rescaled hyperbolic tangent)
-    More numerically stable version 
-
-    1/(1+exp(-x))
+    sigmoid function 1/(1+exp(-x))
     '''
     return returntype(sexp(-np.logaddexp(ZERO128,-np.float128(x))))
 
 def inversesigmoid(x,returntype=LINALGMAXFLOAT):
     '''
-    Inverse of 
-    soft-threshold function (rescaled hyperbolic tangent)
-    More numerically stable version 
-
-    -[log(1-x)+log(x)]
+    Inverse of sigmoid function 1/(1+exp(-x)), -[log(1-x)+log(x)]
     '''
     return returntype(slog(x)-slog(1-x))
 

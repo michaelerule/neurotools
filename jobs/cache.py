@@ -45,6 +45,7 @@ try:
 except:
     from pickle import PicklingError
 
+import neurotools.jobs
 import neurotools.jobs.ndecorator
 import neurotools.tools
 from   neurotools.jobs.closure   import verify_function_closure

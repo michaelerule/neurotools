@@ -1,9 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-'''
-Robust decorators are provided by the decorator package
-    http://pythonhosted.org/decorator/documentation.html
-'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -11,6 +7,10 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+'''
+Robust decorators are provided by the decorator package
+    http://pythonhosted.org/decorator/documentation.html
+'''
 
 import sys
 from neurotools.system import *
@@ -132,6 +132,7 @@ def summarize_function(f):
     
     Parameters
     ----------
+    f : function
     
     Returns
     -------
@@ -156,6 +157,7 @@ def argument_signature(function,*args,**kwargs):
     
     Parameters
     ----------
+    function: function
     
     Returns
     -------
@@ -204,7 +206,11 @@ def argument_signature(function,*args,**kwargs):
     # Construct a tuple reflecting argument signature
     keys  = sorted(named_store.keys())
     vals  = tuple(named_store[k] for k in keys)
-    return sanitize((tuple(zip(keys,vals)),vargs))
+    args  = sanitize(tuple(zip(keys,vals)))
+    if len(keys)==1:
+        args = (args,)
+    result = (args,sanitize(vargs))
+    return result
 
 def print_signature(sig):
     '''

@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-'''
-Functions related to disk caching (memoization)
-'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -13,6 +10,13 @@ from __future__ import print_function
 from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
+'''
+Functions related to disk caching (memoization)
+
+We need to replace hash() with hashlib since python
+doesn't acutally hash by value (rather by reference)!
+
+'''
 
 from   collections import defaultdict
 import numpy as np
@@ -31,6 +35,7 @@ import pickle
 import json
 import base64
 import zlib
+import hashlib
 
 # TODO: we should use the same pickle library as multiprocessing uses
 # for better comptability with parallelism and multiprocessing
@@ -127,7 +132,7 @@ def get_source(f):
         String containing the source code of the passed function        
     '''
     try:
-        source    = inspect.getsource(neurotools.jobs.decorator.unwrap(f))
+        source    = inspect.getsource(neurotools.jobs.ndecorator.unwrap(f))
     except IOError as ioerr:
         if ioerr.message!="could not get source code": raise
         # some dynamically created functions may not have source code
@@ -170,6 +175,25 @@ def function_hash_no_subroutines(f):
     argspec   = neurotools.jobs.ndecorator.sanitize(inspect.getargspec(f))
     return hash((module,name,docstring,source,argspec,subroutines))
 
+def base64hash(obj):
+    try:
+        ss = ss.encode('UTF-8')
+    except:
+        ss = repr(obj).encode('UTF-8')
+    code = base64.urlsafe_b64encode(\
+        str(hashlib.sha224(ss).digest()).encode('UTF-8')).decode().replace('=','')
+    return code
+
+def base64hash2byte(obj):
+    try:
+        ss = ss.encode('UTF-8')
+    except:
+        ss = repr(obj).encode('UTF-8')
+    bytes = hashlib.sha224(ss).digest()
+    code = base64.urlsafe_b64encode(\
+        str(bytes[:2]).encode('UTF-8')).decode().replace('=','')
+    return code
+
 def function_signature(f):
     '''
     Generates identifier used to locate cache corresponding to a
@@ -187,6 +211,14 @@ def function_signature(f):
     and file are the same. Note that module and name identify which cache,
     and source, file, and argspec validate that the function has not
     changes significantly.
+
+    Parameters
+    ----------
+    f: function
+
+    Returns
+    -------
+    
     '''
     # The one thing the decorator module can't fake is where the
     # function is defined. So we can't see the source code directly if
@@ -204,9 +236,13 @@ def function_signature(f):
     identity  = (module,name)
     signature = (docstring,source,argspec)
     name = '.'.join(identity)
-    code = base64.urlsafe_b64encode(\
-        str(hash((identity,signature))&0xffff).encode('UTF-8')).decode().replace('=','')
+    #print(identity,signature)
+    #code = base64.urlsafe_b64encode(\
+    #    str(hash((identity,signature))&0xffff).encode('UTF-8')).decode().replace('=','')
+    code = base64hash2byte((identity,signature))
+    #print(name,code)
     return name+'.'+code
+   
 
 def signature_to_file_string(f,sig,
     mode='repr',
@@ -236,7 +272,7 @@ def signature_to_file_string(f,sig,
 
         repr:
             Uses repr and ast.literal_eval(node_or_string) to serialize the
-            argument signature. This is save, but restricts the types permitted
+            argument signature. This is safe, but restricts the types permitted
             as paramteters.
 
         json:
@@ -251,7 +287,7 @@ def signature_to_file_string(f,sig,
             space.
 
         human:
-            Attempts a human-readable format. Eperimental.
+            Attempts a human-readable format. Experimental.
 
     Compression is on by defaut
     Signatures are base64 encoded by default
@@ -259,11 +295,12 @@ def signature_to_file_string(f,sig,
     sig = neurotools.jobs.ndecorator.sanitize(sig)
 
     if compressed and not base64encode:
-        raise ValueError('If you want compression, turn on base64 encoding')
+        raise ValueError('Compression requires base64 encoding to be enabled')
 
     # A hash value gives us good distribution to control the complexity of
     # the directory tree used to manage the cache, but is not unique
-    hsh = base64.urlsafe_b64encode(str(hash(sig)&0xffff).encode('UTF-8')).decode().replace('=','')
+    # hsh = base64.urlsafe_b64encode(str(hash(sig)&0xffff).encode('UTF-8')).decode().replace('=','')
+    hsh = base64hash2byte(sig)    
 
     # We also need to store some information about which function this
     # is for. We'll get a human readable name identifying the funciton,
@@ -298,7 +335,8 @@ def signature_to_file_string(f,sig,
             # hash the key if it is too long and truncation is enabled
             # TODO: probably should be a better hash function?
             s  = key.decode()
-            kh = base64.urlsafe_b64encode(str(hash(s)).encode('UTF-8')).decode().replace('=','')
+            #kh = base64.urlsafe_b64encode(str(hash(s)).encode('UTF-8')).decode().replace('=','')
+            kh = base64hash(s)            
             filename = '%s.%s.%s'%(fname,hsh,kh)
             filename = filename[:255]
         else:
@@ -317,6 +355,8 @@ def signature_to_file_string(f,sig,
         except UnicodeDecodeError:
             pass
     check_filename(filename)
+    #print(filename)
+    #print((fname,hsh,key.decode()))
     return filename
 
 def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=True):
@@ -410,9 +450,19 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     
     Parameters
     ----------
+    cache_root: directory/path as string
+    f: function
+    methods: caching naming method
+    args: function parameters
+    kwargs: function keyword arguments
     
     Returns
     -------
+    fn
+    sig
+    path
+    filename
+    location
     '''
     sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
@@ -421,7 +471,9 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
             base64encode=True)
 
     pieces   = fn.split('.')
+    # first two words used as directories
     path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
+    # remaining pieces a filename
     filename = '.'.join(pieces[-2:])+'.'+method
     location = path+filename
     return fn,sig,path,filename,location
@@ -606,7 +658,9 @@ def disk_cacher(
             
         # Patch for 2/3 compatibility
         if __PYTHON_2__:
-            FileNotFoundError = IOError
+            FileError = IOError
+        else:
+            FileError = FileNotFoundError
             
         @neurotools.jobs.ndecorator.robust_decorator
         def wrapped(f,*args,**kwargs):
@@ -643,7 +697,7 @@ def disk_cacher(
                     print('\t%s.%s'%(f.__module__,f.__name__))
                     print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
             
-            except (EOFError, OSError, IOError, FileNotFoundError) as exc:
+            except (EOFError, OSError, IOError, FileError) as exc:
                 if verbose:
                     print('Recomputing cache at %s'%cache_location)
                     print('\t%s.%s'%(f.__module__,f.__name__))
@@ -796,20 +850,20 @@ def hierarchical_cacher(fast_to_slow,
         # disable write-back on the slow caches
         for location in slow_to_fast[:-1]:
             f = disk_cacher(location,
-                method=method,
-                write_back=write_back,
-                verbose=verbose,
-                allow_mutable_bindings=allow_mutable_bindings,
-                CACHE_IDENTIFIER = CACHE_IDENTIFIER)(f)
+                method                 = method,
+                write_back             = write_back,
+                verbose                = verbose,
+                allow_mutable_bindings = allow_mutable_bindings,
+                CACHE_IDENTIFIER       = CACHE_IDENTIFIER)(f)
             all_cachers.append(f)
         # use write-back only on the fast cache
         location = slow_to_fast[-1]
         f = disk_cacher(location,
-            method=method,
-            write_back=True,
-            verbose=verbose,
-            allow_mutable_bindings=allow_mutable_bindings,
-            CACHE_IDENTIFIER = CACHE_IDENTIFIER)(f)
+            method                 = method,
+            write_back             = True,
+            verbose                = verbose,
+            allow_mutable_bindings = allow_mutable_bindings,
+            CACHE_IDENTIFIER       = CACHE_IDENTIFIER)(f)
         def purge(*args,**kwargs):
             '''
             Purge each of the constituent cachers

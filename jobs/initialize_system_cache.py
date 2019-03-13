@@ -1,14 +1,5 @@
 #!/user/bin/env python 
-# -*- coding: UTF-8 -*-
-'''
-Static initialization routines accompanying `neurotools.jobs.cache`.
-These routines were written to set up a caching framework for the Oscar
-high performance computing cluster at Brown University, and have not yet
-been modified for general use. They still contain hard-coded user-specific
-paths, for example.
-'''
-
-from __future__ import absolute_import
+# -*- coding: UTF-8 -*-from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import nested_scopes
@@ -19,20 +10,30 @@ from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
 
+'''
+Static initialization routines accompanying `neurotools_cache`.
+These routines were written to set up a caching framework for the Oscar
+high performance computing cluster at Brown University, and have not yet
+been modified for general use. They still contain hard-coded user-specific
+paths, for example.
+'''
+
 import os
 import sys
-IN_SPHINX=False
-if 'sphinx' in sys.modules:
+IN_SPHINX='sphinx' in sys.modules
+if IN_SPHINX:
     print('Inside Sphinx autodoc; NOT loading scipy and pylab namespaces!')
-    IN_SPHINX=True  
-
-if not IN_SPHINX:
+else:
     VERBOSE_CACHING = 0
 
 import neurotools
 import neurotools.jobs
 import neurotools.tools
-import neurotools.jobs.cache
+
+#import neurotools.jobs.cache
+
+import neurotools.jobs
+from neurotools.jobs import cache as neurotools_cache
 
 ######################################################################
 # Setup advanced memoization
@@ -75,7 +76,9 @@ def du(location):
     du = st.st_blocks * st.st_blksize
     return du
 
-def reset_ramdisk(force=False):
+default_ramdisk_location = os.path.expanduser('~/.neurotools_ramdisk')
+
+def reset_ramdisk(force=False,override_ramdisk_location=None):
     '''
     This will create a 500GB ramdisk on debian linux. This allows in RAM 
     inter-process communication using the filesystem metaphore. It should
@@ -92,18 +95,39 @@ def reset_ramdisk(force=False):
         Modifying the configuration of a ramdisk is risky; The function
         fails with a warning unless force is set to true.
     '''
-    global ramdisk_location
+    global default_ramdisk_location,ramdisk_location
+    try:
+        if ramdisk_location is None:
+            ramdisk_location =\
+                default_ramdisk_location\
+                if override_ramdisk_location is None\
+                else override_ramdisk_location
+    except:
+        # Ramisk location might not be initialized
+        ramdisk_location =\
+            default_ramdisk_location\
+            if override_ramdisk_location is None\
+            else override_ramdisk_location
     if not force:
         raise NotImplementedError(
             'modifying ramdisk is dangerous; use force=True to force');
+    
     print('Initializing public ramdisk at %s'%ramdisk_location)
+    commands = [
+        'sudo mkdir -p '+ramdisk_location,
+        'sudo umount %s/'%ramdisk_location,
+        'sudo mount -t tmpfs -o size=500G tmpfs %s/'%ramdisk_location,
+        'sudo chmod -R 777 %s'%ramdisk_location
+    ]
+    print('To initialize a ramdisk on linux, run these commands:')
+    print('\t'+'\n\t'.join(commands))
+    print('... attempting to call these commands from python')
+    print('(this will not work in jupyter/ipython notebook)')
     def call(cmd):
         print(cmd)
         os.system(cmd)
-    call('sudo mkdir -p '+ramdisk_location)
-    call('sudo umount %s/'%ramdisk_location)
-    call('sudo mount -t tmpfs -o size=500G tmpfs %s/'%ramdisk_location)
-    call('sudo chmod -R 777 %s'%ramdisk_location)
+    for cmd in commands:
+        call(cmd)
     # 
 
 def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
@@ -122,7 +146,7 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     some sort of lazy protocol. 
     '''
     global ramdisk_location,ssd_cache_location,hdd_cache_location
-    raise NotImplementedError('cache synchronization can overwite files; it has been disabled');
+    raise NotImplementedError('cache synchronization overwites files; this is dangerous and it has been disabled');
     # write_back is disabled for the slow disk caches. To make these
     # persistant, we need to run an rsync job to keep them synchronized.
     disk_cache_hierarchy = (ramdisk_location,ssd_cache_location,hdd_cache_location)
@@ -150,7 +174,7 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
 
 
-def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False,
+def initialize_caches(ramdisk=default_ramdisk_location,ssd=None,hdd=None,force=False,
     verbose=False,
     CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
@@ -217,6 +241,7 @@ def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False,
             ramdisk_location = ssd_cache_location = hdd_cache_location = None
     '''
     global ramdisk_location, ssd_cache_location, hdd_cache_location
+    
     ramdisk_location,ssd_cache_location,hdd_cache_location = ramdisk,ssd,hdd
     
     if not os.path.isdir(ramdisk_location): 
@@ -230,22 +255,22 @@ def initialize_caches(ramdisk=None,ssd=None,hdd=None,force=False,
     
     # These caches become global attributes and are used for memoization
     neurotools.jobs.initialize_system_cache.disk_cached       =\
-         neurotools.jobs.cache.disk_cacher('.',verbose=verbose)
+         neurotools_cache.disk_cacher('.',verbose=verbose)
     neurotools.jobs.initialize_system_cache.leviathan         =\
-         neurotools.jobs.cache.hierarchical_cacher(\
+         neurotools_cache.hierarchical_cacher(\
             hierarchy,
             method='npy',
             verbose=verbose,
             CACHE_IDENTIFIER=CACHE_IDENTIFIER)
     neurotools.jobs.initialize_system_cache.unsafe_disk_cache =\
-        neurotools.jobs.cache.hierarchical_cacher(\
+        neurotools_cache.hierarchical_cacher(\
             hierarchy,
             method='npy',
             allow_mutable_bindings=True,
             verbose=verbose,
             CACHE_IDENTIFIER=CACHE_IDENTIFIER)
     neurotools.jobs.initialize_system_cache.pickle_cache      =\
-        neurotools.jobs.cache.hierarchical_cacher(\
+        neurotools_cache.hierarchical_cacher(\
             hierarchy,
             method='pickle',
             verbose=verbose,
@@ -268,7 +293,9 @@ def cache_test():
         e,f = vargs if (len(vargs)==2) else (None,None)
         g = kw['k'] if 'k' in kw else None
         print(a,b,c,d,e,f,g)
+
     h = disk_cache(example_function)
+    
     print('Testing argument siganture encoding')
     f   = example_function
     sig = ((('a', 'a'), ('b', 'b'), ('c', 'c'), ('d', 'd')), None)

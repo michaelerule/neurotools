@@ -128,7 +128,7 @@ def GLMPenaltyL2(X,Y,penalties=None):
         return hess*scale
     return objective, gradient, hessian
 
-def ppglmfit(X,Y):
+def ppglmfit(X,Y,verbose=False):
     '''
     The GLM solver in statsmodels is very general. It accepts any link
     function and expects that, if you want a constant term in your model,
@@ -147,9 +147,9 @@ def ppglmfit(X,Y):
     μ, B: the offset and parameter estimates for the GLM model.
     '''
     # add constant value to X, if the 1st column is not constant
-    if np.mean(Y)>0.1:
+    if np.mean(Y)>0.1 and verbose:
         print('Caution: spike rate very high, is Poisson assumption valid?')
-    if np.sum(Y)<100:
+    if np.sum(Y)<100 and verbose:
         print('Caution: fewer than 100 spikes to fit model')
     if not all(X[:,0]==X[0,0]):
         X = np.hstack([np.ones((X.shape[0],1),dtype=X.dtype), X])

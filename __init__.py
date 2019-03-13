@@ -12,6 +12,7 @@ from __future__ import print_function
 # but these seem to be necessary?
 import neurotools
 from   neurotools import *
+'''
 import neurotools.signal as signal
 import neurotools.stats as stats
 import neurotools.linalg as linalg
@@ -23,4 +24,4 @@ import neurotools.encoding as encoding
 import neurotools.graphics as graphics
 #import neurotools.latex as latex
 import neurotools.spikes as spikes
-
+'''

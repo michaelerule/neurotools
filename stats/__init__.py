@@ -16,7 +16,14 @@ available in pylab
 import numpy as np
 import scipy
 import random
-from   matplotlib.mlab import find
+try:
+    from   matplotlib.mlab import find
+except:
+    print('Importing matplotlib failed')
+    def find(x):
+        # A crude replacement?
+        return np.where(np.array(x).ravel())[0]
+
 from   scipy.stats.stats import describe
 
 def nrmse(estimate,true,axis=None):

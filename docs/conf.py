@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-#from __future__ import absolute_import
+from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import nested_scopes
@@ -47,7 +47,7 @@ extensions = [
 
 # special code to handle different versions of sphinx gracefully
 import sys, os
-assert 'sphinx' in sys.modules
+#assert 'sphinx' in sys.modules
   
 mathjax_path="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 

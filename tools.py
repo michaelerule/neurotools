@@ -10,21 +10,20 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
 
-import os
+import os,sys
 import traceback
 import inspect
 import numpy as np
 import datetime
 import time as systime
 import sys
-
-from matplotlib.cbook          import flatten
-from neurotools.jobs.ndecorator import *
-from scipy.io                  import loadmat
-import sys
-from numbers import Number
-from collections import Set, Mapping, deque
 import errno
+
+from matplotlib.cbook           import flatten
+from neurotools.jobs.ndecorator import *
+from scipy.io                   import loadmat
+from numbers                    import Number
+from collections                import Set, Mapping, deque
 
 try: 
     # Python 2

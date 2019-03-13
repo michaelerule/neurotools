@@ -19,6 +19,7 @@ doesn't acutally hash by value (rather by reference)!
 '''
 
 from   collections import defaultdict
+
 import numpy as np
 import scipy.io
 import inspect
@@ -48,6 +49,7 @@ import neurotools.jobs.ndecorator
 import neurotools.tools
 from   neurotools.jobs.closure   import verify_function_closure
 from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
+
 
 @neurotools.jobs.ndecorator.memoize
 def function_hash_with_subroutines(f,force=False):

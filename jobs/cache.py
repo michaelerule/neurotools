@@ -45,12 +45,11 @@ try:
 except:
     from pickle import PicklingError
 
+import neurotools.tools
 import neurotools.jobs
 import neurotools.jobs.ndecorator
-import neurotools.tools
 from   neurotools.jobs.closure   import verify_function_closure
 from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
-
 
 @neurotools.jobs.ndecorator.memoize
 def function_hash_with_subroutines(f,force=False):

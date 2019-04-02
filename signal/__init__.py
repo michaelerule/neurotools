@@ -112,7 +112,7 @@ def circular_gaussian_smooth(x,sigma):
     g = np.exp(-np.linspace(-N/2,N/2,N)**2/sigma**2)
     g/= np.sum(g)
     f = np.fft.fft(g)
-    return np.fft.ifft(np.fft.fft(x)*f).real
+    return np.fft.fftshift(np.fft.ifft(np.fft.fft(x)*f).real)
 
 
 def circular_gaussian_smooth_2D(x,sigma):
@@ -1110,7 +1110,7 @@ def make_rebroadcast_slice(x,axis=0,verbose=False):
         print('axis=',axis)
     return theslice
 
-def zeromean(x,axis=0,verbose=False):
+def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     '''
     Remove the mean trend from data
     
@@ -1130,9 +1130,9 @@ def zeromean(x,axis=0,verbose=False):
     '''
     x = np.array(x)
     theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
-    return x-np.mean(x,axis=axis)[theslice]
+    return x-(np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
 
-def zscore(x,axis=0,regularization=1e-30,verbose=False):
+def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     '''
     Z-scores data, defaults to the first axis.
     A regularization factor is added to the standard deviation to preven
@@ -1150,9 +1150,9 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False):
     x
         (x-mean(x))/std(x)
     '''
-    x = np.array(x)
+    x = zeromean(x,ignore_nan=ignore_nan)
     theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
-    ss = np.std(x,axis=axis)+regularization
+    ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]
 
 def unit_length(x,axis=0):

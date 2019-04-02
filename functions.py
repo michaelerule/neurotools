@@ -24,7 +24,7 @@ F32SAFE    = np.sqrt(F32EPS)
 F64EPS     = np.float128('1.4012985e-45')
 F64SAFE    = np.sqrt(F64EPS)
 ZERO128    = np.float128('0')
-EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float64).max)))
+EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float32).max)))
 F128EMAX   = np.sqrt(np.float128('11355.52340629414395'))
 
 lgE        = np.float128('1.442695040888963407359924681001892137426645954152985934135')
@@ -50,6 +50,8 @@ def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
     "safe" exponential function, clips values avoiding NaN and inf
     '''
+    limit = np.float128(limit)
+    x = np.float128(x)
     return returntype(np.exp(np.minimum(limit,x)))
 
 def sigmoid(x,returntype=LINALGMAXFLOAT):
@@ -113,17 +115,20 @@ def f2(x,returntype=LINALGMAXFLOAT):
 
 def npdf(mu,sigma,x):
     '''
-    Gaussian probability density
+    Univariate Gaussian probability density
     
     Parameters
     ----------
-    mu : float
-        Mean of distribution
-    sigma : float
-        Standard deviation of distribution
-    x : float or array-like 
-        Points at which to evaluate distribution
+    mu : float, scalar or array-like 
+        Mean(s) of distribution(s)
+    sigma : float, scalar or array-like 
+        Standard deviation(s) of distribution(s)
+    x : float, scalar or array-like 
+        Points at which to evaluate distribution(s)
     '''
+    mu    = np.array(mu).ravel()
+    sigma = np.array(sigma).ravel()
+    x     = np.array(x).ravel()
     invsigma = 1.0/sigma
     x = (x-mu)*invsigma
     return (invsqrttau*invsigma) * sexp(-0.5*x**2)

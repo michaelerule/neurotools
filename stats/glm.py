@@ -159,7 +159,7 @@ def ppglmfit(X,Y,verbose=False):
     return M[0],M[1:]
 
 
-def fitGLM(X,Y,L2Penalty=0.0):
+def fitGLM(X,Y,L2Penalty=0.0,mu0=None,B0=None,**kwargs):
     '''
     Fit the model using gradient descent with hessian
     
@@ -171,7 +171,18 @@ def fitGLM(X,Y,L2Penalty=0.0):
         binary spike observations
     L2Penalty : scalar
         optional L2 penalty on features, defaults to 0
+    mu0 : scalar or None
+        Initial guess for mean offset. 
+        Optional, defaults to 0 if None.
+    B0 : vector or None
+        Initial guess for parameter weights. 
+        Optional, defaults to zeroes if None
         
+    Other Parameters
+    ----------------
+    kwargs : 
+        Keyword arguments to forward to `scipy.optimize.minimize`
+
     Returns
     -------
     mu : mean offset parameter
@@ -179,6 +190,10 @@ def fitGLM(X,Y,L2Penalty=0.0):
     '''
     objective, gradient, hessian = GLMPenaltyL2(X,Y,L2Penalty)
     initial = np.zeros(X.shape[1]+1)
+    if not mu0 is None:
+        initial[0] = mu0
+    if not B0 is None:
+        initial[1:] = B0
     M = minimize(objective,initial,
         jac=gradient,hess=hessian,method='Newton-CG')['x']
     mu,B = M[0],M[1:]

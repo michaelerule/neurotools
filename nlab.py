@@ -101,11 +101,28 @@ from neurotools.stats.circular           import *
 from neurotools.signal.linenoise         import *
 from neurotools.signal.morlet_coherence  import *
 from neurotools.signal.morlet            import *
-from neurotools.signal.multitaper        import *
-from neurotools.signal.ppc               import *
+
+# Depends on the spectrum package and will not import if this is missing
+try:
+    from neurotools.signal.multitaper        import *
+except ImportError:
+    print('Skipping the neurotools.signal.multitaper module')
+
+# Depends on the spectrum package and will not import if this is missing
+try:
+    from neurotools.signal.ppc               import *
+except ImportError:
+    print('Skipping the neurotools.signal.ppc module')
+
 from neurotools.signal.savitskygolay     import *
 from neurotools.signal                   import *
-from neurotools.signal.coherence         import *
+
+# Depends on the nitime package and will not import if this is missing
+try:
+    from neurotools.signal.coherence         import *
+except ImportError:
+    print('Skipping the neurotools.signal.coherence module')
+
 from neurotools.signal.conv              import *
 
 from neurotools.jobs.parallel            import *

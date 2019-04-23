@@ -13,7 +13,11 @@ import neurotools.getfftw as fft
 from neurotools.signal import zscore
 from neurotools.jobs.ndecorator import memoize
 
-from spectrum.mtm import dpss
+try:
+    from spectrum.mtm import dpss
+except:
+    def dpss(*args):
+        raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
 
 # Suppress warnings from numpy/spectrum
 import warnings

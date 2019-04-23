@@ -12,7 +12,7 @@ try:
     from spectrum.mtm import dpss
 except:
     def dpss(*args):
-        raise NotImplementedError("Please install the spectrum module")
+        raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
 
 import types
 import numpy as np

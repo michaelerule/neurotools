@@ -31,7 +31,7 @@ try:
 except:
     print('could not locate nitime module; coherence functions missing')
     def coherence(*args,**kwargs):
-        raise ImportError("nitime module not loaded, coherence missing")
+        raise ImportError("nitime module not loaded, coherence missing. Try installing nitime, e.g.:\n\tpip install nitime")
 
 def morlet_population_synchrony_spectrum(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     '''

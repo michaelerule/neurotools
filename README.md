@@ -4,7 +4,7 @@ This is a collection of python modules developed for exploratory analysis and st
 
 This project depends on several scientific Python packages including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [statsmodels](http://www.statsmodels.org/stable/index.html), [pandas](http://pandas.pydata.org/), [nipy](http://nipy.org/nitime/), and the [spectrum](https://pyspectrum.readthedocs.io/en/latest/install.html) package.
 
-Of these, numpy, scipy, statsmodels, and pandas are probably provided with most scientific python distributions. You may need into install [nipy](http://nipy.org/nitime/) and spectrum](https://pyspectrum.readthedocs.io/en/latest/install.html) manually. They are available via `pip`.
+Of these, numpy, scipy, statsmodels, and pandas are probably provided with most scientific python distributions. You may need into install [nipy](http://nipy.org/nitime/) and spectrum](https://pyspectrum.readthedocs.io/en/latest/install.html) manually. They are available via pip.
 
 For the most part the routines here do not duplicate the functionality of these packages. There is a focus on spatiotemporal modeling of multi-electrode array datasets, stochastic models of population dynamics, and some routines to explore population synchrony. There are also several playful or exploratory modules that probably aren't all that useful but are available nevertheless.
 

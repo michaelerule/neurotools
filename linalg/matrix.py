@@ -217,8 +217,12 @@ def real_eig(M,eps=1e-9):
     '''
     This code expects a real hermetian matrix
     and should throw a ValueError if not.
-    This is probably redundant to the scipy eigh function.
-    Do not use.
+    This is redundant to the scipy eigh function (use that one instead!)
+    
+    Returns
+    -------
+    w : eigenvalues
+    v : eigenvectors
     '''
     if not (type(M)==np.ndarray):
         raise ValueError("Expected array; type is %s"%type(M))
@@ -546,11 +550,30 @@ def reglstsq(A, B, reg=1e-15):
     '''
     Regularized least squares. 
     Solves Ax=B for x with L2 regularization
+    
+    Parameters
+    ----------
+    A : two-dimensional numpy array
+        Matrix of observations of the explanatory/independent variables
+    B : two-dimensional numpy array
+        Matrix of observations of the response/dependent variables
+    
+    Other Parameters
+    ----------------
+    reg : positive float
+        Small positive L2 regularization, default is 1e-15
+        
+    Returns
+    -------
+    w : weight vector   
     '''
     Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
     return np.linalg.solve(Q, A.T.dot(B))
 
 def Ldistance(X,M,L=2,eps=1e-3):
+    '''
+    L-n norm distance between two vectors
+    '''
     X = np.abs(X-M)
     if L==0:
         thr = np.median(X)*eps
@@ -558,6 +581,9 @@ def Ldistance(X,M,L=2,eps=1e-3):
     return -np.sum(X**L,axis=1)**(1/L)
 
 def Llasso(X,M,L=2,eps=1e-3):
+    '''
+    Lasso-like distance (I think? need to check this one)
+    '''
     X = np.abs(X-M)
     if L==0:
         thr = np.median(X)*eps
@@ -567,6 +593,16 @@ def Llasso(X,M,L=2,eps=1e-3):
 def rmatrix(h):
     '''
     Generate 2D rotation matrix for angle `h`
+    
+    Parameters
+    ----------
+    h : float
+        Angle of rotation in radians
+        
+    Returns
+    -------
+    M : 2x2 numpy array
+        2D rotation matrix for `h` radians.
     '''
     ch,sh = np.cos(h),np.sin(h)
     return np.array([[ch,sh],[-sh,ch]])
@@ -576,7 +612,8 @@ def ldiv(A,B):
     Solve AX=B for X = A^{-1}B
     i.e. find matrix X which when right-multiplied with A is close to B
     '''
-    return scipy.linalg.lstsq(A,B)[0]
+    #return scipy.linalg.lstsq(A,B)[0]
+    return np.linalg.solve(A,B)
 
 def rdiv(A,B):
     '''

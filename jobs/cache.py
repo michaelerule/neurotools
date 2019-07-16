@@ -51,6 +51,8 @@ import neurotools.jobs.ndecorator
 from   neurotools.jobs.closure   import verify_function_closure
 from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
 
+from pathlib import Path
+
 @neurotools.jobs.ndecorator.memoize
 def function_hash_with_subroutines(f,force=False):
     '''
@@ -286,7 +288,7 @@ def signature_to_file_string(f,sig,
         pickle:
             Uses pickle to serialize argument signature. This should uniquely
             store argument signatures that can be recovered, but takes more
-            space.
+            space. **This option no longer works in Python 3**
 
         human:
             Attempts a human-readable format. Experimental.
@@ -321,7 +323,7 @@ def signature_to_file_string(f,sig,
     elif mode=='pickle': key = pickle.dumps(sig)
     elif mode=='human' : key = human_encode(sig)
     else: raise ValueError('I support coding modes repr, json, and pickle\n'+
-        'I do not recognize coding mode %s'%mode)
+        'I don\'t recognize coding mode %s'%mode)
     # compress and base64 encode string
     key = key.encode('UTF-8')
     if compressed  : key = zlib.compress(key)
@@ -382,7 +384,7 @@ def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=T
     pickle:
         Uses pickle to serialize argument signature. This should uniquely
         store argument signatures that can be recovered, but takes more
-        space.
+        space. **This option no longer works in Python 3**
 
     human:
         Attempts a human-readable format. Eperimental.
@@ -408,8 +410,8 @@ def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=T
     elif mode=='pickle': sig = pickle.loads(key)
     elif mode=='human' : sig = human_decode(key)
     else: raise ValueError('I support coding modes repr, json, and pickle\n'+
-        'I do not recognize coding mode %s'%mode)
-    sig = neurotools.sanitize(sig)
+        'I don\'t recognize coding mode %s'%mode)
+    sig = neurotools.jobs.ndecorator.sanitize(sig)
     return sig
 
 def human_encode(sig):
@@ -422,7 +424,7 @@ def human_encode(sig):
     Returns
     -------
     '''
-    sig = neurotools.sanitize(sig,mode='strict')
+    sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
     named, vargs = sig
     if not vargs is None:
         raise ValueError(
@@ -444,7 +446,7 @@ def human_decode(key):
     params = [k.split('=') for k in key.split(',')]
     params = tuple((n,ast.literal_eval(v)) for n,v in params)
     sig = (params,None)
-    sig = neurotools.sanitize(sig,mode='strict')
+    sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
     return sig
 
 def locate_cached(cache_root,f,method,*args,**kwargs):
@@ -672,72 +674,83 @@ def disk_cacher(
             the wrapped function.
             '''
             t0 = neurotools.tools.current_milli_time()
+
+            # Store parameters; I hope we can save these in numpy...
+            params = (args,tuple(list(kwargs.items())))
+
             try:
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
             except ValueError as exc:
-                print('Generating cache key has failed')
-                print('Skipping chaching entirely')
-                try:
-                    traceback.print_exc(exc)
-                except:
-                    print('Error occurred while printing traceback')
-                    print(repr(exc))
+                print('Generating cache key failed')
+                traceback.print_exc(exc)
                 time,result = f(*args,**kwargs)
                 return result
-            try:
-                if method=='pickle':
-                    result = pickle.load(open(location,'rb'))
-                elif method =='mat':
-                    result = scipy.io.loadmat(location)['varargout']
-                elif method =='npy':
-                    try:
-                        result = np.load(location, mmap_mode='r')
-                    except ValueError:
-                        result = np.load(location)
-                if verbose:
-                    print('Retrieved cache at ',path)
-                    print('\t%s.%s'%(f.__module__,f.__name__))
-                    print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
             
-            except (EOFError, OSError, IOError, FileError) as exc:
+            did_load = False
+            if os.path.isfile(location):
+                try:
+                    if method=='pickle':
+                        with open(location,'rb') as openfile:
+                            result = pickle.load(openfile)
+                    elif method =='mat':
+                        result = scipy.io.loadmat(location)['varargout']
+                    elif method =='npy':
+                        try:
+                            result = np.load(location, mmap_mode='r')
+                        except ValueError:
+                            result = np.load(location,allow_pickle=True)
+                    if verbose:
+                        print('Retrieved cache at ',path)
+                        print('\t%s.%s'%(f.__module__,f.__name__))
+                        print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
+                    did_load = True
+                except (ValueError, EOFError, OSError, IOError, FileError) as exc:
+                    did_load = False
+                    if verbose:
+                        print('\tFile reading failed')
+
+            if did_load:
+                # Unpack parameters separately
+                params,result = result
+            else:
                 if verbose:
                     print('Recomputing cache at %s'%cache_location)
                     print('\t%s.%s'%(f.__module__,f.__name__))
                     print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
 
+                # Evaluate function
                 time,result = f(*args,**kwargs)
-                neurotools.tools.ensure_dir(path)
-
-                if verbose: 
+                if verbose:
+                    print('\t%s'%path)
                     print('\tTook %d milliseconds'%time)
 
+                # Save Cached output to disk
                 if write_back:
+                    savedata = (params,result)
+                    neurotools.tools.ensure_dir(path)
+                    Path(location).touch()
                     if verbose: print('Writing cache at ',path)
-
                     try:
                         if method=='pickle':
-                            pickle.dump(result,
-                                open(location,'wb'),
-                                protocol=pickle.HIGHEST_PROTOCOL)
+                            with open(location,'wb') as openfile:
+                                pickle.dump(savedata,openfile,protocol=pickle.HIGHEST_PROTOCOL)
                         elif method =='mat':
-                            validated_result = validate_for_matfile(result)
+                            validated_result = validate_for_matfile(savedata)
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a matfile')
-                            scipy.io.savemat(location,{
-                                'varargout':result})
+                            scipy.io.savemat(location,{'varargout':savedata})
                         elif method =='npy':
-                            validated_result = validate_for_numpy(result)
+                            validated_result = validate_for_numpy(savedata)
                             if validated_result is None:
                                 raise ValueError('Error: return value cannot be safely packaged in a numpy file')
-                            np.save(location, result)
-
+                            np.save(location, savedata)
                     except (ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
                             print('\t%s.%s'%(f.__module__,f.__name__))
                             print('\t%s'%\
                                 neurotools.jobs.ndecorator.print_signature(sig))
-                            print('\n\t'.join(\
+                            print('\t'+'\n\t'.join(\
                                 traceback.format_exc().split('\n')))
 
                     if verbose:
@@ -765,12 +778,13 @@ def disk_cacher(
                         except (OSError) as exc3:
                             print('\n\t'.join(\
                                 traceback.format_exc().split('\n')))
-                    if skip_fast and boost<0:
-                        if verbose:
-                            print('\tWARNING DISK IO MORE EXPENSIVE THAN RECOMPUTING!')
-                            print('\tWe should really do something about this?')
-                            print('\tZeroing out the file, hopefully that causes it to crash on load?')
-                        with open(location, 'w'): pass
+                    # Skipping when the cache is slower than recompute is not yet supported
+                    # if skip_fast and boost<0:
+                    #    if verbose:
+                    #        print('\tWARNING DISK IO MORE EXPENSIVE THAN RECOMPUTING!')
+                    #        print('\tWe should really do something about this?')
+                    #        print('\tZeroing out the file, hopefully that causes it to crash on load?')
+                    #    with open(location, 'w'): pass
             return result
         def purge(*args,**kwargs):
             '''
@@ -860,7 +874,7 @@ def hierarchical_cacher(fast_to_slow,
             all_cachers.append(f)
         # use write-back only on the fast cache
         location = slow_to_fast[-1]
-        f = disk_cacher(location,
+        f = neurotools.jobs.cache.disk_cacher(location,
             method                 = method,
             write_back             = True,
             verbose                = verbose,

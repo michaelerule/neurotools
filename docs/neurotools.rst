@@ -29,6 +29,7 @@ Submodules
    neurotools.nlab
    neurotools.opto
    neurotools.system
+   neurotools.text
    neurotools.tools
 
 Module contents

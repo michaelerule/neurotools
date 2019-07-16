@@ -18,7 +18,6 @@ from matplotlib.mlab import find
 #from neurotools.jobs.parallel import *
 #from numpy import *
 
-
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''
     Derived from the following matlab code (c) Wilson Truccolo
@@ -51,19 +50,29 @@ def benjamini_hochberg_positive_correlations(pvalues,alpha):
         cVN = sum(1./(1:V));
         pID = p(max(find(p<=I/V*q/cVID)));
         pN = p(max(find(p<=I/V*q/cVN)));
+
+    Parameters
+    ----------
+    pvalues : list of p-values to correct
+    alpha : target false-discovery rate
+
+    Returns
+    -------
+    pID - p-value threshold based on independence or positive dependence
+    pN  - Nonparametric p-value threshold
     '''
-    pvalues = sorted(ravel(pvalues))
+    pvalues = sorted(np.ravel(np.array(list(pvalues))))
     V = len(pvalues)
-    X = float64(arange(1,V+1))*alpha/V
-    cVN  = sum(1./arange(1,V+1))
-    pID  = find( pvalues<=X )
+    X = np.float64(np.arange(1,V+1))*alpha/V
+    cVN  = np.sum(1./np.arange(1,V+1))
+    pID  = np.where( pvalues<=X )[0]
     pID  = pvalues[pID[-1]] if len(pID)>0 else 0#pvalues[0]
-    pN   = find( pvalues<=X/cVN )
+    pN   = np.where( pvalues<=X/cVN )[0]
     pN   = pvalues[pN [-1]] if len(pN )>0 else 0#pvalues[0]
     print(pID, pN)
     return pID, pN
 
-def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0):
+def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0,alpha=0.05):
     '''
     Parameters
     ----------
@@ -76,16 +85,16 @@ def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0):
         Benjamini-Hochberg corrected dictionary assuming positive 
         correlations, entries as `label -> pvalue, reject`
     '''
-    labels, pvals = zip(*pvalue_dictionary.iteritems())
-    p_threshold = max(*benjamini_hochberg_positive_correlations(pvals,0.05))
-    reject = array(pvals)<p_threshold
+    labels, pvals = zip(*pvalue_dictionary.items())
+    p_threshold = np.max(*benjamini_hochberg_positive_correlations(pvals,alpha))
+    reject = np.array(pvals)<p_threshold
     if verbose:
         print('BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject))))
     corrected = dict(zip(labels,zip(pvals,reject)))
     return corrected
 
 
-def correct_pvalues(pvalue_dictionary,verbose=0):
+def correct_pvalues(pvalue_dictionary,verbose=0,alpha=0.05):
     '''
     Parameters
     ----------
@@ -98,9 +107,9 @@ def correct_pvalues(pvalue_dictionary,verbose=0):
         Benjamini-Hochberg corrected dictionary 
         correlations, entries as `label -> pvalue, reject`
     '''
-    labels, pvals = zip(*pvalue_dictionary.iteritems())
+    labels, pvals = zip(*pvalue_dictionary.items())
     reject, pvals_corrected, alphacSidak, alphacBonf = \
-      statsmodels.sandbox.stats.multicomp.multipletests(pvals, alpha=0.05, method='fdr_bh')
+      statsmodels.sandbox.stats.multicomp.multipletests(pvals, alpha=alpha, method='fdr_bh')
     if verbose:
         print('BENJAMINI-HOCHBERG\n\t','\n\t'.join(map(str,zip(labels,pvals_corrected,reject))))
     corrected = dict(zip(labels,zip(pvals_corrected,reject)))

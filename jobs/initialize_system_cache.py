@@ -26,6 +26,8 @@ if IN_SPHINX:
 else:
     VERBOSE_CACHING = 0
 
+import traceback
+
 import neurotools
 import neurotools.jobs
 import neurotools.tools
@@ -56,7 +58,6 @@ def purge_ssd_cache(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     dangerous. It has been disabled and now raises `NotImplementedError`
     '''
     raise NotImplementedError('cache purging is dangerous and has been disabled');
-    os.system('rm -rf ' + ssd_cache_location + os.sep + CACHE_IDENTIFIER)
 
 def du(location):
     '''
@@ -174,7 +175,7 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
 
 
-def initialize_caches(ramdisk=default_ramdisk_location,ssd=None,hdd=None,force=False,
+def initialize_caches(level1=default_ramdisk_location,ssd=None,hdd=None,force=False,
     verbose=False,
     CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
@@ -203,7 +204,7 @@ def initialize_caches(ramdisk=default_ramdisk_location,ssd=None,hdd=None,force=F
     
     Other Parameters
     ----------------
-    ramdisk: str
+    level1: str
         Path to ram disk for caching intermediate results
     ssd: str
         Path to SSD to provide persistent storage (back the ram disk)
@@ -227,27 +228,27 @@ def initialize_caches(ramdisk=default_ramdisk_location,ssd=None,hdd=None,force=F
     
         myhost = os.uname()[1]
         if myhost in ('moonbase',):
-            ramdisk_location   = '/media/neurotools_ramdisk'
+            level1_location   = '/media/neurotools_level1'
             ssd_cache_location = '/ssd_1/mrule'
             hdd_cache_location = '/ldisk_1/mrule'
         elif myhost in ('basecamp',):
-            ramdisk_location   = '/media/neurotools_ramdisk'
+            level1_location   = '/media/neurotools_level1'
             ssd_cache_location = '/home/mrule'
         elif myhost in ('RobotFortress','petra'):
-            ramdisk_location   = '/Users/mrule/neurotools_ramdisk'
+            level1_location   = '/Users/mrule/neurotools_level1'
             ssd_cache_location = '/Users/mrule'
         else:
             print('New System. Cache Locations will need configuring.')
-            ramdisk_location = ssd_cache_location = hdd_cache_location = None
+            level1_location = ssd_cache_location = hdd_cache_location = None
     '''
-    global ramdisk_location, ssd_cache_location, hdd_cache_location
+    global level1_location, ssd_cache_location, hdd_cache_location
     
-    ramdisk_location,ssd_cache_location,hdd_cache_location = ramdisk,ssd,hdd
+    level1_location,ssd_cache_location,hdd_cache_location = level1,ssd,hdd
     
-    if not os.path.isdir(ramdisk_location): 
-        reset_ramdisk(force)
+    if not os.path.isdir(level1_location): 
+        reset_level1(force)
     
-    hierarchy = (ramdisk,)
+    hierarchy = (level1,)
     if not ssd is None:
         hierarchy += (ssd,)
     if not hdd is None:
@@ -255,7 +256,8 @@ def initialize_caches(ramdisk=default_ramdisk_location,ssd=None,hdd=None,force=F
     
     # These caches become global attributes and are used for memoization
     neurotools.jobs.initialize_system_cache.disk_cached       =\
-         neurotools_cache.disk_cacher('.',verbose=verbose)
+         neurotools_cache.disk_cacher('.',
+            verbose=verbose)
     neurotools.jobs.initialize_system_cache.leviathan         =\
          neurotools_cache.hierarchical_cacher(\
             hierarchy,
@@ -269,16 +271,17 @@ def initialize_caches(ramdisk=default_ramdisk_location,ssd=None,hdd=None,force=F
             allow_mutable_bindings=True,
             verbose=verbose,
             CACHE_IDENTIFIER=CACHE_IDENTIFIER)
-    neurotools.jobs.initialize_system_cache.pickle_cache      =\
-        neurotools_cache.hierarchical_cacher(\
-            hierarchy,
-            method='pickle',
-            verbose=verbose,
-            CACHE_IDENTIFIER=CACHE_IDENTIFIER)
+    # This no longer works.
+    #neurotools.jobs.initialize_system_cache.pickle_cache      =\
+    #    neurotools_cache.hierarchical_cacher(\
+    #        hierarchy,
+    #        method='pickle',
+    #        verbose=verbose,
+    #        CACHE_IDENTIFIER=CACHE_IDENTIFIER)
     # Replace memoization decorator with disk-cached memoization
     neurotools.jobs.initialize_system_cache.old_memoize =\
          neurotools.jobs.ndecorator.memoize
-    neurotools.jobs.initialize_system_cache.new_memoize = leviathan
+    neurotools.jobs.initialize_system_cache.new_memoize = unsafe_disk_cache
     neurotools.jobs.initialize_system_cache.memoize     = new_memoize
     neurotools.jobs.ndecorator.memoize = new_memoize
 
@@ -292,28 +295,29 @@ def cache_test():
         ''' This docstring should be preserved by the decorator '''
         e,f = vargs if (len(vargs)==2) else (None,None)
         g = kw['k'] if 'k' in kw else None
-        print(a,b,c,d,e,f,g)
+        print('\tState is:',a,b,c,d,e,f,g)
+        return [1,1,1,1]
 
-    h = disk_cache(example_function)
+    h = new_memoize(example_function)
     
     print('Testing argument siganture encoding')
     f   = example_function
     sig = ((('a', 'a'), ('b', 'b'), ('c', 'c'), ('d', 'd')), None)
-    for mode in ['repr','json','pickle','human']:
+    for mode in ['repr','json','human']: #'pickle',
         print('\n',mode)
-        print('\t',function_signature(f))
+        print('\t',neurotools.jobs.cache.function_signature(f))
         print('\t',sig)
         try:
-            fn  = signature_to_file_string(f,sig,mode=mode)
+            fn  = neurotools.jobs.cache.signature_to_file_string(f,sig,mode=mode)
             print('\t',fn)
-            s2  = file_string_to_signature(fn,mode=mode)
+            s2  = neurotools.jobs.cache.file_string_to_signature(fn,mode=mode)
             print('\t',s2)
         except ValueError:
             traceback.print_exc()
 
     # test hierarchical cache
     print('Testing hybrid caching')
-    print('Caution this is highly experimental')
+    print('Caution this is experimental')
     fn = leviathan(example_function)
     print('Testing leviathan ',fn.__name__)
     val = 'gamma'

@@ -48,7 +48,15 @@ but it will save us from having to manually track and return the job
 number, which will lead to more readable and more reusable code.
 '''
 
-from multiprocessing import Process, Pipe, cpu_count, Pool
+from multiprocessing import Process, Pipe, cpu_count
+
+import traceback
+try:
+    from multiprocessing import Pool
+except ImportError as ie:
+    print('Problem importing multiprocessing.Pool?')
+    traceback.print_exc()
+
 import traceback, warnings
 import sys
 import signal

@@ -13,7 +13,8 @@ from scipy.stats import gaussian_kde
 from neurotools.signal import get_edges
 
 import numpy as np
-from   pylab import find
+#from   pylab import find
+from neurotools.tools import find
 import scipy
 
 def kdepeak(x, x_grid=None):

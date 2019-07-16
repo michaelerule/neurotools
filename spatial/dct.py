@@ -14,9 +14,12 @@ Primarily used with fftzeros code for finding critical points in phase gradient 
 
 from neurotools import getfftw as fft
 import numpy as np
-from pylab import find
 from neurotools.signal.conv import reflect2D
 from neurotools.signal.conv import reflect2D_1
+
+
+from neurotools.tools import find
+#from pylab import find
 
 def get_mask_antialiased(h_w,aa,spacing,cutoff):
     '''

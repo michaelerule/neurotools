@@ -25,7 +25,9 @@ from   scipy.io          import loadmat
 from   scipy.signal      import butter,filtfilt,lfilter
 from   matplotlib.pyplot import *
 import matplotlib.pyplot as plt
-from   matplotlib.pylab  import find
+
+from neurotools.tools import find
+#from   matplotlib.pylab  import find
 
 from neurotools.tools import today
 
@@ -89,9 +91,11 @@ def noaxis(ax=None):
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
 
-def nicebp(bp,c):
+def nicebp(bp,color='k',linewidth=.5):
     '''
-    Improve the appearance of a box and whiskers plot
+    Improve the appearance of a box and whiskers plot.
+    To be called on the object returned by the matplotlib boxplot function,
+    with accompanying color information.
     
     Parameters
     ----------
@@ -99,10 +103,32 @@ def nicebp(bp,c):
     c : color to set boxes to
     '''
     for kk in 'boxes whiskers fliers caps'.split():
-        setp(bp[kk], color=c)
-    setp(bp['whiskers'], linestyle='solid',linewidth=.5)
-    setp(bp['caps'],     linestyle='solid',linewidth=.5)
+        setp(bp[kk], color=color)
+    setp(bp['whiskers'], linestyle='solid',linewidth=linewidth)
+    setp(bp['caps'],     linestyle='solid',linewidth=linewidth)
     #setp(bp['caps'], color=(0,)*4)
+
+def colored_boxplot(data,positions,color,
+                    filled=True,
+                    notch=False,
+                    showfliers=False,
+                    **kwargs):
+    '''
+    Boxplot with nicely colored default style parameterss
+    '''
+    bp = boxplot(data,
+        positions    = positions,
+        patch_artist = True,
+        showfliers   = showfliers,
+        notch        = notch,
+        medianprops  = {'linewidth':2,'color':BLACK},
+        whiskerprops = {'linewidth':2,'color':color},
+        flierprops   = {'linewidth':2,'color':color},
+        capprops     = {'linewidth':2,'color':color},
+        boxprops     = {'linewidth':1,'color':color,
+                        'facecolor':color if filled else WHITE},
+        **kwargs);
+    return bp
 
 
 ########################################################################
@@ -183,7 +209,7 @@ def nicetable(data,format='%4.4f',ncols=8,prefix='',sep=' '):
         lines += [line]
     return '\n'.join(lines)
 
-def nicey():
+def nicey(**kwargs):
     '''
     Mark only the min/max value of y axis
     
@@ -197,9 +223,9 @@ def nicey():
         plt.yticks([plt.ylim()[0],0,plt.ylim()[1]])
     else:
         plt.yticks([plt.ylim()[0],plt.ylim()[1]])
-    fudgey()
+    fudgey(**kwargs)
 
-def nicex():
+def nicex(**kwargs):
     '''
     Mark only the min/max value of x axis
     
@@ -213,14 +239,14 @@ def nicex():
         plt.xticks([plt.xlim()[0],0,plt.xlim()[1]])
     else:
         plt.xticks([plt.xlim()[0],plt.xlim()[1]])
-    fudgex()
+    fudgex(**kwargs)
 
-def nicexy():
+def nicexy(xby=10,yby=10,**kwargs):
     '''
     Mark only the min/max value of y/y axis. See `nicex` and `nicey`
     '''
-    nicex()
-    nicey()
+    nicex(by=xby,**kwargs)
+    nicey(by=yby,**kwargs)
 
 def positivex():
     '''
@@ -789,8 +815,7 @@ def xbartext(y,t,c1,c2,**kwargs):
 
 def nice_legend(*args,**kwargs):
     '''
-    Better defaults for the plot legend. TODO: make this into a
-    matplotlib style.
+    Better defaults for the plot legend.
     '''
     defaults = {
         'framealpha':0.9,
@@ -798,6 +823,19 @@ def nice_legend(*args,**kwargs):
         'fontsize':10,
         'numpoints':1,
         'scatterpoints':1}
+    defaults.update(kwargs)
+    lg = legend(*args,**defaults)
+    lg.get_frame().set_linewidth(0.0)
+    return lg
+
+def rightlegend(*args,**kwargs):
+    '''
+    Legend outside the plot to the right.
+    '''
+    defaults = {
+        'loc':'center left',
+        'bbox_to_anchor':(1,0.5),
+        }
     defaults.update(kwargs)
     lg = legend(*args,**defaults)
     lg.get_frame().set_linewidth(0.0)
@@ -1099,7 +1137,7 @@ def complex_axis(scale):
     ylabel(u'μV',fontname='DejaVu Sans')
     force_aspect()
 
-def subfigurelabel(x,subplot_label_size=14,dx=20,dy=5):
+def subfigurelabel(x,subplot_label_size=14,dx=22,dy=7):
     '''
     Parameters
     ----------

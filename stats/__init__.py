@@ -17,11 +17,9 @@ import numpy as np
 import scipy
 import random
 try:
-    from   matplotlib.mlab import find
+    from  matplotlib.mlab import find
 except:
-    print('Importing matplotlib failed')
     def find(x):
-        # A crude replacement?
         return np.where(np.array(x).ravel())[0]
 
 from   scipy.stats.stats import describe
@@ -51,10 +49,10 @@ def weighted_avg_and_std(values, weights):
     variance = np.average((values-average)**2, weights=weights)  # Fast and numerically precise
     return (average, np.sqrt(variance))
 
-def crossvalidated_least_squares(a,b,K,regress=None):
+def partition_data_for_crossvalidation(a,b,K):
     '''
-    predicts B from A in K-fold cross-validated blocks using linear
-    least squares
+    For predicting B from A, partition both training and testing
+    data into K-fold cross-validation blocks.
 
     Parameters
     ----------
@@ -65,53 +63,134 @@ def crossvalidated_least_squares(a,b,K,regress=None):
         dependent variables
     K : int
         Number of cross-validation blocks
-    regress : function
+    
+    Returns
+    -------
+    trainA : list
+        list of training blocks for independent variables A
+    trainB : list
+        list of training blocks for dependent variables B
+    testA : list
+        list of testing blocks for independent variables A
+    testB : list
+        list of testing blocks for dependent variables B
+    '''
+    # Check shape of data
+    a   = np.array(a)
+    b   = np.array(b)
+    N,h = np.shape(a)
+    if N<h: raise ValueError('1st axis of `a` must be time. is `a` transposed?')
+    # Get typical block length
+    B = N//K
+    trainA, trainB, testA, testB = [],[],[],[]
+    # Iterate over each cross-validation
+    for k in range(K):
+        # Start and stop of testing data range
+        start = k*B
+        stop  = start+B if k<K-1 else N
+        # Training data (exclude testing block)
+        trainB.append(np.append(b[:start,...],b[stop:,...],axis=0))
+        trainA.append(np.append(a[:start,:  ],a[stop:,:  ],axis=0))
+        # Testing data
+        testB.append(b[start:stop,...])
+        testA.append(a[start:stop,:  ])
+    return trainA,trainB,testA,testB
+
+def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None):
+    '''
+    predicts B from A in K-fold cross-validated blocks using linear
+    least squares. I.e. find w such that B = Aw
+
+    Parameters
+    ----------
+    a : array
+        Independent variables; First dimension should be time
+        or number of samples, etc. 
+    b : vector
+        dependent variables
+    K : int
+        Number of cross-validation blocks
+
+    Other Parameters
+    ----------------
+    regress : function, optional
         Regression function, defaults to `np.linalg.lstsq`
         (if providing another function, please match the 
         call signature of `np.linalg.lstsq`)
+    reg : scalar, default 1e-10
+        L2 regularization penalty
+    blockshuffle : positive int or None, default None
+        If not None, should be a positive integeter indicating the 
+        block-size in which to shuffle the input data before
+        breaking it into cross-validation blocks.
     
     Returns
     -------
     w, array-like:
-        model coefficients x
-    xhat, array-like:
+        model coefficients x from each cross-validation
+    bhat, array-like:
         predicted values of b under crossvalidation
     cc, number:
         correlation coefficient
     rms, number:
-        root mean squared erroro
+        root mean squared error
     '''
+    # Check shape of data
     a = np.array(a)
     b = np.array(b)
     N,h = np.shape(a)
     if N<h: 
         raise ValueError('1st axis of `a` must be time. is `a` transposed?')
-    B = N//K
+
+    B = N//K # Get typical block length
+
+    # Optionally shuffle data
+    if not blockshuffle is None:
+        blockshuffle = int(blockshuffle)
+        if blockshuffle>B//2:
+            raise ValueError('Shuffle block len should be <½ xvalidation block len')
+            ab = block_shuffle(concatenate([aa,bb],axis=1),500)
+            a = ab[:,:h]
+            b = ab[:,h:]
+
     x = {}
     predict = []
     if regress is None:
-        def regress(trainA,trainB):
-            return np.linalg.lstsq(trainA,trainB,rcond=None)[0]
+        #def regress(trainA,trainB):
+        #    return np.linalg.lstsq(trainA,trainB,rcond=None)[0]
+        def regress(A,B):
+            Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
+            return np.linalg.solve(Q, A.T.dot(B))
+            
+    # Iterate over each cross-validation
     for k in range(K):
+        # Start and stop of testing data range
         start = k*B
         stop  = start+B
-        #if stop>N: stop = N
         if k>=K-1: stop = N
+        # Training data (exclude testing block)
         trainB = np.append(b[:start,...],b[stop:,...],axis=0)
-        trainA = np.append(a[:start,:],a[stop:,:],axis=0)
+        trainA = np.append(a[:start,:  ],a[stop:,:  ],axis=0)
+        # Testing data
         testB  = b[start:stop,...]
-        testA  = a[start:stop,:]
+        testA  = a[start:stop,:  ]
+        # Train regression model
         x[k] = regress(trainA,trainB)
         reconstructed = np.dot(testA,x[k])
         error = np.mean((reconstructed-testB)**2)
         predict.extend(reconstructed)
     predict = np.array(predict)
+    
+    # Correlation coefficient
     if len(np.shape(b))==1:
         cc = scipy.stats.stats.pearsonr(b,predict)[0]
     else:
         cc = [scipy.stats.stats.pearsonr(bi,pi)[0] for bi,pi in zip(b.T,predict.T)]
+        
+    # Root mean-squared error
     rms = np.sqrt(np.mean((np.array(b)-np.array(predict))**2))
-    return np.array(x),np.array(predict),cc,rms
+
+    return x,np.array(predict),cc,rms
 
 def print_stats(g,name='',prefix=''):
     '''

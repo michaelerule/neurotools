@@ -63,6 +63,7 @@ print matplotlib.pyplot.get_backend()
 from neurotools.spikes.spikes            import *
 from neurotools.spikes.waveform          import *
 from neurotools.tools                    import *
+from neurotools.text                     import *
 from neurotools.functions                import *
 from neurotools.linalg.operators         import *
 from neurotools.graphics.color           import *
@@ -125,8 +126,12 @@ except ImportError:
 
 from neurotools.signal.conv              import *
 
-from neurotools.jobs.parallel            import *
-from neurotools.jobs.ndecorator          import *
+# Sometimes this fails?
+try:
+    from neurotools.jobs.parallel            import *
+    from neurotools.jobs.ndecorator          import *
+except ImportError:
+    print('Skipping the neurotools.jobs package')
 
 from neurotools.getfftw                  import *
 
@@ -159,4 +164,8 @@ from scipy.linalg import *
 # Mess with matplotlib
 rcParams['figure.dpi']=120
 plt.rcParams['image.cmap'] = 'parula'
+from cycler import cycler
+mpl.rcParams['axes.prop_cycle'] = cycler(color=[BLACK,RUST,TURQUOISE,OCHRE,AZURE])
+
+
 

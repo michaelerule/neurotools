@@ -22,6 +22,14 @@ def find(x):
     '''
     Cheap mock-up of pylab's discontinued `find` function for backwards
     compatibility of some code.
+    
+    Parameters
+    ----------
+    x : 1-dimensionary array-like
+    
+    Returns
+    -------
+    boolean array
     '''
     return np.where(x.ravel)[0]
 
@@ -181,7 +189,7 @@ def unitscale(signal):
     signal
         Rescaled signal-min(signal)/(max(signal)-min(signal))
     '''
-    signal = np.array(signal)
+    signal = np.float64(np.array(signal))
     signal-= np.min(signal)
     signal/= np.max(signal)
     return signal
@@ -376,6 +384,14 @@ def nonnegative_bandpass_filter(data,fa=None,fb=None,
         bandstop=bandstop)
     return np.expm1(filtered)
 
+def pad_signal(data):
+    N = data.shape[-1]
+    padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
+    padded[...,N//2  :N//2+N] = data
+    padded[...,     :N//2  ] = data[...,N//2:0    :-1]
+    padded[...,N//2+N:     ] = data[...,-1 :N//2-1:-1]
+    return padded
+
 def bandpass_filter(data,fa=None,fb=None,
     Fs=1000.,order=4,zerophase=True,bandstop=False):
     '''
@@ -452,6 +468,7 @@ def box_filter(data,smoothat,padmode='reflect'):
     np.array :
         One-dimensional filtered signal
     '''
+    data = np.array(data)
     N = len(data)
     assert len(data.shape)==1
     padded = np.zeros(2*N,dtype=data.dtype)
@@ -493,6 +510,7 @@ def median_filter(x,window=100,mode='same'):
     np.array :
         One-dimensional filtered signal
     '''
+    x = np.array(x)
     n = x.shape[0]
     if mode=='valid':
         filtered = [np.median(x[i:i+window]) for i in range(n-window)]
@@ -530,6 +548,7 @@ def variance_filter(x,window=100,mode='same'):
     np.array :
         One-dimensional filtered signal
     '''
+    x = np.array(x)
     n = x.shape[0]
     if mode=='valid':
         filtered = [np.var(x[i:i+window]) for i in range(n-window)]
@@ -692,15 +711,24 @@ def aresafe(b,K=5):
         b[:-i] &= b[i:]
     return b
 
-def get_edges(signal):
+def get_edges(signal,pad_edges=True):
     '''
     Assuming a binary signal, get the start and stop times of each
     treatch of "1s"
     
     Parameters
     ----------
+    signal : 1-dimensional array-like
+    
+    Other Parameters
+    ----------------
+    pad_edges : True
+        Should we treat blocks that start or stop at the beginning or end 
+        of the signal as valid?
+    
     Returns
     -------
+    2xN array of bin start and stop indecies
     '''
     if len(signal)<1:
         return np.array([[],[]])
@@ -709,8 +737,14 @@ def get_edges(signal):
     signal = np.int32(np.bool8(signal))
     starts = list(np.where(np.diff(np.int32(signal))==1)[0]+1)
     stops  = list(np.where(np.diff(np.int32(signal))==-1)[0]+1)
-    if signal[0 ]: starts = [0]+starts
-    if signal[-1]: stops = stops + [len(signal)]
+    if pad_edges:
+        # Add artificial start/stop time to incomplete blocks
+        if signal[0 ]: starts = [0]   + starts
+        if signal[-1]: stops  = stops + [len(signal)]
+    else:
+        # Remove incomplete blocks
+        if signal[0 ]: stops  = stops[1:]
+        if signal[-1]: starts = starts[:-1]
     return np.array([np.array(starts), np.array(stops)])
 
 def set_edges(edges,N):
@@ -978,9 +1012,9 @@ def lowpass_filter(x, cut=10, Fs=1000, order=4):
     Returns
     -------
     '''
-    return bandfilter(x,fb=cut,Fs=fs,order=order)
+    return bandpass_filter(x,fb=cut,Fs=Fs,order=order)
 
-def highpassFilter(x, cut=40, Fs=1000, order=4):
+def highpass_filter(x, cut=40, Fs=1000, order=4):
     '''
     Execute a butterworth high pass Filter at frequency "cut"
     Defaults to order=4 and Fs=1000
@@ -990,7 +1024,7 @@ def highpassFilter(x, cut=40, Fs=1000, order=4):
     Returns
     -------
     '''
-    return bandfilter(x,fa=cut,Fs=Fs,order=order)
+    return bandpass_filter(x,fa=cut,Fs=Fs,order=order)
 
 def fdiff(x,Fs=240.):
     '''
@@ -1010,7 +1044,7 @@ def killSpikes(x,threshold=1):
     Remove times when the signal exceeds a given threshold of the
     standard deviation of the underlying signal. Removed data are
     re-interpolated from the edges. This procedure is particularly
-    useful in correcting kinematics velocity trajectories. Velocity
+    useful in correcting higkinematics velocity trajectories. Velocity
     should be smooth, but motion tracking errors can cause sharp spikes
     in the signal.
     
@@ -1020,7 +1054,7 @@ def killSpikes(x,threshold=1):
     -------
     '''
     x = np.array(x)
-    y = zscore(highpassFilter(x))
+    y = zscore(highpass_filter(x))
     x[abs(y)>threshold] = nan
     for s,e in zip(*get_edges(isnan(x))):
         a = x[s-1]
@@ -1129,6 +1163,8 @@ def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     -------
     '''
     x = np.array(x)
+    if np.prod(x.shape)==0:
+        return x
     theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     return x-(np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
 
@@ -1151,6 +1187,8 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
         (x-mean(x))/std(x)
     '''
     x = zeromean(x,ignore_nan=ignore_nan)
+    if np.prod(x.shape)==0:
+        return x
     theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]

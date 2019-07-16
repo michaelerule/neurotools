@@ -430,13 +430,15 @@ def today():
     return datetime.date.today().strftime('%Y%m%d')
 
 __GLOBAL_TIC_TIME__ = None
-def tic(st=''):
+def tic(doprint=True):
     ''' 
     Similar to Matlab tic 
     stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
     
     Parameters
     ----------
+    doprint : bool
+        if True, print elapsed time. Else, return it.
     
     Returns
     -------
@@ -446,33 +448,45 @@ def tic(st=''):
     try:
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
-            print('t=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
-        else: print("timing...")
-    except: print("timing...")
+            if doprint:
+                print('t=%dms'%(t-__GLOBAL_TIC_TIME__))
+        elif doprint:
+            print("timing...")
+    except: 
+        if doprint: print("timing...")
     __GLOBAL_TIC_TIME__ = current_milli_time()
     return t
 
-def toc(st=''):
+def toc(doprint=True):
     ''' 
     Similar to Matlab toc 
     stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
     
     Parameters
     ----------
+    doprint : bool
+        if True, print elapsed time. Else, return it.
     
     Returns
     -------
+    t : number
+        Current timestamp
+    dt : number
+        Time since the last call to the tic() or toc() function.
     '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
     try:
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
-            print('dt=%dms'%((t-__GLOBAL_TIC_TIME__)),st)
-        else:
+            dt = t-__GLOBAL_TIC_TIME__
+            if doprint: print('dt=%dms'%(dt))
+            return t,dt
+        elif doprint:
             print("havn't called tic yet?")
-    except: print("havn't called tic yet?")
-    return t
+    except: 
+        if doprint: print("havn't called tic yet?")
+    return t,None
 
 def waitfor(t):
     '''
@@ -505,19 +519,6 @@ def getVariable(path,var):
         with h5py.File(path) as f:
             return f[var].value
     raise ValueError('Path is neither .mat nor .hdf5')
-
-def hcat(*args,**kwargs):
-    '''
-    Horizontally concatenate two string objects that contain newlines
-    '''
-    sep = kwargs['sep'] if 'sep' in kwargs else '  '
-    TABWIDTH = kwargs['TABWIDTH'] if 'TABWIDTH' in kwargs else 4
-    S = [str(s).replace('\t',' '*TABWIDTH).split('\n') for s in args]
-    L = [np.max(list(map(len,s))) for s in S]
-    S = [[ln.ljust(l) for ln in s] for (s,l) in zip(S,L)]
-    h = np.max(list(map(len,S)))
-    S = [s+list(('',)*(len(s)-h)) for s in S]
-    return '\n'.join([sep.join(z) for z in zip(*S)])
 
 def arraymap(f,*iterables,**kwargs):
     '''

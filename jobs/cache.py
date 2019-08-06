@@ -449,6 +449,18 @@ def human_decode(key):
     sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
     return sig
 
+def get_cache_path(cache_root,f,method):
+    sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
+    fn  = signature_to_file_string(f,sig,
+            mode        ='repr',
+            compressed  =True,
+            base64encode=True)
+
+    pieces   = fn.split('.')
+    # first two words used as directories
+    path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
+    return path
+
 def locate_cached(cache_root,f,method,*args,**kwargs):
     '''
     
@@ -579,6 +591,15 @@ def validate_for_numpy(x):
         raise ValueError("Numpy type %s is not on the list of compatible types"%x.dtype)
     return True
 
+def read_cache_entry(location,method):
+    if method=='pickle':
+        with open(location,'rb') as openfile:
+            return pickle.load(openfile)
+    elif method =='mat':
+        return scipy.io.loadmat(location)['varargout']
+    elif method =='npy':
+        return np.load(location,allow_pickle=True)
+
 def disk_cacher(
     cache_location,
     method     = 'npy',
@@ -682,47 +703,34 @@ def disk_cacher(
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
             except ValueError as exc:
                 print('Generating cache key failed')
-                traceback.print_exc(exc)
+                traceback.print_exc()#exc)
                 time,result = f(*args,**kwargs)
                 return result
             
-            did_load = False
+            result = None
             if os.path.isfile(location):
                 try:
-                    if method=='pickle':
-                        with open(location,'rb') as openfile:
-                            result = pickle.load(openfile)
-                    elif method =='mat':
-                        result = scipy.io.loadmat(location)['varargout']
-                    elif method =='npy':
-                        try:
-                            result = np.load(location, mmap_mode='r')
-                        except ValueError:
-                            result = np.load(location,allow_pickle=True)
+                    result = read_cache_entry(location,method)
                     if verbose:
                         print('Retrieved cache at ',path)
-                        print('\t%s.%s'%(f.__module__,f.__name__))
-                        print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
-                    did_load = True
+                        print('  %s.%s'%(f.__module__,f.__name__))
+                        print('  %s'%neurotools.jobs.ndecorator.print_signature(sig))
                 except (ValueError, EOFError, OSError, IOError, FileError) as exc:
-                    did_load = False
-                    if verbose:
-                        print('\tFile reading failed')
+                    if verbose: print('  File reading failed')
 
-            if did_load:
-                # Unpack parameters separately
+            if not result is None:
                 params,result = result
             else:
                 if verbose:
                     print('Recomputing cache at %s'%cache_location)
-                    print('\t%s.%s'%(f.__module__,f.__name__))
-                    print('\t%s'%neurotools.jobs.ndecorator.print_signature(sig))
+                    print('  %s.%s'%(f.__module__,f.__name__))
+                    print('  %s'%neurotools.jobs.ndecorator.print_signature(sig))
 
                 # Evaluate function
                 time,result = f(*args,**kwargs)
                 if verbose:
-                    print('\t%s'%path)
-                    print('\tTook %d milliseconds'%time)
+                    print('  %s'%path)
+                    print('  Took %d milliseconds'%time)
 
                 # Save Cached output to disk
                 if write_back:
@@ -747,18 +755,18 @@ def disk_cacher(
                     except (ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
-                            print('\t%s.%s'%(f.__module__,f.__name__))
-                            print('\t%s'%\
+                            print('  %s.%s'%(f.__module__,f.__name__))
+                            print('  %s'%\
                                 neurotools.jobs.ndecorator.print_signature(sig))
-                            print('\t'+'\n\t'.join(\
+                            print('  '+'\n  '.join(\
                                 traceback.format_exc().split('\n')))
 
                     if verbose:
                         try:
                             print('Wrote cache at ',path)
-                            print('\tFor function %s.%s'%\
+                            print('  For function %s.%s'%\
                                 (f.__module__,f.__name__))
-                            print('\tArgument signature %s'%\
+                            print('  Argument signature %s'%\
                                 neurotools.jobs.ndecorator.print_signature(sig))
                             st        = os.stat(location)
                             du        = st.st_blocks * st.st_blksize
@@ -769,21 +777,21 @@ def disk_cacher(
                             boost     = (recompute-io)
                             saved     = time - overhead
                             quality   = boost/(1+float(du))
-                            print('\tSize on disk is %d'%du)
-                            print('\tIO overhead %d milliseconds'%overhead)
-                            print('\tCached performance %0.4f'%io)
-                            print('\tRecompute cost     %0.4f'%recompute)
-                            print('\tExpected boost     %0.4f'%boost)
-                            print('\tTime-space quality %0.4f'%quality)
+                            print('  Size on disk is %d'%du)
+                            print('  IO overhead %d milliseconds'%overhead)
+                            print('  Cached performance %0.4f'%io)
+                            print('  Recompute cost     %0.4f'%recompute)
+                            print('  Expected boost     %0.4f'%boost)
+                            print('  Time-space quality %0.4f'%quality)
                         except (OSError) as exc3:
-                            print('\n\t'.join(\
+                            print('\n  '.join(\
                                 traceback.format_exc().split('\n')))
                     # Skipping when the cache is slower than recompute is not yet supported
                     # if skip_fast and boost<0:
                     #    if verbose:
-                    #        print('\tWARNING DISK IO MORE EXPENSIVE THAN RECOMPUTING!')
-                    #        print('\tWe should really do something about this?')
-                    #        print('\tZeroing out the file, hopefully that causes it to crash on load?')
+                    #        print('  WARNING DISK IO MORE EXPENSIVE THAN RECOMPUTING!')
+                    #        print('  We should really do something about this?')
+                    #        print('  Zeroing out the file, hopefully that causes it to crash on load?')
                     #    with open(location, 'w'): pass
             return result
         def purge(*args,**kwargs):
@@ -812,8 +820,20 @@ def disk_cacher(
                     else:
                         raise
             pass
-        decorated = wrapped(neurotools.jobs.ndecorator.timed(f))
-        decorated.purge = purge
+        def lscache(verbose=False):
+            path = cache_root + os.sep + os.sep.join(function_signature(f).split('.'))
+            try:
+                files = os.listdir(path)
+            except:
+                files = []
+            if verbose:
+                print('Cache %s contains:'%path)
+                print('\n  '+'\n  '.join([f[:20]+'…' for f in files]))
+            return path,files
+        decorated            = wrapped(neurotools.jobs.ndecorator.timed(f))
+        decorated.purge      = purge
+        decorated.cache_root = cache_root
+        decorated.lscache    = lscache 
         return decorated
     return cached
 

@@ -117,7 +117,8 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
         if show_progress:
             thisprogress = ((i+1)*100./njobs)
             if (thisprogress - lastprogress)>0.5:
-                sys.stdout.write('\rdone %0.1f%% '%thisprogress)
+                k = int(thisprogress//2)
+                sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+'] done %5.1f%% '%thisprogress)
                 sys.stdout.flush()
                 lastprogress = thisprogress
         # if it is a one element tuple, unpack it automatically
@@ -127,7 +128,7 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
         if verbose and type(result) is RuntimeError:
             print('ERROR PROCESSING',problems[i])
     if show_progress:
-        sys.stdout.write('\r            \r')
+        sys.stdout.write('\n\r')
     return [results[i] if i in results else None \
         for i,k in enumerate(problems)]
 

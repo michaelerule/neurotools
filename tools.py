@@ -303,6 +303,9 @@ def find_all_extension(d,ext='png'):
         found.extend([f for f  in files if f.lower().split('.')[-1]==ext])
     return found
 
+def amap(function,*args):
+    return np.array(list(map(function,*args)))
+
 # really should make nice datastructures for all this
 setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b)}
 mapdict    = lambda data,function: {k:function(v) for k,v in data.iteritems()}
@@ -544,3 +547,14 @@ def invert_permutation(p):
     
 def find(x):
     return np.where(x)[0]
+
+def progress_bar(iterable):
+    x = list(iterable)
+    N = len(x)
+    for i,x in enumerate(x):
+        k = int(i*50//N)
+        sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%3d%%'%(i*100//N))
+        sys.stdout.flush()
+        yield x
+    sys.stdout.write('\r['+('#'*50)+']100%\n')
+    sys.stdout.flush()

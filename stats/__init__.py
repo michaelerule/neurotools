@@ -49,6 +49,176 @@ def weighted_avg_and_std(values, weights):
     variance = np.average((values-average)**2, weights=weights)  # Fast and numerically precise
     return (average, np.sqrt(variance))
 
+import neurotools.tools
+
+def partition_trials_for_crossvalidation(x,K,shuffle=False):
+    '''
+    Split trial data into crossvalidation blocks
+    
+    Parameters
+    ----------
+    x : list
+        List of trial data to partition. Each entry in the list should
+        be a Ntimepoints x Ndatapoints array.
+    K : int
+        Number of crossvalidation blocks to compute
+    
+    Returns
+    -------
+    spans : list
+        List of trial indecies to use for each block
+    '''
+    N    = len(x)
+    lens = np.array([xi.shape[0] for xi in x])
+    L    = np.sum(lens)
+    B    = L/K
+    if shuffle:
+        order    = np.random.permutation(N)
+        lens     = lens[order]
+        indecies = order
+    else:
+        indecies = np.arange(N)
+    C    = np.cumsum(lens)
+    Bk   = (np.arange(K)+1)*B
+    edge = np.argmin(np.abs(C[:,None]-Bk[None,:]),axis=0)
+    a    = np.concatenate([[0],edge[:-1]+1])
+    b    = np.concatenate([edge[:-1]+1,[N]])
+    return [indecies[np.arange(ai,bi)] for ai,bi in zip(a,b)]
+    
+def polar_error(x,xh,units='degrees',mode='L1'):
+    '''
+    Compute error for polar measurements, 
+    wrapping the circular variable appropriately.
+
+    Parameters
+    ----------
+    x: array-like
+        true valies (in degrees)
+    hx: array-like
+        estimated values (in degrees)
+
+    Other Parameters
+    ----------------
+    units: str, default "degrees"
+        Polar units to use. Either "radians" or "degrees"
+    mode: str, default 'L1'
+        Error method to use. Either 'L1' (mean absolute error) or 
+        'L2' (root mean-squared error)
+
+    Returns
+    -------
+    err:
+        Circularly-wrapped error
+    '''
+    x  = np.array(x).ravel()
+    xh = np.array(xh).ravel()
+    e  = np.abs(x-xh)
+    k  = {'radians':np.pi,'degrees':180}[units]
+    e[e>k] = 2*k-e[e>k]
+    if mode=='L1':
+        return np.mean(np.abs(e))
+    if mode=='L2':
+        return np.mean(np.abs(e)**2)**.5
+    raise ValueError('Mode should be either "L1" or "L2"')
+
+error_functions = {
+    'correlation':lambda x,xh: scipy.stats.stats.pearsonr(x,xh)[0],
+    'L2'         :lambda x,xh: np.mean((x-xh)**2)**0.5,
+    'L1'         :lambda x,xh: np.mean(np.abs(x-xh)),
+    'L1_degrees' :lambda x,xh: polar_error(x,xh,mode='L1',units='degrees'),
+    'L2_degrees' :lambda x,xh: polar_error(x,xh,mode='L2',units='degrees'),
+    'L1_radians' :lambda x,xh: polar_error(x,xh,mode='L1',units='radians'),
+    'L2_radians' :lambda x,xh: polar_error(x,xh,mode='L2',units='radians')
+}
+
+def trial_crossvalidated_least_squares(a,b,K,
+    regress=None,
+    reg=1e-10,
+    shuffle=False,
+    errmethod='L2'):
+    '''
+    predicts B from A in K-fold cross-validated blocks using linear
+    least squares. I.e. find w such that B = Aw
+
+    Parameters
+    ----------
+    a : array
+        List of trials for independent variables; For every trial, 
+        First dimension should be time or number of samples, etc. 
+    b : vector
+        List of trials for dependent variables
+    K : int
+        Number of cross-validation blocks
+
+    Other Parameters
+    ----------------
+    regress : function, optional
+        Regression function, defaults to `np.linalg.lstsq`
+        (if providing another function, please match the 
+        call signature of `np.linalg.lstsq`)
+    reg : scalar, default 1e-10
+        L2 regularization penalty
+    shuffle : bool, default False
+        Whether to shuffle trials before crossvalidation
+    errmethod: String
+        Method used to compute the error. Can be 'L1' (mean absolute error)
+        'L2' (root mean-squared error) or 'correlation' (pearson correlation
+        coefficient). 
+    
+    Returns
+    -------
+    w, array-like:
+        model coefficients x from each cross-validation
+    bhat, array-like:
+        predicted values of b under crossvalidation
+    error :
+        root mean squared error from each crossvalidation run
+    '''
+
+    if not errmethod in error_functions:
+        raise ValueError('Error method should be one of '+\
+                         ', '.join(error_functions.keys()))
+    
+    # Check shape of data
+    a = np.array([np.array(ai) for ai in a])
+    b = np.array([np.array(bi) for bi in b])
+    Ntrial = len(a)
+    Nsampl = sum([ai.shape[0] for ai in a])
+    # Get typical block length
+    B = Nsampl//K 
+    # Determine trial groups for cross-validation
+    groups = partition_trials_for_crossvalidation(a,K,shuffle=shuffle)
+    # Define regression solver if none provided
+    if regress is None:
+        def regress(A,B):
+            Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
+            return np.linalg.solve(Q, A.T.dot(B))
+    # Iterate over each cross-validation
+    x    = {}
+    Bhat = {}
+    for k in range(K):
+        train  = np.concatenate(
+            groups[1:]       if k==0 
+            else groups[:-1] if k==K-1 
+            else groups[:k]+groups[k+1:])
+        trainA = np.concatenate(a[train])
+        trainB = np.concatenate(b[train])
+        x[k]   = regress(trainA,trainB)
+        # Trials might be shuffled, so we predict them one-by-one
+        # Then assign them to their correct slot to preserve original order.
+        for i in groups[k]:
+            Bhat[i] = a[i].dot(x[k])
+
+    # Convert dictionaries to list
+    Bhat = np.array([Bhat[i] for i in range(Ntrial)])
+    x    = np.array([x   [i] for i in range(K)     ])
+
+    # Apply error function within each crossvalidation block
+    efn  = error_functions[errmethod]
+    errs = [efn(np.concatenate(b[g]),np.concatenate(Bhat[g])) for g in groups]
+
+    return x,np.concatenate(Bhat),errs
+
 def partition_data_for_crossvalidation(a,b,K):
     '''
     For predicting B from A, partition both training and testing
@@ -177,7 +347,6 @@ def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None)
         # Train regression model
         x[k] = regress(trainA,trainB)
         reconstructed = np.dot(testA,x[k])
-        error = np.mean((reconstructed-testB)**2)
         predict.extend(reconstructed)
     predict = np.array(predict)
     
@@ -186,10 +355,9 @@ def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None)
         cc = scipy.stats.stats.pearsonr(b,predict)[0]
     else:
         cc = [scipy.stats.stats.pearsonr(bi,pi)[0] for bi,pi in zip(b.T,predict.T)]
-        
+
     # Root mean-squared error
     rms = np.sqrt(np.mean((np.array(b)-np.array(predict))**2))
-
     return x,np.array(predict),cc,rms
 
 def print_stats(g,name='',prefix=''):
@@ -301,23 +469,65 @@ def pca(x,n_keep=None):
     w,v = w[:n_keep],v[:,:n_keep]
     return w,v
 
-def covariance(x,sample_deficient=False,reg=0.0):
+def covariance(x,y=None,sample_deficient=False,reg=0.0):
     '''
     Covariance matrix for `Nsamples` x `Nfeatures` matrix.
     Data are *not* centered before computing covariance.
-
+    
+ 
     Parameters
     ----------
+    x : Nsamples x Nfeatures array-like
+        Array of input features
+        
+    Other parameters
+    ----------------
+    y : Nsamples x Nyfeatures array-like
+        Array of input features
+    sample_deficient: bool, default False
+        Whether the data contains fewer samples than it does features. 
+        If False (the default), routine will raise a `ValueError`.
+    reg: positive scalar, default 0
+        Diagonal regularization to add to the covariance
     
     Returns
     -------
+    C : np.array
+        Sample covariance matrix
     '''
-    a,b = x.shape
-    if not sample_deficient and b>a:
+    x = np.array(x)
+    Nsamples,Nfeatures = x.shape
+    if not sample_deficient and Nfeatures>Nsamples:
         raise ValueError('x should be Nsample x Nfeature where Nsamples >= Nfeatures');
-    C = x.T.dot(x)/x.shape[0]
-    C = C + np.eye(C.shape[0])*reg
+
+    # Covariance of x
+    if y is None:
+        #if np.all(np.isfinite(x)): 
+        C = x.T.dot(x)/Nsamples
+        #else:
+        #    C = np.zeros((Nfeatures,Nfeatures))
+        #    for i in range(Nfeatures):
+        #        C[i,i+1:] = np.nanmean(x[:,i:i+1]*x[:,i+1:],axis=0)
+        #    C = C+C.T
+        #    for i in range(Nfeatures):
+        #        C[i,i]    = np.nanvar (x[:,i])
+        R = np.eye(Nfeatures)*reg
+        return C+R
+    
+    # Cross-covariance between x and y
+    y = np.array(y)
+    if len(y.shape)==1:
+        y = np.array([y]).T
+    Nysamples,Nyfeatures = y.shape
+    if not Nysamples==Nsamples:
+        raise ValueError('1st dimension of x and y (# of samples) should be the same')
+    if not abs(reg)<1e-12:
+        raise ValueError('Cross-covariance does not support non-zero regularization')
+    
+    C = x.T.dot(y)/Nsamples
     return C
+    
+            
 
 class description:
     '''

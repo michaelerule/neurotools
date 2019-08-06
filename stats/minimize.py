@@ -68,9 +68,9 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     nfeval = 0
     ngeval = 0
     if jac is True:
-        v,g  = objective(x0)
+        v,g  = objective(x0,*kwargs['args']) if 'args' in kwargs else objective(x0)
     else:
-        v    = objective(x0)
+        v    = objective(x0,*kwargs['args']) if 'args' in kwargs else objective(x0)
     best = v
     # Show progress of the optimization?
     if show_progress:
@@ -144,8 +144,9 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     def try_to_optimize(method,validoptions,jac_=None):
         try:
             options = {k:v for (k,v) in kwargs.items() if k in validoptions.split()}
+            others  = {k:v for (k,v) in kwargs.items() if not k in validoptions.split()}
             result = scipy.optimize.minimize(wrapped_objective,nonlocals['x0'].copy(),
-                jac=jac_,hess=hess,method=method,tol=tol,**options)
+                jac=jac_,hess=hess,method=method,tol=tol,options=options,**others)
             _ = wrapped_objective(result.x)
             clear_progress()
             if result.success: 

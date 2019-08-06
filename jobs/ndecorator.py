@@ -164,11 +164,9 @@ def argument_signature(function,*args,**kwargs):
     '''
     named_store = {} # map from parameter names to values
     named,vargname,kwargname,defaults = inspect.getargspec(function)
-
     # Pattern matching can give rise to lists in the "named" variable
     # returned here. We need to convert these to something hashable.
-    named = sanitize(named)
-
+    named     = sanitize(named)
     available = list(zip(named,args))
     nargs     = 1 if type(available) is str else 0 if available is None else len(available)
     ndefault  = 1 if type(defaults)  is str else 0 if defaults  is None else len(defaults)

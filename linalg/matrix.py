@@ -186,9 +186,7 @@ def check_covmat_fast(C,N=None,eps=1e-6):
     '''
     Verify that matrix M is a size NxN precision or covariance matirx
     '''
-    if not type(C)==np.ndarray:
-        raise ValueError("Covariance matrix should be a 2D numpy array")
-    if not len(C.shape)==2:
+    if not type(C)==np.ndarray and len(C.shape)==2:
         raise ValueError("Covariance matrix should be a 2D numpy array")
     if N is None: 
         N = C.shape[0]
@@ -246,6 +244,9 @@ def psd_eig(M,eps=1e-9):
     Do not use.
     '''
     e,v = real_eig(M,eps)
+    o   = np.argsort(-np.abs(e))
+    e   = e[o]
+    v   = v[:,o]
     if np.any(e<-eps):
         raise ValueError('Matrix has negative eigenvalues')
     e = np.maximum(e,eps)
@@ -662,3 +663,21 @@ def normedcovariance(C):
     N = C.shape[0]
     e,v = scipy.linalg.eigh(C,eigvals=(N-1,N-1))
     return C/e
+
+def selector_matrix(b):
+    '''
+    Create matrix that extracts a subset of elements.
+    Returns selector matrix S such that:
+    
+    X[b] = S @ X
+    
+    Parameters
+    ----------
+    b : boolean vector
+    '''
+    b = np.array(b)
+    N = len(b)
+    K = np.sum(b)
+    S = np.zeros((K,N))
+    S[arange(K),neurotools.tools.find(b)]=1
+    return S

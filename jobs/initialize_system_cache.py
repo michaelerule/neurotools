@@ -54,7 +54,7 @@ def purge_ssd_cache(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
     Deletes the SSD drive cache. USE WITH CAUTION.
     
-    This will `rm -rf` the entire  `ssd_cache_location` and is EXTREMELY
+    This will `rm -rf` the entire  `level2_location` and is EXTREMELY
     dangerous. It has been disabled and now raises `NotImplementedError`
     '''
     raise NotImplementedError('cache purging is dangerous and has been disabled');
@@ -97,13 +97,9 @@ def reset_ramdisk(force=False,override_ramdisk_location=None):
         fails with a warning unless force is set to true.
     '''
     global default_ramdisk_location,ramdisk_location
-    try:
-        if ramdisk_location is None:
-            ramdisk_location =\
-                default_ramdisk_location\
-                if override_ramdisk_location is None\
-                else override_ramdisk_location
-    except:
+    try:    location_defined = not ramdisk_location is None
+    except: location_defined = False
+    if not  location_defined:
         # Ramisk location might not be initialized
         ramdisk_location =\
             default_ramdisk_location\
@@ -112,7 +108,6 @@ def reset_ramdisk(force=False,override_ramdisk_location=None):
     if not force:
         raise NotImplementedError(
             'modifying ramdisk is dangerous; use force=True to force');
-    
     print('Initializing public ramdisk at %s'%ramdisk_location)
     commands = [
         'sudo mkdir -p '+ramdisk_location,
@@ -146,11 +141,11 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     may need to share all cache values. It is far better to implement
     some sort of lazy protocol. 
     '''
-    global ramdisk_location,ssd_cache_location,hdd_cache_location
+    global ramdisk_location,level2_location,level3_location
     raise NotImplementedError('cache synchronization overwites files; this is dangerous and it has been disabled');
     # write_back is disabled for the slow disk caches. To make these
     # persistant, we need to run an rsync job to keep them synchronized.
-    disk_cache_hierarchy = (ramdisk_location,ssd_cache_location,hdd_cache_location)
+    disk_cache_hierarchy = (ramdisk_location,level2_location,level3_location)
     for level in range(len(disk_cache_hierarchy)-1):
         source       = disk_cache_hierarchy[level  ] + os.sep + CACHE_IDENTIFIER
         destination  = disk_cache_hierarchy[level+1] + os.sep + CACHE_IDENTIFIER
@@ -175,7 +170,7 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
 
 
-def initialize_caches(level1=default_ramdisk_location,ssd=None,hdd=None,force=False,
+def initialize_caches(level1=default_ramdisk_location,level2=None,level3=None,force=False,
     verbose=False,
     CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
@@ -193,7 +188,7 @@ def initialize_caches(level1=default_ramdisk_location,ssd=None,hdd=None,force=Fa
     - network filesystem for large database
     
     # neurotools.jobs.ndecorator.memoize memoizes within the process memory
-    # leviathan (because it is large and slow and buggy) memoizes within
+    # unsafe_disk_cache memoizes within
     # memory, ssd, and possible hdd in a hierarchy. 
     # this patches neurotools.jobs.ndecorator.memoize and replaces it
     # with the disk cacher, causing all dependent code to automatically
@@ -229,41 +224,32 @@ def initialize_caches(level1=default_ramdisk_location,ssd=None,hdd=None,force=Fa
         myhost = os.uname()[1]
         if myhost in ('moonbase',):
             level1_location   = '/media/neurotools_level1'
-            ssd_cache_location = '/ssd_1/mrule'
-            hdd_cache_location = '/ldisk_1/mrule'
+            level2_location = '/ssd_1/mrule'
+            level3_location = '/ldisk_1/mrule'
         elif myhost in ('basecamp',):
             level1_location   = '/media/neurotools_level1'
-            ssd_cache_location = '/home/mrule'
+            level2_location = '/home/mrule'
         elif myhost in ('RobotFortress','petra'):
             level1_location   = '/Users/mrule/neurotools_level1'
-            ssd_cache_location = '/Users/mrule'
+            level2_location = '/Users/mrule'
         else:
             print('New System. Cache Locations will need configuring.')
-            level1_location = ssd_cache_location = hdd_cache_location = None
+            level1_location = level2_location = level3_location = None
     '''
-    global level1_location, ssd_cache_location, hdd_cache_location
+    global level1_location, level2_location, level3_location
     
-    level1_location,ssd_cache_location,hdd_cache_location = level1,ssd,hdd
+    level1_location,level2_location,level3_location = level1,level2,level3
     
     if not os.path.isdir(level1_location): 
-        reset_level1(force)
+        raise ValueError('Level 1 location should be an existing directory')
+    #    reset_level1(force)
     
+    # Add additional cache levels if they are specified 
     hierarchy = (level1,)
-    if not ssd is None:
-        hierarchy += (ssd,)
-    if not hdd is None:
-        hierarchy += (hdd,)
+    if not level2 is None: hierarchy += (level2,)
+    if not level3 is None: hierarchy += (level3,)
     
-    # These caches become global attributes and are used for memoization
-    neurotools.jobs.initialize_system_cache.disk_cached       =\
-         neurotools_cache.disk_cacher('.',
-            verbose=verbose)
-    neurotools.jobs.initialize_system_cache.leviathan         =\
-         neurotools_cache.hierarchical_cacher(\
-            hierarchy,
-            method='npy',
-            verbose=verbose,
-            CACHE_IDENTIFIER=CACHE_IDENTIFIER)
+    # Define the disk-caching memoization decorator
     neurotools.jobs.initialize_system_cache.unsafe_disk_cache =\
         neurotools_cache.hierarchical_cacher(\
             hierarchy,
@@ -271,19 +257,12 @@ def initialize_caches(level1=default_ramdisk_location,ssd=None,hdd=None,force=Fa
             allow_mutable_bindings=True,
             verbose=verbose,
             CACHE_IDENTIFIER=CACHE_IDENTIFIER)
-    # This no longer works.
-    #neurotools.jobs.initialize_system_cache.pickle_cache      =\
-    #    neurotools_cache.hierarchical_cacher(\
-    #        hierarchy,
-    #        method='pickle',
-    #        verbose=verbose,
-    #        CACHE_IDENTIFIER=CACHE_IDENTIFIER)
-    # Replace memoization decorator with disk-cached memoization
-    neurotools.jobs.initialize_system_cache.old_memoize =\
-         neurotools.jobs.ndecorator.memoize
+
+    # Replace in-memory memoization with disk-cached memoization
+    neurotools.jobs.initialize_system_cache.old_memoize = neurotools.jobs.ndecorator.memoize
     neurotools.jobs.initialize_system_cache.new_memoize = unsafe_disk_cache
     neurotools.jobs.initialize_system_cache.memoize     = new_memoize
-    neurotools.jobs.ndecorator.memoize = new_memoize
+    neurotools.jobs.ndecorator.memoize                  = new_memoize
 
 def cache_test():
     '''
@@ -318,8 +297,8 @@ def cache_test():
     # test hierarchical cache
     print('Testing hybrid caching')
     print('Caution this is experimental')
-    fn = leviathan(example_function)
-    print('Testing leviathan ',fn.__name__)
+    fn = unsafe_disk_cache(example_function)
+    print('Testing unsafe_disk_cache ',fn.__name__)
     val = 'gamma'
     fn('a',val,'c','d')
     fn('a',val,'c','d','e','f')

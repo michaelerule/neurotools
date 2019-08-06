@@ -112,6 +112,8 @@ def colored_boxplot(data,positions,color,
                     filled=True,
                     notch=False,
                     showfliers=False,
+                    linewidth=2,
+                    whis=[5,95],
                     **kwargs):
     '''
     Boxplot with nicely colored default style parameterss
@@ -121,11 +123,12 @@ def colored_boxplot(data,positions,color,
         patch_artist = True,
         showfliers   = showfliers,
         notch        = notch,
-        medianprops  = {'linewidth':2,'color':BLACK},
-        whiskerprops = {'linewidth':2,'color':color},
-        flierprops   = {'linewidth':2,'color':color},
-        capprops     = {'linewidth':2,'color':color},
-        boxprops     = {'linewidth':1,'color':color,
+        whis         = whis, 
+        medianprops  = {'linewidth':linewidth,'color':BLACK},
+        whiskerprops = {'linewidth':linewidth,'color':color},
+        flierprops   = {'linewidth':linewidth,'color':color},
+        capprops     = {'linewidth':linewidth,'color':color},
+        boxprops     = {'linewidth':linewidth,'color':color,
                         'facecolor':color if filled else WHITE},
         **kwargs);
     return bp

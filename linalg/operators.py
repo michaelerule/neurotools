@@ -10,18 +10,46 @@ import numpy.linalg
 import scipy
 import scipy.linalg
 
+
+from neurotools.functions import sexp
+
 '''
 Functions for generating discrete representations of certain operators. 
 Note: This is partially redundant with `neurotools.spatial.kernels`.
 '''
 
-def laplaceop(N):
+def laplace1D(N):
     '''
+    Laplacian operator on a closed, discrete, one-dimensional domain
+    of length `N`
+
     Parameters
     ----------
+    N: int
+        Size of operator
     
     Returns
     -------
+    L: NxN array
+        Matrix representation of Laplacian operator on a finite, 
+        discrete domain of length N.
+    '''
+    L = -2*np.eye(N)+np.eye(N,k=1)+np.eye(N,k=-1)
+    L[0,0] = L[-1,-1] = -1
+    return L
+
+def laplaceFT1D(N):
+    '''
+    Parameters
+    ----------
+    N : int
+        Size of the domain    
+    
+    Returns
+    -------
+    x : np.array
+        Fourier transform of discrete Laplacian operator on a discrete
+        one-dimensional domain of lenght `N`
     '''
     precision = np.zeros((N,))
     if (N%2==1):
@@ -33,7 +61,7 @@ def laplaceop(N):
     x = np.fft.fft(precision)
     return x
 
-def wienerop(N):
+def wienerFT1D(N):
     '''
     Square-root covariance operator for standard 1D Wiener process
     
@@ -45,14 +73,18 @@ def wienerop(N):
     -------
     '''
     x = laplaceop(N)
-    x[abs(x)<1e-5]=1
-    sqrtcov = 1/sqrt(x)
+    x[np.abs(x)<1e-5]=1
+    sqrtcov = 1/np.sqrt(x)
     return sqrtcov
 
-def diffuseop(N,sigma):
+def diffuseFT1D(N,sigma):
     '''
+    Fourier transform of a Gaussian smoothing kernel
+
     Parameters
     ----------
+    N : int
+        Size of the domain    
     
     Returns
     -------
@@ -96,13 +128,16 @@ def delta(N):
 
 def differentiator(N):
     '''
+    Fourier space discrete differentiaion
+
     Parameters
     ----------
+    N : int
+        Size of the domain    
     
     Returns
     -------
     '''
-    # Fourier space discrete differentiaion
     delta = np.zeros((N,))
     delta[0]=-1
     delta[-1]=1
@@ -113,6 +148,8 @@ def integrator(N):
     '''
     Parameters
     ----------
+    N : int
+        Size of the domain    
     
     Returns
     -------
@@ -155,7 +192,7 @@ def gaussian1DblurOperator(n,sigma):
     '''
     x   = np.linspace(0,n-1,n); # 1D domain
     tau = 1.0/sigma**2;       # precision
-    k   = np.exp(-tau*x**2);    # compute (un-normalized) 1D kernel
+    k   = sexp(-tau*x**2);    # compute (un-normalized) 1D kernel
     op  = scipy.linalg.special_matrices.toeplitz(k,k);     # convert to an operator from n -> n
     # normalize rows so density is conserved
     op /= np.sum(op)
@@ -167,6 +204,10 @@ def gaussian1DblurOperator(n,sigma):
     op /= np.sum(op)
     return op
 
+def separable_guassian_blur(op,x):
+    n = len(op)
+    return op @ x @ ou.T
+
 def gaussian2DblurOperator(n,sigma):
     '''
     Returns a 2D Gaussan blur operator for a n x n sized domain
@@ -174,7 +215,7 @@ def gaussian2DblurOperator(n,sigma):
     '''
     x   = np.linspace(0,n-1,n) # 1D domain
     tau = 1.0/sigma**2       # precision
-    k   = np.exp(-tau*x**2)    # compute (un-normalized) 1D kernel
+    k   = sexp(-tau*x**2)    # compute (un-normalized) 1D kernel
     tp  = scipy.linalg.special_matrices.toeplitz(k,k)     # convert to an operator from n -> n
     op  = scipy.linalg.special_matrices.kron(tp,tp)       # take the tensor product to get 2D operator
     # normalize rows so density is conserved

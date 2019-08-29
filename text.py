@@ -17,18 +17,16 @@ Text and string manipulation routines
 
 import numpy as np
 
-def hcat(*args,**kwargs):
+def hcat(*args,sep=' ',TABWIDTH=4,prefix='',suffix=''):
     '''
     Horizontally concatenate two string objects that contain newlines
     '''
-    sep = kwargs['sep'] if 'sep' in kwargs else '  '
-    TABWIDTH = kwargs['TABWIDTH'] if 'TABWIDTH' in kwargs else 4
     S = [str(s).replace('\t',' '*TABWIDTH).split('\n') for s in args]
     L = [np.max(list(map(len,s))) for s in S]
     S = [[ln.ljust(l) for ln in s] for (s,l) in zip(S,L)]
     h = np.max(list(map(len,S)))
     S = [s+list(('',)*(len(s)-h)) for s in S]
-    return '\n'.join([sep.join(z) for z in zip(*S)])
+    return prefix+(suffix+'\n'+prefix).join([sep.join(z) for z in zip(*S)])+suffix
 
 def wordwrap(text,width=80,sep=' '):
     '''
@@ -61,3 +59,5 @@ def wordwrap(text,width=80,sep=' '):
             line=''
         line += t+sep
     return '\n'.join(lines+[line[:-len(sep)]])
+
+

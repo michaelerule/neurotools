@@ -548,13 +548,28 @@ def invert_permutation(p):
 def find(x):
     return np.where(x)[0]
 
+import time
 def progress_bar(iterable):
     x = list(iterable)
     N = len(x)
+    wait_til_ms = time.time()*1000
     for i,x in enumerate(x):
-        k = int(i*50//N)
-        sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%3d%%'%(i*100//N))
-        sys.stdout.flush()
+        time_ms = time.time()*1000
+        if time_ms>=wait_til_ms:
+            k = int(i*50//N)
+            sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%3d%%'%(i*100//N))
+            sys.stdout.flush()
+            wait_til_ms = time_ms+250
         yield x
     sys.stdout.write('\r['+('#'*50)+']100%\n')
     sys.stdout.flush()
+
+def asiterable(x):
+    '''
+    Check if something is iterable
+    '''
+    try: 
+        return list(iter(x))
+    except TypeError:
+        return None
+

@@ -52,7 +52,7 @@ def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
     limit = np.float128(limit)
     x = np.float128(x)
-    return returntype(np.exp(np.minimum(limit,x)))
+    return returntype(np.exp(np.clip(x,-limit,limit)))
 
 def sigmoid(x,returntype=LINALGMAXFLOAT):
     '''

@@ -8,44 +8,6 @@ from __future__ import print_function
 '''
 Parallel tools
 ==============
-
-Notes on why "parmap" and related functions are awkward in Python:
-
-Python multiprocessing will raise "cannot pickle"
-errors if you try to pass general functions as arguments to parallel
-map. This flaw arises because python multiprocessing is achieved by
-forking subprocesses that contain a full copy of the interpreter state,
-mapped in memory with copy-on-write. (incidentally this is also why
-you don't want to load large datasets in worker processes, since each
-process will load the dataset separately, consuming a large amount of
-memory). Because functions defined after worker-pool initiation depend
-on the interpreter state of the process in which they were defined, they
-cannot be sent over to worker processes as we cannot guarantee in
-general that the context they reference will exist in the worker process.
-Consequentially, the only way to use a function with the "parmap"
-function is to define it BEFORE the worker pool is initialized (or to
-re-initialize the pool once it is defined). The function must be at
-global scope.
-
-Furthermore, the work-stealing pool model can only send back the return
-values of function evaluations from the work queue -- and it does so in
-no particular order. Therefore, if we want to know which job corresponds
-to which return value, we must return identifying information. In this
-case wer return the job number.
-
-The reason we cannot make a generic function that masks this "return the
-job ID" issue is that we cannot pass an arbitrary function over to
-the worker pool processes due to the aforementioned interpreter context
-issue.
-
-A more laborous workaround, which we might consider later, would be to
-re-implement the work-stealing queue so that job IDs are automatically
-preserved and communicated through inter-process communication.
-
-This will not solve the problem of needing to define all functions used
-with "parmap" before the working pool is initailized and at global scope,
-but it will save us from having to manually track and return the job
-number, which will lead to more readable and more reusable code.
 '''
 
 from multiprocessing import Process, Pipe, cpu_count
@@ -62,11 +24,10 @@ import sys
 import signal
 import threading
 import functools
-
 import inspect
 import neurotools.jobs.ndecorator
 import neurotools.jobs.closure
-
+from neurotools.tools import asiterable
 import numpy as np
 
 if sys.version_info<(3,0):
@@ -76,7 +37,7 @@ __N_CPU__ = cpu_count()
 
 reference_globals = globals()
 
-def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
+def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=True):
     '''
     Parallel implmenetation of map using multiprocessing
 
@@ -95,40 +56,47 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=1):
     list of results
     '''
     global mypool
+
     problems = list(problems)
     njobs    = len(problems)
+    if njobs==0: return []
 
-    if njobs==0:
-        if verbose: 
-            print('NOTHING TO DO?')
-        return []
-
-    if not debug and (not 'mypool' in globals() or mypool is None):
-        if verbose: 
-            print('NO POOL FOUND. RESTARTING.')
-        mypool = Pool(cpu_count()-leavefree)
+    if not debug:
+        try:
+            mypool
+        except NameError:
+            if verbose: 
+                print('No worker pool found, restarting.')
+            mypool = Pool(cpu_count()-leavefree)
 
     enumerator = map(f,problems) if debug else mypool.imap(f,problems)
     results = {}
-    if show_progress:
-        sys.stdout.write('\n')
     lastprogress = 0.0
-    for i,result in enumerator:
+    thisprogress = 0.0
+    try:
+        for i,result in enumerator:
+            if show_progress:
+                thisprogress = ((i+1)*100./njobs)
+                if (thisprogress - lastprogress)>0.5:
+                    k = int(thisprogress//2)
+                    sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%5.1f%% '%thisprogress)
+                    sys.stdout.flush()
+                    lastprogress = thisprogress
+            # if it is a one element tuple, unpack it automatically
+            if isinstance(result,tuple) and len(result)==1:
+                result=result[0]
+            results[i]=result
+            if verbose and type(result) is RuntimeError:
+                print('Error processing',problems[i])
         if show_progress:
-            thisprogress = ((i+1)*100./njobs)
-            if (thisprogress - lastprogress)>0.5:
-                k = int(thisprogress//2)
-                sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+'] done %5.1f%% '%thisprogress)
-                sys.stdout.flush()
-                lastprogress = thisprogress
-        # if it is a one element tuple, unpack it automatically
-        if isinstance(result,tuple) and len(result)==1:
-            result=result[0]
-        results[i]=result
-        if verbose and type(result) is RuntimeError:
-            print('ERROR PROCESSING',problems[i])
-    if show_progress:
-        sys.stdout.write('\n\r')
+            sys.stdout.write('\r['+('#'*50)+']%5.1f%% \n\r'%100)
+            sys.stdout.flush()
+    except:
+        if show_progress:
+            k = int(thisprogress//2)
+            sys.stdout.write('\r['+('#'*k)+('~'*(50-k))+'](fail)\n\r')
+            sys.stdout.flush()
+        raise
     return [results[i] if i in results else None \
         for i,k in enumerate(problems)]
 
@@ -173,6 +141,7 @@ def parmap_dict(f,problems,leavefree=1,debug=False,verbose=False):
     results = {key:results[key] for key in problems if key in results and not results[key] is None}
     return results
 
+"""
 def parmap_indirect_helper(args):
     '''
     Multiprocessing doesn't work on functions that weren't accessible from
@@ -241,7 +210,6 @@ def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
         1.   A function is part of a system-wide installed module
         2.   A function can be "regenerated" from source code
         
-        
     Parameters
     ----------
     
@@ -280,10 +248,250 @@ def parmap_indirect(f,problems,leavefree=1,debug=False,verbose=False):
             print(traceback)
         results[i] = NotImplemented
     return results
+"""
 
-def reset_pool(leavefree=1,context=None,verbose=False):
+"""
+General plan for this: 
+
+Handle these three casese 
+1 : indirect parmap just works (somehow)
+2 : try handling it by code
+"""
+
+# Each worker thread will end up maintaining its own copy of this
+__indirect_eval_fallback_cache = {}
+
+# Get name, source and hash of source
+def function_fingerprint(f,verbose=False):
+    nme = f.__code__.co_name
+    src = inspect.getsource(f)
+    nrg = len(inspect.getfullargspec(f).args)
+    key = neurotools.jobs.cache.base64hash(src)
+    if verbose:
+        print('Name is:',nme)
+        print('Hash is:',key[:30]+'...')
+        print('Source is:')
+        print('| '+src.replace('\n','\n| '))
+    return nme,src,key,nrg
+  
+def eval_from_cached(fingerprint,args,verbose=False):
     '''
-    Safely halts and restarts the worker-pool. If worker threads are stuck, 
+    Attempts to recompile a function from its source code, and store the
+    compiled result in the global dictionary `__indirect_eval_fallback_cache`.
+    It then attempts to call the function on the provided arguments.
+
+    This is one alternative way to pass newly-created functions to the worker
+    pool in parallel processing, if the usual built-in routines fail. 
+
+    This can fail if the function closes over additional variables that were
+    not present at the time the worker-pool was initialized. 
+
+    It can yield undefined results if the function uses mutable variables in
+    the global scope.
+
+    This cannot rebuild lambda expressions from source, but can use them if 
+    they are stored in the global __indirect_eval_fallback_cache ahead of time.
+    '''
+    global __indirect_eval_fallback_cache
+    nme,src,key,nrg = fingerprint
+    if not nrg==len(args):
+        raise ValueError('Function %s expects %d args, but given %d'\
+                         %(nme,nrd,len(args)))
+    if key in __indirect_eval_fallback_cache:
+        if verbose: print('Retrieved %s'%nme)
+    else:
+        if verbose: print('Rebuliding %s'%nme)
+        if nme=='<lambda>':
+            raise ValueError('Recompiling λ expressions unsupported')
+        f_globals = dict(globals())
+        if nme in f_globals: del f_globals[nme]
+        f_locals = {}
+        exec(src,f_globals,f_locals)
+        __indirect_eval_fallback_cache[key] = f_locals[nme],src
+    f = __indirect_eval_fallback_cache[key][0]
+    return f(*args)
+
+def parallel_indirect_wrapper(p):
+    i,(f,args) = p
+    return i,f(*args)
+
+def parallel_cached_wrapper(p):
+    i,(f,args) = p
+    return i,eval_from_cached(f,args)
+
+def __parimap_builtin(f,jobs,debug=False,verbose=False,show_progress=True):
+    '''
+    Attempt to use multiprocessing parallel map 'as directed'
+    '''
+    indirect_jobs = [(f,args) for args in jobs]
+    parallel_indirect_wrapper((0,indirect_jobs[0]))
+    return parmap(parallel_indirect_wrapper,
+                  enumerate(indirect_jobs),
+                            debug=debug,
+                            verbose=verbose,
+                            show_progress=show_progress)
+
+from pickle import PicklingError
+
+def parimap(f,jobs,
+    debug=False,
+    force_cached=False,
+    force_fallback=False,
+    allow_fallback=True,
+    verbose=False,
+    show_progress=True):
+    '''
+    Parallel map routine. 
+
+    In some cases and on some systems, user-defind functions don't work with
+    the multiprocessing library. 
+
+    This happens when the system is unable to "pickle" functions which were
+    defined after the worker pool was initiatlized.
+
+    There are two workarounds for this: 
+
+    (1) You can attempt to send the function source-code to the workers, and
+        rebuild from source within the workers. However, this is risky for two
+        reasons. (a) If your funcion closes over globals which were not defined
+        at the time the worker-pool was launched, these globals will be missing
+        and prevent re-compilation of the function. (b) Any mutable variables
+        that the function closes over might have a different state in the
+        worker threads (as I understand it). 
+
+    (2) You can also ensure that there is a pointer to the defined funcion in
+        the global workspace. Here, we store function pointers in the dictionary
+        '__indirect_eval_fallback_cache'. Then, one can re-launch the worker
+        pool, and each worker will gain access to the compiled function via the
+        inhereted global scope (as I understand it). 
+
+    If normal parallel map fails, this routine will first try (1), and then (2).
+    '''
+    global __indirect_eval_fallback_cache
+    try:
+        __indirect_eval_fallback_cache
+    except NameError:
+        __indirect_eval_fallback_cache = {}
+    ############################################################################
+    # check that we can get function argument signature
+    if not hasattr(f, '__call__'):
+        raise ValueError('1st argument to parimap must be callable.')
+    try:
+        nrg = len(inspect.getfullargspec(f).args)
+        if verbose: print('Function takes %d arguments.'%nrg)
+    except TypeError as te:
+        if len(te.args)>0 and te.args[0]=='unsupported callable':
+            raise ValueError('Could not identify # of function arguments')
+    if nrg<1:
+        raise ValueError('Functions with no arguments are not supported.')
+    ############################################################################
+    # Check that job list is well-formatted.
+    jobs = asiterable(jobs)
+    if jobs is None:
+        raise ValueError('2nd argument to parimap must be iterable.')
+    if len(jobs)==0: 
+        raise ValueError('Empty job list passed to parimap.')
+    ijobs      = [asiterable(j)  for j  in jobs ]
+    iterstatus = [ij is not None for ij in ijobs]
+    if nrg==1:
+        if not all(iterstatus) or any([len(j)!=1 for j in ijobs]):
+            jobs = [(j,) for j in jobs]
+    elif not all(iterstatus):
+        raise ValueError('All jobs must be an iterable with %d items'%nrg)
+    elif not all([len(j)==nrg for j in ijobs]):
+        raise ValueError('All jobs must specify %d arguments'%(nrg))
+    ############################################################################
+    # Try using built-in parallel map
+    if not (force_cached or force_fallback):
+        try:
+            if verbose: print('Trying built-in parallel map.')
+            result = __parimap_builtin(f,jobs,
+                            debug=debug,
+                            verbose=verbose,
+                            show_progress=show_progress)
+            if verbose: print('Built-in parallel map worked.')
+            return result
+        except (SystemExit,KeyboardInterrupt): raise
+        except PicklingError:
+            if verbose:
+                print('Function could not be pickled.')
+        except:
+            if verbose: 
+                print('Built-in parmap failed.')
+                traceback.print_exc()
+    ############################################################################
+    # Send function to workers as source code
+    fingerprint     = function_fingerprint(f)
+    nme,src,key,nrg = fingerprint
+    indirect_jobs   = [(fingerprint,args) for args in jobs]
+
+    if nme=='<lambda>' and not key in __indirect_eval_fallback_cache:
+        if verbose: print('Passing λ via source-code is not supported.')
+    elif not force_fallback:
+        try:
+            eval_from_cached(fingerprint,jobs[0],verbose)
+            parallel_cached_wrapper((0,indirect_jobs[0]))
+            result = parmap(parallel_cached_wrapper,
+                            enumerate(indirect_jobs),
+                            debug=debug,
+                            verbose=verbose,
+                            show_progress=show_progress)
+            if verbose: print('Passing function as source code worked.')
+            return result
+        except (SystemExit,KeyboardInterrupt): raise
+        except:
+            if verbose: 
+                traceback.print_exc()
+                print('Recompiling source failed, trying to pass as global')
+    ############################################################################
+    # Try to store function in global dictionary then reset workers.
+    if allow_fallback:
+        try:
+            '''
+            Fallback solution by storing function in global scope, then restarting
+            the worker threads (who then should be able to see the function) 
+            '''
+            reset_pool()
+            result = __parimap_builtin(f,jobs,
+                            debug=debug,
+                            verbose=verbose,
+                            show_progress=show_progress)
+            if verbose: print('Resetting worker-pool worked.')
+            return result
+        except (SystemExit,KeyboardInterrupt): raise
+        except PicklingError:
+            if verbose:
+                print('Function could not be pickled.')
+        except:
+            if verbose: 
+                traceback.print_exc()
+                print('Resetting workers failed.')
+        ########################################################################
+        # If the above failed, we can try one more thing: pass the function 
+        # indirectly by its key in __indirect_eval_fallback_cache dictionary
+        try:
+            fingerprint = function_fingerprint(f)
+            __indirect_eval_fallback_cache[key]=f,None
+            reset_pool()
+            eval_from_cached(fingerprint,jobs[0],verbose)
+            parallel_cached_wrapper((0,indirect_jobs[0]))
+            result = parmap(parallel_cached_wrapper,enumerate(indirect_jobs),
+                            debug=debug,
+                            verbose=verbose,
+                            show_progress=show_progress)
+            if verbose: print('Reset + pass-source worked')
+            return result
+        except (SystemExit,KeyboardInterrupt): raise
+        except:
+            if verbose: 
+                traceback.print_exc()
+                print('All approaches failed')
+    # Everything failed
+    raise ValueError('Unable to execute parallel map')
+
+def close_pool(context=None,verbose=False):
+    '''
+    Safely halts the worker-pool. If worker threads are stuck, 
     then this function will hang. On the other hand, it avoids doing 
     anything violent to close workers. 
     
@@ -305,14 +513,13 @@ def reset_pool(leavefree=1,context=None,verbose=False):
 
     if not 'mypool' in globals() or mypool is None:
         if verbose:
-            print('NO POOL FOUND. STARTING')
-        mypool = Pool(cpu_count()-leavefree)
+            print('No pool found')
     else:
         if verbose:
-            print('POOL FOUND. RESTARTING')
+            print('Pool found, restarting')
             print('Attempting to terminate pool, may become unresponsive')
         # http://stackoverflow.com/questions/16401031/python-multiprocessing-pool-terminate
-        def close_pool():
+        def _close_pool():
             global mypool
             if not 'mypool' in globals() or mypool is None:
                 return
@@ -320,15 +527,34 @@ def reset_pool(leavefree=1,context=None,verbose=False):
             mypool.terminate()
             mypool.join()
         def term(*args,**kwargs):
-            sys.stderr.write('\nStopping...')
-            stoppool=threading.Thread(target=close_pool)
+            sys.stderr.write('\nStopping.')
+            stoppool=threading.Thread(target=_close_pool)
             stoppool.daemon=True
             stoppool.start()
         signal.signal(signal.SIGTERM, term)
         signal.signal(signal.SIGINT,  term)
         signal.signal(signal.SIGQUIT, term)
         del mypool
-        mypool = Pool(cpu_count()-leavefree)
+
+def reset_pool(leavefree=1,context=None,verbose=False):
+    '''
+    Safely halts and restarts the worker-pool. If worker threads are stuck, 
+    then this function will hang. On the other hand, it avoids doing 
+    anything violent to close workers. 
+    
+    Other Parameters
+    ----------------
+    leavefree : `int`, default 1
+        How many cores to "leave free"; The pool size will be the number of
+        system cores minus this value
+    context : python context, default None
+        This context will be used for all workers in the pool
+    verbose : `bool`, default False
+        Whether to print logging information.
+    '''
+    global mypool, reference_globals
+    close_pool(context,verbose)
+    mypool = Pool(cpu_count()-leavefree)
 
 def parallel_error_handling(f):
     '''

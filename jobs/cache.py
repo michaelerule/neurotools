@@ -135,15 +135,13 @@ def get_source(f):
     string
         String containing the source code of the passed function        
     '''
+    g = neurotools.jobs.ndecorator.unwrap(f)
     try:
-        source    = inspect.getsource(neurotools.jobs.ndecorator.unwrap(f))
-    except IOError as ioerr:
-        if ioerr.message!="could not get source code": raise
-        # some dynamically created functions may not have source code
-        # to bypass this, we can see if the routine that created the
-        # function was kind enough to store the source code for us
-        source = neurotools.jobs.ndecorator.unwrap(f).__source__
-    return source
+        return inspect.getsource(g)
+    except (OSError,IOError):
+        if hasattr(f,'__source__'): return f.__source__
+        return inspect.getsource(f)
+    raise ValueError('Cannot get function source')
 
 @neurotools.jobs.ndecorator.memoize
 def function_hash_no_subroutines(f):

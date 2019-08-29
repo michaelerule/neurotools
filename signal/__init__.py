@@ -1174,16 +1174,17 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     A regularization factor is added to the standard deviation to preven
     numerical instability when the standard deviation is extremely small.
     The default refularization is 1e-30.
-    x: NDarray
-    axis: axis to zscore; default 0
     
     Parameters
     ----------
-    x
-        array-like real-valued signal
+    x:
+        Array-like real-valued signal.
+    axis: 
+        Axis to zscore; default is 0.
+
     Returns
     -------
-    x
+    x: np.ndarray
         (x-mean(x))/std(x)
     '''
     x = zeromean(x,ignore_nan=ignore_nan)
@@ -1192,6 +1193,28 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]
+
+def deltaovermean(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
+    '''
+    Subtracts, then divides by, the mean.
+    
+    Parameters
+    ----------
+    x:
+        Array-like real-valued signal.
+    axis: 
+        Axis to zscore; default is 0.
+    
+    Returns
+    -------
+    x: np.ndarray
+        (x-mean(x))/std(x)
+    '''
+    x = np.array(x)
+    if np.prod(x.shape)==0: return x
+    theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    mx = (np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
+    return (x-mx)/mx
 
 def unit_length(x,axis=0):
     '''

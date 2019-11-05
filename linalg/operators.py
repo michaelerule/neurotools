@@ -234,10 +234,10 @@ def cosine_kernel(x):
     centered at zero. Time is rescaled so that the kernel spans from
     -2 to 2
     '''
-    x = float64(abs(x))/2.0*pi
-    return piecewise(x,[x<=pi],[lambda x:(cos(x)+1)/4.0])
+    x = np.float64(abs(x))/2.0*np.pi
+    return np.piecewise(x,[x<=np.pi],[lambda x:(np.cos(x)+1)/4.0])
 
-def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
+def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1,normalize=True):
     '''
     Generate overlapping log-cosine basis elements
     
@@ -252,9 +252,12 @@ def log_cosine_basis(N=range(1,6),t=np.arange(100),base=2,offset=1):
     -------
     B : array, Basis with n_elements x n_times shape
     '''
-    s = log(t+offset)/log(base)
-    kernels = array([cosine_kernel(s-k) for k in N]) # evenly spaced in log-time
-    kernels = kernels/log(base)/(offset+t) # correction for change of variables, kernels integrate to 1 now
+    s = np.log(t+offset)/np.log(base)
+    kernels = np.array([cosine_kernel(s-k) for k in N]) 
+    # evenly spaced in log-time
+    if normalize:
+        kernels = kernels/np.log(base)/(offset+t) 
+    # correction for change of variables, kernels integrate to 1 now
     return kernels
 
 def make_cosine_basis(N,L,min_interval):
@@ -273,7 +276,7 @@ def make_cosine_basis(N,L,min_interval):
     -------
     B : array, Basis with n_elements x n_times shape
     '''
-    t = arange(L)/min_interval+1
-    b = exp(log(t[-1])/(N+1))
+    t = np.arange(L)/min_interval+1
+    b = np.exp(np.log(t[-1])/(N+1))
     B = log_cosine_basis(arange(N),t,base=b,offset=0)
     return B

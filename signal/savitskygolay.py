@@ -91,6 +91,16 @@ def SGfiltJ(m,fc,fs):
     return SGKernJ(m,n)
 
 def SGaccelerate(x,m,fc,fs):
+    '''
+    Smoothed second derivative using a Savitsky-Golay filter
+    
+    Parameters
+    ----------
+    x : signal to smooth + differentiate
+    m : length of filter in samples
+    fc : low frequency cutoff
+    fs : sample rate
+    '''
     n = len(x)
     x = np.concatenate([x[::-1],x,x[::-1]])
     x = np.convolve(x,SGfiltA(m,fc,fs),mode='same')
@@ -107,6 +117,13 @@ def SGjerk(x,m,fc,fs):
 def SGdifferentiate(x,m,fc,fs):
     '''
     Differentiate and smooth using a Savitsky-Golay filter
+    
+    Parameters
+    ----------
+    x : signal to smooth + differentiate
+    m : length of filter in samples
+    fc : low frequency cutoff
+    fs : sample rate
     '''
     n = len(x)
     before = x[::-1]

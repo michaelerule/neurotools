@@ -38,6 +38,8 @@ import base64
 import zlib
 import hashlib
 
+from pickle import UnpicklingError
+
 # TODO: we should use the same pickle library as multiprocessing uses
 # for better comptability with parallelism and multiprocessing
 try:
@@ -713,7 +715,7 @@ def disk_cacher(
                         print('Retrieved cache at ',path)
                         print('  %s.%s'%(f.__module__,f.__name__))
                         print('  %s'%neurotools.jobs.ndecorator.print_signature(sig))
-                except (ValueError, EOFError, OSError, IOError, FileError) as exc:
+                except (ValueError, EOFError, OSError, IOError, FileError, UnpicklingError) as exc:
                     if verbose: print('  File reading failed')
 
             if not result is None:

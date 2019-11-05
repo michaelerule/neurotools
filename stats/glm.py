@@ -57,22 +57,130 @@ except:
 
 #############################################################################
 
+def GLMPenaltyPoisson(X,Y):
+    '''
+    Generates objective, gradient, and hessian functions for the Poisson 
+    GLM for design matrix X and spike observations Y.
+    
+    Parameters
+    ----------
+    X: array-like
+        N observation x D features design matrix
+    Y: array-like
+        N x 1 point-process counts
+
+    Returns
+    -------
+    objective: function
+        objective function for `scipy.optimize.minimize`
+    gradient: function
+        gradient (jacobian) function for `scipy.optimize.minimize`
+    hessian: function
+        hessian function for `scipy.optimize.minimize`
+    '''
+    X = cat([ones((X.shape[0],1)),X],axis=1)
+    N,D = X.shape
+    Y = np.squeeze(Y)
+    X = np.float64(X)         # use double precision
+    K = np.sum(Y)             # total number of events
+    Z = np.sum(X*Y[:,None],0) # event-conditioned sums of X
+    scale = 1./N              # normalized by the amount of data. can be tweaked?
+    def objective(H):
+        rate = np.exp(X@H)
+        like = Z@H-np.sum(rate)
+        return -like*scale
+    def gradient(H):
+        rate = np.exp(X@H)
+        grad = Z.T - X.T @ rate
+        return -grad*scale
+    def hessian(H):
+        rate = np.exp(X@H)
+        hess = X.T@(rate[:,None]*X)
+        return hess*scale
+    return objective, gradient, hessian
+
+def sexp(x):
+    '''
+    Exponential function avoiding overflow and underflow, for evaluating the
+    logistic sigmoid function
+    '''
+    x = np.clip(x,-708,708)
+    return np.exp(x)
+
+def sigmoid(x):
+    '''
+    Logistic sigmoid function
+    '''
+    s = 1/(1+sexp(-x))
+    if type(s) is np.ndarray:
+        s[s<1e-300]=0
+    else:
+        if s<1e-300:
+            s=0
+    return s
+
+def GLMPenaltyBernoulli(X,Y):
+    '''
+    Generates objective, gradient, and hessian functions for the Bernoulli 
+    GLM for design matrix X and spike observations Y.
+    
+    Parameters
+    ----------
+    X: array-like
+        N observation x D features design matrix
+    Y: array-like
+        N x 1 point-process counts
+
+    Returns
+    -------
+    objective: function
+        objective function for `scipy.optimize.minimize`
+    gradient: function
+        gradient (jacobian) function for `scipy.optimize.minimize`
+    hessian: function
+        hessian function for `scipy.optimize.minimize`
+    '''
+    X = cat([ones((X.shape[0],1)),X],axis=1)
+    N,D = X.shape
+    Y = np.squeeze(Y)
+    X = np.float64(X) # use double precision
+    scale = 1./N      # normalized by the amount of data. can be tweaked?
+    def objective(H):
+        rate = sigmoid(X @ H)
+        lnPr = Y * -log(1+sexp(-rate)) + (1-Y) * -log(1+sexp(rate))
+        return -np.sum(lnPr)*scale
+    def gradient(H):
+        rate = sigmoid(X@H)
+        grad = np.sum((Y - rate)[:,None]*X,axis=0)
+        return -grad*scale
+    def hessian(H):
+        rate  = sigmoid(X@H)
+        slope = rate*(1-rate)
+        hess  = -X.T@(slope[:,None]*X)
+        return -hess*scale
+    return objective, gradient, hessian
+
 def GLMPenaltyL2(X,Y,penalties=None):
     '''
     Generates objective, gradient, and hessian functions for the penalized
     L2 regularized poisson GLM for design matrix X and spike observations Y.
-    Args:
-        X: N observation by D features design matrix
-        Y: N by 1 point-process counts
-        penalties: len D-1 list of L2 penalty weights (don't penalize mean)
+
+    Parameters
+    ----------
+    X: array-like
+        N observation x D features design matrix
+    Y: array-like
+        N x 1 point-process counts
+    penalties: 
+        len D-1 list of L2 penalty weights (don't penalize mean)
 
     Returns
     -------
-    function
+    objective: function
         objective function for `scipy.optimize.minimize`
-    function
+    gradient: function
         gradient (jacobian) function for `scipy.optimize.minimize`
-    function
+    hessian: function
         hessian function for `scipy.optimize.minimize`
     '''
     N,D = X.shape

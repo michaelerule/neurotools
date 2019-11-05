@@ -12,7 +12,8 @@ from neurotools.system import *
 import statsmodels
 import numpy as np
 from numpy import random
-from matplotlib.mlab import find
+#from matplotlib.mlab import find
+from neurotools.tools import find
 
 #TODO: fix imports
 #from neurotools.jobs.parallel import *
@@ -21,6 +22,7 @@ from matplotlib.mlab import find
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''
     Derived from the following matlab code (c) Wilson Truccolo
+    
         function [pID,pN] = fdr(p,q)
         % FORMAT pt = fdr(p,q)
         % 
@@ -86,7 +88,7 @@ def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0,alpha=0.05):
         correlations, entries as `label -> pvalue, reject`
     '''
     labels, pvals = zip(*pvalue_dictionary.items())
-    p_threshold = np.max(*benjamini_hochberg_positive_correlations(pvals,alpha))
+    p_threshold = np.max(benjamini_hochberg_positive_correlations(pvals,alpha))
     reject = np.array(pvals)<p_threshold
     if verbose:
         print('BENJAMINI-HOCHBERG POSITIVE CORRELATIONS\n\t','\n\t'.join(map(str,zip(labels,pvals,reject))))

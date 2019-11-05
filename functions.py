@@ -24,7 +24,7 @@ F32SAFE    = np.sqrt(F32EPS)
 F64EPS     = np.float128('1.4012985e-45')
 F64SAFE    = np.sqrt(F64EPS)
 ZERO128    = np.float128('0')
-EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float32).max)))
+EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float64).max)))
 F128EMAX   = np.sqrt(np.float128('11355.52340629414395'))
 
 lgE        = np.float128('1.442695040888963407359924681001892137426645954152985934135')
@@ -52,12 +52,17 @@ def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
     limit = np.float128(limit)
     x = np.float128(x)
-    return returntype(np.exp(np.clip(x,-limit,limit)))
+    x = np.clip(x,-limit,limit)
+    return returntype(np.exp(x))
 
-def sigmoid(x,returntype=LINALGMAXFLOAT):
+def sigmoid(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
     sigmoid function 1/(1+exp(-x))
     '''
+    # logaddexp(x1,x2) = log(exp(x1) + exp(x2))
+    limit = np.float128(limit)
+    x = np.float128(x)
+    x = np.clip(x,-limit,limit)
     return returntype(sexp(-np.logaddexp(ZERO128,-np.float128(x))))
 
 def inversesigmoid(x,returntype=LINALGMAXFLOAT):

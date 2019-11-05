@@ -460,7 +460,7 @@ def tic(doprint=True):
     __GLOBAL_TIC_TIME__ = current_milli_time()
     return t
 
-def toc(doprint=True):
+def toc(doprint=True,prefix=''):
     ''' 
     Similar to Matlab toc 
     stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
@@ -483,7 +483,7 @@ def toc(doprint=True):
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
             dt = t-__GLOBAL_TIC_TIME__
-            if doprint: print('dt=%dms'%(dt))
+            if doprint: print(prefix,'dt=%dms'%(dt))
             return t,dt
         elif doprint:
             print("havn't called tic yet?")
@@ -549,15 +549,19 @@ def find(x):
     return np.where(x)[0]
 
 import time
-def progress_bar(iterable):
-    x = list(iterable)
-    N = len(x)
+def progress_bar(x,N=None):
+    if N is None:
+        x = list(x)
+        N = len(x)
+    K = int(np.floor(np.log10(N)))+1
+    pattern = ' %%%dd/%d'%(K,N)
     wait_til_ms = time.time()*1000
     for i,x in enumerate(x):
         time_ms = time.time()*1000
         if time_ms>=wait_til_ms:
             k = int(i*50//N)
             sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%3d%%'%(i*100//N))
+            sys.stdout.write(pattern%i)
             sys.stdout.flush()
             wait_til_ms = time_ms+250
         yield x

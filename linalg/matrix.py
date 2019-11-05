@@ -547,17 +547,19 @@ def wheremin(a):
     '''
     return np.unravel_index(a.argmin(), a.shape)
     
-def reglstsq(A, B, reg=1e-15):
+def reglstsq(X, Y, reg=1e-15, transposed=False):
     '''
     Regularized least squares. 
-    Solves Ax=B for x with L2 regularization
+    Solves Y=XM for M with L2 regularization
     
     Parameters
     ----------
-    A : two-dimensional numpy array
+    X : two-dimensional numpy array
         Matrix of observations of the explanatory/independent variables
-    B : two-dimensional numpy array
+        Nsamples x Nfeatures
+    Y : two-dimensional numpy array
         Matrix of observations of the response/dependent variables
+        Nsamples x Nfeatures
     
     Other Parameters
     ----------------
@@ -568,8 +570,30 @@ def reglstsq(A, B, reg=1e-15):
     -------
     w : weight vector   
     '''
-    Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
-    return np.linalg.solve(Q, A.T.dot(B))
+    X = np.array(X)
+    Y = np.array(Y)
+
+    if len(X.shape)==1:
+        # Univariate X
+        X = X.reshape((X.shape[0],1))
+    if len(Y.shape)==1:
+        # Univariate Y
+        Y = Y.reshape((Y.shape[0],1))
+
+    # N: number of samples
+    # K: number of features
+    N,K = X.shape
+    if K>N and not transposed:
+        raise ValueError('First argument has more dimensions than training examples. Is it transposed?')
+    # L: number of samples (should match N)
+    # M: number of features
+    L,M = Y.shape
+    if K>N and not transposed:
+        raise ValueError('Second argument has more dimensions than training examples. Is it transposed?')
+    if not N==L:
+        raise ValueError('Number of training samples should match in X and Y')
+    Q = X.T.dot(X) + np.eye(X.shape[1])*reg*X.shape[0]
+    return np.linalg.solve(Q, X.T.dot(Y))
 
 def Ldistance(X,M,L=2,eps=1e-3):
     '''
@@ -681,3 +705,17 @@ def selector_matrix(b):
     S = np.zeros((K,N))
     S[arange(K),neurotools.tools.find(b)]=1
     return S
+
+def laplace_kernel():
+    '''
+    Returns a 3x3 laplacian kernel that is as radially 
+    symmetric as possible.
+    
+    Returns
+    -------
+    3x3 np.array containing the discrete 2D Laplacian kernel
+    
+    '''
+    return np.array([[  0.5,   2. ,   0.5],
+       [  2. , -10. ,   2. ],
+       [  0.5,   2. ,   0.5]])/3.

@@ -623,15 +623,17 @@ def show_fast_pallet():
     plt.subplots_adjust(0,0,1,1,0,0)
     colors = enumerate_fast_colors()
     i = 0;
-    plt.xlim(0,3)
+    plt.xlim(0,4)
     plt.ylim(0,4)
-    for ik,k in enumerate([0,4,7]):
+    for ik,k in enumerate([0,3,5,7]):
         for j in range(4):
             i = k*4+j
+            # We use one of the bits as a color flag; show the average color
+            # with this bit set and unset. 
             c0 = colors[i]
             c2 = bit16_RGB_to_tuple(tuple_to_bit16(c0)|0b0000100000001000)
             cA = .5*(np.array(c0)+np.array(c2))
-            ax.add_patch(patches.Rectangle((ik,j),1,1,facecolor=cA))
+            ax.add_patch(matplotlib.patches.Rectangle((ik,j),1,1,facecolor=cA))
             print('%06x'%tuple_to_bit24(cA))
     plt.draw()
 
@@ -656,7 +658,9 @@ def show_complete_fast_pallet():
             c0 = colors[i]
             c2 = bit16_RGB_to_tuple(tuple_to_bit16(c0)|0b0000100000001000)
             cA = .5*(np.array(c0)+np.array(c2))
-            ax.add_patch(patches.Rectangle((k,j),1,1,facecolor=cA,edgecolor=cA))
+            ki = k if k<4 else 4-k
+            ji = j*2 if k<4 else j*2+1
+            ax.add_patch(matplotlib.patches.Rectangle((ki,ji),1,1,facecolor=cA,edgecolor=cA))
             print('#%06x'%tuple_to_bit24(cA))
     plt.draw()
 
@@ -678,7 +682,7 @@ def show_complete_fastest_pallet():
             c0 = bit16_RGB_to_tuple(c & 0b1111111100000000)
             c2 = bit16_RGB_to_tuple((c|0b0000100000001000)&0b1111111100000000)
             cA = .5*(np.array(c0)+np.array(c2))
-            ax.add_patch(patches.Rectangle((k,ij),1,1,facecolor=cA,edgecolor=cA))
+            ax.add_patch(matplotlib.patches.Rectangle((k,ij),1,1,facecolor=cA,edgecolor=cA))
             print("'#%06x',"%tuple_to_bit24(cA),)
     plt.draw()
 
@@ -686,7 +690,7 @@ def show_hex_pallet(colors):
     '''
     Parameters
     ----------
-    colors:
+    colors: list of colors to show
 
     '''
     plt.figure(figsize=(5,5),facecolor=(1,)*4)
@@ -698,7 +702,7 @@ def show_hex_pallet(colors):
     for i,c in enumerate(colors):
         x = i % N
         y = i // N
-        ax.add_patch(patches.Rectangle((x,y),1,1,facecolor=c,edgecolor=c))
+        ax.add_patch(matplotlib.patches.Rectangle((x,y),1,1,facecolor=c,edgecolor=c))
 
 '''
 show_hex_pallet([
@@ -761,8 +765,5 @@ show_hex_pallet([
 #define FAST_MAGENTA 0b0b1111000011110000
 #define FAST_WHITE   0b0b1111010011110100
 '''
-
-# Pull in colormap definitions here
-from neurotools.graphics.colormaps import *
 
 

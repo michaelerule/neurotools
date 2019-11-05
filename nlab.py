@@ -67,6 +67,7 @@ from neurotools.text                     import *
 from neurotools.functions                import *
 from neurotools.linalg.operators         import *
 from neurotools.graphics.color           import *
+from neurotools.graphics.colormaps       import *
 from neurotools.graphics.plot            import *
 from neurotools.linalg.matrix            import *
 

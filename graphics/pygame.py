@@ -9,9 +9,30 @@ from __future__ import print_function
 Collected utilities for pygame
 
 It is difficult to write pixels directly in python.
+
 There's some way to get a framebuffer back from Tk, but it is 
-cumberosme. pygame has some support for sending pixel buffers, 
+cumberosme. 
+
+The module pygame supports sending pixel buffers, 
 which is wrapped for convneinece in this module.
+
+example usage
+
+import neurotools.graphics.pygame as npg
+import time
+import numpy as np
+import pygame
+K = 128
+screen = npg.start(K,K,'Image data')
+dt = 1/20
+wait_til = time.time() + dt
+print('Animating..')
+for i in neurotools.tools.progress_bar(range(100)):
+    t = time.time()
+    if t<wait_til: time.sleep(wait_til-t)
+    wait_til = t + dt
+    npg.draw_array(screen, np.random.rand(K,K,3))
+pygame.quit()
 '''
 
 import sys
@@ -46,14 +67,20 @@ def start(W,H,name='untitled'):
     pg.display.set_caption(name)
     return window
 
-def draw_array(screen,rgbdata):
+def draw_array(screen,rgbdata,doshow=True):
     '''
     Send array data to a PyGame window.
     PyGame is BRG order which is unusual -- reorder it.
+
+    Parameters
+    ----------
+    screen : object
+        Object returned by neurotools.graphics.pygame.start
+    rgbdata : 
+        RGB image data with color values in [0,1]
     '''
     # Cast to int
     rgbdata = np.int32(rgbdata*255)
-
     # clip bytes to 0..255 range
     rgbdata[rgbdata<0]=0
     rgbdata[rgbdata>255]=255
@@ -82,6 +109,7 @@ def draw_array(screen,rgbdata):
     numpy_surface[...] = np.frombuffer(draw)
     del numpy_surface
     screen.blit(surface,(0,0))
-    pg.display.update()
+    if doshow:
+        pg.display.update()
 
 

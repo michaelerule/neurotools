@@ -1173,7 +1173,7 @@ def sigbar(x1,x2,y,pvalue=None,dy=5,LABELSIZE=10,**kwargs):
             pvalue = shortscientific(pvalue)
         text(np.mean([x1,x2]),height+dy,pvalue,fontsize=LABELSIZE,horizontalalignment='center')
 
-def savefigure(name):
+def savefigure(name,**kwargs):
     '''
     Saves figure as both SVG and PDF, prepending the current date
     in YYYYMMDD format
@@ -1189,9 +1189,11 @@ def savefigure(name):
     basename = os.path.basename(name)
     if basename.split('.')[-1].lower() in {'svg','pdf','png'}:
         basename = '.'.join(basename.split('.')[:-1])
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True,bbox_inches='tight')
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight')
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True,bbox_inches='tight')
+    if not 'dpi' in kwargs:
+        kwargs['dpi']=600
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True,bbox_inches='tight',**kwargs)
 
 def clean_y_range(ax=None,precision=1):
     '''
@@ -1374,6 +1376,30 @@ def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None):
         clip_on=False)
     ax.set_xlim(*xl)
     ax.set_ylim(*yl)
+
+def xscalebar(xcenter,xheight,label,y=None,color='k',fontsize=9,ax=None):
+    '''
+    Add horizontal scale bar to plot
+    '''
+    xspan = [xcenter-xheight/2.0,xcenter+xheight/2.0]
+    if ax is None:
+        ax = plt.gca()
+    plt.draw() # enforce packing of geometry
+    if y is None:
+        y = -pixels_to_yunits(5)
+    yl = ax.get_ylim()
+    xl = ax.get_xlim()
+    plt.plot(xspan,[y,y],
+        color='k',
+        lw=1,
+        clip_on=False)
+    plt.text(np.mean(xspan),y-pixels_to_yunits(5),label,
+        fontsize=fontsize,
+        horizontalalignment='center',
+        verticalalignment='top',
+        clip_on=False)
+    ax.set_ylim(*yl)
+    ax.set_xlim(*xl)
         
 def addspikes(Y,lw=0.2,color='k'):
     '''

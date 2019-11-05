@@ -60,4 +60,19 @@ def wordwrap(text,width=80,sep=' '):
         line += t+sep
     return '\n'.join(lines+[line[:-len(sep)]])
 
-
+def incolumns(*args,prefix='',suffix='',sep=' ',width=80):
+    words  = []
+    for a in args:
+        words.extend(list(a))
+    maxlen = np.max([len(w) for w in words])
+    ncols  = (width-len(prefix)-len(suffix)+len(sep))//(maxlen+len(sep))
+    lists  = [[] for i in range(ncols)]
+    nrows  = int(np.ceil(len(words)/ncols))
+    while nrows*ncols>len(words):
+        words.append('')
+    for i,w in enumerate(words):
+        lists[i%ncols].append(w+' '*(maxlen-len(w)))
+    result = []
+    for group in zip(*lists):
+        result.append(prefix+sep.join(group)+suffix)
+    return '\n'.join(result)

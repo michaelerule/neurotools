@@ -536,7 +536,7 @@ def close_pool(context=None,verbose=False):
         signal.signal(signal.SIGQUIT, term)
         del mypool
 
-def reset_pool(leavefree=1,context=None,verbose=False):
+def reset_pool(leavefree=None,context=None,verbose=False):
     '''
     Safely halts and restarts the worker-pool. If worker threads are stuck, 
     then this function will hang. On the other hand, it avoids doing 
@@ -554,7 +554,10 @@ def reset_pool(leavefree=1,context=None,verbose=False):
     '''
     global mypool, reference_globals
     close_pool(context,verbose)
-    mypool = Pool(cpu_count()-leavefree)
+    NCPU = cpu_count()
+    if leavefree is None:
+        leavefree = NCPU//2     
+    mypool = Pool(max(1,NCPU-leavefree))
 
 def parallel_error_handling(f):
     '''

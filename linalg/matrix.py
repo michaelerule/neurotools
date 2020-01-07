@@ -688,6 +688,13 @@ def normedcovariance(C):
     e,v = scipy.linalg.eigh(C,eigvals=(N-1,N-1))
     return C/e
 
+def maxeig(C):
+    '''
+    Get largetst eigenvalue
+    '''
+    N = C.shape[0]
+    return scipy.linalg.eigh(C,eigvals=(N-1,N-1))[0][0]
+
 def selector_matrix(b):
     '''
     Create matrix that extracts a subset of elements.
@@ -719,3 +726,133 @@ def laplace_kernel():
     return np.array([[  0.5,   2. ,   0.5],
        [  2. , -10. ,   2. ],
        [  0.5,   2. ,   0.5]])/3.
+       
+def match_covariance(Q,x,verbose=False,sample_deficient=False):
+    '''
+    Adjust data to match target covariance with minimal L2 distortion. 
+    
+    This uses eigendecomposition-based whitening. The following
+    tutorials show that this is a minimum distortion approach:
+    
+        Eldar YC. 
+        Minimum mean-squared error covariance shaping. 
+        In 2003 IEEE International Conference on Acoustics, Speech, and Signal Processing, 2003. 
+        Proceedings.(ICASSP'03). 2003 Apr 6 (Vol. 6, pp. VI-713). IEEE.
+
+        Eldar YC, Oppenheim AV. 
+        MMSE whitening and subspace whitening. 
+        IEEE Transactions on Information Theory. 
+        2003 Jun 25;49(7):1846-51.
+
+        @inproceedings{eldar2003minimum,
+            title={Minimum mean-squared error covariance shaping},
+            author={Eldar, Yonina C},
+            booktitle={2003 IEEE International Conference on Acoustics, Speech, and Signal Processing, 2003. Proceedings.(ICASSP'03).},
+            volume={6},
+            pages={VI--713},
+            year={2003},
+            organization={IEEE}
+        }
+
+        @article{eldar2003mmse,
+            title={MMSE whitening and subspace whitening},
+            author={Eldar, Yonina C and Oppenheim, Alan V},
+            journal={IEEE Transactions on Information Theory},
+            volume={49},
+            number={7},
+            pages={1846--1851},
+            year={2003},
+            publisher={IEEE}
+        }
+    
+    Test code (relies on from neurotools.nlab import *):
+
+        N = 2    # dimensions
+        T = 1000 # Samples
+
+        # Target covariance structure
+        q = randn(N,N)
+        e,v = psd_eig(q@q.T)
+        e = array([1,0.1])
+        shuffle(e)
+        q = v@diag(e**0.5)
+        Q = q@q.T
+
+        # Source covariance structure
+        w = randn(N,N)
+        e,v = psd_eig(w@w.T)
+        e = array([1,0.1])
+        shuffle(e)
+        w = v@diag(e**0.5)
+        W = w@w.T
+
+        # Original samples
+        x1 = w@randn(N,T)
+
+        x2 = match_covariance(Q,x1,verbose=True,sample_deficient=False)
+
+        subplot(131)
+        scatter(x1.ravel(),x2.ravel(),s=1)
+        force_aspect()
+        simpleaxis()
+
+        subplot(132)
+        scatter(*x1,s=1)
+        scatter(*x2,s=1)
+        force_aspect()
+        simpleaxis()
+
+        subplot(133)
+        plot(*cat([(xi1,xi2,(NaN,NaN)) for (xi1,xi2) in zip(x1.T,x2.T)]).T,lw=0.1)
+        force_aspect()
+        simpleaxis()
+    
+    Parameters
+    ----------
+    x : np.array
+        Nfeatures x Nsamples array of data
+    Q : np.array
+        Nfeatures² target covariance matrix
+    
+    Other Parameters
+    ----------------
+    verbose : bool, default false
+        Whether to print debugging information
+    sample_deficient: bool, default false
+        Override sanity checks if number of samples 
+        is less than the rank of the data.
+        
+    Returns
+    -------
+    x2 : transformed samples
+        Samples transformed to approximately match target 
+        covariance while minimizing mean-squared-error distortion
+    '''
+    x = np.array(x)
+    Q = np.array(Q)
+    if not len(x.shape)==2:
+        raise ValueError('x should be Nfeatures×Nsamples array')
+    if not len(Q.shape)==2:
+        raise ValueError('Q should be an Nfeatures² covariance matrix')
+    N,T = x.shape
+    if N>T and not sample_deficient:
+        raise ValueError('# samples > # features, is x transposed?')
+    if not Q.shape==(N,N):
+        raise ValueError('x should be Nfeatures×Nsamples array and\n'+\
+                         'Q should be an Nfeatures² covariance matrix')
+
+    # Covariance matching transformation
+    W = covariance(x.T)
+    ew,vw = psd_eig(W)
+    eq,vq = psd_eig(Q)
+    Qh  = vq @ np.diag(np.sqrt(eq)) @ vq.T
+    Wih = vw @ np.diag(1/np.sqrt(ew)) @ vw.T
+    A = Qh @ Wih
+    
+    # Transform samples
+    x2 = A@x
+    if verbose: 
+        C = covariance(x2.T)
+        print('Matching error     is',np.mean(np.abs(C-Q)**2)**0.5)
+        print('L2 data distortion is',np.mean(np.abs(x1-x2)**2)**0.5)
+    return x2

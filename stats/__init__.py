@@ -183,11 +183,19 @@ def trial_crossvalidated_least_squares(a,b,K,
     a = np.array([np.array(ai) for ai in a])
     b = np.array([np.array(bi) for bi in b])
     Ntrial = len(a)
+    if K<=1:
+        raise ValueError('# crossvalidation blocks (K) should be >1')
+    if Ntrial<K:
+        raise ValueError('Expected more than K trials to use!')
+    if len(b)!=Ntrial:
+        raise ValueError('X and Y should have same # of trials')
     Nsampl = sum([ai.shape[0] for ai in a])
     # Get typical block length
     B = Nsampl//K 
     # Determine trial groups for cross-validation
     groups = partition_trials_for_crossvalidation(a,K,shuffle=shuffle)
+    if len(groups)!=K:
+        raise ValueError('Expected K groups for crossvalidation!')
     # Define regression solver if none provided
     if regress is None:
         def regress(A,B):
@@ -469,7 +477,7 @@ def pca(x,n_keep=None):
     w,v = w[:n_keep],v[:,:n_keep]
     return w,v
 
-def covariance(x,y=None,sample_deficient=False,reg=0.0):
+def covariance(x,y=None,sample_deficient=False,reg=0.0,centered=True):
     '''
     Covariance matrix for `Nsamples` x `Nfeatures` matrix.
     Data are *not* centered before computing covariance.
@@ -489,6 +497,9 @@ def covariance(x,y=None,sample_deficient=False,reg=0.0):
         If False (the default), routine will raise a `ValueError`.
     reg: positive scalar, default 0
         Diagonal regularization to add to the covariance
+    centered: boolean, default True
+        Whether to subtract the means from the data before taking the
+        covariace.
     
     Returns
     -------
@@ -499,6 +510,8 @@ def covariance(x,y=None,sample_deficient=False,reg=0.0):
     Nsamples,Nfeatures = x.shape
     if not sample_deficient and Nfeatures>Nsamples:
         raise ValueError('x should be Nsample x Nfeature where Nsamples >= Nfeatures');
+    if centered:
+        x = x - np.mean(x,axis=0)[None,:]
 
     # Covariance of x
     if y is None:
@@ -523,6 +536,8 @@ def covariance(x,y=None,sample_deficient=False,reg=0.0):
         raise ValueError('1st dimension of x and y (# of samples) should be the same')
     if not abs(reg)<1e-12:
         raise ValueError('Cross-covariance does not support non-zero regularization')
+    if centered:
+        y = y - np.mean(y,axis=0)[None,:]
     
     C = x.T.dot(y)/Nsamples
     return C

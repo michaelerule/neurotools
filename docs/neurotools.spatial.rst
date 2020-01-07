@@ -21,6 +21,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.spatial
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

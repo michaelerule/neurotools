@@ -36,6 +36,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.stats
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    neurotools.models.rbm
+   neurotools.models.rbm
 
 Submodules
 ----------
@@ -20,6 +20,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.models
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -17,6 +17,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.jobs
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

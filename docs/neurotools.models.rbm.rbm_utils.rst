@@ -13,6 +13,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.models.rbm.rbm_utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

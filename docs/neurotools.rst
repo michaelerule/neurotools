@@ -6,16 +6,16 @@ Subpackages
 
 .. toctree::
 
-    neurotools.encoding
-    neurotools.gpu
-    neurotools.graphics
-    neurotools.jobs
-    neurotools.linalg
-    neurotools.models
-    neurotools.signal
-    neurotools.spatial
-    neurotools.spikes
-    neurotools.stats
+   neurotools.encoding
+   neurotools.gpu
+   neurotools.graphics
+   neurotools.jobs
+   neurotools.linalg
+   neurotools.models
+   neurotools.signal
+   neurotools.spatial
+   neurotools.spikes
+   neurotools.stats
 
 Submodules
 ----------
@@ -36,6 +36,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

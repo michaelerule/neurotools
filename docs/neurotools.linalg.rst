@@ -14,6 +14,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.linalg
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

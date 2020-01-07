@@ -432,6 +432,9 @@ def today():
     '''
     return datetime.date.today().strftime('%Y%m%d')
 
+def now():
+    return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
 __GLOBAL_TIC_TIME__ = None
 def tic(doprint=True):
     ''' 
@@ -547,6 +550,9 @@ def invert_permutation(p):
     
 def find(x):
     return np.where(x)[0]
+    
+def ezip(*args):
+    return enumerate(zip(*args))
 
 import time
 def progress_bar(x,N=None):

@@ -20,6 +20,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.signal
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

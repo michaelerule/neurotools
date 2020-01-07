@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from neurotools.tools import find
 #from   matplotlib.pylab  import find
 
-from neurotools.tools import today
+from neurotools.tools import today,now
 
 try: # python 2.x
     from itertools import izip, chain
@@ -118,13 +118,19 @@ def colored_boxplot(data,positions,color,
     '''
     Boxplot with nicely colored default style parameterss
     '''
+    #try:
+    b = matplotlib.colors.to_hex(BLACK)
+    try:
+        mediancolor = [BLACK if matplotlib.colors.to_hex(c)!=b else WHITE for c in color]
+    except:
+        mediancolor = BLACK if matplotlib.colors.to_hex(color)!=b else WHITE
     bp = boxplot(data,
         positions    = positions,
         patch_artist = True,
         showfliers   = showfliers,
         notch        = notch,
         whis         = whis, 
-        medianprops  = {'linewidth':linewidth,'color':BLACK},
+        medianprops  = {'linewidth':linewidth,'color':mediancolor},
         whiskerprops = {'linewidth':linewidth,'color':color},
         flierprops   = {'linewidth':linewidth,'color':color},
         capprops     = {'linewidth':linewidth,'color':color},
@@ -534,6 +540,12 @@ def pixels_to_yfigureunits(n,ax=None,fig=None):
     if ax  is None: ax  = plt.gca()
     h_pixels = fig.get_size_inches()[1]*fig.dpi
     return n/float(h_pixels)
+    
+    
+
+# aliases
+px2x = pixels_to_xunits
+px2y = pixels_to_yunits
 
 def adjust_ylabel_space(n,ax=None):
     '''
@@ -562,7 +574,7 @@ def adjust_xlabel_space(n,ax=None):
 def nudge_axis_y_pixels(dy,ax=None):
     '''
     moves axis dx pixels.
-    Direction of dx may depent on axis orientation. TODO: fix this
+    Direction of dx may depend on axis orientation.
     
     Parameters
     ----------
@@ -578,8 +590,8 @@ def nudge_axis_y_pixels(dy,ax=None):
 
 def adjust_axis_height_pixels(dy,ax=None):
     '''
-    moves axis dx pixels.
-    Direction of dx may depent on axis orientation. TODO: fix this
+    resize axis by dy pixels.
+    Direction of dx may depends on axis orientation.
     
     Parameters
     ----------
@@ -622,6 +634,21 @@ def nudge_axis_x(dx,ax=None):
     dx = pixels_to_xfigureunits(dx,ax)
     ax.set_position((x+dx,y,w,h))
 
+def expand_axis_x(dx,ax=None):
+    '''
+    Parameters
+    ----------
+    dx : number
+        Amount (in pixels) to adjust x axis
+    ax : axis, default None
+        If None, uses gca()
+    '''
+    if ax is None: ax = plt.gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dx = pixels_to_xfigureunits(dx,ax)
+    ax.set_position((x,y,w+dx,h))
+    
 def expand_axis_y(dy,ax=None):
     '''
     Parameters
@@ -838,6 +865,19 @@ def rightlegend(*args,**kwargs):
     defaults = {
         'loc':'center left',
         'bbox_to_anchor':(1,0.5),
+        }
+    defaults.update(kwargs)
+    lg = legend(*args,**defaults)
+    lg.get_frame().set_linewidth(0.0)
+    return lg
+
+def baselegend(*args,**kwargs):
+    '''
+    Legend outside the plot on the baes.
+    '''
+    defaults = {
+        'loc':'upper center',
+        'bbox_to_anchor':(0.5,-0.1),
         }
     defaults.update(kwargs)
     lg = legend(*args,**defaults)
@@ -1140,21 +1180,22 @@ def complex_axis(scale):
     ylabel(u'μV',fontname='DejaVu Sans')
     force_aspect()
 
-def subfigurelabel(x,subplot_label_size=14,dx=22,dy=7):
+def subfigurelabel(x,fontsize=14,dx=22,dy=7,ax=None,bold=True):
     '''
     Parameters
     ----------
     x : label
     '''
+    if ax is None: ax = plt.gca()
     fontproperties = {
         'family':'Bitstream Vera Sans',
-        'weight': 'bold',
-        'size': subplot_label_size,
+        'weight': 'bold' if bold else 'normal',
+        'size': fontsize,
         'verticalalignment':'bottom',
         'horizontalalignment':'right'}
     text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,**fontproperties)
 
-def sigbar(x1,x2,y,pvalue=None,dy=5,LABELSIZE=10,**kwargs):
+def sigbar(x1,x2,y,pvalue=None,dy=5,padding=1,fontsize=10,color=BLACK,**kwargs):
     '''
     draw a significance bar between position x1 and x2 at height y 
     
@@ -1167,16 +1208,16 @@ def sigbar(x1,x2,y,pvalue=None,dy=5,LABELSIZE=10,**kwargs):
     height = y+2*dy
     if not 'lw' in kwargs:
         kwargs['lw']=0.5
-    plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],color=BLACK,clip_on=False,**kwargs)
+    plot([x1,x1,x2,x2],[height-dy,height,height,height-dy],color=color,clip_on=False,**kwargs)
     if not pvalue is None:
         if not type(pvalue) is str:
             pvalue = shortscientific(pvalue)
-        text(np.mean([x1,x2]),height+dy,pvalue,fontsize=LABELSIZE,horizontalalignment='center')
+        text(np.mean([x1,x2]),height+dy*padding,pvalue,fontsize=fontsize,horizontalalignment='center')
 
 def savefigure(name,**kwargs):
     '''
-    Saves figure as both SVG and PDF, prepending the current date
-    in YYYYMMDD format
+    Saves figure as both SVG and PDF, prepending the current date-ti,me
+    in YYYYMMDD_HHMMSS format
     
     Parameters
     ----------
@@ -1191,9 +1232,9 @@ def savefigure(name,**kwargs):
         basename = '.'.join(basename.split('.')[:-1])
     if not 'dpi' in kwargs:
         kwargs['dpi']=600
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.svg',transparent=True,bbox_inches='tight',**kwargs)
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight',**kwargs)
-    savefig(dirname + os.path.sep + today()+'_'+basename+'.png',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep + now()+'_'+basename+'.svg',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep + now()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep + now()+'_'+basename+'.png',transparent=True,bbox_inches='tight',**kwargs)
 
 def clean_y_range(ax=None,precision=1):
     '''
@@ -1426,9 +1467,13 @@ def covariance_crosshairs(S):
     return scipy.linalg.pinv(v).dot(lines)
 
 from matplotlib.patches import Arc, RegularPolygon
-def drawCirc(radius,centX,centY,angle_,theta2_,arrowsize=1,ax=None,cap_start=1,cap_end=1,**kwargs):
-    if ax is None:
-        ax = plt.gca()
+def draw_circle(radius,centX,centY,angle_,theta2_,
+                arrowsize=1,
+                ax=None,
+                cap_start=1,
+                cap_end=1,
+                **kwargs):
+    if ax is None: ax = plt.gca()
     arc = Arc([centX,centY],radius,radius,angle=angle_*180/np.pi,
           theta1=0,theta2=theta2_*180/np.pi,capstyle='round',linestyle='-',**kwargs)
     ax.add_patch(arc)
@@ -1441,3 +1486,50 @@ def drawCirc(radius,centX,centY,angle_,theta2_,arrowsize=1,ax=None,cap_start=1,c
         endY=centY+(radius/2)*np.sin(angle_)
         ax.add_patch(RegularPolygon((endX,endY),3,arrowsize,angle_+np.pi,**kwargs))
 
+def simplearrow(x1,y1,x2,y2,ax=None,s=5):
+    if ax is None: ax = plt.gca()
+    ax.annotate(None, 
+                xy=(x2,y2), 
+                xytext=(x1,y1), 
+                xycoords='data',
+                textcoords='data',
+                arrowprops=dict(shrink=0,width=1,lw=0,color='k',headwidth=s,headlength=s))
+
+def inhibitionarrow(x1,y1,x2,y2,ax=None,s=5,width=0.5):
+    if ax is None: ax = plt.gca()
+    ax.annotate(None, 
+                xy=(x2,y2), 
+                xytext=(x1,y1), 
+                xycoords='data',
+                textcoords='data',
+                arrowprops={ 'arrowstyle':        
+                    matplotlib.patches.ArrowStyle.BracketB(widthB=width,lengthB=0)
+                })
+
+def figurebox():
+    # new clear axis overlay with 0-1 limits
+    from matplotlib import pyplot, lines
+    ax2 = pyplot.axes([0,0,1,1],facecolor=(1,1,1,0))# axisbg=(1,1,1,0))
+    x,y = np.array([[0,0,1,1,0], [0,1,1,0,0]])
+    line = lines.Line2D(x, y, lw=1, color='k')
+    ax2.add_line(line)
+    plt.xticks([]); plt.yticks([]); noxyaxes()
+
+def more_yticks(ax=None):
+    if ax is None:
+        ax         = plt.gca()
+    yticks     = ax.get_yticks()
+    yl         = ax.get_ylim()
+    ymin,ymax  = yl
+    mintick    = np.min(yticks)
+    maxtick    = np.max(yticks)
+    nticks     = len(yticks)
+    new_yticks = np.linspace(mintick,maxtick,nticks*2-1)
+    spacing    = np.mean(np.diff(sorted(yticks)))
+    before     = mintick - spacing/2
+    if before>=ymin and before<=ymax:
+        new_yticks = np.concatenate([[before],new_yticks])
+    after      = maxtick + spacing/2
+    if after>=ymin and after<=ymax:
+        new_yticks = np.concatenate([new_yticks,[after]])
+    ax.set_yticks(new_yticks)

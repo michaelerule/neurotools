@@ -453,6 +453,7 @@ def numeric_grad(obj,p,delta=np.finfo('float32').eps):
     '''
     Numerically estimate the gradient of an objective function
     '''
+    p = np.float64(p).ravel()
     N = len(p)
     g = np.zeros(N)
     x = scalar(obj(p))
@@ -468,6 +469,7 @@ def numeric_hess(jac,p,delta=np.finfo('float32').eps):
     '''
     Numerically estimate the hessian given a gradient function
     '''
+    p = np.float64(p)
     N = len(p)
     H = np.zeros((N,N))
     g = asvector(jac(p))

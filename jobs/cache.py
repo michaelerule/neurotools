@@ -402,7 +402,7 @@ def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=T
     # special characters. Passing the text representation through zlib
     # preserves the uniqueness of the key, while reducing the overall size.
     # This improves performance
-    if base64encode: key = base64.urlsafe_b64decode(key.encode('UTF-8'))
+    if base64encode: key = base64.urlsafe_b64decode((key+'='*10).encode('UTF-8'))
     if compressed  : key = zlib.decompress(key)
     key = key.decode()
     if   mode=='repr'  : sig = ast.literal_eval(key)

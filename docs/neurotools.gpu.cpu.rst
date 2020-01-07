@@ -12,6 +12,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.gpu.cpu
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

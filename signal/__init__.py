@@ -412,7 +412,11 @@ def bandpass_filter(data,fa=None,fb=None,
     Returns
     -------
     '''
+    if np.product(data.shape)<=0:
+        raise ValueError('Singular array! no data to filter')
     N = data.shape[-1]
+    if N<=1:
+        raise ValueError('Filters over last dimension, which should have len>1')
     padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
     padded[...,N//2  :N//2+N] = data
     padded[...,     :N//2  ] = data[...,N//2:0    :-1]
@@ -514,7 +518,7 @@ def median_filter(x,window=100,mode='same'):
     n = x.shape[0]
     if mode=='valid':
         filtered = [np.median(x[i:i+window]) for i in range(n-window)]
-        return array(filtered)
+        return np.array(filtered)
     if mode=='same':
         a = window // 2
         b = window - a
@@ -1133,9 +1137,9 @@ def make_rebroadcast_slice(x,axis=0,verbose=False):
     if axis<0:
         axis=naxes+axis
     if axis==0:
-        theslice = (None,...)
+        theslice = (None,Ellipsis)
     elif axis==naxes-1:
-        theslice = (...,None)
+        theslice = (Ellipsis,None)
     else:
         a = axis
         b = naxes - a - 1

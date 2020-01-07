@@ -13,6 +13,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.spikes
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

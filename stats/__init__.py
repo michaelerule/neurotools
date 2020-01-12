@@ -53,7 +53,7 @@ import neurotools.tools
 
 def partition_trials_for_crossvalidation(x,K,shuffle=False):
     '''
-    Split trial data into crossvalidation blocks
+    Split trial data into crossvalidation blocks.
     
     Parameters
     ----------
@@ -68,22 +68,50 @@ def partition_trials_for_crossvalidation(x,K,shuffle=False):
     spans : list
         List of trial indecies to use for each block
     '''
+    # Number of trials
     N    = len(x)
+    if K>N:
+        raise ValueError('#xval-blocks K=%d>#trials N=%d'%(K,N))
+    # Length of each trial
     lens = np.array([xi.shape[0] for xi in x])
+    # Total length of the data
     L    = np.sum(lens)
+    # Average target length of each block
     B    = L/K
     if shuffle:
+        # Randomly re-order the trials
         order    = np.random.permutation(N)
         lens     = lens[order]
         indecies = order
     else:
+        # Use trials in order
         indecies = np.arange(N)
+    # Handle this one as a special case
+    if K==N:
+        # leave-one-out crossvalidation
+        return list([np.array([i]) for i in indecies])
+    # Cumulative length of data so far including length of current trial
     C    = np.cumsum(lens)
+    # Target total cumulative length of each block
     Bk   = (np.arange(K)+1)*B
+    # Edges between blocks: try to keep things close to the desired
+    # length. 
     edge = np.argmin(np.abs(C[:,None]-Bk[None,:]),axis=0)
+    edge = np.array(sorted(list(set(edge))))
+    if len(edge)!=K:
+        # Sometimes this will return duplicate edges, which is
+        # a bit of a bug. Solution? 
+        # Don't use length-based partitions in this case
+        edge = np.int32(0.5+np.linspace(0,N,K+2)[1:-1])
+    edge = np.array(sorted(list(set(edge))))
+    # Get star, end point for each edge, to define blocks to keep
     a    = np.concatenate([[0],edge[:-1]+1])
     b    = np.concatenate([edge[:-1]+1,[N]])
-    return [indecies[np.arange(ai,bi)] for ai,bi in zip(a,b)]
+    result = [indecies[np.arange(ai,bi)] for ai,bi in zip(a,b)]
+    result = [r for r in result if len(r)>0]
+    if len(result)!=K:
+        raise ValueError('Could not divide N=%d trials into K=%d blocks'%(N,K))
+    return result
     
 def polar_error(x,xh,units='degrees',mode='L1'):
     '''
@@ -131,11 +159,22 @@ error_functions = {
     'L2_radians' :lambda x,xh: polar_error(x,xh,mode='L2',units='radians')
 }
 
+import warnings
+def add_constant(data):
+    data = np.array(data)
+    if not len(data.shape)==2:
+        raise ValueError('Expected a Nsamples x Nfeatures 2D array')
+    Nsamples,Nfeatures = data.shape
+    #if Nsamples<Nfeatures:
+    #    warnings.warn("data shape is %dx%d\n# samples < # features; is data transposed?"%data.shape)
+    return np.concatenate([data,np.ones((data.shape[0],1))],axis=1)
+
 def trial_crossvalidated_least_squares(a,b,K,
     regress=None,
     reg=1e-10,
     shuffle=False,
-    errmethod='L2'):
+    errmethod='L2',
+    **kwargs):
     '''
     predicts B from A in K-fold cross-validated blocks using linear
     least squares. I.e. find w such that B = Aw
@@ -164,6 +203,10 @@ def trial_crossvalidated_least_squares(a,b,K,
         Method used to compute the error. Can be 'L1' (mean absolute error)
         'L2' (root mean-squared error) or 'correlation' (pearson correlation
         coefficient). 
+    add_constant: bool, default False
+        Whether to append an additional constand offset feature to the
+        data. The returned weight matrix will have one extra entry, at the
+        end, reflecting the offset, if this is set to True. 
     
     Returns
     -------
@@ -190,17 +233,24 @@ def trial_crossvalidated_least_squares(a,b,K,
     if len(b)!=Ntrial:
         raise ValueError('X and Y should have same # of trials')
     Nsampl = sum([ai.shape[0] for ai in a])
+    
     # Get typical block length
     B = Nsampl//K 
+    
     # Determine trial groups for cross-validation
     groups = partition_trials_for_crossvalidation(a,K,shuffle=shuffle)
     if len(groups)!=K:
         raise ValueError('Expected K groups for crossvalidation!')
+    
     # Define regression solver if none provided
     if regress is None:
         def regress(A,B):
             Q = A.T.dot(A) + np.eye(A.shape[1])*reg*A.shape[0]
             return np.linalg.solve(Q, A.T.dot(B))
+    
+    if 'add_constant' in kwargs and kwargs['add_constant']:
+        a = np.array([add_constant(ai) for ai in a])
+    
     # Iterate over each cross-validation
     x    = {}
     Bhat = {}

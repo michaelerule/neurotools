@@ -871,13 +871,34 @@ def rightlegend(*args,**kwargs):
     lg.get_frame().set_linewidth(0.0)
     return lg
 
+def leftlegend(*args,**kwargs):
+    '''
+    Legend outside the plot to the left.
+    '''
+    x = -0.2
+    if 'fudge' in kwargs:
+        x = kwargs['fudge']
+        del kwargs['fudge'] 
+    defaults = {
+        'loc':'center right',
+        'bbox_to_anchor':(x,0.5),
+        }
+    defaults.update(kwargs)
+    lg = legend(*args,**defaults)
+    lg.get_frame().set_linewidth(0.0)
+    return lg
+
 def baselegend(*args,**kwargs):
     '''
     Legend outside the plot on the baes.
     '''
+    y = -0.1
+    if 'fudge' in kwargs:
+        y = kwargs['fudge']
+        del kwargs['fudge'] 
     defaults = {
         'loc':'upper center',
-        'bbox_to_anchor':(0.5,-0.1),
+        'bbox_to_anchor':(0.5,y),
         }
     defaults.update(kwargs)
     lg = legend(*args,**defaults)

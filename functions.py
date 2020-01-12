@@ -39,7 +39,6 @@ invsqrttau = np.float128('0.3989422804014326779399460599343818684758586311649346
 # can support
 LINALGMAXFLOAT = np.float64
 
-
 def slog(x,eps=F64SAFE,returntype=LINALGMAXFLOAT):
     '''
     "safe" natural logarithm function, clips values avoiding NaN and inf

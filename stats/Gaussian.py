@@ -126,7 +126,7 @@ class Gaussian:
             New gaussian distribution that is the product of this 
             distribution with the distribution `o`
         '''
-        if o is 1: return s
+        if o==1: return s
         assert isinstance(o,Gaussian)
         t = s.t+o.t
         m = (s.m*s.t + o.m*o.t)/(t) if abs(t)>1e-16 else s.m+o.m        
@@ -155,7 +155,7 @@ class Gaussian:
             New gaussian distribution reflecting division of this Gaussian
             distribution by the distribution `o`
         '''
-        if o is 1: return s
+        if o==1: return s
         assert isinstance(o,Gaussian)
         t = s.t-o.t
         m = (s.m*s.t - o.m*o.t)/(t) if abs(t)>1e-16 else s.m-o.m

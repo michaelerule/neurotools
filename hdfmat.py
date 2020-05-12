@@ -19,6 +19,12 @@ import h5py
 def getHDFvalue(hdf,d,squeeze=True,detectString=True,detectScalar=True):
     '''
     Unpack a value from a HDF5 file
+    
+    Parameters
+    ----------
+    hdf: hdf file or subdirectory object
+    path: string
+        Subpath to extract within hdf file or subdirectory object
     '''
     try:
         value = d if type(d) is numpy.ndarray else d[()]#.value
@@ -71,6 +77,16 @@ def getHDF(hdf,path,sep=None,squeeze=True,detectString=True,detectScalar=True):
     '''
     Retrieve path from nested dictionary obtained from an HDF5 file.
     Path separator is `/`.
+    
+    Parameters
+    ----------
+    hdf: hdf file or subdirectory object
+    path: string
+        Subpath to extract within hdf file or subdirectory object
+    
+    Returns
+    -------
+    extracted hdf file or subdirectory object
     '''
     if not 'items' in dir(hdf):
         raise ValueError('data object is not dictionary-like')
@@ -82,7 +98,7 @@ def getHDF(hdf,path,sep=None,squeeze=True,detectString=True,detectScalar=True):
             raise ValueError(\
                 'Path seems to contain multiple separators, %s?'\
                 %(' '.join(['"%s"'%s for s in inpath])))
-        sep = inpath[0]
+        sep = inpath[0] if len(inpath) else '.'
         
     nodes = path.split(sep)
     d = hdf
@@ -100,7 +116,7 @@ def hdf2dict(d):
     if type(d) is numpy.ndarray:
         return d
     if 'value' in dir(d):
-        return d[()]#.value
+        return d.value#d[()]#.value
     # directory node: recursively convert
     # (Skip the #refs# variable if we encounter it)
     return {k:hdf2dict(v) for (k,v) in d.items() if k!=u'#refs#'}

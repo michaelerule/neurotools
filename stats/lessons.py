@@ -17,8 +17,9 @@ import neurotools.stats.hmm as hmm
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from   neurotools.graphics.color import BLACK,RUST,TURQUOISE,OCHRE,AZURE
-from matplotlib.mlab import find
+from neurotools.graphics.color import BLACK,RUST,TURQUOISE,OCHRE,AZURE
+from neurotools.tools import find
+
 
 # Adjust plotting preference
 # TODO: move these config options elsewhere
@@ -177,7 +178,7 @@ class PGOM:
             '''
             # first combine our Gaussian with the other Gaussian
             # then call the integration method in parent class
-            return TruncatedLogGaussianCoxApproximator.__mul__(s,s.g if o is 1 else s.g*o)
+            return TruncatedLogGaussianCoxApproximator.__mul__(s,s.g if o==1 else s.g*o)
     def __init__(s,a=1,b=0):
         '''
         Args:

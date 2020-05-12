@@ -55,6 +55,8 @@ try:
 except:
     print('could not find scipy; glm routines will not work')
 
+import warnings
+
 #############################################################################
 
 def GLMPenaltyPoisson(X,Y):
@@ -185,7 +187,7 @@ def GLMPenaltyL2(X,Y,penalties=None):
     '''
     N,D = X.shape
     if N<D:
-        raise ValueError('Number of samples should be larger than number of features; perhaps input is transposed?')
+        warnings.warn('# samples < # features; is input transposed?')
     #print('@',penalties)
     if penalties is None: 
         penalties = np.zeros((D,),'d')

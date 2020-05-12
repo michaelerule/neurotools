@@ -473,6 +473,7 @@ def box_filter(data,smoothat,padmode='reflect'):
         One-dimensional filtered signal
     '''
     data = np.array(data)
+    data = np.float32(data)
     N = len(data)
     assert len(data.shape)==1
     padded = np.zeros(2*N,dtype=data.dtype)
@@ -617,8 +618,9 @@ def fudge_derivative(x):
     Returns
     -------
     '''
+    x = np.array(x)
     n = len(x)+1
-    result = np.zeros(n)
+    result = np.zeros(n,dtype=x.dtype)
     result[1:]   += x
     result[:-1]  += x
     result[1:-1] *= 0.5
@@ -859,23 +861,31 @@ def pieces(x,thr=4):
         ps.append((range(a,b),x[a:b]))
     return ps
 
-def stats_block(data,statfunction,N=100):
+def stats_block(data,statfunction,N=100,sample_match=None):
     '''
     Compute function of signal in blocks of size $N$ over the last axis
     of the data
     
     Parameters
     ----------
-    data : np.array
+    data: np.array
         N-dimensional numpy array. Blocking is performed over the last axis
-    statfunction : function
+    statfunction: function
         Statistical function to compute on each block. Should be, or 
         behave similarly to, the `numpy` buit-ins, e.g. np.mean,
         np.median, etc.
-    N : positive integer
+    
+    Other Parameters
+    ----------------
+    N: positive integer, default 100
         Block size in which to break data. If data cannot be split 
         evenly into blocks of size $N$, then data are truncated to the 
         largest integer multiple of N. 
+    sample_match: positive integer, default None
+        If not None, then blocks will be sub-sampled to contain
+        `sample_match` samples. `sample_match` should not exceed
+        data.shape[-1]//N
+    
     
     Returns
     -------
@@ -885,22 +895,31 @@ def stats_block(data,statfunction,N=100):
     N = int(N)
     L = data.shape[-1]
     B = L//N
+    if not sample_match is None and sample_match>N:
+        raise ValueError('%d samples/block requested but blocks have only %d samples'%(sample_match,N))
     D = B*N
     data = data[...,:D]
     data = np.reshape(data,data.shape[:-1]+(B,N))
+    if not sample_match is None:
+        keep = int32(linspace(0,N-1,sample_match))
+        data = data[:,keep]
     return statfunction(data,axis=-1)
 
-def mean_block(data,N=100):
+def mean_block(data,N=100,sample_match=None):
     '''
     Calls stats_block using np.mean. See documentation of stats_block for
     details.
     
     Parameters
     ----------
+    See `stats_block` documentation
+    
     Returns
     -------
+    np.array : 
+        Block-averaged data
     '''
-    return stats_block(data,np.mean,N)
+    return stats_block(data,np.mean,N,sample_match)
 
 def var_block(data,N=100):
     '''
@@ -1042,6 +1061,43 @@ def fdiff(x,Fs=240.):
     -------
     '''
     return (x[2:]-x[:-2])*Fs*.5
+
+def interpolate_NaN(u):
+    u = np.array(u)
+    for s,e in list(zip(*get_edges(~np.isfinite(u)))):
+        if s==0: continue
+        if e==len(u): continue
+        a = u[s-1]
+        b = u[e]
+        u[s:e+1] = np.linspace(a,b,e-s+1)
+    return u
+
+import warnings
+def interpolate_NaN_quadratic(u):
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="Polyfit may be poorly conditioned")
+        u = np.array(u)
+        N = len(u)
+        i = np.arange(N)
+        splices = []
+        for s,e in list(zip(*get_edges(~np.isfinite(u)))):
+            #if s==0: continue
+            #a = u[s-1]
+            #b = u[e]
+            length = e-s
+            ist   = max(0,s-length//2-1)
+            ind   = min(N-1,e+length//2)
+            ix    = np.arange(ist,ind+1)
+            iy    = u[ist:ind+1]
+            ok    = np.isfinite(iy)
+            a,b,c = np.polyfit(ix[ok],iy[ok],2);
+            yhat  = a*ix**2+b*ix+c
+            assert np.all(np.isfinite(yhat))
+            splices.append((s,e+1,yhat[s-ist:e-ist+1]))
+        for a,b,u2 in splices:
+            u[a:b]=u2
+        assert np.all(np.isfinite(u))
+        return u
 
 def killSpikes(x,threshold=1):
     '''
@@ -1380,7 +1436,8 @@ def autocorrelation(x,lags=None,center=True,normalize=True):
     # vector-valued data, use iteration to compute time-lags
     # else:
     # Use time domain for short lags
-    result  = np.zeros(lags*2+1,'float')
+    result  = np.zeros(lags*2+1,x.dtype)
+
     zerolag = np.var(x)
     xx = np.mean(x)**2
     result[lags] = zerolag
@@ -1423,24 +1480,28 @@ def upsample(x,factor=4):
     assert type(factor) is int
     assert factor>1
     N = len(x)
+    # Remove DC
     dc = np.mean(x)
     x -= dc
+    # Remove linear trend
     dx = np.mean(np.diff(x))
     x -= np.arange(N)*dx
-    y = np.zeros(2*N,dtype=float64)
+    # Mirror signal
+    y = np.zeros(2*N,dtype=np.float64)
     y[:N]=x
     y[N:]=x[::-1]
-    ft = fft(y)
+    # Fourier transform
+    ft = np.fft.fft(y).real
     # note
     # if N is even we have 1 DC and one nyquist coefficient
-    # if N is odd we have 1 DC and two nyquist coefficients
-    # If there is only one nyquist coefficient, it will be real-values,
+    # if N is odd  we have 1 DC and two nyquist-ish coefficients
+    # If there is only one nyquist coefficient, it will be real-valued,
     # so it will be it's own complex conjugate, so it's fine if we
     # double it.
-    up = np.zeros(N*2*factor,dtype=float64)
+    up = np.zeros(N*2*factor,dtype=np.float64)
     up[:N//2+1]=ft[:N//2+1]
-    up[-N//2:] =ft[-N//2:]
-    x  = (ifft(up).real)[:N*factor]*factor
+    up[-N//2: ]=ft[-N//2: ]
+    x  = (np.fft.ifft(up).real)[:N*factor]*factor
     x += dx*np.arange(N*factor)/float(factor)
     x += dc
     return x

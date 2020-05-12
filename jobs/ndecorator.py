@@ -30,7 +30,7 @@ try:
     #from decorator import decorator as robust_decorator
     #import decorator.decorator as robust_decorator
     robust_decorator = decorator.decorator
-    print(robust_decorator)
+    #print(robust_decorator)
     #sys.exit(-3)
 except:
     traceback.print_exc()

@@ -515,3 +515,10 @@ def cut_array_data(data,arrayMap,cutoff=1.8,spacing=0.4):
     '''
     packed = packArrayDataInterpolate(data,arrayMap)
     return dctCut(packed,cutoff,spacing)
+    
+    
+def mirror2D(C):
+    C = np.array(C)
+    C = np.cat([C,C[::-1]])
+    C = np.cat([C,C[:,::-1]],1)
+    return C

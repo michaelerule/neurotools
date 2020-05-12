@@ -125,6 +125,16 @@ gpubarlinekernc = ElementwiseKernel(
         "gpubarlinekernc")
         
 def gpubarlinedata(xdata,ydata,bins,minval=None,maxval=None):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     if maxval==None: maxval=gpumax(xdata)
     if minval==None: minval=gpumin(xdata)
     binsize= (maxval-minval)/float(bins)
@@ -151,6 +161,16 @@ def gpubarlinedata(xdata,ydata,bins,minval=None,maxval=None):
     return (xmeans,ymeans,errors)    
     
 def sebarline(datasets,bins,min=None,max=None,lx="",ly="",title=""):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     fig = plt.figure()
     ax = fig.add_subplot(111)
     for (x,y) in datasets:
@@ -162,6 +182,16 @@ def sebarline(datasets,bins,min=None,max=None,lx="",ly="",title=""):
     fig.show()    
     
 def sebarline2(datasets,lx="",ly="",title=""):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     fig = plt.figure()
     ax = fig.add_subplot(111)
     for (x,y) in datasets:
@@ -174,6 +204,16 @@ def sebarline2(datasets,lx="",ly="",title=""):
     fig.show()      
          
 def gpuhistogram(xdata,ydata,bins,minval=None,maxval=None):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     if maxval==None: maxval=gpumax(xdata)
     if minval==None: minval=gpumin(xdata)
     binsize= (maxval-minval)/float(bins)
@@ -185,8 +225,6 @@ def gpuhistogram(xdata,ydata,bins,minval=None,maxval=None):
     return N
 
 
-    
-   
 sdgpubarlinekerna = ElementwiseKernel(
         "float *x, float low, float high, float *z",
         "z[i] = x[i]>=low&&x[i]<high?1.0:0.0",
@@ -202,6 +240,16 @@ sdgpubarlinekernc = ElementwiseKernel(
 
 
 def sdgpubarlinedata(xdata,ydata,bins,minval=None,maxval=None):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     if maxval==None: maxval=gpumax(xdata)
     if minval==None: minval=gpumin(xdata)
     binsize= (maxval-minval)/float(bins)
@@ -229,6 +277,16 @@ def sdgpubarlinedata(xdata,ydata,bins,minval=None,maxval=None):
         
 
 def sdbarline(datasets,bins,min=None,max=None,lx="",ly="",title=""):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     fig = plt.figure()
     ax = fig.add_subplot(111)
     for (x,y) in datasets:
@@ -241,6 +299,16 @@ def sdbarline(datasets,bins,min=None,max=None,lx="",ly="",title=""):
 
 
 def sdbarline2(datasets,lx="",ly="",title=""):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     fig = plt.figure()
     ax = fig.add_subplot(111)
     for (x,y) in datasets:
@@ -253,6 +321,16 @@ def sdbarline2(datasets,lx="",ly="",title=""):
     fig.show()
 
 def gpubin_core(data,size):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     cells      = int(len(data))
     timepoints = int(len(data[0]))
     data       = gpuint(flat(data))
@@ -294,11 +372,21 @@ try:
     gpu_bin = (pycuda.compiler.SourceModule(bin_code)).get_function("bin")
     gpu_bin.prepare([numpy.intp,numpy.intp,numpy.int32,numpy.int32,numpy.float32,numpy.float32],(256,1,1))
 except Exception as exc:
-    import traceback
-    traceback.print_exc()
+    #import traceback
+    #traceback.print_exc()
     print('PyCuda may not be installed, could not initialize')
 
 def gpu_histogram(data,min,max,bins):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     dest    = gpuarray.to_gpu(numpy.zeros((bins,),dtype=numpy.int32))
     source  = gpuarray.to_gpu(numpy.array(data,numpy.float32))
     sourcep = source.gpudata
@@ -315,6 +403,16 @@ def gpu_histogram(data,min,max,bins):
     return [n*k for k in dest.get()]
 
 def sprinkle(spikes,DT):
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     x,y = [],[]
     for t,spike in enumerate(spikes): 
         for i,s in enumerate(spike): 

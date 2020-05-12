@@ -22,7 +22,7 @@ def GMM(points,NCLASS=2):
     >>> from sklearn import mixture
     >>> def fit_samples(samples):
     >>>     samples = np.array(samples).reshape((np.size(samples),1))
-    >>>     gmix = mixture.GMM(2)
+    >>>     gmix = mixture.GaussianMixture(2)
     >>>     gmix.fit(samples)
     >>>     labels = gmix.predict(samples)
     >>>     return np.array(labels)

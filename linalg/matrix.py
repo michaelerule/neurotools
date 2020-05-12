@@ -29,13 +29,19 @@ chol = scipy.linalg.cholesky
 
 def triu_elements(M,k=0):
     '''
-    Somewhat like matlab's "diag" function, but for lower triangular matrices
+    Somewhat like matlab's "diag" function, but for upper-triangular matrices
 
     Pack N*(N-1) elements into the upper triangle of an NxN Matrix
     or
     Return the N*(N-1) elements from the upper triangle as an NxN matrix
 
-    triu_elements(randn(D*(D+1)//2))
+    >>> triu_elements(randn(D*(D+1)//2))
+    
+    Parameters
+    ----------
+    M: Matrix from which to extract triangular elements or
+        vector/list of elements to pack into a triangular matrix
+    k: forward to np.triu_indecies if input is matrix
     '''
     if len(M.shape)==2:
         # M is a matrix
@@ -68,7 +74,7 @@ def triu_elements(M,k=0):
 
 def tril_elements(M,k=0):
     '''
-    Somewhat like matlab's "diag" function, but for lower triangular matrices
+    Somewhat like matlab's "diag" function, but for lower-triangular matrices
 
     Pack N*(N-1) elements into the lower triangle of an NxN Matrix
     or
@@ -367,7 +373,6 @@ def cholupdate_eye(R):
         q[i]=1
         R = cholupdate(R,q)
     return R
-    
     
 def cartesian_product(*arrays):
     '''

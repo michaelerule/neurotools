@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>neurotools.signal.ppc &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../signal.html">neurotools.signal</a> &raquo;</li>
+        
+      <li>neurotools.signal.ppc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.signal.ppc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">spectrum.mtm</span> <span class="k">import</span> <span class="n">dpss</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">dpss</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please install the spectrum module, e.g.</span><span class="se">\n\t</span><span class="s2">pip install spectrum&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.fft</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+
+<span class="n">__PPC_FP_TYPE__</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span>
+
+
+<div class="viewcode-block" id="phase_randomize_complex"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.phase_randomize_complex">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize_complex</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Phase randomizes a signal by rotating frequency components by a random</span>
+<span class="sd">    angle. Negative frequencies are rotated in the opposite direction.</span>
+<span class="sd">    The nyquist frequency, if present, has it&#39;s sign randomly flipped.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns complex-valued array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal : 1D array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># signal length is odd.</span>
+        <span class="c1"># ft will have one DC component then symmetric frequency components</span>
+        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">conjugates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">randomize</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">randomize</span><span class="p">,</span><span class="n">conjugates</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># signal length is even</span>
+        <span class="c1"># will have one single value at the nyquist frequency</span>
+        <span class="c1"># which will be real and can be sign flipped but not rotated</span>
+        <span class="n">flip</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">0.5</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">conjugates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">randomize</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">randomize</span><span class="p">,</span><span class="n">flip</span><span class="p">)</span>
+        <span class="n">randomize</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">randomize</span><span class="p">,</span><span class="n">conjugates</span><span class="p">)</span>
+    <span class="c1"># the DC component is not randomized</span>
+    <span class="n">randomize</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">randomize</span><span class="p">)</span>
+    <span class="c1"># take FFT and apply phase randomization</span>
+    <span class="n">ff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">*</span><span class="n">randomize</span>
+    <span class="c1"># take inverse</span>
+    <span class="n">randomized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">ff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">randomized</span></div>
+
+<div class="viewcode-block" id="phase_randomize"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.phase_randomize">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Phase randomizes a signal by rotating frequency components by a random</span>
+<span class="sd">    angle. Negative frequencies are rotated in the opposite direction.</span>
+<span class="sd">    The nyquist frequency, if present, has it&#39;s sign randomly flipped.</span>
+<span class="sd">    </span>
+<span class="sd">    Casts final result to a real-valued array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal : 1D array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">phase_randomize_complex</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="fftppc_biased"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc_biased">[docs]</a><span class="k">def</span> <span class="nf">fftppc_biased</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    Retruns</span>
+<span class="sd">    -------</span>
+<span class="sd">    freqs: npp.array</span>
+<span class="sd">        Frequencies at which the PPC has been evaluated</span>
+<span class="sd">    raw: np.array</span>
+<span class="sd">        Raw (biased) value for the PPC at each frequency</span>
+<span class="sd">    phases: np.array</span>
+<span class="sd">        Phase values associated with each ppc coefficient</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># some precision trouble</span>
+    <span class="c1"># use quad precition</span>
+    <span class="c1"># PPC doesn&#39;t care about scale so also rescale?</span>
+    <span class="n">snippits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">__PPC_FP_TYPE__</span><span class="p">)</span>
+    <span class="n">snippits</span> <span class="o">=</span> <span class="n">snippits</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="n">M</span><span class="p">,</span><span class="n">window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">taper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">snippits</span> <span class="o">=</span> <span class="n">snippits</span><span class="o">*</span><span class="n">taper</span><span class="p">;</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">window</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING SAMPLES SEEM TRANSPOSED?&#39;</span><span class="p">)</span>
+    <span class="n">fs</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="n">average</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">fs</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">fs</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">raw</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">average</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">phases</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">average</span><span class="p">)</span>
+    <span class="n">freqs</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">window</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span> <span class="n">raw</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span> <span class="n">phases</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="fftppc"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc">[docs]</a><span class="k">def</span> <span class="nf">fftppc</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    make sure this is equivalent to the following matlab lines</span>
+<span class="sd">    raw     = abs(sum(S./abs(S))).^2;</span>
+<span class="sd">    ppc     = (raw - M)./(M.*(M-1));</span>
+
+<span class="sd">    the raw computation uses the mean which includes a 1/M factor</span>
+<span class="sd">    which is then squared so the raw PPC is already /M^2 compared</span>
+<span class="sd">    to the PPC value intermediate in the matlab code. So we have to</span>
+<span class="sd">    multiply it by M^2</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">M</span><span class="p">,</span><span class="n">window</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="n">ff</span><span class="p">,</span><span class="n">raw</span><span class="p">,</span><span class="n">phase</span> <span class="o">=</span> <span class="n">fftppc_biased</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">taper</span><span class="p">)</span>
+    <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ff</span><span class="p">,</span> <span class="n">unbiased</span><span class="p">,</span> <span class="n">phase</span></div>
+
+<div class="viewcode-block" id="fftppc_biased_multitaper"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc_biased_multitaper">[docs]</a><span class="k">def</span> <span class="nf">fftppc_biased_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">transpose_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    snippits: Nspikes x Nwindow</span>
+<span class="sd">        Array of spike-triggered samples of the signal trace</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    Fs: scalar</span>
+<span class="sd">        Sampling frequency. Defaults to 1000 Hz</span>
+<span class="sd">    k: positive integer</span>
+<span class="sd">        Number of tapers. Defaults to 4.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># some precision trouble</span>
+    <span class="c1"># use quad precition</span>
+    <span class="c1"># PPC doesn&#39;t care about scale so also rescale?</span>
+    <span class="c1">#nippits = array(snippits,dtype=__PPC_FP_TYPE__)</span>
+    <span class="c1">#snippits = snippits/std(snippits)</span>
+    <span class="n">M</span><span class="p">,</span><span class="n">window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">transpose_warning</span> <span class="ow">and</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">window</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING SAMPLES SEEM TRANSPOSED?&#39;</span><span class="p">)</span>
+    <span class="c1">#print(&#39;BROKE FOR MATLAB CHECK REMOVE +1 on K KEEP ALL TAPERS&#39;)</span>
+    <span class="c1">#tapers   = dpss(window,NW=0.499*(k+1),k=(k+1))[0][:,:-1]</span>
+    <span class="n">tapers</span>   <span class="o">=</span> <span class="n">dpss</span><span class="p">(</span><span class="n">window</span><span class="p">,</span><span class="n">NW</span><span class="o">=</span><span class="mf">0.499</span><span class="o">*</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">results</span>  <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">unit</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">average</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">unit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">snippits</span><span class="o">*</span><span class="n">taper</span><span class="p">)),</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">taper</span> <span class="ow">in</span> <span class="n">tapers</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+    <span class="n">raw</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">average</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">phases</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">average</span><span class="p">],</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">freqs</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">window</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span> <span class="n">raw</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span> <span class="n">phases</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="fftppc_multitaper"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc_multitaper">[docs]</a><span class="k">def</span> <span class="nf">fftppc_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">transpose_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># some precision trouble</span>
+    <span class="c1"># use quad precition</span>
+    <span class="c1"># PPC doesn&#39;t care about scale so also rescale?</span>
+    <span class="c1">#snippits = array(snippits,dtype=__PPC_FP_TYPE__)</span>
+    <span class="n">M</span><span class="p">,</span><span class="n">window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="n">ff</span><span class="p">,</span><span class="n">raw</span><span class="p">,</span><span class="n">phase</span> <span class="o">=</span> <span class="n">fftppc_biased_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">transpose_warning</span><span class="p">)</span>
+    <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ff</span><span class="p">,</span> <span class="n">unbiased</span><span class="p">,</span> <span class="n">phase</span></div>
+
+<div class="viewcode-block" id="nodc"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.nodc">[docs]</a><span class="k">def</span> <span class="nf">nodc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="discard_spikes_closer_than_delta"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.discard_spikes_closer_than_delta">[docs]</a><span class="k">def</span> <span class="nf">discard_spikes_closer_than_delta</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">delta</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    When computing PPC, we need to throw out spikes that are too close</span>
+<span class="sd">    together. This is a heuristic to make the spiking samples</span>
+<span class="sd">    &quot;more independent&quot;. We also need to skip spikes that are so close to</span>
+<span class="sd">    the edge of our data that we can&#39;t get the LFP window surrounding</span>
+<span class="sd">    the spike time. Because certain tests that compare across conditions</span>
+<span class="sd">    require matching the number of spikes, to ensure that the variance</span>
+<span class="sd">    of the PPC estimator is comparable between the conditions, we expose</span>
+<span class="sd">    the code for selecting the subset of spikes for PPC here, so that</span>
+<span class="sd">    it can be used to ensure that both conditions have a matching number</span>
+<span class="sd">    of spikes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="c1">#print(&#39;%d spikes total&#39;%len(times))</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&gt;=</span><span class="n">delta</span><span class="p">]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&lt;</span><span class="n">N</span><span class="o">-</span><span class="n">delta</span><span class="p">]</span>
+    <span class="c1">#print(&#39;%d spikes with enough padding&#39;%len(times))</span>
+    <span class="n">usetimes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">t_o</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">t</span><span class="o">-</span><span class="n">t_o</span><span class="o">&gt;=</span><span class="n">delta</span><span class="p">:</span>
+            <span class="n">t_o</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="n">usetimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="c1">#print(&#39;%d spikes far enough apart to be usable&#39;%len(usetimes))</span>
+    <span class="k">return</span> <span class="n">usetimes</span></div>
+
+<div class="viewcode-block" id="pairwise_phase_consistancy"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.pairwise_phase_consistancy">[docs]</a><span class="k">def</span> <span class="nf">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+    <span class="n">window</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">multitaper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">taper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal: 1D real valued signal</span>
+<span class="sd">    times:  Times of events relative to signal</span>
+<span class="sd">    window: Time around event to examine</span>
+<span class="sd">    Fs:     sample rate for computing freqs</span>
+<span class="sd">    k:      number of tapers</span>
+<span class="sd">        Also accepts lists of signals / times</span>
+<span class="sd">        returns (freqs, ppc, phase), lfp_segments</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">multitaper</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;For a fixed number of tapers, the bias is constant, but be careful&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">taper</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">multitaper</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A windowing taper was specified, but multitaper mode was also selected? The taper argument is for providing a windowing function when not using multitaper estimation&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">taper</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">:</span>
+        <span class="n">taper</span> <span class="o">=</span> <span class="n">taper</span><span class="p">(</span><span class="n">window</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">biased</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;skipping bias correction entirely&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">window</span><span class="o">&gt;</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">usetimes</span> <span class="o">=</span> <span class="n">discard_spikes_closer_than_delta</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">delta</span><span class="p">)</span>
+        <span class="n">snippits</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">nodc</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">usetimes</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;assuming first dimension is trials / repititions&#39;</span><span class="p">)</span>
+        <span class="n">signals</span><span class="p">,</span><span class="n">alltimes</span> <span class="o">=</span> <span class="n">signal</span><span class="p">,</span><span class="n">times</span>
+        <span class="n">snippits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">signal</span><span class="p">,</span><span class="n">times</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span><span class="n">alltimes</span><span class="p">):</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&gt;=</span><span class="n">window</span><span class="p">]</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&lt;</span><span class="n">N</span><span class="o">-</span><span class="n">window</span><span class="p">]</span>
+            <span class="n">t_o</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">t</span><span class="o">-</span><span class="n">t_o</span><span class="o">&gt;</span><span class="n">delta</span><span class="p">:</span>
+                    <span class="n">t_o</span> <span class="o">=</span> <span class="n">t</span>
+                    <span class="n">snippits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodc</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">biased</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">multitaper</span><span class="p">:</span> <span class="k">return</span> <span class="n">fftppc_biased_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="n">snippits</span>
+        <span class="k">else</span><span class="p">:</span>          <span class="k">return</span> <span class="n">fftppc_biased</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">taper</span><span class="p">),</span><span class="n">snippits</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">multitaper</span><span class="p">:</span> <span class="k">return</span> <span class="n">fftppc_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="n">snippits</span>
+        <span class="k">else</span><span class="p">:</span>          <span class="k">return</span> <span class="n">fftppc</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">taper</span><span class="p">),</span><span class="n">snippits</span>
+    <span class="k">assert</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="estimate_bias_in_uncorrected_ppc"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.estimate_bias_in_uncorrected_ppc">[docs]</a><span class="k">def</span> <span class="nf">estimate_bias_in_uncorrected_ppc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">nrand</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">tried</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrand</span><span class="p">):</span>
+        <span class="n">ff</span><span class="p">,</span><span class="n">ppc</span> <span class="o">=</span> <span class="n">uncorrectedppc</span><span class="p">(</span><span class="n">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">),</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span>
+        <span class="n">tried</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ppc</span><span class="p">)</span>
+    <span class="n">bias</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">tried</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ff</span><span class="p">,</span><span class="n">bias</span></div>
+
+<div class="viewcode-block" id="phase_randomized_bias_correction"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.phase_randomized_bias_correction">[docs]</a><span class="k">def</span> <span class="nf">phase_randomized_bias_correction</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">nrand</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Estimates degrees of freedom using phase randomization.</span>
+<span class="sd">    experimental.</span>
+
+<span class="sd">    algebra could be dramaticalyl simplified, but keeping all explicit</span>
+<span class="sd">    for clarity for now</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;AS FAR AS WE KNOW THIS DOESNT REALLY WORK&#39;</span><span class="p">)</span>
+    <span class="n">ff</span><span class="p">,</span><span class="n">bias</span> <span class="o">=</span> <span class="n">estimate_bias_in_uncorrected_ppc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">nrand</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">bias</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">K</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">K</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;estimated degrees of freedom:&#39;</span><span class="p">,</span><span class="n">M</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nominal degrees of freedom=&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span>
+    <span class="n">ff</span><span class="p">,</span><span class="n">raw</span> <span class="o">=</span> <span class="n">uncorrectedppc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span>
+    <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ff</span><span class="p">,</span> <span class="n">unbiased</span></div>
+
+
+<div class="viewcode-block" id="temp_code_for_exploring_chance_level_delete_later"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.temp_code_for_exploring_chance_level_delete_later">[docs]</a><span class="k">def</span> <span class="nf">temp_code_for_exploring_chance_level_delete_later</span><span class="p">():</span>
+    <span class="c1"># bias/ariance analysis</span>
+    <span class="c1"># my understanding is that No. of samples should not change the mean PPC</span>
+    <span class="c1"># value, but it will affect the variance. Since the PPC is computed as</span>
+    <span class="c1"># a sum of complex unit vectors, we can reason about it&#39;s bias/variance</span>
+    <span class="c1"># as a function of samples from a few simple simulations. This will replace</span>
+    <span class="c1"># brute force simulations of chance level based on phase randomization.</span>
+    <span class="c1"># The effect of multitaper on reducing the bias or variance is interesting.</span>
+    <span class="c1"># I don&#39;t know how to account for that.</span>
+    <span class="n">nTapers</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">nSamples</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">simulated</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100000</span><span class="p">):</span>
+            <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">rand</span><span class="p">(</span><span class="n">nSamples</span><span class="p">))))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nTapers</span><span class="p">)])</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">nSamples</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">nSamples</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">simulated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unbiased</span><span class="p">)</span>
+        <span class="n">simulated</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">simulated</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n=</span><span class="si">%d</span><span class="s1"> 90</span><span class="si">%%</span><span class="s1">=</span><span class="si">%f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">simulated</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="o">.</span><span class="mi">90</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">simulated</span><span class="p">))]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n=</span><span class="si">%d</span><span class="s1"> 95</span><span class="si">%%</span><span class="s1">=</span><span class="si">%f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">simulated</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="o">.</span><span class="mi">95</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">simulated</span><span class="p">))]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n=</span><span class="si">%d</span><span class="s1"> 99</span><span class="si">%%</span><span class="s1">=</span><span class="si">%f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">simulated</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="o">.</span><span class="mi">99</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">simulated</span><span class="p">))]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n=</span><span class="si">%d</span><span class="s1"> 99.9</span><span class="si">%%</span><span class="s1">=</span><span class="si">%f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">simulated</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="o">.</span><span class="mi">999</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">simulated</span><span class="p">))]))</span>
+        <span class="n">clf</span><span class="p">()</span>
+        <span class="n">hist</span><span class="p">(</span><span class="n">simulated</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">draw</span><span class="p">()</span>
+        <span class="n">raw_input</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ppc_chance_level"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.ppc_chance_level">[docs]</a><span class="k">def</span> <span class="nf">ppc_chance_level</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">nrandom</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">nTapers</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Don&#39;t use this, it underestimates chance level in the presence of</span>
+<span class="sd">    Spike trian or LFP autocorrelations</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+    <span class="n">simulated</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrandom</span><span class="p">):</span>
+        <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">rand</span><span class="p">(</span><span class="n">nSamples</span><span class="p">))))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nTapers</span><span class="p">)])</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">nSamples</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">nSamples</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">simulated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unbiased</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">simulated</span><span class="p">)[</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">simulated</span><span class="p">))]</span></div>
+
+
+<div class="viewcode-block" id="ppc_phase_randomize_chance_level_sample"><a class="viewcode-back" href="../../../neurotools.signal.ppc.html#neurotools.signal.ppc.ppc_phase_randomize_chance_level_sample">[docs]</a><span class="k">def</span> <span class="nf">ppc_phase_randomize_chance_level_sample</span><span class="p">(</span>
+    <span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">multitaper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses phase randomization to sample from the null hypothesis distribution.</span>
+<span class="sd">    Returns the actual PPC samples rather than any summary statistics.</span>
+<span class="sd">    You can do what you want with the distribution returned.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal: 1D real valued signal</span>
+<span class="sd">    times:  Times of events relative to signal</span>
+<span class="sd">    window: Time around event to examine</span>
+<span class="sd">    Fs:     sample rate for computing freqs</span>
+<span class="sd">    k:      number of tapers</span>
+<span class="sd">    Also accepts lists of signals / times</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">multitaper</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;For a fixed number of tapers, the bias is constant, but be careful&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">taper</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">multitaper</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A windowing taper was specified, but multitaper mode was also selected.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The taper argument is for providing a windowing function when not using multitaper estimation.&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">taper</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">:</span>
+        <span class="n">taper</span> <span class="o">=</span> <span class="n">taper</span><span class="p">(</span><span class="n">window</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">biased</span><span class="p">:</span> <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;skipping bias correction entirely&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">window</span><span class="o">&gt;</span><span class="mi">0</span>
+
+    <span class="c1"># need to compute PPC from phase randomized samples</span>
+    <span class="c1"># We can&#39;t phase randomize the snippits because there may be some</span>
+    <span class="c1"># correlation between them, we have to randomize the underlying LFP</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># only a single trial provided</span>
+        <span class="n">usetimes</span> <span class="o">=</span> <span class="n">discard_spikes_closer_than_delta</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">delta</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+        <span class="n">snippits</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">nodc</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">usetimes</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;assuming first dimension is trials / repititions&#39;</span><span class="p">)</span>
+        <span class="n">signals</span><span class="p">,</span><span class="n">alltimes</span> <span class="o">=</span> <span class="n">signal</span><span class="p">,</span><span class="n">times</span>
+        <span class="n">snippits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">signal</span><span class="p">,</span><span class="n">times</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span><span class="n">alltimes</span><span class="p">):</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&gt;=</span><span class="n">window</span><span class="p">]</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&lt;</span><span class="n">N</span><span class="o">-</span><span class="n">window</span><span class="p">]</span>
+            <span class="n">t_o</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">t</span><span class="o">-</span><span class="n">t_o</span><span class="o">&gt;</span><span class="n">delta</span><span class="p">:</span>
+                    <span class="n">t_o</span> <span class="o">=</span> <span class="n">t</span>
+                    <span class="n">snippits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodc</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">assert</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">biased</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">multitaper</span><span class="p">:</span> <span class="k">return</span> <span class="n">fftppc_biased_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="n">snippits</span>
+        <span class="k">else</span><span class="p">:</span>          <span class="k">return</span> <span class="n">fftppc_biased</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">taper</span><span class="p">),</span><span class="n">snippits</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">multitaper</span><span class="p">:</span> <span class="k">return</span> <span class="n">fftppc_multitaper</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="n">snippits</span>
+        <span class="k">else</span><span class="p">:</span>          <span class="k">return</span> <span class="n">fftppc</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="n">Fs</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">taper</span><span class="p">),</span><span class="n">snippits</span>
+    <span class="k">assert</span> <span class="mi">0</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

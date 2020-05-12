@@ -144,10 +144,18 @@ def absorbing_laplacian(x):
     kernel = laplace_kernel()
     return np.convolve2d(x, kernel, mode='same', boundary='symm')
     
+def magicsharp():
+    return np.array([-1./32, 0, 17./16, 0, -1./32])
+
+def magickernel():
+    return np.array([.25,.75,.75,.25])
+
 def continuum_kernel(x):
     '''
     limit of continuum magic kernel as a piecewise function.
     See http://johncostella.webs.com/magic/
+    
+    Discrete magic kernel is [.25,.75,.75,.25]
     
     Parameters
     ----------
@@ -155,7 +163,7 @@ def continuum_kernel(x):
     Returns
     -------
     '''
-    x = np.float64(abs(x))
+    x = np.float64(np.abs(x))
     return np.piecewise(x,[x>=1.5,(x>=0.5)&(x<1.5),(x>=0.0)&(x<0.5)],\
         [lambda x:0, lambda x:0.5*(x-1.5)**2, lambda x:0.75-x**2])
 

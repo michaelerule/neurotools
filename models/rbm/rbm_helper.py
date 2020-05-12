@@ -29,7 +29,10 @@ warnings.simplefilter("ignore", category=RuntimeWarning)
 from IPython.core.pylabtools import figsize
 figsize(14, 7)
 
-from scipy.misc import logsumexp 
+try:
+    from scipy.misc import logsumexp
+except:
+    from scipy.special import logsumexp
 
 def make_filename(RADIUS, BATCH, REG, COV=False, NUM='', prefix='../data'):
     # construct a file name template
@@ -99,7 +102,7 @@ def scattercompare(x,y,xl='',yl='',
         ylim(ylim()[0],ymax)
         yl = ylim()
     # Identity lines
-    if idline is True or idline is 1:
+    if idline is True or idline==1:
         t = linspace(*(xlim()+(10,)))
         plot(t,t,color=RUST,lw=2)
         ylim(*yl)
@@ -181,7 +184,7 @@ def barcompare(x,y,xl='',yl='',
         ylim(ylim()[0],ymax)
         yl = ylim()
     # Identity lines
-    if idline is True or idline is 1:
+    if idline is True or idline==1:
         t = linspace(*(xlim()+(10,)))
         plot(t,t,color=RUST,lw=2)
         ylim(*yl)

@@ -764,7 +764,7 @@ class LogGaussianCoxApproximator(Gaussian):
         s.a,s.b,s.y = (a,b,y)
     def __mul__(s,o):
         # Estimate integration limits
-        if o is 1 or o.t<1e-6:
+        if (o == 1) or o.t<1e-6:
             # No information about the state yet.
             # We aren't sure over what domain to perform the integration
             # Use a Laplace approximation of p(x|y) to get appx bounds
@@ -782,7 +782,7 @@ class LogGaussianCoxApproximator(Gaussian):
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
-        if not o is 1:
+        if not o==1:
             logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.max(logpxy)
@@ -833,7 +833,7 @@ class GaussianCoxApproximator(Gaussian):
             Function for evaluating prior density
         '''
         # Estimate integration limits
-        if o is 1 or o.t<1e-6:
+        if o==1 or o.t<1e-6:
             # No information about the state yet.
             # We aren't sure over what domain to perform the integration
             # Use a Laplace approximation of p(x|y) to get appx bounds
@@ -854,7 +854,7 @@ class GaussianCoxApproximator(Gaussian):
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
-        if not o is 1:
+        if not o==1:
             logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.max(logpxy)
@@ -902,7 +902,7 @@ class ChisquareCoxApproximator(Gaussian):
         s.a,s.b,s.y = (a,b,y)
     def __mul__(s,o):
         # Estimate integration limits
-        if o is 1 or o.t<1:
+        if o==1 or o.t<1:
             # No information about the state yet.
             # We aren't sure over what domain to perform the integration
             # Use a Laplace approximation of p(x|y) to get appx bounds
@@ -921,7 +921,7 @@ class ChisquareCoxApproximator(Gaussian):
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.max(logpxy)
         assert np.all(np.isfinite(logpxy))
-        if not o is 1:
+        if not o==1:
             logpxy += o.logpdf(x)
         assert np.all(np.isfinite(logpxy))
         logpxy -= np.max(logpxy)
@@ -961,7 +961,7 @@ class BernoulliObservationApproximator(Gaussian):
         s.a,s.b,s.y = (a,b,y)
     def __mul__(s,o):
         # Estimate integration limits
-        if o is 1 or o.t<1e-6:
+        if o==1 or o.t<1e-6:
             # No information about the state yet.
             # We aren't sure over what domain to perform the integration
             # Use a Laplace approximation of p(x|y) to get appx bounds
@@ -979,7 +979,7 @@ class BernoulliObservationApproximator(Gaussian):
         pxy = np.exp(s.y*(s.a*x+s.b))/(1+np.exp(s.a*x+s.b))
         # Multiply pxy by distribution o, 
         # handling identity as special case
-        p = pxy*(o if o is 1 else o(x)+1e-10)
+        p = pxy*(o if o==1 else o(x)+1e-10)
         assert np.all(np.isfinite(p))
         return gaussian_quadrature(p,x)
     def __str__(s): 
@@ -1006,7 +1006,7 @@ class TruncatedLogGaussianCoxApproximator(Gaussian):
         s.a,s.b,s.y = (a,b,y)
     def __mul__(s,o):
         # Estimate integration limits
-        if o is 1 or o.t<1e-6:
+        if o==1 or o.t<1e-6:
             # No information about the state yet.
             # We aren't sure over what domain to perform the integration
             # Use a Laplace approximation of p(x|y) to get appx bounds
@@ -1030,7 +1030,7 @@ class TruncatedLogGaussianCoxApproximator(Gaussian):
         pxy = np.exp(s.y*ll)/(1+l+l**2*.5)
         # Multiply pxy by distribution o, 
         # handling identity as special case
-        p = pxy*(o if o is 1 else o(x)+1e-10)
+        p = pxy*(o if o==1 else o(x)+1e-10)
         assert np.all(np.isfinite(p))
         return gaussian_quadrature(p,x)
     def __str__(s): 
@@ -1062,7 +1062,7 @@ class MVGaussian:
         s.M,s.T = M,T
         s.TM = np.dot(T,M) if TM is None else TM
     def __mul__(s,o):
-        if o is 1: return s
+        if o==1: return s
         assert isinstance(o,MVGaussian)
         assert np.all(np.isfinite(o.T))
         assert np.all(np.isfinite(o.M))

@@ -17,11 +17,50 @@ except:
 import types
 import numpy as np
 from numpy.fft import *
-#from neurotools.tools import warn
 from warnings import warn
-#from neurotools.signal import phase_randomize
 
 __PPC_FP_TYPE__=np.float128
+
+
+def phase_randomize_complex(signal):
+    '''
+    Phase randomizes a signal by rotating frequency components by a random
+    angle. Negative frequencies are rotated in the opposite direction.
+    The nyquist frequency, if present, has it's sign randomly flipped.
+    
+    Returns complex-valued array.
+
+    Parameters
+    ----------
+    signal : 1D array
+
+    Returns
+    -------
+    '''
+    assert 1==len(signal.shape)
+    N = int(len(signal))
+    if N%2==1:
+        # signal length is odd.
+        # ft will have one DC component then symmetric frequency components
+        randomize  = np.exp(1j*np.random.rand((N-1)//2)*2*np.pi)
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,conjugates)
+    else:
+        # signal length is even
+        # will have one single value at the nyquist frequency
+        # which will be real and can be sign flipped but not rotated
+        flip = 1 if np.random.rand(1)<0.5 else -1
+        randomize  = np.exp(1j*np.random.rand((N-2)//2)*2*np.pi)
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,flip)
+        randomize  = np.append(randomize,conjugates)
+    # the DC component is not randomized
+    randomize = np.append(1,randomize)
+    # take FFT and apply phase randomization
+    ff = np.fft.fft(signal)*randomize
+    # take inverse
+    randomized = np.fft.ifft(ff)
+    return randomized
 
 def phase_randomize(signal):
     '''
@@ -29,51 +68,44 @@ def phase_randomize(signal):
     angle. Negative frequencies are rotated in the opposite direction.
     The nyquist frequency, if present, has it's sign randomly flipped.
     
+    Casts final result to a real-valued array.
+
     Parameters
     ----------
+    signal : 1D array
+
     Returns
     -------
     '''
-    assert 1==len(signal.shape)
-    N = len(signal)
-    if N%2==1:
-        # signal length is odd.
-        # ft will have one DC component then symmetric frequency components
-        randomize  = np.exp(1j*np.random.rand((N-1)/2))
-        conjugates = np.conj(randomize)[::-1]
-        randomize  = np.append(randomize,conjugates)
-    else:
-        # signal length is even
-        # will have one single value at the nyquist frequency
-        # which will be real and can be sign flipped but not rotated
-        flip = 1 if rand(1)<0.5 else -1
-        randomize  = np.exp(1j*rand((N-2)/2))
-        conjugates = np.conj(randomize)[::-1]
-        randomize  = np.append(randomize,flip)
-        randomize  = np.append(randomize,conjugates)
-    # the DC component is not randomized
-    randomize = np.append(1,randomize)
-    # take FFT and apply phase randomization
-    ff = fft(signal)*randomize
-    # take inverse
-    randomized = ifft(ff)
-    return real(randomized)
+    return np.real(phase_randomize_complex(signal))
 
 def fftppc_biased(snippits,Fs=1000,taper=None):
+    '''
+
+    Retruns
+    -------
+    freqs: npp.array
+        Frequencies at which the PPC has been evaluated
+    raw: np.array
+        Raw (biased) value for the PPC at each frequency
+    phases: np.array
+        Phase values associated with each ppc coefficient
+
+    '''
     # some precision trouble
     # use quad precition
     # PPC doesn't care about scale so also rescale?
-    snippits = array(snippits,dtype=__PPC_FP_TYPE__)
-    snippits = snippits/std(snippits)
-    M,window = shape(snippits)
+    snippits = np.array(snippits,dtype=__PPC_FP_TYPE__)
+    snippits = snippits/np.std(snippits)
+    M,window = np.shape(snippits)
     if not taper is None:
         snippits = snippits*taper;
     if M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
-    fs       = fft(snippits)
-    average  = mean(fs/abs(fs),0)
-    raw      = abs(average)**2
-    phases   = angle(average)
-    freqs    = fftfreq(window,1./Fs)
+    fs       = np.fft.fft(snippits)
+    average  = np.mean(fs/abs(fs),0)
+    raw      = np.abs(average)**2
+    phases   = np.angle(average)
+    freqs    = np.fft.fftfreq(window,1./Fs)
     return freqs[:(window+1)/2], raw[:(window+1)/2], phases[:(window+1)/2]
 
 def fftppc(snippits,Fs=1000,taper=None):
@@ -92,38 +124,53 @@ def fftppc(snippits,Fs=1000,taper=None):
     unbiased = (raw*M-1)/(M-1)
     return ff, unbiased, phase
 
-def fftppc_biased_multitaper(snippits,Fs=1000,k=4):
+def fftppc_biased_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
+    '''
+    Parameters
+    ----------
+    snippits: Nspikes x Nwindow
+        Array of spike-triggered samples of the signal trace
+    
+    Other Parameters
+    ----------------
+    Fs: scalar
+        Sampling frequency. Defaults to 1000 Hz
+    k: positive integer
+        Number of tapers. Defaults to 4.
+    '''
     # some precision trouble
     # use quad precition
     # PPC doesn't care about scale so also rescale?
     #nippits = array(snippits,dtype=__PPC_FP_TYPE__)
     #snippits = snippits/std(snippits)
-    M,window = shape(snippits)
-    print(M,window)
-    if M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
+    M,window = np.shape(snippits)
+    if transpose_warning and M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
     #print('BROKE FOR MATLAB CHECK REMOVE +1 on K KEEP ALL TAPERS')
     #tapers   = dpss(window,NW=0.499*(k+1),k=(k+1))[0][:,:-1]
     tapers   = dpss(window,NW=0.499*k,k=k)[0]
     results  = []
     unit  = lambda x:x/abs(x)
-    average = [mean(unit(fft(snippits*taper)),0) for taper in tapers.T]
-    raw     = mean([abs(x)**2 for x in average],0)
-    phases  = angle(mean([exp(2j*pi*angle(x)) for x in average],0))
-    freqs = fftfreq(window,1./Fs)
-    return freqs[:(window+1)/2], raw[:(window+1)/2], phases[:(window+1)/2]
+    average = [np.mean(unit(np.fft.fft(snippits*taper)),0) for taper in tapers.T]
+    raw     = np.mean([np.abs(x)**2 for x in average],0)
+    phases  = np.angle(np.mean([np.exp(2j*np.pi*np.angle(x)) for x in average],0))
+    freqs   = np.fft.fftfreq(window,1./Fs)
+    return freqs[:(window+1)//2], raw[:(window+1)//2], phases[:(window+1)//2]
 
-def fftppc_multitaper(snippits,Fs=1000,k=4):
+def fftppc_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
+    '''
+    '''
     # some precision trouble
     # use quad precition
     # PPC doesn't care about scale so also rescale?
     #snippits = array(snippits,dtype=__PPC_FP_TYPE__)
-    M,window = shape(snippits)
-    if M<=window: warn('WARNING SAMPLES SEEM TRANSPOSED?')
-    ff,raw,phase = fftppc_biased_multitaper(snippits,Fs,k)
+    M,window = np.shape(snippits)
+    ff,raw,phase = fftppc_biased_multitaper(snippits,Fs,k,transpose_warning)
     unbiased = (raw*k*M-1)/(M-1)
     return ff, unbiased, phase
 
 def nodc(x):
+    '''
+    '''
     return x-mean(x)
 
 def discard_spikes_closer_than_delta(signal,times,delta):
@@ -163,13 +210,16 @@ def pairwise_phase_consistancy(signal,times,
     delta=100,
     taper=None):
     '''
+
+    Parameters
+    ----------
     signal: 1D real valued signal
     times:  Times of events relative to signal
     window: Time around event to examine
     Fs:     sample rate for computing freqs
     k:      number of tapers
-    Also accepts lists of signals / times
-    returns (freqs, ppc, phase), lfp_segments
+        Also accepts lists of signals / times
+        returns (freqs, ppc, phase), lfp_segments
 
     '''
     if multitaper:
@@ -278,16 +328,18 @@ def ppc_phase_randomize_chance_level_sample(
     signal,times,window=50,Fs=1000,k=4,multitaper=True,
     biased=False,delta=100,taper=None):
     '''
+    Uses phase randomization to sample from the null hypothesis distribution.
+    Returns the actual PPC samples rather than any summary statistics.
+    You can do what you want with the distribution returned.
+
+    Parameters
+    ----------
     signal: 1D real valued signal
     times:  Times of events relative to signal
     window: Time around event to examine
     Fs:     sample rate for computing freqs
     k:      number of tapers
     Also accepts lists of signals / times
-
-    Uses phase randomization to sample from the null hypothesis distribution.
-    Returns the actual PPC samples rather than any summary statistics.
-    You can do what you want with the distribution returned.
     '''
     if multitaper:
         print("Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!")

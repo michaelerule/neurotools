@@ -129,12 +129,14 @@ def p2c(p):
     '''
     Convert a point in terms of a length-2 iterable into a complex number
     '''
+    p = np.array(p)
     return p[0]+1j*p[1]
 
 def c2p(z):
     ''' 
     Convert complex point to tuple
     '''
+    z = np.array(z)
     return np.array([z.real,z.imag])
 
 class emitter():
@@ -571,7 +573,9 @@ def progress_bar(x,N=None):
             sys.stdout.flush()
             wait_til_ms = time_ms+250
         yield x
-    sys.stdout.write('\r['+('#'*50)+']100%\n')
+    #sys.stdout.write('\r['+('#'*50)+']100%')
+    #sys.stdout.flush()
+    sys.stdout.write('\r'+' '*70+'\r')
     sys.stdout.flush()
 
 def asiterable(x):

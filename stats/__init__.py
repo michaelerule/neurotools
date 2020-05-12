@@ -105,8 +105,8 @@ def partition_trials_for_crossvalidation(x,K,shuffle=False):
         edge = np.int32(0.5+np.linspace(0,N,K+2)[1:-1])
     edge = np.array(sorted(list(set(edge))))
     # Get star, end point for each edge, to define blocks to keep
-    a    = np.concatenate([[0],edge[:-1]+1])
-    b    = np.concatenate([edge[:-1]+1,[N]])
+    a      = np.concatenate([[0],edge[:-1]+1])
+    b      = np.concatenate([edge[:-1]+1,[N]])
     result = [indecies[np.arange(ai,bi)] for ai,bi in zip(a,b)]
     result = [r for r in result if len(r)>0]
     if len(result)!=K:

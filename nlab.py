@@ -9,8 +9,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
 
-print( 'Loading nlab namespace')
-
 import os, sys
 import pickle
 import random
@@ -153,14 +151,14 @@ except:
 from pylab import *   
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import *
+import scipy
+from scipy         import *
+from scipy.special import *
+from scipy.linalg  import *
 from numpy.random import *
 from numpy import *
 from pylab import *
-from matplotlib.pyplot import *
-import scipy
-from scipy import *
-from scipy.special import *
-from scipy.linalg import *
 
 # Mess with matplotlib
 rcParams['figure.dpi']=120

@@ -1,0 +1,832 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stats.glm &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../stats.html">stats</a> &raquo;</li>
+        
+      <li>stats.glm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for stats.glm</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Tutorial in Poisson generalized linear point-process models for neural</span>
+<span class="sd">spike train analysis.</span>
+
+<span class="sd">Depends on</span>
+
+<span class="sd">numpy and scipy</span>
+<span class="sd">http://www.scipy.org/install.html</span>
+
+<span class="sd">sklearn</span>
+<span class="sd">http://scikit-learn.org/stable/install.html</span>
+
+<span class="sd">statsmodels</span>
+<span class="sd">http://statsmodels.sourceforge.net/devel/install.html</span>
+
+<span class="sd">See also </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1">#############################################################################</span>
+<span class="c1"># Imports</span>
+<span class="c1"># Check that numpy and scipy is installed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find numpy; glm routines will not work&#39;</span><span class="p">)</span>
+
+<span class="c1"># get GLM solver from statsmodels</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">statsmodels.genmod.generalized_linear_model</span> <span class="k">import</span> <span class="n">GLM</span>
+    <span class="kn">from</span> <span class="nn">statsmodels.genmod.families</span> <span class="k">import</span> <span class="n">Poisson</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find statsmodels; glm routines will not work&#39;</span><span class="p">)</span>
+
+<span class="c1"># get ROC curve code from sklearn</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># This AUC algorithm is not the best, but it will do</span>
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">roc_auc_score</span> <span class="k">as</span> <span class="n">auc</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find sklearn; ROC curve routines missing&#39;</span><span class="p">)</span>
+
+<span class="c1"># the function minimize wraps a large number of function optimizers</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find scipy; glm routines will not work&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="c1">#############################################################################</span>
+
+<div class="viewcode-block" id="GLMPenaltyPoisson"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.GLMPenaltyPoisson">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyPoisson</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates objective, gradient, and hessian functions for the Poisson </span>
+<span class="sd">    GLM for design matrix X and spike observations Y.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array-like</span>
+<span class="sd">        N observation x D features design matrix</span>
+<span class="sd">    Y: array-like</span>
+<span class="sd">        N x 1 point-process counts</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    objective: function</span>
+<span class="sd">        objective function for `scipy.optimize.minimize`</span>
+<span class="sd">    gradient: function</span>
+<span class="sd">        gradient (jacobian) function for `scipy.optimize.minimize`</span>
+<span class="sd">    hessian: function</span>
+<span class="sd">        hessian function for `scipy.optimize.minimize`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">cat</span><span class="p">([</span><span class="n">ones</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)),</span><span class="n">X</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">N</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>         <span class="c1"># use double precision</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>             <span class="c1"># total number of events</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">Y</span><span class="p">[:,</span><span class="kc">None</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># event-conditioned sums of X</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">N</span>              <span class="c1"># normalized by the amount of data. can be tweaked?</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="nd">@H</span><span class="p">)</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="n">Z</span><span class="nd">@H</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">like</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="nd">@H</span><span class="p">)</span>
+        <span class="n">grad</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">rate</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">grad</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="nd">@H</span><span class="p">)</span>
+        <span class="n">hess</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">rate</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span></div>
+
+<div class="viewcode-block" id="sexp"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.sexp">[docs]</a><span class="k">def</span> <span class="nf">sexp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Exponential function avoiding overflow and underflow, for evaluating the</span>
+<span class="sd">    logistic sigmoid function</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="mi">708</span><span class="p">,</span><span class="mi">708</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="sigmoid"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.sigmoid">[docs]</a><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Logistic sigmoid function</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">sexp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="o">&lt;</span><span class="mf">1e-300</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">&lt;</span><span class="mf">1e-300</span><span class="p">:</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="GLMPenaltyBernoulli"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.GLMPenaltyBernoulli">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyBernoulli</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates objective, gradient, and hessian functions for the Bernoulli </span>
+<span class="sd">    GLM for design matrix X and spike observations Y.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array-like</span>
+<span class="sd">        N observation x D features design matrix</span>
+<span class="sd">    Y: array-like</span>
+<span class="sd">        N x 1 point-process counts</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    objective: function</span>
+<span class="sd">        objective function for `scipy.optimize.minimize`</span>
+<span class="sd">    gradient: function</span>
+<span class="sd">        gradient (jacobian) function for `scipy.optimize.minimize`</span>
+<span class="sd">    hessian: function</span>
+<span class="sd">        hessian function for `scipy.optimize.minimize`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">cat</span><span class="p">([</span><span class="n">ones</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)),</span><span class="n">X</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">N</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="c1"># use double precision</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">N</span>      <span class="c1"># normalized by the amount of data. can be tweaked?</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">H</span><span class="p">)</span>
+        <span class="n">lnPr</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">*</span> <span class="o">-</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">sexp</span><span class="p">(</span><span class="o">-</span><span class="n">rate</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">Y</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">sexp</span><span class="p">(</span><span class="n">rate</span><span class="p">))</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lnPr</span><span class="p">)</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="nd">@H</span><span class="p">)</span>
+        <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y</span> <span class="o">-</span> <span class="n">rate</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">grad</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">rate</span>  <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="nd">@H</span><span class="p">)</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">rate</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">rate</span><span class="p">)</span>
+        <span class="n">hess</span>  <span class="o">=</span> <span class="o">-</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">@</span><span class="p">(</span><span class="n">slope</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span></div>
+
+<div class="viewcode-block" id="GLMPenaltyL2"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.GLMPenaltyL2">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates objective, gradient, and hessian functions for the penalized</span>
+<span class="sd">    L2 regularized poisson GLM for design matrix X and spike observations Y.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array-like</span>
+<span class="sd">        N observation x D features design matrix</span>
+<span class="sd">    Y: array-like</span>
+<span class="sd">        N x 1 point-process counts</span>
+<span class="sd">    penalties: </span>
+<span class="sd">        len D-1 list of L2 penalty weights (don&#39;t penalize mean)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    objective: function</span>
+<span class="sd">        objective function for `scipy.optimize.minimize`</span>
+<span class="sd">    gradient: function</span>
+<span class="sd">        gradient (jacobian) function for `scipy.optimize.minimize`</span>
+<span class="sd">    hessian: function</span>
+<span class="sd">        hessian function for `scipy.optimize.minimize`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">N</span><span class="o">&lt;</span><span class="n">D</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;# samples &lt; # features; is input transposed?&#39;</span><span class="p">)</span>
+    <span class="c1">#print(&#39;@&#39;,penalties)</span>
+    <span class="k">if</span> <span class="n">penalties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">penalties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">D</span><span class="p">,),</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">penalties</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">penalties</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1">#print(&#39;Penalty parameter is a scalar&#39;)</span>
+        <span class="c1">#print(&#39;Penalizing all parameters with α=&#39;,penalties)</span>
+        <span class="n">penalties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">penalties</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">penalties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">D</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">penalties</span>
+    <span class="c1">#print(penalties)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">penalties</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">D</span><span class="p">,):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Regularization penalty, if provided, should eiher be a scalar or a vector of one penalty per fecture.&#39;</span><span class="p">);</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="n">N</span><span class="p">,)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Y should consist of a single binary vector with the same number of samples as the features.&#39;</span><span class="p">);</span>
+    <span class="c1">#Y = np.int32(Y&gt;0.5)     # binarize    </span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>       <span class="c1"># use double precision</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>           <span class="c1"># total number of events</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">Y</span><span class="p">[:,</span><span class="kc">None</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># event-conditioned sums of X</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">N</span>         <span class="c1"># normalized by the amount of data. can be tweaked?</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">B</span>  <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="n">K</span><span class="o">*</span><span class="n">mu</span><span class="o">+</span><span class="n">Z</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">penalties</span><span class="o">*</span><span class="n">B</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">like</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">B</span>  <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">rate</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+        <span class="n">dmu</span>   <span class="o">=</span> <span class="n">K</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
+        <span class="n">dpenalty</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">penalties</span><span class="o">*</span><span class="n">B</span>
+        <span class="n">dbeta</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span> <span class="o">-</span> <span class="n">dpenalty</span>
+        <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dmu</span><span class="p">,</span> <span class="n">dbeta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">grad</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">B</span>  <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">rate</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+        <span class="n">dmumu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
+        <span class="n">dmuB</span>  <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
+        <span class="n">dBB</span>   <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rate</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">ddpen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)))</span><span class="o">*</span><span class="n">penalties</span><span class="o">*</span><span class="mi">2</span>
+        <span class="n">hess</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">hess</span><span class="p">[</span><span class="mi">0</span> <span class="p">,</span><span class="mi">0</span> <span class="p">]</span> <span class="o">=</span> <span class="n">dmumu</span>
+        <span class="n">hess</span><span class="p">[</span><span class="mi">0</span> <span class="p">,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">dmuB</span>
+        <span class="n">hess</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">0</span> <span class="p">]</span> <span class="o">=</span> <span class="n">dmuB</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">hess</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ddpen</span> <span class="o">+</span> <span class="n">dBB</span>
+        <span class="k">return</span> <span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
+    <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span></div>
+
+<div class="viewcode-block" id="ppglmfit"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.ppglmfit">[docs]</a><span class="k">def</span> <span class="nf">ppglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The GLM solver in statsmodels is very general. It accepts any link</span>
+<span class="sd">    function and expects that, if you want a constant term in your model,</span>
+<span class="sd">    that you have already manually added a column of ones to your</span>
+<span class="sd">    design matrix. This wrapper simplifies using GLM to fit the common</span>
+<span class="sd">    case of a Poisson point-process model, where the constant term has</span>
+<span class="sd">    not been explicitly added to the design matrix</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: N_observations x N_features design matrix.</span>
+<span class="sd">    Y: Binary point process observations</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    μ, B: the offset and parameter estimates for the GLM model.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># add constant value to X, if the 1st column is not constant</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">0.1</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Caution: spike rate very high, is Poisson assumption valid?&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">100</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Caution: fewer than 100 spikes to fit model&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">X</span><span class="p">])</span>
+    <span class="n">poisson_model</span>   <span class="o">=</span> <span class="n">GLM</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">family</span><span class="o">=</span><span class="n">Poisson</span><span class="p">())</span>
+    <span class="n">poisson_results</span> <span class="o">=</span> <span class="n">poisson_model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">poisson_results</span><span class="o">.</span><span class="n">params</span>
+    <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="fitGLM"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.fitGLM">[docs]</a><span class="k">def</span> <span class="nf">fitGLM</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">mu0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">B0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fit the model using gradient descent with hessian</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : matrix</span>
+<span class="sd">        design matrix</span>
+<span class="sd">    Y : vector</span>
+<span class="sd">        binary spike observations</span>
+<span class="sd">    L2Penalty : scalar</span>
+<span class="sd">        optional L2 penalty on features, defaults to 0</span>
+<span class="sd">    mu0 : scalar or None</span>
+<span class="sd">        Initial guess for mean offset. </span>
+<span class="sd">        Optional, defaults to 0 if None.</span>
+<span class="sd">    B0 : vector or None</span>
+<span class="sd">        Initial guess for parameter weights. </span>
+<span class="sd">        Optional, defaults to zeroes if None</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    kwargs : </span>
+<span class="sd">        Keyword arguments to forward to `scipy.optimize.minimize`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mu : mean offset parameter</span>
+<span class="sd">    B : feature weights</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mu0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">initial</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu0</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">B0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">initial</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">B0</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">initial</span><span class="p">,</span>
+        <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="n">hessian</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">mu</span><span class="p">,</span><span class="n">B</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">mu</span><span class="p">,</span><span class="n">B</span></div>
+
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">permutation</span>
+<div class="viewcode-block" id="crossvalidatedAUC"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.crossvalidatedAUC">[docs]</a><span class="k">def</span> <span class="nf">crossvalidatedAUC</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">NXVAL</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Crossvalidated area under the ROC curve calculation. This routine</span>
+<span class="sd">    uses the non-regularized GLMPenaltyL2 to fit a GLM point-process </span>
+<span class="sd">    model and test accuracy under K-fold crossvalidation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.array</span>
+<span class="sd">        Covariate matrix Nsamples x Nfeatures</span>
+<span class="sd">    Y : np.array</span>
+<span class="sd">        Binary point-process observations, 1D array length Nsamples </span>
+<span class="sd">    NXVAL : positive int</span>
+<span class="sd">        Defaults to 4. Number of cross-validation blocks to use</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Area under the ROC curve, cross-validated, for non-regularized</span>
+<span class="sd">        GLM point process model fit</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">permutation</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">P</span><span class="p">,:]</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">P</span><span class="p">]</span>
+    <span class="n">blocksize</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="n">NXVAL</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NXVAL</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="n">blocksize</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">blocksize</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">NXVAL</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">b</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="n">train_X</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">X</span><span class="p">[:</span><span class="n">a</span><span class="p">,:],</span><span class="n">X</span><span class="p">[</span><span class="n">b</span><span class="p">:,:]])</span>
+        <span class="n">train_Y</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">Y</span><span class="p">[:</span><span class="n">a</span><span class="p">],</span><span class="n">Y</span><span class="p">[</span><span class="n">b</span><span class="p">:]])</span>
+        <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span><span class="n">train_Y</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="n">hessian</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+        <span class="n">mu</span><span class="p">,</span><span class="n">B</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mu</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">,:]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">auc</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">concatenate</span><span class="p">(</span><span class="n">predicted</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)</span>
+<span class="sd">    </span>
+<span class="sd">    Fit Poisson GLM using gradient descent with hessian</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.array</span>
+<span class="sd">        Covariate matrix Nsamples x Nfeatures</span>
+<span class="sd">    Y : np.array</span>
+<span class="sd">        Binary point-process observations, 1D array length Nsamples </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="p">)</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span>
+        <span class="n">jac</span>   <span class="o">=</span><span class="n">gradient</span><span class="p">,</span>
+        <span class="n">hess</span>  <span class="o">=</span><span class="n">hessian</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">mu_hat</span><span class="p">,</span> <span class="n">B_hat</span></div>
+    
+<div class="viewcode-block" id="cosine_kernel"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.cosine_kernel">[docs]</a><span class="k">def</span> <span class="nf">cosine_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Raised cosine basis kernel, normalized such that it integrates to 1</span>
+<span class="sd">    centered at zero. Time is rescaled so that the kernel spans from</span>
+<span class="sd">    -2 to 2</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : vector</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vector</span>
+<span class="sd">        $\\tfrac 1 4 + \\tfrac 1 2 cos(x)$ if $x\in[-\pi,\pi]$, otherwise 0.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">piecewise</span><span class="p">(</span><span class="n">x</span><span class="p">,[</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">],[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="log_cosine_basis"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.log_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">log_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generate overlapping log-cosine basis elements</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : array </span>
+<span class="sd">        Array of wave quarter-phases</span>
+<span class="sd">    t : array</span>
+<span class="sd">        times</span>
+<span class="sd">    base : scalar</span>
+<span class="sd">        exponent base</span>
+<span class="sd">    offset : scalar</span>
+<span class="sd">        leave this set to 1 (default)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    B : array</span>
+<span class="sd">        Basis with n_elements x n_times shape</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="n">offset</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">kernels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cosine_kernel</span><span class="p">(</span><span class="n">s</span><span class="o">-</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">N</span><span class="p">])</span> <span class="c1"># evenly spaced in log-time</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">kernels</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">offset</span><span class="o">+</span><span class="n">t</span><span class="p">)</span> <span class="c1"># correction for change of variables, kernels integrate to 1 now</span>
+    <span class="k">return</span> <span class="n">kernels</span></div>
+
+<div class="viewcode-block" id="make_cosine_basis"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.make_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">make_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">min_interval</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Build N logarightmically spaced cosine basis functions</span>
+<span class="sd">    spanning L samples, with a peak resolution of min_interval</span>
+<span class="sd">    </span>
+<span class="sd">    # Solve for a time basis with these constraints</span>
+<span class="sd">    # t[0] = 0</span>
+<span class="sd">    # t[min_interval] = 1</span>
+<span class="sd">    # log(L)/log(b) = n_basis+1</span>
+<span class="sd">    # log(b) = log(L)/(n_basis+1)</span>
+<span class="sd">    # b = exp(log(L)/(n_basis+1))</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Number of basis functions</span>
+<span class="sd">    L : int</span>
+<span class="sd">        Number of time-bins</span>
+<span class="sd">    min_interval : scalar</span>
+<span class="sd">        Number of bins between the two shortes basis elements. That is,</span>
+<span class="sd">        minimum time separation between basis functions.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    B : array</span>
+<span class="sd">        Basis with n_elements x n_times shape</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">/</span><span class="n">min_interval</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">log_cosine_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">t</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+
+<span class="c1"># Argument cleaning: tolerate some sloppiness in return types</span>
+<span class="kn">from</span> <span class="nn">neurotools.linalg.arguments</span> <span class="k">import</span> <span class="n">scalar</span><span class="p">,</span><span class="n">asvector</span>
+
+<div class="viewcode-block" id="numeric_grad"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.numeric_grad">[docs]</a><span class="k">def</span> <span class="nf">numeric_grad</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Numerically estimate the gradient of an objective function</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">scalar</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">dp</span>     <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">dx</span>     <span class="o">=</span> <span class="n">scalar</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">dp</span><span class="p">))</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>   <span class="o">=</span> <span class="p">(</span><span class="n">dx</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">delta</span>
+    <span class="k">return</span> <span class="n">g</span></div>
+
+
+<div class="viewcode-block" id="numeric_hess"><a class="viewcode-back" href="../../stats.glm.html#stats.glm.numeric_hess">[docs]</a><span class="k">def</span> <span class="nf">numeric_hess</span><span class="p">(</span><span class="n">jac</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Numerically estimate the hessian given a gradient function</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">asvector</span><span class="p">(</span><span class="n">jac</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">dp</span>     <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+            <span class="n">dg</span>     <span class="o">=</span> <span class="n">asvector</span><span class="p">(</span><span class="n">jac</span><span class="p">(</span><span class="n">dp</span><span class="p">))</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>   <span class="o">=</span> <span class="p">(</span><span class="n">dg</span><span class="o">-</span><span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="n">delta</span>
+    <span class="k">return</span> <span class="n">H</span></div>
+
+<span class="c1">#############################################################################</span>
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__MAIN__&#39;</span> <span class="ow">or</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">systime</span>
+
+    <span class="k">def</span> <span class="nf">current_milli_time</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+    
+    <span class="c1">#stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</span>
+    <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">tic</span><span class="p">(</span><span class="n">st</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Similar to Matlab tic &#39;&#39;&#39;</span>
+        <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">__GLOBAL_TIC_TIME__</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">__GLOBAL_TIC_TIME__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t=</span><span class="si">%d</span><span class="s1">ms&#39;</span><span class="o">%</span><span class="p">((</span><span class="n">t</span><span class="o">-</span><span class="n">__GLOBAL_TIC_TIME__</span><span class="p">)),</span><span class="n">st</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timing...&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timing...&quot;</span><span class="p">)</span>
+        <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">t</span>
+        
+    <span class="k">def</span> <span class="nf">toc</span><span class="p">(</span><span class="n">st</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Similar to Matlab toc &#39;&#39;&#39;</span>
+        <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">__GLOBAL_TIC_TIME__</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">__GLOBAL_TIC_TIME__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;dt=</span><span class="si">%d</span><span class="s1">ms&#39;</span><span class="o">%</span><span class="p">((</span><span class="n">t</span><span class="o">-</span><span class="n">__GLOBAL_TIC_TIME__</span><span class="p">)),</span><span class="n">st</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;havn&#39;t called tic yet?&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;havn&#39;t called tic yet?&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span>
+
+    <span class="n">Fs</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Sampling rate ( Hz )</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span> <span class="c1"># bin width ( seconds )</span>
+    <span class="n">T</span>  <span class="o">=</span> <span class="mf">450.</span>  <span class="c1"># Time duration ( seconds )</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">Fs</span><span class="p">)</span>  <span class="c1"># number of time bins</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Simple model: K Gaussian features</span>
+<span class="sd">       λ(y)  = exp{ μ + BX }</span>
+<span class="sd">    ln(λ(y)) =      μ + BX</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="o">-</span><span class="mi">6</span>
+    <span class="n">K</span>  <span class="o">=</span> <span class="mi">4</span>                   <span class="c1"># number of features</span>
+    <span class="n">B</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>         <span class="c1"># draw randomly model weights</span>
+    <span class="n">X</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>       <span class="c1"># simulate covariate data</span>
+    <span class="n">L</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span> <span class="c1"># simulat conditional intensities</span>
+    <span class="n">Y</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&lt;</span><span class="n">L</span>        <span class="c1"># draw spike train from conditional intensity</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Simulated&#39;</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="s1">&#39;seconds&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span><span class="s1">&#39;spikes at a rate of&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="n">T</span><span class="p">,</span><span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+
+    <span class="c1"># split into training and validation data</span>
+    <span class="n">split</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="mi">2</span> <span class="c1"># The operator // is integer division in Python</span>
+    <span class="n">X_train</span><span class="p">,</span><span class="n">X_validate</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span><span class="n">X</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+    <span class="n">L_train</span><span class="p">,</span><span class="n">L_validate</span> <span class="o">=</span> <span class="n">L</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span><span class="n">L</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+    <span class="n">Y_train</span><span class="p">,</span><span class="n">Y_validate</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span><span class="n">Y</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+
+    <span class="c1"># Fit the model using GLM from statsmodels</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Fitting using IRLS&#39;</span><span class="p">)</span>
+    <span class="n">tic</span><span class="p">()</span>
+    <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">ppglmfit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">)</span>
+    <span class="n">toc</span><span class="p">()</span>
+    <span class="n">L_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B_hat</span><span class="p">)</span><span class="o">+</span><span class="n">mu_hat</span><span class="p">)</span>
+    <span class="n">L_hat_train</span><span class="p">,</span><span class="n">L_hat_validate</span> <span class="o">=</span> <span class="n">L_hat</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span><span class="n">L_hat</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The true model is   μ,B =&#39;</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;GLM fit found       μ,B =&#39;</span><span class="p">,</span><span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on true      model is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span><span class="n">L_train</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on training   data is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span><span class="n">L_hat_train</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on validation data is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_validate</span><span class="p">,</span><span class="n">L_hat_validate</span><span class="p">))</span>
+
+    <span class="c1"># Fit the model using gradient descent without hessian</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Fitting using conjugate gradient (no Hessian)&#39;</span><span class="p">)</span>
+    <span class="n">tic</span><span class="p">()</span>
+    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">toc</span><span class="p">()</span>
+    <span class="n">L_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B_hat</span><span class="p">)</span><span class="o">+</span><span class="n">mu_hat</span><span class="p">)</span>
+    <span class="n">L_hat_train</span><span class="p">,</span><span class="n">L_hat_validate</span> <span class="o">=</span> <span class="n">L_hat</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span><span class="n">L_hat</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The true model is   μ,B =&#39;</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;minimize found      μ,B =&#39;</span><span class="p">,</span><span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on true      model is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span><span class="n">L_train</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on training   data is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span><span class="n">L_hat_train</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on validation data is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_validate</span><span class="p">,</span><span class="n">L_hat_validate</span><span class="p">))</span>
+
+    <span class="c1"># Fit the model using gradient descent with hessian</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Fitting using conjugate gradient with Hessian&#39;</span><span class="p">)</span>
+    <span class="n">tic</span><span class="p">()</span>
+    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span>
+        <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">,</span>
+        <span class="n">hess</span><span class="o">=</span><span class="n">hessian</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">toc</span><span class="p">()</span>
+    <span class="n">L_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B_hat</span><span class="p">)</span><span class="o">+</span><span class="n">mu_hat</span><span class="p">)</span>
+    <span class="n">L_hat_train</span><span class="p">,</span><span class="n">L_hat_validate</span> <span class="o">=</span> <span class="n">L_hat</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span><span class="n">L_hat</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The true model is   μ,B =&#39;</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;minimize found      μ,B =&#39;</span><span class="p">,</span><span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on true      model is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span><span class="n">L_train</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on training   data is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span><span class="n">L_hat_train</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AUC on validation data is&#39;</span><span class="p">,</span><span class="n">auc</span><span class="p">(</span><span class="n">Y_validate</span><span class="p">,</span><span class="n">L_hat_validate</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Sanity checking L2 penalized gradient and hessian code&#39;</span><span class="p">)</span>
+    <span class="c1"># Sanity check for the L2 gradient: confirm that the numeric gradient</span>
+    <span class="c1"># and hessian agree with that returned by the gradient and hessian</span>
+    <span class="c1"># functions.</span>
+    <span class="c1"># just printing one significant figure for now, to reduce clutter</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>
+    <span class="n">B</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">X</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">L</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="o">+</span><span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+    <span class="n">Y</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&lt;</span><span class="n">L</span>
+    <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">numeric_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">numeric_gradient</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">objective</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">-</span><span class="n">objective</span><span class="p">(</span><span class="n">p</span><span class="p">))</span><span class="o">/</span><span class="n">delta</span>
+    <span class="n">numeric_hessian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">q</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+            <span class="n">dq</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">numeric_hessian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">dq</span><span class="o">-</span><span class="n">dp</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">delta</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;negative log likelihood at&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="n">objective</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;gradient of neg loglike at&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="n">gradient</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;numeric   Δ of -loglike at&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="n">numeric_gradient</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hessian  of neg loglike at&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;is</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">hessian</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;numeric  Δ² of -loglike at&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="s1">&#39;is</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">numeric_hessian</span><span class="p">)</span>
+
+
+    
+    
+    
+    
+    
+    
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

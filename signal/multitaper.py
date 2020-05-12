@@ -145,6 +145,9 @@ def multitaper_population_eigencoherence(
     as a summary of population coherence.
     '''
 
+    x = np.array(x)
+    y = np.array(y)
+
     # Check arguments
     if not len(x.shape)==2:
         raise ValueError('Input arrays should be Nfeature x Ntime in shape')
@@ -163,7 +166,7 @@ def multitaper_population_eigencoherence(
     tapers,taper_evals = dpss_cached(T,(1/2-1e-9)*NTAPER)
 
     if use_parallel:
-        neurotools.jobs.parallel.reset_pool()
+        parallel.reset_pool()
 
     with warnings.catch_warnings():
         warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -176,7 +179,7 @@ def multitaper_population_eigencoherence(
         # Compute tapered power density estimates for all signals
         # Also compute tapered cross-spectral estiamtes
         problems = [(x,y,use,taper,e) for taper,e in zip(tapers,taper_evals)]
-        result = parallel.pararraymap(_tapered_cross_specra_helper,problems,debug=use_parallel)
+        result = parallel.parmap(_tapered_cross_specra_helper,enumerate(problems),debug=use_parallel)
         pxx,pyy,pxy = zip(*result)
 
     # Compute power averaged over tapers, then compute coherence    
@@ -186,11 +189,11 @@ def multitaper_population_eigencoherence(
     coherence = pxy/(pxx[:,None,:]*pyy[None,:,:])
 
     # Get sum of singular values for each frequency
-    ecohere = parallel.pararraymap(_eigencoherence_helper,coherence.T,debug=use_parallel)
+    ecohere = np.array(parallel.parmap(_eigencoherence_helper,enumerate(coherence.T),debug=use_parallel))
     #ecohere = np.array([np.sum(scipy.linalg.svd(c)[1]) for c in coherence.T])
 
     if use_parallel:
-        neurotools.jobs.parallel.reset_pool()
+        parallel.reset_pool()
 
     return freqs,ecohere
 

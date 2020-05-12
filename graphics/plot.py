@@ -359,6 +359,39 @@ def force_aspect(aspect=1,a=None):
     y1,y2=a.get_ylim()
     a.set_aspect(np.abs((x2-x1)/(y2-y1))/aspect)
 
+def get_aspect(aspect=1,a=None):
+    '''
+    Returns
+    ----------
+    aspect : aspect ratio of current axis
+    '''
+    if a is None: a = plt.gca()
+    x1,x2=a.get_xlim()
+    y1,y2=a.get_ylim()
+    return np.abs((x2-x1)/(y2-y1))
+
+def match_image_aspect(im,ax=None):
+    '''
+    Keep upper-left corner of axis fixed, but
+    rescale width and height to match dimensions
+    of the given image. 
+
+    Parameters
+    ----------
+    im: image instance to match
+    '''
+    if ax  is None: ax  = plt.gca()
+    h,w = im.shape[:2]
+    target_aspect = w/h
+    x,y,w,h = get_bbox()
+    y2 = y+h
+    w = xfigureunits_to_pixels(w)
+    h = yfigureunits_to_pixels(h)
+    g = np.sqrt(target_aspect/(w/h))
+    w3 = pixels_to_xfigureunits(w*g)
+    h3 = pixels_to_yfigureunits(h/g)
+    gca().set_position((x,y2-h3,w3,h3))
+
 def unitaxes(a=None):
     '''
     Parameters
@@ -540,6 +573,38 @@ def pixels_to_yfigureunits(n,ax=None,fig=None):
     if ax  is None: ax  = plt.gca()
     h_pixels = fig.get_size_inches()[1]*fig.dpi
     return n/float(h_pixels)
+
+def xfigureunits_to_pixels(n,ax=None,fig=None):
+    '''
+    Converts a measurement in figure-width units to units of
+    x-axis pixels
+
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
+    w_pixels = fig.get_size_inches()[0]*fig.dpi
+    return n*float(w_pixels)
+
+def yfigureunits_to_pixels(n,ax=None,fig=None):
+    '''
+    Converts a measurement in figure-height units to units of
+    y-axis pixels
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    if fig is None: fig = plt.gcf()
+    if ax  is None: ax  = plt.gca()
+    h_pixels = fig.get_size_inches()[1]*fig.dpi
+    return n*float(h_pixels)
     
     
 
@@ -571,11 +636,21 @@ def adjust_xlabel_space(n,ax=None):
     if ax is None: ax=plt.gca()
     ax.xaxis.labelpad = n
 
+def get_bbox(ax=None):
+    '''
+    Get bounding box of currenta axis
+    '''
+    if ax is None: ax=plt.gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    return x,y,w,h
+
 def nudge_axis_y_pixels(dy,ax=None):
     '''
     moves axis dx pixels.
     Direction of dx may depend on axis orientation.
-    
+    Does not change axis height.
+
     Parameters
     ----------
     
@@ -592,6 +667,7 @@ def adjust_axis_height_pixels(dy,ax=None):
     '''
     resize axis by dy pixels.
     Direction of dx may depends on axis orientation.
+    Does not change the baseline position of axis.
     
     Parameters
     ----------
@@ -606,6 +682,8 @@ def adjust_axis_height_pixels(dy,ax=None):
 
 def nudge_axis_y(dy,ax=None):
     '''
+    This does not change the height of the axis
+
     Parameters
     ----------
     dy : number
@@ -621,6 +699,8 @@ def nudge_axis_y(dy,ax=None):
 
 def nudge_axis_x(dx,ax=None):
     '''
+    This does not change the width of the axis
+
     Parameters
     ----------
     dx : number
@@ -636,6 +716,8 @@ def nudge_axis_x(dx,ax=None):
 
 def expand_axis_x(dx,ax=None):
     '''
+    Expands the width of the x axis
+
     Parameters
     ----------
     dx : number
@@ -651,6 +733,8 @@ def expand_axis_x(dx,ax=None):
     
 def expand_axis_y(dy,ax=None):
     '''
+    Adjusts the axis height, keeping the lower y-limit the same
+
     Parameters
     ----------
     dy : number
@@ -666,6 +750,8 @@ def expand_axis_y(dy,ax=None):
 
 def nudge_axis_baseline(dy,ax=None):
     '''
+    Moves bottom limit of axis, keeping top limit the same
+
     Parameters
     ----------
     dy : number
@@ -681,6 +767,9 @@ def nudge_axis_baseline(dy,ax=None):
 
 def nudge_axis_left(dx,ax=None):
     '''
+    Moves the left x-axis limit, keeping the right limit intact. 
+    This changes the width of the plot.
+
     Parameters
     ----------
     dx : number
@@ -888,14 +977,15 @@ def leftlegend(*args,**kwargs):
     lg.get_frame().set_linewidth(0.0)
     return lg
 
-def baselegend(*args,**kwargs):
+def baselegend(*args,fudge=-0.1,**kwargs):
     '''
-    Legend outside the plot on the baes.
+    Legend outside the plot on the base.
+
+    Other Parameters
+    ----------------
+    fudge: padding between legend and axis, default -0.1
     '''
-    y = -0.1
-    if 'fudge' in kwargs:
-        y = kwargs['fudge']
-        del kwargs['fudge'] 
+    y = fudge
     defaults = {
         'loc':'upper center',
         'bbox_to_anchor':(0.5,y),
@@ -909,6 +999,8 @@ def rangeto(rangefun,data):
     '''
     Parameters
     ----------
+    rangefun:
+    data:
     
     '''
     rangefun(np.min(data),np.max(data))
@@ -917,7 +1009,7 @@ def rangeover(data):
     '''
     Parameters
     ----------
-    
+    data:
     '''
     return np.min(data),np.max(data)
 
@@ -925,7 +1017,7 @@ def cleartop(x):
     '''
     Parameters
     ----------
-    
+    x:
     '''
     subplots_adjust(top=1-x)
 
@@ -1124,7 +1216,7 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
 def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
-    border=True,spacing=5,fontsize=12):
+    border=True,spacing=5,width=15,fontsize=12):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'
@@ -1151,7 +1243,7 @@ def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
         ax=plt.gca()
     # WIDTH   = 0.05
     SPACING = pixels_to_xfigureunits(spacing,ax=ax)
-    CWIDTH  = pixels_to_xfigureunits(15,ax=ax)
+    CWIDTH  = pixels_to_xfigureunits(width,ax=ax)
     # manually add colorbar axes 
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
@@ -1201,7 +1293,7 @@ def complex_axis(scale):
     ylabel(u'μV',fontname='DejaVu Sans')
     force_aspect()
 
-def subfigurelabel(x,fontsize=14,dx=22,dy=7,ax=None,bold=True):
+def subfigurelabel(x,fontsize=14,dx=22,dy=7,ax=None,bold=True,**kwargs):
     '''
     Parameters
     ----------
@@ -1212,8 +1304,9 @@ def subfigurelabel(x,fontsize=14,dx=22,dy=7,ax=None,bold=True):
         'family':'Bitstream Vera Sans',
         'weight': 'bold' if bold else 'normal',
         'size': fontsize,
-        'verticalalignment':'bottom',
-        'horizontalalignment':'right'}
+        'va':'bottom',
+        'ha':'right'}
+    fontproperties.update(kwargs)
     text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,**fontproperties)
 
 def sigbar(x1,x2,y,pvalue=None,dy=5,padding=1,fontsize=10,color=BLACK,**kwargs):
@@ -1235,7 +1328,7 @@ def sigbar(x1,x2,y,pvalue=None,dy=5,padding=1,fontsize=10,color=BLACK,**kwargs):
             pvalue = shortscientific(pvalue)
         text(np.mean([x1,x2]),height+dy*padding,pvalue,fontsize=fontsize,horizontalalignment='center')
 
-def savefigure(name,**kwargs):
+def savefigure(name,stamp=True,**kwargs):
     '''
     Saves figure as both SVG and PDF, prepending the current date-ti,me
     in YYYYMMDD_HHMMSS format
@@ -1253,9 +1346,10 @@ def savefigure(name,**kwargs):
         basename = '.'.join(basename.split('.')[:-1])
     if not 'dpi' in kwargs:
         kwargs['dpi']=600
-    savefig(dirname + os.path.sep + now()+'_'+basename+'.svg',transparent=True,bbox_inches='tight',**kwargs)
-    savefig(dirname + os.path.sep + now()+'_'+basename+'.pdf',transparent=True,bbox_inches='tight',**kwargs)
-    savefig(dirname + os.path.sep + now()+'_'+basename+'.png',transparent=True,bbox_inches='tight',**kwargs)
+    prefix = now()+'_'+basename if stamp else basename
+    savefig(dirname + os.path.sep+prefix+'.svg',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep+prefix+'.pdf',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep+prefix+'.png',transparent=True,bbox_inches='tight',**kwargs)
 
 def clean_y_range(ax=None,precision=1):
     '''
@@ -1507,7 +1601,7 @@ def draw_circle(radius,centX,centY,angle_,theta2_,
         endY=centY+(radius/2)*np.sin(angle_)
         ax.add_patch(RegularPolygon((endX,endY),3,arrowsize,angle_+np.pi,**kwargs))
 
-def simplearrow(x1,y1,x2,y2,ax=None,s=5):
+def simple_arrow(x1,y1,x2,y2,ax=None,s=5):
     if ax is None: ax = plt.gca()
     ax.annotate(None, 
                 xy=(x2,y2), 
@@ -1516,7 +1610,7 @@ def simplearrow(x1,y1,x2,y2,ax=None,s=5):
                 textcoords='data',
                 arrowprops=dict(shrink=0,width=1,lw=0,color='k',headwidth=s,headlength=s))
 
-def inhibitionarrow(x1,y1,x2,y2,ax=None,s=5,width=0.5):
+def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5):
     if ax is None: ax = plt.gca()
     ax.annotate(None, 
                 xy=(x2,y2), 
@@ -1532,7 +1626,7 @@ def figurebox():
     from matplotlib import pyplot, lines
     ax2 = pyplot.axes([0,0,1,1],facecolor=(1,1,1,0))# axisbg=(1,1,1,0))
     x,y = np.array([[0,0,1,1,0], [0,1,1,0,0]])
-    line = lines.Line2D(x, y, lw=1, color='k')
+    line = lines.Line2D(x, y, lw=1, color=(0.6,0.6,0.6))
     ax2.add_line(line)
     plt.xticks([]); plt.yticks([]); noxyaxes()
 
@@ -1554,3 +1648,11 @@ def more_yticks(ax=None):
     if after>=ymin and after<=ymax:
         new_yticks = np.concatenate([new_yticks,[after]])
     ax.set_yticks(new_yticks)
+
+def border_width(lw=0.4,ax=None):
+    '''
+    Adjust width of axis border
+    '''
+    if ax is None:
+        ax = gca()
+    [i.set_linewidth(lw) for i in ax.spines.values()]

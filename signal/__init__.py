@@ -107,15 +107,14 @@ def circular_gaussian_smooth(x,sigma):
     Smooth signal x with gaussian of standard deviation sigma
     Circularly wrapped using Fourier transform
     
+    Parameters
+    ----------
     sigma: standard deviation
     x: 1D array-like signal
     
-    Parameters
-    ----------
     Returns
     -------
     '''
-    np.fft.fft(x)
     N = len(x)
     g = np.exp(-np.linspace(-N/2,N/2,N)**2/sigma**2)
     g/= np.sum(g)
@@ -176,7 +175,7 @@ def circular_cosine_basis(N,T):
     phases = np.linspace(0,1,N+1)[:-1]
     return 1-np.cos(np.clip((h[:,None] + phases[None,:])%1,0,wl)*2*np.pi/wl)
 
-def unitscale(signal):
+def unitscale(signal,axis=None):
     '''
     Rescales `signal` so that its minimum is 0 and its maximum is 1.
 
@@ -190,8 +189,15 @@ def unitscale(signal):
         Rescaled signal-min(signal)/(max(signal)-min(signal))
     '''
     signal = np.float64(np.array(signal))
-    signal-= np.min(signal)
-    signal/= np.max(signal)
+    if axis==None:
+        # Old behavior
+        signal-= np.min(signal)
+        signal/= np.max(signal)
+        return signal
+    # New behavior
+    theslice = make_rebroadcast_slice(signal, axis)
+    signal-= np.min(signal,axis=axis)[theslice]
+    signal/= np.max(signal,axis=axis)[theslice]
     return signal
 
 def topercentiles(x):
@@ -1247,7 +1253,7 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     x: np.ndarray
         (x-mean(x))/std(x)
     '''
-    x = zeromean(x,ignore_nan=ignore_nan)
+    x = zeromean(x,axis=axis,ignore_nan=ignore_nan)
     if np.prod(x.shape)==0:
         return x
     theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
@@ -1566,5 +1572,5 @@ def make_lagged(x,NLAGS=5,LAGSPACE=1):
     '''
     if not len(x.shape)==1:
         raise ValueError('Signal should be one-dimensional')
-    t = arange(len(x))
-    return array([np.interp(t-LAG,t,x) for LAG in arange(NLAGS)*LAGSPACE])
+    t = np.arange(len(x))
+    return np.array([np.interp(t-LAG,t,x) for LAG in np.arange(NLAGS)*LAGSPACE])

@@ -9,6 +9,7 @@ Submodules
    neurotools.graphics.color
    neurotools.graphics.colormaps
    neurotools.graphics.dendron
+   neurotools.graphics.fabio_maps
    neurotools.graphics.image
    neurotools.graphics.matplotlib
    neurotools.graphics.plot

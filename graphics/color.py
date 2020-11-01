@@ -46,6 +46,8 @@ VERIDIAN   = [.06695279,  .74361409,  .55425139]
 CHARTREUSE = [.71152929,  .62526339,  .10289384]
 CRIMSON    = mpl.colors.to_rgb('#b41d4d')
 VIOLET     = mpl.colors.to_rgb('#8d5ccd')
+VIOLET2    = mpl.colors.to_rgb('#CC79A7')
+YELLOW     = mpl.colors.to_rgb('#F0E442')
 
 ######################################################################
 # Hex codes

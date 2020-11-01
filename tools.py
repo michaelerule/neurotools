@@ -187,6 +187,8 @@ class piper():
         self._IS_EMITTER_=True
     def __or__(self,other):
         return self.operation(other)
+    def __and__(self,other):
+        return self.operation(other)
     def __lt__(self,other):
         return self.operation(other)
     def __lshift__(self,other):
@@ -198,6 +200,8 @@ class piper():
     def __call__(self,other):
         return self.operation(other)
     def __pow__(self,other):
+        return self.operation(other)
+    def __matmul__(self,other):
         return self.operation(other)
 
 @robust_decorator
@@ -305,8 +309,17 @@ def find_all_extension(d,ext='png'):
         found.extend([f for f  in files if f.lower().split('.')[-1]==ext])
     return found
 
+def lmap(function,*args):
+    return list(map(function,*args))
+
 def amap(function,*args):
-    return np.array(list(map(function,*args)))
+    a = lmap(function,*args)
+    try:
+        return np.array(a)
+    except ValueError:
+        b = np.empty(len(a), object)    
+        b[:] = a
+        return b
 
 # really should make nice datastructures for all this
 setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b)}
@@ -557,6 +570,7 @@ def ezip(*args):
     return enumerate(zip(*args))
 
 import time
+@piper
 def progress_bar(x,N=None):
     if N is None:
         x = list(x)
@@ -578,6 +592,10 @@ def progress_bar(x,N=None):
     sys.stdout.write('\r'+' '*70+'\r')
     sys.stdout.flush()
 
+pbar = progress_bar
+pb   = progress_bar
+en   = piper(enumerate)
+
 def asiterable(x):
     '''
     Check if something is iterable
@@ -587,3 +605,8 @@ def asiterable(x):
     except TypeError:
         return None
 
+class stuff:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+    def add(self,**kwargs):
+        self.__dict__.update(kwargs)

@@ -134,7 +134,10 @@ except ImportError:
 
 from neurotools.getfftw                  import *
 
-from neurotools.hdfmat                   import *
+try:
+    from neurotools.hdfmat                   import *
+except ModuleNotFoundError:
+    print('ModuleNotFoundError: No module named \'h5py\'; please install this to use neurotools.hdfmat')
 
 # suppress verbose warning messages
 nowarn()

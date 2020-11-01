@@ -186,22 +186,66 @@ def oucov(ssvar,tau,L):
     covariance = np.roll(covariance,L//2+1)
     return covariance
 
-def gaussian1DblurOperator(n,sigma):
+def gaussian1DblurOperator(n,sigma,truncate=1e-5):
     '''
     Returns a 1D Gaussan blur operator of size n
+    
+    Parameters
+    ----------
+    n: int
+        Length of buffer to apply blur
+    sigma: positive number
+        Standard deviation of blur kernel
+    
+    Other Parameters
+    ----------------
+    truncate: positive number, defaults to 1e-5
+        Entries in the operator smaller than this (relative to the largest value)
+        will be rounded down to zero. 
     '''
     x   = np.linspace(0,n-1,n); # 1D domain
     tau = 1.0/sigma**2;       # precision
     k   = sexp(-tau*x**2);    # compute (un-normalized) 1D kernel
     op  = scipy.linalg.special_matrices.toeplitz(k,k);     # convert to an operator from n -> n
     # normalize rows so density is conserved
-    op /= np.sum(op)
+    op /= np.sum(op,1)
     # truncate small entries
     big = np.max(op)
-    toosmall = 1e-4*big
+    toosmall = truncate*big
     op[op<toosmall] = 0
     # (re) normalize rows so density is conserved
-    op /= np.sum(op)
+    op /= np.sum(op,1)
+    return op
+
+def circular1DblurOperator(n,sigma,truncate=1e-5):
+    '''
+    Returns a circular 1D Gaussan blur operator of size n
+    
+    Parameters
+    ----------
+    n: int
+        Length of circular buffer to apply blur
+    sigma: positive number
+        Standard deviation of blur kernel
+    
+    Other Parameters
+    ----------------
+    truncate: positive number, defaults to 1e-5
+        Entries in the operator smaller than this (relative to the largest value)
+        will be rounded down to zero. 
+    '''
+    x   = np.linspace(0,n-1,n); # 1D domain
+    tau = 1.0/sigma**2;       # precision
+    k   = sexp(-tau*(x-n/2.0)**2);    # compute (un-normalized) 1D kernel
+    op  = np.array([np.roll(k,i+n//2) for i in range(n)])
+    # normalize rows so density is conserved
+    op /= np.sum(op,1)
+    # truncate small entries so things stay sparse
+    big = np.max(op)
+    toosmall = truncate*big
+    op[op<toosmall] = 0
+    # normalize rows so density is conserved
+    op /= np.sum(op,1)
     return op
 
 def separable_guassian_blur(op,x):

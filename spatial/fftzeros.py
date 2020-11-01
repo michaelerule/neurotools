@@ -19,6 +19,7 @@ from scipy.signal import convolve2d
 from neurotools.graphics.plot import *
 
 from neurotools.spatial.triangulation import mergeNearby
+from neurotools.tools import zeroslike,find
 
 def plot_phase_gradient(dz):
     '''
@@ -113,21 +114,6 @@ def dPhidy(phase):
     dy = rewrap(np.diff(phase,1,1))
     dy = (dy[1:,:]+dy[:-1,:])*0.5
     return dy
-
-def unwrap_indecies(tofind):
-    '''
-    Depricated, use np.where.
-    TODO: remove all uses of this function
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    found = pl.find(tofind)
-    h,w   = np.shape(tofind)
-    return np.int32([(x%w,x/w) for x in found])
 
 def get_phase_gradient_as_complex(data):
     '''
@@ -298,13 +284,13 @@ def find_critical_points(data,docoalesce=False,radius=4.0,edgeavoid=None):
         maxima        = coalesce_points(maxima,radius)
         minima        = coalesce_points(minima,radius)
     
-    clockwise     = unwrap_indecies(clockwise)+1
-    anticlockwise = unwrap_indecies(anticlockwise)+1
-    saddles       = unwrap_indecies(saddles  )+1
-    peaks         = unwrap_indecies(peaks    )+1
-    maxima        = unwrap_indecies(maxima   )+1
-    minima        = unwrap_indecies(minima   )+1
-    
+    clockwise     = np.array(np.where(clockwise))+1
+    anticlockwise = np.array(np.where(anticlockwise))+1
+    saddles       = np.array(np.where(saddles))+1
+    peaks         = np.array(np.where(peaks  ))+1
+    maxima        = np.array(np.where(maxima ))+1
+    minima        = np.array(np.where(minima ))+1
+
     if not edgeavoid is None:
         # remove points near edges
         Nrow,Ncol = data.shape[:2]
@@ -390,20 +376,17 @@ def find_critical_potential_points(data):
     minima : numpy.ndarray
     '''
 
-    dx,dy = grad(data)
-    ddx       = np.diff(np.sign(dx),1,0)[:,:-1]/2
-    ddy       = np.diff(np.sign(dy),1,1)[:-1,:]/2
-
-    saddles   = (ddx*ddy==-1)
-    peaks     = (ddx*ddy== 1)
-    maxima    = (ddx*ddy== 1)*(ddx==-1)
-    minima    = (ddx*ddy== 1)*(ddx== 1)
-
-    saddles   = unwrap_indecies(saddles)+1
-    peaks     = unwrap_indecies(peaks  )+1
-    maxima    = unwrap_indecies(maxima )+1
-    minima    = unwrap_indecies(minima )+1
-
+    dx,dy   = grad(data)
+    ddx     = np.diff(np.sign(dx),1,0)[:,:-1]/2
+    ddy     = np.diff(np.sign(dy),1,1)[:-1,:]/2
+    saddles = (ddx*ddy==-1)
+    peaks   = (ddx*ddy== 1)
+    maxima  = (ddx*ddy== 1)*(ddx==-1)
+    minima  = (ddx*ddy== 1)*(ddx== 1)
+    saddles = np.array(np.where(saddles))+1
+    peaks   = np.array(np.where(peaks  ))+1
+    maxima  = np.array(np.where(maxima ))+1
+    minima  = np.array(np.where(minima ))+1
     return saddles, peaks, maxima, minima
 
 def grad(x):

@@ -228,6 +228,7 @@ def real_eig(M,eps=1e-9):
     w : eigenvalues
     v : eigenvectors
     '''
+    M   = np.array(M)
     if not (type(M)==np.ndarray):
         raise ValueError("Expected array; type is %s"%type(M))
     if np.any(np.abs(np.imag(M))>eps):
@@ -249,6 +250,7 @@ def psd_eig(M,eps=1e-9):
     This is probably redundant to the scipy eigh function.
     Do not use.
     '''
+    M   = np.array(M)
     e,v = real_eig(M,eps)
     o   = np.argsort(-np.abs(e))
     e   = e[o]
@@ -639,11 +641,34 @@ def rmatrix(h):
 
 def ldiv(A,B):
     '''
+    Behaves like Matlab A\B
     Solve AX=B for X = A^{-1}B
     i.e. find matrix X which when right-multiplied with A is close to B
+    
+    Parametrs
+    ---------
+    A: Nsamples x Nfeatures array of independent variables
+    B: Nsamples x Noutputs  array of   dependent variables
+    
+    Returns
+    -------
+    X: Nfeatures x Noutputs vector such that AX≃B
     '''
-    #return scipy.linalg.lstsq(A,B)[0]
-    return np.linalg.solve(A,B)
+    A = np.array(A)
+    B = np.array(B)
+    if len(B.shape)==1:
+        B = B[:,None]
+    if not len(A.shape)==2:
+        raise ValueError('Argument A should be 2D Nsamples x Nfeatures array of independent variables')
+    if not len(B.shape)==2:
+        raise ValueError('Argument B should be 2D Nsamples x Noutputs array of dependent variables')
+    if not (A.shape[0]==B.shape[0]):
+        raise ValueError('First dimension of each array should match (Nsamples)')
+    if (A.shape[0]!=A.shape[1]):
+        # Over- or under-determined problem
+        return scipy.linalg.lstsq(A,B)[0]
+    else:
+        return np.linalg.solve(A,B)
 
 def rdiv(A,B):
     '''

@@ -20,6 +20,8 @@ import traceback
 Additional color maps for use with matplotlib.
 """
 
+from neurotools.graphics.fabio_maps import *
+
 ######################################################################
 # Isoluminance hue wheel color map
 # pip install husl

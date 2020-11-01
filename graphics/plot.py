@@ -334,12 +334,12 @@ def righty(ax=None):
     ax.yaxis.tick_right()
     ax.yaxis.set_label_position("right")
 
-def unity():
+def unity(by=5,**kwargs):
     '''
     Set y-axis to unit interval
     '''
     ylim(0,1)
-    nicey()
+    nicey(by=by,**kwargs)
 
 def unitx():
     '''
@@ -1293,7 +1293,7 @@ def complex_axis(scale):
     ylabel(u'μV',fontname='DejaVu Sans')
     force_aspect()
 
-def subfigurelabel(x,fontsize=14,dx=22,dy=7,ax=None,bold=True,**kwargs):
+def subfigurelabel(x,fontsize=14,dx=29,dy=7,ax=None,bold=True,**kwargs):
     '''
     Parameters
     ----------
@@ -1305,7 +1305,7 @@ def subfigurelabel(x,fontsize=14,dx=22,dy=7,ax=None,bold=True,**kwargs):
         'weight': 'bold' if bold else 'normal',
         'size': fontsize,
         'va':'bottom',
-        'ha':'right'}
+        'ha':'left'}
     fontproperties.update(kwargs)
     text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,**fontproperties)
 
@@ -1347,9 +1347,9 @@ def savefigure(name,stamp=True,**kwargs):
     if not 'dpi' in kwargs:
         kwargs['dpi']=600
     prefix = now()+'_'+basename if stamp else basename
-    savefig(dirname + os.path.sep+prefix+'.svg',transparent=True,bbox_inches='tight',**kwargs)
-    savefig(dirname + os.path.sep+prefix+'.pdf',transparent=True,bbox_inches='tight',**kwargs)
-    savefig(dirname + os.path.sep+prefix+'.png',transparent=True,bbox_inches='tight',**kwargs)
+    savefig(dirname + os.path.sep+prefix+'.svg',transparent=True,bbox_inches='tight',pad_inches=0,**kwargs)
+    savefig(dirname + os.path.sep+prefix+'.pdf',transparent=True,bbox_inches='tight',pad_inches=0,**kwargs)
+    savefig(dirname + os.path.sep+prefix+'.png',transparent=True,bbox_inches='tight',pad_inches=0,**kwargs)
 
 def clean_y_range(ax=None,precision=1):
     '''
@@ -1508,7 +1508,7 @@ def stderrplot(m,v,color='k',alpha=0.1,smooth=None,lw=1.5,filled=True,label=None
         plot(m-e,':',lw=lw*0.5,color=color)
         plot(m+e,':',lw=lw*0.5,color=color)    
 
-def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None):
+def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None,side='left'):
     '''
     Add vertical scale bar to plot
     '''
@@ -1524,12 +1524,21 @@ def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None):
         color='k',
         lw=1,
         clip_on=False)
-    plt.text(x-pixels_to_xunits(2),np.mean(yspan),label,
-        rotation=90,
-        fontsize=fontsize,
-        horizontalalignment='right',
-        verticalalignment='center',
-        clip_on=False)
+    if side=='left':
+        plt.text(x-pixels_to_xunits(2),np.mean(yspan),label,
+            rotation=90,
+            fontsize=fontsize,
+            horizontalalignment='right',
+            verticalalignment='center',
+            clip_on=False)
+    else:
+        plt.text(x+pixels_to_xunits(2),np.mean(yspan),label,
+            rotation=90,
+            fontsize=fontsize,
+            horizontalalignment='left',
+            verticalalignment='center',
+            clip_on=False)
+        
     ax.set_xlim(*xl)
     ax.set_ylim(*yl)
 
@@ -1601,24 +1610,26 @@ def draw_circle(radius,centX,centY,angle_,theta2_,
         endY=centY+(radius/2)*np.sin(angle_)
         ax.add_patch(RegularPolygon((endX,endY),3,arrowsize,angle_+np.pi,**kwargs))
 
-def simple_arrow(x1,y1,x2,y2,ax=None,s=5):
+def simple_arrow(x1,y1,x2,y2,ax=None,s=5,color='k',lw=1.5,**kwargs):
     if ax is None: ax = plt.gca()
     ax.annotate(None, 
                 xy=(x2,y2), 
                 xytext=(x1,y1), 
                 xycoords='data',
                 textcoords='data',
-                arrowprops=dict(shrink=0,width=1,lw=0,color='k',headwidth=s,headlength=s))
+                arrowprops=dict(shrink=0,width=lw,lw=0,color=color,headwidth=s,headlength=s),
+                **kwargs)
 
-def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5):
+def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5,color='k'):
     if ax is None: ax = plt.gca()
-    ax.annotate(None, 
+    ax.annotate(None,
                 xy=(x2,y2), 
                 xytext=(x1,y1), 
                 xycoords='data',
                 textcoords='data',
                 arrowprops={ 'arrowstyle':        
-                    matplotlib.patches.ArrowStyle.BracketB(widthB=width,lengthB=0)
+                    matplotlib.patches.ArrowStyle.BracketB(widthB=width,lengthB=0),
+                    'color':color
                 })
 
 def figurebox():
@@ -1656,3 +1667,43 @@ def border_width(lw=0.4,ax=None):
     if ax is None:
         ax = gca()
     [i.set_linewidth(lw) for i in ax.spines.values()]
+
+
+def broken_step(x,y,eps=1e-5,*args,**kwargs):
+    '''
+    Draws a step plot but does not connect
+    adjacent levels with vertical lines
+    '''
+    x = np.float32(x).ravel()
+    y = np.float32(y).ravel()
+    skip = np.where(np.abs(np.diff(y))>eps)[0]+1
+    k = len(skip)
+    n = np.ones(k)*np.NaN
+    # Insert np.NaN to break apart segments
+    x = np.insert(x,skip,n)
+    y = np.insert(y,skip,n)
+    # Update location of breaks to match new locations after insertion
+    skip = skip + np.arange(k)
+    # Get the x location, and y value from left and right, of each skip
+    xmid = (x[skip-1]+x[skip+1])*.5
+    yneg = y[skip-1]
+    ypos = y[skip+1]
+    # Before every break, insert a point interpolating 1/2 sample forward
+    x = np.insert(x,skip-1,xmid)
+    y = np.insert(y,skip-1,yneg)
+    # Update location of breaks to match new locations after insertion
+    skip = skip + np.arange(k) + 1
+    # After every break, insert a point interpolating 1/2 sample prior
+    x = np.insert(x,skip+1,xmid)
+    y = np.insert(y,skip+1,ypos)
+    plt.plot(x,y,*args,**kwargs)
+
+
+def label(x="",y="",t=""):
+    """
+    Convenience function for setting x label, y label, and
+    title in one command.
+    """
+    plt.xlabel(x)
+    plt.ylabel(y)
+    plt.title(t)

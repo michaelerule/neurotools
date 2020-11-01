@@ -160,14 +160,28 @@ error_functions = {
 }
 
 import warnings
-def add_constant(data):
+def add_constant(data,axis=None):
     data = np.array(data)
-    if not len(data.shape)==2:
-        raise ValueError('Expected a Nsamples x Nfeatures 2D array')
-    Nsamples,Nfeatures = data.shape
-    #if Nsamples<Nfeatures:
-    #    warnings.warn("data shape is %dx%d\n# samples < # features; is data transposed?"%data.shape)
-    return np.concatenate([data,np.ones((data.shape[0],1))],axis=1)
+    # if Nsamples<Nfeatures:
+    #     warnings.warn("data shape is %dx%d\n# samples < # features; is data transposed?"%data.shape)
+    if axis is None:
+        if not len(data.shape)==2:
+            raise ValueError('Expected a Nsamples x Nfeatures 2D array')
+        Nsamples,Nfeatures = data.shape
+        # Default/old behavior from before axis argument was added
+        return np.concatenate([data,np.ones((data.shape[0],1))],axis=1)
+    else:
+        # New behavior: allow axis to be specified
+        # shape = np.array(data.shape)
+        # shape[axis] = 1
+        # return np.concatenate([data,np.ones(shape)],axis=axis)
+        # New new behavior: allow multiple axes
+        shape    = np.array(data.shape)
+        newshape = np.copy(shape)
+        newshape[axis] += 1
+        result = np.ones(newshape,data.dtype)
+        result[tuple(slice(0,i) for i in shape)] = data
+        return result
 
 def trial_crossvalidated_least_squares(a,b,K,
     regress=None,
@@ -501,7 +515,7 @@ def reject_outliers(x,percent=10,side='both'):
     to_keep   = find(remove==False)
     return x[to_keep], to_keep, to_remove
     
-def pca(x,n_keep=None):
+def pca(x,n_keep=None,rank_deficient=False):
     '''
     w,v = pca(x,n_keep=None)
     Performs PCA on data x, keeping the first n_keep dimensions
@@ -518,7 +532,16 @@ def pca(x,n_keep=None):
     w : weights (eigenvalues)
     v : eigenvector (principal components)
     '''
-    assert x.shape[1]<=x.shape[0]
+    if not rank_deficient:
+        if not (x.shape[1]<=x.shape[0]):
+            raise ValueError('There appear to be more dimensions than samples,'+
+                             ' input array shuld have shape Nsamples x'+
+                             ' Nfeatures. Set rank_deficient=True to force PCA'+
+                             ' with fewer samples than features.')
+    else:
+        if not (x.shape[0]<=x.shape[1]):
+            raise ValueError('Rank deficient is set, but input does not appear'+
+                             ' to be rank deficient?')
     cov = x.T.dot(x)
     w,v = scipy.linalg.eig(cov)
     o   = np.argsort(-w)

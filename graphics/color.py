@@ -8,7 +8,6 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-
 '''
 Miscellaneous color-related functions.
 '''
@@ -30,24 +29,25 @@ from   matplotlib import cm
 from   numpy      import pi
 
 # Some custom colors, just for fun! 
-GATHER = [
-'#f1f0e9', # "White"
-'#eb7a59', # "Rust"
-'#eea300', # "Ochre"
-'#5aa0df', # "Azure"
-'#00bac9', # "Turquoise"
-'#44525c'] # "Black"
-GATHER = np.array(list(map(mpl.colors.to_rgb,GATHER)))
-WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK = GATHER
-MOSS       = mpl.colors.to_rgb('#77ae64')
-MAUVE      = mpl.colors.to_rgb('#b56ab6')
-INDEGO     = [.37843053,  .4296282 ,  .76422011]
-VERIDIAN   = [.06695279,  .74361409,  .55425139]
-CHARTREUSE = [.71152929,  .62526339,  .10289384]
-CRIMSON    = mpl.colors.to_rgb('#b41d4d')
+WHITE      = mpl.colors.to_rgb('#f1f0e9')
+RUST       = mpl.colors.to_rgb('#eb7a59')
+OCHRE      = mpl.colors.to_rgb('#eea300')
+AZURE      = mpl.colors.to_rgb('#5aa0df')
+TURQUOISE  = mpl.colors.to_rgb('#00bac9')
+BLACK      = mpl.colors.to_rgb('#44525c')
+YELLOW     = mpl.colors.to_rgb('#efcd2b')
+INDIGO     = mpl.colors.to_rgb('#606ec3')
 VIOLET     = mpl.colors.to_rgb('#8d5ccd')
-VIOLET2    = mpl.colors.to_rgb('#CC79A7')
-YELLOW     = mpl.colors.to_rgb('#F0E442')
+MAUVE      = mpl.colors.to_rgb('#b56ab6')
+MAGENTA    = mpl.colors.to_rgb('#cc79a7')
+CHARTREUSE = mpl.colors.to_rgb('#b59f1a')
+MOSS       = mpl.colors.to_rgb('#77ae64')
+VIRIDIAN   = mpl.colors.to_rgb('#11be8d')
+CRIMSON    = mpl.colors.to_rgb('#b41d4d')
+GATHER  = [WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK]
+COLORS  = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]
+CYCLE   = [BLACK,RUST,TURQUOISE,OCHRE,AZURE,MAUVE,YELLOW,INDIGO]
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CYCLE)
 
 ######################################################################
 # Hex codes

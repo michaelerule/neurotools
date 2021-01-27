@@ -186,7 +186,7 @@ def oucov(ssvar,tau,L):
     covariance = np.roll(covariance,L//2+1)
     return covariance
 
-def gaussian1DblurOperator(n,sigma,truncate=1e-5):
+def gaussian1DblurOperator(n,sigma,truncate=1e-5,normalize=True):
     '''
     Returns a 1D Gaussan blur operator of size n
     
@@ -208,13 +208,15 @@ def gaussian1DblurOperator(n,sigma,truncate=1e-5):
     k   = sexp(-tau*x**2);    # compute (un-normalized) 1D kernel
     op  = scipy.linalg.special_matrices.toeplitz(k,k);     # convert to an operator from n -> n
     # normalize rows so density is conserved
-    op /= np.sum(op,1)
+    if normalize:
+        op = op/np.sum(op,1)[:,None]
     # truncate small entries
     big = np.max(op)
     toosmall = truncate*big
     op[op<toosmall] = 0
-    # (re) normalize rows so density is conserved
-    op /= np.sum(op,1)
+    # normalize rows again so density is conserved
+    if normalize:
+        op = op/np.sum(op,1)[:,None]
     return op
 
 def circular1DblurOperator(n,sigma,truncate=1e-5):

@@ -17,23 +17,23 @@ Commonly used functions
 import numpy as np
 
 # Constants: ensure compatibility with float32
-# while using highest available accuracy (float128)
+# while using highest available accuracy (longdouble)
 
-F32EPS     = np.float128('7e-45')
+F32EPS     = np.longdouble('7e-45')
 F32SAFE    = np.sqrt(F32EPS)
-F64EPS     = np.float128('1.4012985e-45')
+F64EPS     = np.longdouble('1.4012985e-45')
 F64SAFE    = np.sqrt(F64EPS)
-ZERO128    = np.float128('0')
-EMAX       = np.float128(np.sqrt(np.log(np.finfo(np.float64).max)))
-F128EMAX   = np.sqrt(np.float128('11355.52340629414395'))
+ZERO128    = np.longdouble('0')
+EMAX       = np.longdouble(np.sqrt(np.log(np.finfo(np.float64).max)))
+F128EMAX   = np.sqrt(np.longdouble('11355.52340629414395'))
 
-lgE        = np.float128('1.442695040888963407359924681001892137426645954152985934135')
-pi         = np.float128('3.141592653589793238462643383279502884197169399375105820974')
-tau        = np.float128('6.283185307179586476925286766559005768394338798750211641949')
-e          = np.float128('2.718281828459045235360287471352662497757247093699959574966')
-sqrt2      = np.float128('1.414213562373095048801688724209698078569671875376948073176')
-sqrttau    = np.float128('2.506628274631000502415765284811045253006986740609938316629')
-invsqrttau = np.float128('0.398942280401432677939946059934381868475858631164934657666')
+lgE        = np.longdouble('1.442695040888963407359924681001892137426645954152985934135')
+pi         = np.longdouble('3.141592653589793238462643383279502884197169399375105820974')
+tau        = np.longdouble('6.283185307179586476925286766559005768394338798750211641949')
+e          = np.longdouble('2.718281828459045235360287471352662497757247093699959574966')
+sqrt2      = np.longdouble('1.414213562373095048801688724209698078569671875376948073176')
+sqrttau    = np.longdouble('2.506628274631000502415765284811045253006986740609938316629')
+invsqrttau = np.longdouble('0.398942280401432677939946059934381868475858631164934657666')
 
 # largest floating point accuracy that scipy.linalg
 # can support
@@ -49,8 +49,8 @@ def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''
     "safe" exponential function, clips values avoiding NaN and inf
     '''
-    limit = np.float128(limit)
-    x = np.float128(x)
+    limit = np.longdouble(limit)
+    x = np.longdouble(x)
     x = np.clip(x,-limit,limit)
     return returntype(np.exp(x))
 
@@ -59,10 +59,10 @@ def sigmoid(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     sigmoid function 1/(1+exp(-x))
     '''
     # logaddexp(x1,x2) = log(exp(x1) + exp(x2))
-    limit = np.float128(limit)
-    x = np.float128(x)
+    limit = np.longdouble(limit)
+    x = np.longdouble(x)
     x = np.clip(x,-limit,limit)
-    return returntype(sexp(-np.logaddexp(ZERO128,-np.float128(x))))
+    return returntype(sexp(-np.logaddexp(ZERO128,-np.longdouble(x))))
 
 def inversesigmoid(x,returntype=LINALGMAXFLOAT):
     '''
@@ -74,7 +74,7 @@ def dsigmoid(x,returntype=LINALGMAXFLOAT):
     '''
     Fist derivative of sigmoid
     '''
-    x = np.float128(x)
+    x = np.longdouble(x)
     return sexp(\
         -np.logaddexp(ZERO128,-x)\
         -np.logaddexp(ZERO128,x),
@@ -86,19 +86,19 @@ def g(x,returntype=LINALGMAXFLOAT):
     '''
     Evaluates g(x)=log(1+exp(x)) as accurately as possible. 
     '''
-    return returntype(np.logaddexp(ZERO128,np.float128(x)))
+    return returntype(np.logaddexp(ZERO128,np.longdouble(x)))
     
 def f(x,returntype=LINALGMAXFLOAT): 
     '''
     evaluates f(x)=1/(1+exp(-x)) as accurately as possible
     '''
-    return returntype(sexp(-np.logaddexp(ZERO128,-np.float128(x))))
+    return returntype(sexp(-np.logaddexp(ZERO128,-np.longdouble(x))))
 
 def f1(x,returntype=LINALGMAXFLOAT): 
     '''
     Fist derivative of sigmoid
     '''
-    x = np.float128(x)
+    x = np.longdouble(x)
     return sexp(\
         -np.logaddexp(ZERO128,-x)\
         -np.logaddexp(ZERO128,x),
@@ -110,7 +110,7 @@ def f2(x,returntype=LINALGMAXFLOAT):
     
     (q - p) p q
     '''
-    x = np.float128(x)
+    x = np.longdouble(x)
     logp = -np.logaddexp(ZERO128,-x)
     logq = -np.logaddexp(ZERO128, x)
     p  = np.exp(np.minimum(F128EMAX,logp))

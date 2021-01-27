@@ -201,7 +201,7 @@ def v2str_long(p):
     '''
     Format vector as string with maximum precision
     '''
-    return '['+','.join([np.float128(x).astype(str) for x in p])+']'
+    return '['+','.join([np.longdouble(x).astype(str) for x in p])+']'
 
 def nicetable(data,format='%4.4f',ncols=8,prefix='',sep=' '):
     '''
@@ -303,6 +303,24 @@ def xylim(a,b,ax=None):
     if ax==None: ax = plt.gca()
     ax.set_xlim(a,b)
     ax.set_ylim(a,b)
+
+
+def noclip(ax=None):
+    '''
+    Turn of clipping
+    '''
+    if ax is None: 
+        ax = plt.gca()
+        for o in ax.findobj():
+            o.set_clip_on(False)
+
+def notick(ax=None):
+    '''
+    Hide axis ticks, but not their labels
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.tick_params('both', length=0, width=0, which='both')
 
 def nox():
     '''
@@ -785,6 +803,16 @@ def nudge_axis_left(dx,ax=None):
 
 def zoombox(ax1,ax2,xspan1=None,xspan2=None,draw_left=True,draw_right=True,lw=1,color='k'):
     '''
+    Parameters
+    ----------
+    ax1:
+    ax2:
+    xspan1:None
+    xspan2:None
+    draw_left:True
+    draw_right:True
+    lw:1
+    color:'k'
     '''
     # need to do this to get the plot to ... update correctly
     draw()
@@ -857,6 +885,11 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
     '''
     Edges of the form (start,stop)
     Shades regions of graph defined by "edges"
+
+    Parameters
+    ----------
+    edges
+    color
     '''
     a,b = ylim()
     c,d = xlim()
@@ -870,7 +903,14 @@ def ybartext(x,t,c1,c2,**kwargs):
     '''
     Parameters
     ----------
+    y:
+    t:
+    c1:
+    c2:
     
+    Other Parameters
+    ----------------
+    **kwargs: keyword arguments forwarded to plot() and text()
     '''
     a,b = ylim()
     outline = False
@@ -898,7 +938,14 @@ def xbartext(y,t,c1,c2,**kwargs):
     '''
     Parameters
     ----------
-    
+    y:
+    t:
+    c1:
+    c2:
+
+    Other Parameters
+    ----------------
+    **kwargs: keyword arguments forwarded to plot() and text()
     '''
     a,b = xlim()
     outline = False
@@ -935,6 +982,11 @@ def xbartext(y,t,c1,c2,**kwargs):
 def nice_legend(*args,**kwargs):
     '''
     Better defaults for the plot legend.
+
+    Other Parameters
+    ----------------
+    *args: arguments forwarded to legend()
+    **kwargs: keyword arguments forwarded to legend()
     '''
     defaults = {
         'framealpha':0.9,
@@ -950,6 +1002,11 @@ def nice_legend(*args,**kwargs):
 def rightlegend(*args,**kwargs):
     '''
     Legend outside the plot to the right.
+
+    Other Parameters
+    ----------------
+    *args: arguments forwarded to legend()
+    **kwargs: keyword arguments forwarded to legend()
     '''
     defaults = {
         'loc':'center left',
@@ -963,6 +1020,11 @@ def rightlegend(*args,**kwargs):
 def leftlegend(*args,**kwargs):
     '''
     Legend outside the plot to the left.
+
+    Other Parameters
+    ----------------
+    *args: arguments forwarded to legend()
+    **kwargs: keyword arguments forwarded to legend()
     '''
     x = -0.2
     if 'fudge' in kwargs:
@@ -1050,6 +1112,7 @@ def plotCWT(ff,cwt,aspect='auto',
 def complex_axis(scale):
     '''
     Draws a nice complex-plane axis with LaTeX Re, Im labels and everything
+    
     Parameters
     ----------
     
@@ -1153,6 +1216,11 @@ from matplotlib.legend_handler import HandlerPatch
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 class HandlerSquare(HandlerPatch):
+    '''
+
+    Parameters
+    ----------
+    '''
     def create_artists(self, legend, orig_handle,
                        xdescent, ydescent, width,height, fontsize, trans):
         '''
@@ -1210,6 +1278,9 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
     extent=None,onlyphase=False,previous=None,origin='lower'):
     '''
     Like plot_complex except has an additional dimention for time
+
+    Parameters
+    ----------
     '''
     p = None
     for frame in z:
@@ -1255,6 +1326,7 @@ def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
     plt.imshow(np.array([np.linspace(vmax,vmin,100)]).T,
         extent=(0,1,vmin,vmax),
         aspect='auto',
+        origin='upper',
         cmap=cmap)
     nox()
     nicey()
@@ -1280,7 +1352,10 @@ def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
 
 def complex_axis(scale):
     '''
-    Draws a nice complex-plane axis with LaTeX Re, Im labels and everythinn
+    Draws a nice complex-plane axis with LaTeX Re, Im labels and everything
+
+    Parameters
+    ----------
     '''
     xlim(-scale,scale)
     ylim(-scale,scale)
@@ -1511,6 +1586,10 @@ def stderrplot(m,v,color='k',alpha=0.1,smooth=None,lw=1.5,filled=True,label=None
 def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None,side='left'):
     '''
     Add vertical scale bar to plot
+    
+    Other Parameters
+    ----------------
+    ax : axis, if None (default), uses the current axis.
     '''
     yspan = [ycenter-yheight/2.0,ycenter+yheight/2.0]
     if ax is None:
@@ -1573,20 +1652,38 @@ def addspikes(Y,lw=0.2,color='k'):
     for t in find(Y>0): 
         axvline(t,lw=lw,color=color)
         
-def unit_crosshairs():
+def unit_crosshairs(draw_ellipse=True,draw_cross=True):
     '''
     '''
-    # Isotropic circle thing for plotting
-    circle = np.exp(1j*np.linspace(0,2*np.pi,181))
-    line1  = 1j*np.linspace(-1,1,5)
-    line2  = np.linspace(-1,1,5)
-    lines  = np.array(list(circle)+[np.nan]+list(line1)+[np.nan]+list(line2))
-    lines  = np.array([lines.real,lines.imag])
-    return lines
+    lines  = []
+    if draw_ellipse:
+        circle = np.exp(1j*np.linspace(0,2*np.pi,181))
+        lines += list(circle)
+    if draw_cross:
+        line1  = np.linspace(-1,1,5)
+        line2  = 1j*line1
+        lines += [np.nan]+list(line1)+[np.nan]+list(line2)
+    lines = np.array(lines)
+    return np.array([lines.real,lines.imag])
 
-def covariance_crosshairs(S):
+def covariance_crosshairs(S,p=0.8,draw_ellipse=True,draw_cross=True):
+    '''
+    For 2D Gaussians these are the confidence intervals
+    p   | sigma
+    90  : 4.605
+    95  : 5.991
+    97.5: 7.378
+    99  : 9.210
+    99.5: 10.597
+
+    Parameters
+    ----------
+    S: 2D covariance matrix
+    p: fraction of data ellipse should enclose
+    '''
+    sigma = scipy.stats.chi2.isf(1-p,df=2)
     e,v = scipy.linalg.decomp.eigh(S)
-    lines = unit_crosshairs()
+    lines = unit_crosshairs(draw_ellipse,draw_cross)*sigma
     lines *= (e**0.5)[:,None]
     return scipy.linalg.pinv(v).dot(lines)
 
@@ -1597,6 +1694,11 @@ def draw_circle(radius,centX,centY,angle_,theta2_,
                 cap_start=1,
                 cap_end=1,
                 **kwargs):
+    '''
+    Parameters
+    ----------
+    ax : axis, if None (default), uses the current axis.
+    '''
     if ax is None: ax = plt.gca()
     arc = Arc([centX,centY],radius,radius,angle=angle_*180/np.pi,
           theta1=0,theta2=theta2_*180/np.pi,capstyle='round',linestyle='-',**kwargs)
@@ -1611,6 +1713,11 @@ def draw_circle(radius,centX,centY,angle_,theta2_,
         ax.add_patch(RegularPolygon((endX,endY),3,arrowsize,angle_+np.pi,**kwargs))
 
 def simple_arrow(x1,y1,x2,y2,ax=None,s=5,color='k',lw=1.5,**kwargs):
+    '''
+    Other Parameters
+    ----------------
+    ax : axis, if None (default), uses the current axis.
+    '''
     if ax is None: ax = plt.gca()
     ax.annotate(None, 
                 xy=(x2,y2), 
@@ -1621,6 +1728,11 @@ def simple_arrow(x1,y1,x2,y2,ax=None,s=5,color='k',lw=1.5,**kwargs):
                 **kwargs)
 
 def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5,color='k'):
+    '''
+    Other Parameters
+    ----------------
+    ax : axis, if None (default), uses the current axis.
+    '''
     if ax is None: ax = plt.gca()
     ax.annotate(None,
                 xy=(x2,y2), 
@@ -1632,18 +1744,25 @@ def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5,color='k'):
                     'color':color
                 })
 
-def figurebox():
+def figurebox(color=(0.6,0.6,0.6)):
     # new clear axis overlay with 0-1 limits
     from matplotlib import pyplot, lines
     ax2 = pyplot.axes([0,0,1,1],facecolor=(1,1,1,0))# axisbg=(1,1,1,0))
     x,y = np.array([[0,0,1,1,0], [0,1,1,0,0]])
-    line = lines.Line2D(x, y, lw=1, color=(0.6,0.6,0.6))
+    line = lines.Line2D(x, y, lw=1, color=color)
     ax2.add_line(line)
     plt.xticks([]); plt.yticks([]); noxyaxes()
 
 def more_yticks(ax=None):
+    '''
+    Try to intelligently add more ticks to the y axis
+
+    Other Parameters
+    ----------------
+    ax : axis, if None (default), uses the current axis.
+    '''
     if ax is None:
-        ax         = plt.gca()
+        ax = plt.gca()
     yticks     = ax.get_yticks()
     yl         = ax.get_ylim()
     ymin,ymax  = yl
@@ -1663,9 +1782,16 @@ def more_yticks(ax=None):
 def border_width(lw=0.4,ax=None):
     '''
     Adjust width of axis border
+
+    Parameters
+    ----------
+    lw : line width of axis borders to use
+
+    Other Parameters
+    ----------------
+    ax : axis, if None (default), uses the current axis.
     '''
-    if ax is None:
-        ax = gca()
+    if ax is None: ax = gca()
     [i.set_linewidth(lw) for i in ax.spines.values()]
 
 
@@ -1673,6 +1799,17 @@ def broken_step(x,y,eps=1e-5,*args,**kwargs):
     '''
     Draws a step plot but does not connect
     adjacent levels with vertical lines
+
+    Parameters
+    ----------
+    x: horizontal position of steps
+    y: height of steps 
+
+    Other Parameters
+    ----------------
+    eps: step size above which to break; default is 1e-5
+    **args: arguments forwarded to plot()
+    **kwargs: keyword arguments forwarded to plot()
     '''
     x = np.float32(x).ravel()
     y = np.float32(y).ravel()
@@ -1703,7 +1840,22 @@ def label(x="",y="",t=""):
     """
     Convenience function for setting x label, y label, and
     title in one command.
+
+    Parameters
+    ----------
+    x: string, optional; x-axis label
+    y: string, optional; y-axis label
+    t: string, optional; title
     """
     plt.xlabel(x)
     plt.ylabel(y)
     plt.title(t)
+
+def flathist(x):
+    '''
+    '''
+    x = np.array(x)
+    s = np.shape(x)
+    x = np.ravel(x)
+    x = scipy.stats.rankdata(x)
+    return np.reshape(x,s)

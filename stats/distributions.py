@@ -33,7 +33,7 @@ def poisson_logpdf(k,l):
     Returns
     -------
     '''
-    # k,l = map(np.float128,(k,l))
+    # k,l = map(np.longdouble,(k,l))
     return k*slog(l)-l-np.array([scipy.special.gammaln(x+1) for x in k])
     #return k*slog(l)-l-np.array([log_factorial(x) for x in k])
 
@@ -49,7 +49,7 @@ def poisson_pdf(k,l):
     return np.exp(poisson_logpdf(k,l))
 
 # log(sqrt(2*pi)) computed to high precision
-logsqrt2pi = np.float128('0.91893853320467274178032973640561763986139747363778341281')
+logsqrt2pi = np.longdouble('0.91893853320467274178032973640561763986139747363778341281')
 
 def gaussian_logpdf(mu,sigma,x):
     '''
@@ -61,7 +61,7 @@ def gaussian_logpdf(mu,sigma,x):
     Returns
     -------
     '''
-    mu,sigma,x = map(np.float128,(mu,sigma,x))
+    mu,sigma,x = map(np.longdouble,(mu,sigma,x))
     x = (x-mu)/sigma
     return -0.5*x*x - slog(sigma) - logsqrt2pi
 

@@ -25,6 +25,9 @@ import scipy.linalg
 import numpy
 import numpy.linalg
 
+from scipy.linalg.special_matrices import kron
+from scipy.linalg import solve_triangular as stri
+
 chol = scipy.linalg.cholesky
 
 def triu_elements(M,k=0):
@@ -520,6 +523,15 @@ def cinv(X,repair=False):
             raise ValueError('lapack.dtrtri encountered zero diagonal element at %d'%info)
     return ich.dot(ich.T)
 
+from scipy.linalg import solve_triangular as stri
+
+def csolve(H,J):
+    '''
+    Solve PSD linear system x = H^{-1}J via Cholesky factorization
+    '''
+    C = chol(H)
+    return stri(C,stri(C.T,J,lower=True))
+
 def wheremax(a):
     '''
     Returns the indecies of the maximum element in a multi-dimensional 
@@ -691,7 +703,6 @@ def autopredict(z,reg=1e-9):
         Q[i,j] = np.linalg.solve(Sz[j,:][:,j], Sz[j,:][:,i])
     return Q.T
 
-from scipy.linalg.special_matrices import kron
 def kronsum(A,B):
     '''
     Kronecker sum

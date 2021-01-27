@@ -19,7 +19,7 @@ import numpy as np
 from numpy.fft import *
 from warnings import warn
 
-__PPC_FP_TYPE__=np.float128
+__PPC_FP_TYPE__=np.longdouble
 
 
 def phase_randomize_complex(signal):

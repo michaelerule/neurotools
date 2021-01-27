@@ -448,6 +448,9 @@ def today():
     return datetime.date.today().strftime('%Y%m%d')
 
 def now():
+    '''
+    Current date and time as a %Y%m%d_%H%M%S formatted string
+    '''
     return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
 __GLOBAL_TIC_TIME__ = None

@@ -1378,7 +1378,6 @@ def subfigurelabel(x,fontsize=14,dx=29,dy=7,ax=None,bold=True,**kwargs):
     fontproperties = {
         'family':'Bitstream Vera Sans',
         'weight': 'bold' if bold else 'normal',
-        'size': fontsize,
         'va':'bottom',
         'ha':'left'}
     fontproperties.update(kwargs)
@@ -1657,10 +1656,10 @@ def unit_crosshairs(draw_ellipse=True,draw_cross=True):
     '''
     lines  = []
     if draw_ellipse:
-        circle = np.exp(1j*np.linspace(0,2*np.pi,181))
+        circle = np.exp(1j*np.linspace(0,2*np.pi,361))
         lines += list(circle)
     if draw_cross:
-        line1  = np.linspace(-1,1,5)
+        line1  = np.linspace(-1,1,50)
         line2  = 1j*line1
         lines += [np.nan]+list(line1)+[np.nan]+list(line2)
     lines = np.array(lines)
@@ -1859,3 +1858,113 @@ def flathist(x):
     x = np.ravel(x)
     x = scipy.stats.rankdata(x)
     return np.reshape(x,s)
+
+def barcompare(x,y,bins=20,mode='p50',markersize=7,lw=1.5,**kwargs):
+    '''
+    Bar plot of Y as a function of X, summarized in bins of X
+    '''
+    if type(bins) is int:
+        skip  = len(x)//bins
+        bins  = array(sorted(x))[::skip]
+        bins[-1] = np.max(y)+1e-9
+    nbins = len(bins)-1
+    means,stds,sems = [],[],[]
+    p50 = []
+    Δe = (bins[1:]+bins[:-1])*0.5
+    for i in range(nbins):
+        ok = (x>=bins[i])&(x<bins[i+1])
+        n  = np.sum(ok)
+        v  = np.var(y[ok])
+        m  = np.mean(y[ok])
+        means.append(m)
+        stds.append(np.sqrt(v))
+        sems.append(np.sqrt(v/n)*1.96)
+        try:
+            p50.append(m-np.percentile(y[ok],[25,75]))
+        except:
+            e = 0.6742864804798947*np.sqrt(v)*n/(n-1)
+            p50.append([e,e])
+    μ  = np.array(means)
+    σ  = np.array(stds)
+    dμ = np.array(sems)
+    errs = {'sem':dμ,'p95':1.96*σ,'p50':abs(np.array(p50)).T}[mode]
+    plt.errorbar(Δe, μ, errs,
+                 fmt='.',
+                 markersize=markersize,
+                 lw=lw,
+                 capsize=0,
+                 zorder=np.inf,**kwargs)
+    
+def shellmean(x,y,bins=20):
+    '''
+    Get mean and standard deviation of Y based on histogram
+    bins of X
+    μ, σ, dμ, Δe = shellmean(x,y,bins=20)
+    '''
+    if type(bins) is int:
+        skip  = len(x)//bins
+        bins  = array(sorted(x))[::skip]
+        bins[-1] = np.max(y)+1e-9
+    nbins = len(bins)-1
+    means,stds,sems = [],[],[]
+    Δe = (bins[1:]+bins[:-1])*0.5
+    for i in range(nbins):
+        ok = (x>=bins[i])&(x<bins[i+1])
+        n  = np.sum(ok)+1
+        v  = np.nanvar(y[ok])
+        if not isfinite(v):
+            v = 0
+        m = np.nanmean(y[ok])
+        if not isfinite(m):
+            m = 0
+        if len(y[ok])<1:
+            m = NaN
+        means.append(m)
+        stds.append(np.sqrt(v))
+        sems.append(np.sqrt(v/n)*1.96)
+    μ  = np.array(means)
+    σ  = np.array(stds)
+    dμ = np.array(sems)
+    return μ, σ, dμ, Δe
+
+def trendline(x,y,ax=None,color=RUST):
+    '''
+    Parameters
+    ----------
+    x : x points
+    y : y points
+    ax : figure axis for plotting, if None uses plt.gca()
+    '''
+    if ax is None:
+        ax = plt.gca()
+    m,b = np.polyfit(x,y,1)
+    xl = np.array(ax.get_xlim())
+    plt.plot(xl,xl*m+b,label='offset = %0.2f\nslope = %0.2f'%(b,m),color=color)
+    ax.set_xlim(*xl)
+    plt.legend(edgecolor=(1,)*4)
+
+def shellplot(x,y,z,SHELLS,label='',vmin=None,vmax=None,ax=None):
+    '''
+    Averages X and Y based on bins of Z
+    '''
+    Xμ, σ, dμ, Δe = shellmean(z,x,bins=SHELLS)
+    Yμ, σ, dμ, Δe = shellmean(z,y,bins=SHELLS)
+    ok = isfinite(Xμ)
+    Xμ = Xμ[ok]
+    Yμ = Yμ[ok]
+    Δe = Δe[ok]
+    if ax is None:
+        smallplot()
+    x = Xμ
+    y = Yμ
+    ns = len(x)
+    plt.scatter(x,y,c=Δe,lw=0,s=16,vmin=vmin,vmax=vmax)
+    cbar = plt.colorbar()
+    simpleaxis()
+    #cbar.set_ticks(arange(vmin,,2))
+    cbar.ax.set_ylabel(label)
+    trendline(x,y)
+    return x,y,Δe
+
+
+

@@ -454,7 +454,7 @@ def now():
     return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
 __GLOBAL_TIC_TIME__ = None
-def tic(doprint=True):
+def tic(doprint=True,prefix=''):
     ''' 
     Similar to Matlab tic 
     stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python
@@ -473,7 +473,7 @@ def tic(doprint=True):
         __GLOBAL_TIC_TIME__
         if not __GLOBAL_TIC_TIME__ is None:
             if doprint:
-                print('t=%dms'%(t-__GLOBAL_TIC_TIME__))
+                print(prefix,'t=%dms'%(t-__GLOBAL_TIC_TIME__))
         elif doprint:
             print("timing...")
     except: 

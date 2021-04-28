@@ -119,6 +119,8 @@ from neurotools.signal import zscore, bandpass_filter
 import scipy.linalg
 
 def _tapered_cross_specra_helper(params):
+    '''
+    '''
     i,(x,y,use,taper,e) = params
     ftx = np.array([fft.fft(z*taper)[use] for z in x])
     fty = np.array([fft.fft(z*taper)[use] for z in y])

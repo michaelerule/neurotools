@@ -20,13 +20,13 @@ def normalized_morlet(m,w):
     This applies post-processing such that the sum absolute magnitued of
     the wavelet is 1
     '''
-    wl = morlet(m,w)
+    wl = morlet(int(m),w)
     return wl/sum(abs(wl))
 
 @memoize
 def prepare_wavelet_fft_basis(fa,fb,resolution,L,w,Fs):
     ''' Fs=1000. '''
-    freqs = arange(fa,fb+1,resolution)
+    freqs = np.arange(fa,fb+1,resolution)
     M     = 2.*1.*w*Fs/freqs
     # we have to be careful about padding. In general we want the wavelets
     # to all be centered in the array before we take the FFT, so the padding
@@ -43,15 +43,15 @@ def prepare_wavelet_fft_basis(fa,fb,resolution,L,w,Fs):
             wl = wl[chop_begin:-chop_end]
             N = len(wl)
             assert N==L
-        padded = zeros(L,dtype=complex64)
+        padded = np.zeros(L,dtype=np.complex64)
         start  = int((L-N)//2)
         padded[start:start+N]=wl
-        reordered = zeros(L,dtype=complex64)
+        reordered = np.zeros(L,dtype=np.complex64)
         reordered[L//2:]=padded[:L//2]
         reordered[:L//2]=padded[L//2:]
         allwl.append(reordered)
         fftwl.append(fft(reordered))
-    return freqs,array(fftwl)
+    return freqs,np.array(fftwl)
 
 def fft_cwt(beta,fa,fb,w=4.0,resolution=0.1,Fs=1000.0):
     '''
@@ -61,21 +61,29 @@ def fft_cwt(beta,fa,fb,w=4.0,resolution=0.1,Fs=1000.0):
     returns Nch x Nfreq x Ntimes
     '''
     fa,fb = map(float,(fa,fb)) # integer math was causing bugs
-    if len(shape(beta))==1:
-        beta = reshape(beta,shape(beta)+(1,))
-    N,NCH = shape(beta)
+    if len(np.shape(beta))==1:
+        beta = np.renp.shape(beta,np.shape(beta)+(1,))
+    N,NCH = np.shape(beta)
     if NCH>N:
         warn('MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED')
-        warn('YOU KNOW WHAT IM JUST GOING TO FLIP IT FOR YOU')
         beta = beta.T
         N,NCH=NCH,N
-    padded       = zeros((N*2,NCH),dtype=complex64)
+    padded       = np.zeros((N*2,NCH),dtype=np.complex64)
     padded[:N,:] = beta
     padded[N:,:] = beta[::-1,:]
-    fft_data = fft(padded,axis=0,threads=24)
+
+    if fft==numpy.fft.fft:
+        fft_data = fft(padded,axis=0)
+    else:
+        fft_data = fft(padded,axis=0,threads=24)
+
     freqs,wavelets = prepare_wavelet_fft_basis(fa,fb,resolution,N*2,w,float(Fs))
-    result   = array([ifft(fft_data.T*wl,axis=1,threads=24)[:,:N] for wl in wavelets])
-    return freqs,transpose(result,(1,0,2))
+
+    if fft==numpy.fft.fft:
+        result = np.array([ifft(fft_data.T*wl,axis=1)[:,:N] for wl in wavelets])
+    else:
+        result = np.array([ifft(fft_data.T*wl,axis=1,threads=24)[:,:N] for wl in wavelets])
+    return freqs,np.transpose(result,(1,0,2))
 
 def fft_cwt_transposed(data,fa,fb,w=4.0,resolution=0.1,Fs=1000.0,threads=1):
     '''
@@ -92,23 +100,33 @@ def fft_cwt_transposed(data,fa,fb,w=4.0,resolution=0.1,Fs=1000.0,threads=1):
         Nch x Nfreq x Ntimes
     '''
     fa,fb = map(float,(fa,fb)) # integer math was causing bugs
-    if len(shape(data))==1:
-        data = data[None,...]#reshape(data,(1,)+shape(data))
-    NCH,N = shape(data)
+    if len(np.shape(data))==1:
+        data = data[None,...]#renp.shape(data,(1,)+np.shape(data))
+    NCH,N = np.shape(data)
     if NCH>N:
         warn('MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED!!')
         #beta = beta.T
         #N,NCH=NCH,N
-    padded       = zeros((NCH,N*2),dtype=complex64)
+    padded       = np.zeros((NCH,N*2),dtype=np.complex64)
     padded[:,:N] = data
     padded[:,N:] = data[:,::-1]
-    fft_data = fft(padded,axis=-1,threads=threads)
+
+    if fft==numpy.fft.fft:
+        fft_data = fft(padded,axis=-1)
+    else:
+        fft_data = fft(padded,axis=-1,threads=threads)
+
     freqs,wavelets = prepare_wavelet_fft_basis(fa,fb,resolution,N*2,w,float(Fs))
-    result   = array([ifft(fft_data*wl,axis=1,threads=threads)[:,:N] for wl in wavelets])
-    return freqs,transpose(result,(1,0,2))
+
+    if fft==numpy.fft.fft:
+        result   = np.array([ifft(fft_data*wl,axis=1)[:,:N] for wl in wavelets])
+    else:
+        result   = np.array([ifft(fft_data*wl,axis=1,threads=threads)[:,:N] for wl in wavelets])
+
+    return freqs,np.transpose(result,(1,0,2))
 
 def logfreqs(fa,fb,nfreq):
-    freqs = 2**linspace(log2(fa),log2(fb),nfreq)
+    freqs = 2**np.linspace(np.log2(fa),np.log2(fb),nfreq)
     return freqs
 
 @memoize
@@ -131,37 +149,44 @@ def prepare_wavelet_fft_basis_logspace(fa,fb,nfreq,L,w,Fs):
             wl = wl[chop_begin:-chop_end]
             N = len(wl)
             assert N==L
-        padded = zeros(L,dtype=complex64)
+        padded = np.zeros(L,dtype=np.complex64)
         start  = int((L-N)//2)
         padded[start:start+N]=wl
-        reordered = zeros(L,dtype=complex64)
+        reordered = np.zeros(L,dtype=np.complex64)
         reordered[L//2:]=padded[:L//2]
         reordered[:L//2]=padded[L//2:]
         allwl.append(reordered)
         fftwl.append(fft(reordered))
-    return freqs,array(fftwl)
+    return freqs,np.array(fftwl)
 
-def fft_cwt_transposed_logspaced(data,fa,fb,w=4.0,nfreqs=None,threads=1):
+def fft_cwt_transposed_logspaced(data,fa,fb,w=4.0,nfreqs=None,threads=1,Fs=1000):
     '''
     data is NCH x Ntimes
     returns Nch x Nfreq x Ntimes
     '''
-    assert 0 # TODO ADD FS
     if nfreqs is None: nfreqs = int(round(fb-fa))
-    if len(shape(data))==1:
-        data = reshape(data,(1,)+shape(data))
-    NCH,N = shape(data)
+    if len(np.shape(data))==1:
+        data = np.renp.shape(data,(1,)+np.shape(data))
+    NCH,N = np.shape(data)
     if NCH>N:
         warn('MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED')
         beta = beta.T
         N,NCH=NCH,N
-    padded       = zeros((NCH,N*2),dtype=complex64)
+    padded       = np.zeros((NCH,N*2),dtype=np.complex64)
     padded[:,:N] = data
     padded[:,N:] = data[:,::-1]
-    fft_data = fft(padded,axis=-1,threads=threads)
-    freqs,wavelets = prepare_wavelet_fft_basis_logspace(fa,fb,nfreqs,N*2,w,1000.0)
-    result   = array([ifft(fft_data*wl,axis=1,threads=threads)[:,:N] for wl in wavelets])
-    return freqs,transpose(result,(1,0,2))
+    
+    if fft==numpy.fft.fft:
+        fft_data = fft(padded,axis=-1)
+    else:
+        fft_data = fft(padded,axis=-1,threads=threads)
+    freqs,wavelets = prepare_wavelet_fft_basis_logspace(fa,fb,nfreqs,N*2,w,Fs)
+    
+    if fft==numpy.fft.fft:
+        result   = np.array([ifft(fft_data*wl,axis=1)[:,:N] for wl in wavelets])
+    else:
+        result   = np.array([ifft(fft_data*wl,axis=1,threads=threads)[:,:N] for wl in wavelets])
+    return freqs,np.transpose(result,(1,0,2))
 
 
 ############################################################################

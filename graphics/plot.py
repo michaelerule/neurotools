@@ -1368,7 +1368,7 @@ def complex_axis(scale):
     ylabel(u'μV',fontname='DejaVu Sans')
     force_aspect()
 
-def subfigurelabel(x,fontsize=14,dx=29,dy=7,ax=None,bold=True,**kwargs):
+def subfigurelabel(x,fontsize=10,dx=39,dy=7,ax=None,bold=True,**kwargs):
     '''
     Parameters
     ----------
@@ -1376,6 +1376,7 @@ def subfigurelabel(x,fontsize=14,dx=29,dy=7,ax=None,bold=True,**kwargs):
     '''
     if ax is None: ax = plt.gca()
     fontproperties = {
+        'fontsize':fontsize,
         'family':'Bitstream Vera Sans',
         'weight': 'bold' if bold else 'normal',
         'va':'bottom',
@@ -1752,9 +1753,34 @@ def figurebox(color=(0.6,0.6,0.6)):
     ax2.add_line(line)
     plt.xticks([]); plt.yticks([]); noxyaxes()
 
+def more_xticks(ax=None):
+    '''
+    Add more ticks to the x axis
+
+    Other Parameters
+    ----------------
+    ax : axis, if None (default), uses the current axis.
+    '''
+    if ax is None: ax = plt.gca()
+    xticks     = ax.get_xticks()
+    xl         = ax.get_xlim()
+    xmin,xmax  = xl
+    mintick    = np.min(xticks)
+    maxtick    = np.max(xticks)
+    nticks     = len(xticks)
+    new_xticks = np.linspace(mintick,maxtick,nticks*2-1)
+    spacing    = np.mean(np.diff(sorted(xticks)))
+    before     = mintick - spacing/2
+    if before>=xmin and before<=xmax:
+        new_xticks = np.concatenate([[before],new_xticks])
+    after      = maxtick + spacing/2
+    if after>=xmin and after<=xmax:
+        new_xticks = np.concatenate([new_xticks,[after]])
+    ax.set_xticks(new_xticks)
+
 def more_yticks(ax=None):
     '''
-    Try to intelligently add more ticks to the y axis
+    Add more ticks to the y axis
 
     Other Parameters
     ----------------

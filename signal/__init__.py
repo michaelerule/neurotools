@@ -191,13 +191,13 @@ def unitscale(signal,axis=None):
     signal = np.float64(np.array(signal))
     if axis==None:
         # Old behavior
-        signal-= np.min(signal)
-        signal/= np.max(signal)
+        signal-= np.nanmin(signal)
+        signal/= np.nanmax(signal)
         return signal
     # New behavior
     theslice = make_rebroadcast_slice(signal, axis)
-    signal-= np.min(signal,axis=axis)[theslice]
-    signal/= np.max(signal,axis=axis)[theslice]
+    signal-= np.nanmin(signal,axis=axis)[theslice]
+    signal/= np.nanmax(signal,axis=axis)[theslice]
     return signal
 
 def topercentiles(x):

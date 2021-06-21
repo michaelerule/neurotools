@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>stats.regressions module &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>stats.regressions module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/stats.regressions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-stats.regressions">
+<span id="stats-regressions-module"></span><h1>stats.regressions module<a class="headerlink" href="#module-stats.regressions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="stats.regressions.damped_cosine">
+<code class="descclassname">stats.regressions.</code><code class="descname">damped_cosine</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#damped_cosine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.damped_cosine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regress a damped cosine impulse response to point data <cite>X</cite> and <cite>Y</cite>
+using weighting <cite>W</cite>.</p>
+<p>Todo: constrain b, L to be positive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>1D array-like</em>) – List of distances</p></li>
+<li><p><strong>Y</strong> (<em>1D array-like</em>) – List of average pairwise distances</p></li>
+<li><p><strong>W</strong> (<em>1D array-like</em>) – List of weights</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Optimization result returned by <cite>scipy.optimize.minimize</cite>.
+See <cite>scipy.optimize</cite> documentation for details.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="mf">0.4</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="mi">4</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">Y</span><span class="o">+</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="n">w</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">damped_cosine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Z</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">.</span><span class="n">x</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Z</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="o">/</span><span class="n">L</span><span class="o">+</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stats.regressions.weighted_least_squares">
+<code class="descclassname">stats.regressions.</code><code class="descname">weighted_least_squares</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#weighted_least_squares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.weighted_least_squares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize power law fit
+EPS = 1e-10
+use = (X&gt;EPS)&amp;(Y&gt;EPS)
+weighted_least_squares(np.log(X+EPS)[use],np.log(Y+EPS)[use],1/(EPS+X[use]))</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List of distances</em>) – </p></li>
+<li><p><strong>Y</strong> (<em>List of amplitudes</em>) – </p></li>
+<li><p><strong>W</strong> (<em>Weights for points</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Optimization result returned by scipy.optimize.minimize. See
+scipy.optimize documentation for details.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="stats.regressions.power_law">
+<code class="descclassname">stats.regressions.</code><code class="descname">power_law</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#power_law"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.power_law" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a power law, but with error terms computed by r^2 in
+the original space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List of distances</em>) – </p></li>
+<li><p><strong>Y</strong> (<em>List of amplitudes</em>) – </p></li>
+<li><p><strong>W</strong> (<em>Weights for points</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="stats.regressions.gaussian_function">
+<code class="descclassname">stats.regressions.</code><code class="descname">gaussian_function</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#gaussian_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.gaussian_function" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List of distances</em>) – </p></li>
+<li><p><strong>Y</strong> (<em>List of amplitudes</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Optimization result returned by scipy.optimize.minimize. See
+scipy.optimize documentation for details.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="stats.regressions.half_gaussian_function">
+<code class="descclassname">stats.regressions.</code><code class="descname">half_gaussian_function</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#half_gaussian_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.half_gaussian_function" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List of distances</em>) – </p></li>
+<li><p><strong>Y</strong> (<em>List of amplitudes</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="stats.regressions.exponential_decay">
+<code class="descclassname">stats.regressions.</code><code class="descname">exponential_decay</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#exponential_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.exponential_decay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit exponential decay from an initial value to a final value with
+some time (or length, etc) constant.</p>
+<p>lamb,scale,dc = exponential_decay(X,Y)
+z = np.exp(-lamb*X)*scale+dc</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List of distances</em>) – </p></li>
+<li><p><strong>Y</strong> (<em>List of amplitudes</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>lambda</strong> (<em>float</em>) – Length constant of fitted exponential fit</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – Scale parameter (magnitude at zero) of exponential fit</p></li>
+<li><p><strong>dc</strong> (<em>float</em>) – DC offset of exponential fit (asymptotic value)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="stats.regressions.robust_line">
+<code class="descclassname">stats.regressions.</code><code class="descname">robust_line</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stats/regressions.html#robust_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stats.regressions.robust_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>2-variable linear regression with L1 penalty
+returns the tuple (m,b) for line in y = mx+b format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>List of distances</em>) – </p></li>
+<li><p><strong>Y</strong> (<em>List of amplitudes</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result.x</strong> – Optimization result returned by scipy.optimize.minimize. See
+scipy.optimize documentation for details.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>neurotools.stats.Gaussian &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../stats.html">neurotools.stats</a> &raquo;</li>
+        
+      <li>neurotools.stats.Gaussian</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for neurotools.stats.Gaussian</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">neurotools.functions</span> <span class="kn">import</span> <span class="n">slog</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.distributions</span> <span class="kn">import</span> <span class="n">poisson_logpdf</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">neurotools.functions</span> <span class="kn">import</span> <span class="n">slog</span><span class="p">,</span><span class="n">sexp</span>
+
+<div class="viewcode-block" id="gaussian_quadrature"><a class="viewcode-back" href="../../../neurotools.stats.Gaussian.html#neurotools.stats.Gaussian.gaussian_quadrature">[docs]</a><span class="k">def</span> <span class="nf">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">domain</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Numeric integration of probability density `p` over `domain`; Values</span>
+<span class="sd">    in `p` smaller than `eps` (defaults to 1e-12) are set to `eps`.</span>
+<span class="sd">    </span>
+<span class="sd">    Treat f as a density and estimate it&#39;s mean and precision</span>
+<span class="sd">    over the domain</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p</span>
+<span class="sd">        1D iterable of probabilities</span>
+<span class="sd">    domain</span>
+<span class="sd">        1D iterable of domain points corresponding to `p`</span>
+<span class="sd">    eps=1e-12</span>
+<span class="sd">        Minimum probability value permitted</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Gaussian</span>
+<span class="sd">        Gaussian object with mean and precision matching estimated mean</span>
+<span class="sd">        and precision of distribution specified by (`p`,`domain`).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">p</span><span class="p">[</span><span class="n">p</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="n">eps</span>   
+    <span class="n">p</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">domain</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">domain</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="k">return</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gaussian_quadrature_logarithmic"><a class="viewcode-back" href="../../../neurotools.stats.Gaussian.html#neurotools.stats.Gaussian.gaussian_quadrature_logarithmic">[docs]</a><span class="k">def</span> <span class="nf">gaussian_quadrature_logarithmic</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span><span class="n">domain</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Numeric integration of log-probability. Not yet implemented.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p</span>
+<span class="sd">        1D iterable of probabilities</span>
+<span class="sd">    domain</span>
+<span class="sd">        1D iterable of domain points corresponding to `p`</span>
+<span class="sd">    eps=1e-12</span>
+<span class="sd">        Minimum probability value permitted</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This function is not yet implemented&#39;</span><span class="p">)</span>
+    <span class="n">normalization</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">domain</span><span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="n">normalization</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">domain</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">/</span><span class="n">normalization</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="k">return</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../neurotools.stats.Gaussian.html#neurotools.stats.Gaussian.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Gaussian model to use in abstracted forward-backward</span>
+<span class="sd">    Supports multiplication of Gaussians</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    m: mean </span>
+<span class="sd">    t: precision (reciprocal of variance)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        m : </span>
+<span class="sd">            Mean of distribution</span>
+<span class="sd">        t : </span>
+<span class="sd">            Precision (1/variance) of distribution</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Gaussian</span>
+<span class="sd">            Gaussian density object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span><span class="n">t</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Multiply two Gaussians together in terms of probability, for example</span>
+<span class="sd">        to apply Bayes rule. </span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        o : Gaussian</span>
+<span class="sd">            Another Gaussian. Can also be 1 to indicate the identity</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Gaussian </span>
+<span class="sd">            New gaussian distribution that is the product of this </span>
+<span class="sd">            distribution with the distribution `o`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">Gaussian</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-16</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">m</span>        
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># propagating normalization factors for forward-backward</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span><span class="o">+</span><span class="n">o</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Divide this Gaussian distribtion by another Gaussian distribution</span>
+<span class="sd">        `o`</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        o : Gaussian</span>
+<span class="sd">            Another Gaussian. Can also be 1 to indicate the identity</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Gaussian </span>
+<span class="sd">            New gaussian distribution reflecting division of this Gaussian</span>
+<span class="sd">            distribution by the distribution `o`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">Gaussian</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="o">*</span><span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-16</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">m</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># propagating normalization factors for forward-backward</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="s1">&#39;lognorm&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span><span class="o">-</span><span class="n">o</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">lognorm</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lognorm</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="n">__div__</span>  <span class="o">=</span> <span class="fm">__truediv__</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> 
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate this Gaussian PDF at location `x`</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or np.array</span>
+<span class="sd">            Point or array of points at which to evaluate the PDF</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.array </span>
+<span class="sd">            PDF value at locations specified by `x`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;m=</span><span class="si">%0.4f</span><span class="s1">, t=</span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<div class="viewcode-block" id="Gaussian.logpdf"><a class="viewcode-back" href="../../../neurotools.stats.Gaussian.html#neurotools.stats.Gaussian.Gaussian.logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The log-pdf of a univariate Gaussian</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or np.array</span>
+<span class="sd">            Point or array of points at which to evaluate the log-PDF</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.array </span>
+<span class="sd">            log-PDF value at locations specified by `x`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">slog</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="mf">0.91893853320467267</span><span class="c1">#-0.5*log(2*np.pi)</span></div></div>
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

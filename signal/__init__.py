@@ -907,7 +907,7 @@ def stats_block(data,statfunction,N=100,sample_match=None):
     data = data[...,:D]
     data = np.reshape(data,data.shape[:-1]+(B,N))
     if not sample_match is None:
-        keep = int32(linspace(0,N-1,sample_match))
+        keep = np.int32(np.linspace(0,N-1,sample_match))
         data = data[:,keep]
     return statfunction(data,axis=-1)
 

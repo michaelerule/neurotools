@@ -1,0 +1,581 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>neurotools.stats package &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="neurotools.stats.GLMFit module" href="neurotools.stats.GLMFit.html" />
+    <link rel="prev" title="neurotools.spikes.waveform module" href="neurotools.spikes.waveform.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">neurotools</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="neurotools.html">neurotools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="neurotools.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="neurotools.encoding.html">neurotools.encoding package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.gpu.html">neurotools.gpu package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.graphics.html">neurotools.graphics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.jobs.html">neurotools.jobs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.linalg.html">neurotools.linalg package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.models.html">neurotools.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.signal.html">neurotools.signal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spatial.html">neurotools.spatial package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spikes.html">neurotools.spikes package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">neurotools.stats package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-neurotools.stats">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#module-neurotools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">neurotools</a> &raquo;</li>
+        
+          <li><a href="neurotools.html">neurotools package</a> &raquo;</li>
+        
+      <li>neurotools.stats package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/neurotools.stats.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="neurotools-stats-package">
+<h1>neurotools.stats package<a class="headerlink" href="#neurotools-stats-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.GLMFit.html">neurotools.stats.GLMFit module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.Gaussian.html">neurotools.stats.Gaussian module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.circular.html">neurotools.stats.circular module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.convolutional.html">neurotools.stats.convolutional module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.density.html">neurotools.stats.density module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.distributions.html">neurotools.stats.distributions module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.entropy.html">neurotools.stats.entropy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.fast_kde.html">neurotools.stats.fast_kde module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.glm.html">neurotools.stats.glm module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.gmm.html">neurotools.stats.gmm module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.history_basis.html">neurotools.stats.history_basis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.hmm.html">neurotools.stats.hmm module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.information.html">neurotools.stats.information module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.kent_reimann.html">neurotools.stats.kent_reimann module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.lessons.html">neurotools.stats.lessons module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.matzner_bar-gad_PLoS_2015.html">neurotools.stats.matzner_bar-gad_PLoS_2015 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.mcint.html">neurotools.stats.mcint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.minimize.html">neurotools.stats.minimize module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.mixtures.html">neurotools.stats.mixtures module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.modefind.html">neurotools.stats.modefind module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.mvg.html">neurotools.stats.mvg module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.pvalues.html">neurotools.stats.pvalues module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.regressions.html">neurotools.stats.regressions module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.sde.html">neurotools.stats.sde module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.spatiotemporal_glm_utils.html">neurotools.stats.spatiotemporal_glm_utils module</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-neurotools.stats">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-neurotools.stats" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="neurotools.stats.find">
+<code class="descclassname">neurotools.stats.</code><code class="descname">find</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.find" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.nrmse">
+<code class="descclassname">neurotools.stats.</code><code class="descname">nrmse</code><span class="sig-paren">(</span><em>estimate</em>, <em>true</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#nrmse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.nrmse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalized root mean-squared error.
+:param estimate: Estimated data values
+:type estimate: array-like
+:param true: True data values
+:type true: array-like</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.weighted_avg_and_std">
+<code class="descclassname">neurotools.stats.</code><code class="descname">weighted_avg_and_std</code><span class="sig-paren">(</span><em>values</em>, <em>weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#weighted_avg_and_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.weighted_avg_and_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the weighted average and standard deviation.
+values, weights – Numpy ndarrays with the same shape.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.partition_trials_for_crossvalidation">
+<code class="descclassname">neurotools.stats.</code><code class="descname">partition_trials_for_crossvalidation</code><span class="sig-paren">(</span><em>x</em>, <em>K</em>, <em>shuffle=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#partition_trials_for_crossvalidation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.partition_trials_for_crossvalidation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split trial data into crossvalidation blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>list</em>) – List of trial data to partition. Each entry in the list should
+be a Ntimepoints x Ndatapoints array.</p></li>
+<li><p><strong>K</strong> (<em>int</em>) – Number of crossvalidation blocks to compute</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>spans</strong> – List of trial indecies to use for each block</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.polar_error">
+<code class="descclassname">neurotools.stats.</code><code class="descname">polar_error</code><span class="sig-paren">(</span><em>x</em>, <em>xh</em>, <em>units='degrees'</em>, <em>mode='L1'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#polar_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.polar_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute error for polar measurements,
+wrapping the circular variable appropriately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – true valies (in degrees)</p></li>
+<li><p><strong>hx</strong> (<em>array-like</em>) – estimated values (in degrees)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>units</strong> (<em>str, default “degrees”</em>) – Polar units to use. Either “radians” or “degrees”</p></li>
+<li><p><strong>mode</strong> (<em>str, default ‘L1’</em>) – Error method to use. Either ‘L1’ (mean absolute error) or
+‘L2’ (root mean-squared error)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Circularly-wrapped error</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>err</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.add_constant">
+<code class="descclassname">neurotools.stats.</code><code class="descname">add_constant</code><span class="sig-paren">(</span><em>data</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#add_constant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.add_constant" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.trial_crossvalidated_least_squares">
+<code class="descclassname">neurotools.stats.</code><code class="descname">trial_crossvalidated_least_squares</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>K</em>, <em>regress=None</em>, <em>reg=1e-10</em>, <em>shuffle=False</em>, <em>errmethod='L2'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#trial_crossvalidated_least_squares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.trial_crossvalidated_least_squares" title="Permalink to this definition">¶</a></dt>
+<dd><p>predicts B from A in K-fold cross-validated blocks using linear
+least squares. I.e. find w such that B = Aw</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>array</em>) – List of trials for independent variables; For every trial,
+First dimension should be time or number of samples, etc.</p></li>
+<li><p><strong>b</strong> (<em>vector</em>) – List of trials for dependent variables</p></li>
+<li><p><strong>K</strong> (<em>int</em>) – Number of cross-validation blocks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>regress</strong> (<em>function, optional</em>) – Regression function, defaults to <cite>np.linalg.lstsq</cite>
+(if providing another function, please match the
+call signature of <cite>np.linalg.lstsq</cite>)</p></li>
+<li><p><strong>reg</strong> (<em>scalar, default 1e-10</em>) – L2 regularization penalty</p></li>
+<li><p><strong>shuffle</strong> (<em>bool, default False</em>) – Whether to shuffle trials before crossvalidation</p></li>
+<li><p><strong>errmethod</strong> (<em>String</em>) – Method used to compute the error. Can be ‘L1’ (mean absolute error)
+‘L2’ (root mean-squared error) or ‘correlation’ (pearson correlation
+coefficient).</p></li>
+<li><p><strong>add_constant</strong> (<em>bool, default False</em>) – Whether to append an additional constand offset feature to the
+data. The returned weight matrix will have one extra entry, at the
+end, reflecting the offset, if this is set to True.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>w, array-like</em> – model coefficients x from each cross-validation</p></li>
+<li><p><em>bhat, array-like</em> – predicted values of b under crossvalidation</p></li>
+<li><p><em>error</em> – root mean squared error from each crossvalidation run</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.partition_data_for_crossvalidation">
+<code class="descclassname">neurotools.stats.</code><code class="descname">partition_data_for_crossvalidation</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>K</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#partition_data_for_crossvalidation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.partition_data_for_crossvalidation" title="Permalink to this definition">¶</a></dt>
+<dd><p>For predicting B from A, partition both training and testing
+data into K-fold cross-validation blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>array</em>) – Independent variables; First dimension should be time
+or number of samples, etc.</p></li>
+<li><p><strong>b</strong> (<em>vector</em>) – dependent variables</p></li>
+<li><p><strong>K</strong> (<em>int</em>) – Number of cross-validation blocks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>trainA</strong> (<em>list</em>) – list of training blocks for independent variables A</p></li>
+<li><p><strong>trainB</strong> (<em>list</em>) – list of training blocks for dependent variables B</p></li>
+<li><p><strong>testA</strong> (<em>list</em>) – list of testing blocks for independent variables A</p></li>
+<li><p><strong>testB</strong> (<em>list</em>) – list of testing blocks for dependent variables B</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.crossvalidated_least_squares">
+<code class="descclassname">neurotools.stats.</code><code class="descname">crossvalidated_least_squares</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>K</em>, <em>regress=None</em>, <em>reg=1e-10</em>, <em>blockshuffle=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#crossvalidated_least_squares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.crossvalidated_least_squares" title="Permalink to this definition">¶</a></dt>
+<dd><p>predicts B from A in K-fold cross-validated blocks using linear
+least squares. I.e. find w such that B = Aw</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>array</em>) – Independent variables; First dimension should be time
+or number of samples, etc.</p></li>
+<li><p><strong>b</strong> (<em>vector</em>) – dependent variables</p></li>
+<li><p><strong>K</strong> (<em>int</em>) – Number of cross-validation blocks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>regress</strong> (<em>function, optional</em>) – Regression function, defaults to <cite>np.linalg.lstsq</cite>
+(if providing another function, please match the
+call signature of <cite>np.linalg.lstsq</cite>)</p></li>
+<li><p><strong>reg</strong> (<em>scalar, default 1e-10</em>) – L2 regularization penalty</p></li>
+<li><p><strong>blockshuffle</strong> (<em>positive int or None, default None</em>) – If not None, should be a positive integeter indicating the
+block-size in which to shuffle the input data before
+breaking it into cross-validation blocks.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>w, array-like</em> – model coefficients x from each cross-validation</p></li>
+<li><p><em>bhat, array-like</em> – predicted values of b under crossvalidation</p></li>
+<li><p><em>cc, number</em> – correlation coefficient</p></li>
+<li><p><em>rms, number</em> – root mean squared error</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.print_stats">
+<code class="descclassname">neurotools.stats.</code><code class="descname">print_stats</code><span class="sig-paren">(</span><em>g</em>, <em>name=''</em>, <em>prefix=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#print_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.print_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes, prints, and returns
+mean
+median
+minimum
+maximum</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.outliers">
+<code class="descclassname">neurotools.stats.</code><code class="descname">outliers</code><span class="sig-paren">(</span><em>x</em>, <em>percent=10</em>, <em>side='both'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject outliers from data based on percentiles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarary</em>) – 1D numeric array of data values</p></li>
+<li><p><strong>percent</strong> (<em>number</em>) – percent between 0 and 100 to remove</p></li>
+<li><p><strong>side</strong> (<em>str</em>) – ‘left’ ‘right’ or ‘both’. Default is ‘both’. Remove extreme
+values from the left / right / both sides of the data
+distribution. If both, the percent is halved and removed
+from both the left and the right</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean array of same shape as x indicating outliers</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.reject_outliers">
+<code class="descclassname">neurotools.stats.</code><code class="descname">reject_outliers</code><span class="sig-paren">(</span><em>x</em>, <em>percent=10</em>, <em>side='both'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#reject_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.reject_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject outliers from data based on percentiles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarary</em>) – 1D numeric array of data values</p></li>
+<li><p><strong>percent</strong> (<em>number</em>) – percent between 0 and 100 to remove</p></li>
+<li><p><strong>side</strong> (<em>str</em>) – ‘left’ ‘right’ or ‘both’. Default is ‘both’. Remove extreme
+values from the left / right / both sides of the data
+distribution. If both, the percent is halved and removed
+from both the left and the right</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ndarray</em> – Values with outliers removed</p></li>
+<li><p><em>kept</em> – Indecies of values kept</p></li>
+<li><p><em>removed</em> – Indecies of values removed</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.pca">
+<code class="descclassname">neurotools.stats.</code><code class="descname">pca</code><span class="sig-paren">(</span><em>x</em>, <em>n_keep=None</em>, <em>rank_deficient=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#pca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.pca" title="Permalink to this definition">¶</a></dt>
+<dd><p>w,v = pca(x,n_keep=None)
+Performs PCA on data x, keeping the first n_keep dimensions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray</em>) – Nsamples x Nfeatures array on which to perform PCA</p></li>
+<li><p><strong>n_keep</strong> (<em>int</em>) – Number of principle components to retain</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>w</strong> (<em>weights (eigenvalues)</em>)</p></li>
+<li><p><strong>v</strong> (<em>eigenvector (principal components)</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covariance">
+<code class="descclassname">neurotools.stats.</code><code class="descname">covariance</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>sample_deficient=False</em>, <em>reg=0.0</em>, <em>centered=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#covariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Covariance matrix for <cite>Nsamples</cite> x <cite>Nfeatures</cite> matrix.
+Data are <em>not</em> centered before computing covariance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Nsamples x Nfeatures array-like</em>) – Array of input features</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>y</strong> (<em>Nsamples x Nyfeatures array-like</em>) – Array of input features</p></li>
+<li><p><strong>sample_deficient</strong> (<em>bool, default False</em>) – Whether the data contains fewer samples than it does features.
+If False (the default), routine will raise a <cite>ValueError</cite>.</p></li>
+<li><p><strong>reg</strong> (<em>positive scalar, default 0</em>) – Diagonal regularization to add to the covariance</p></li>
+<li><p><strong>centered</strong> (<em>boolean, default True</em>) – Whether to subtract the means from the data before taking the
+covariace.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>C</strong> – Sample covariance matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="neurotools.stats.description">
+<em class="property">class </em><code class="descclassname">neurotools.stats.</code><code class="descname">description</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>quick statistical description</p>
+<p>TODO: move this to stats</p>
+<dl class="method">
+<dt id="neurotools.stats.description.short">
+<code class="descname">short</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats.html#description.short"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.description.short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abbreviated statistical summary</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="neurotools.stats.GLMFit.html" class="btn btn-neutral float-right" title="neurotools.stats.GLMFit module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="neurotools.spikes.waveform.html" class="btn btn-neutral float-left" title="neurotools.spikes.waveform module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>neurotools.stats.spatiotemporal_glm_utils module &mdash; Neurotools 2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="neurotools.dependencies module" href="neurotools.dependencies.html" />
+    <link rel="prev" title="neurotools.stats.sde module" href="neurotools.stats.sde.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Neurotools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">neurotools</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="neurotools.html">neurotools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="neurotools.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="neurotools.encoding.html">neurotools.encoding package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.gpu.html">neurotools.gpu package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.graphics.html">neurotools.graphics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.jobs.html">neurotools.jobs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.linalg.html">neurotools.linalg package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.models.html">neurotools.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.signal.html">neurotools.signal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spatial.html">neurotools.spatial package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spikes.html">neurotools.spikes package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="neurotools.stats.html">neurotools.stats package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="neurotools.stats.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="neurotools.stats.html#module-neurotools.stats">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#module-neurotools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">neurotools</a> &raquo;</li>
+        
+          <li><a href="neurotools.html">neurotools package</a> &raquo;</li>
+        
+          <li><a href="neurotools.stats.html">neurotools.stats package</a> &raquo;</li>
+        
+      <li>neurotools.stats.spatiotemporal_glm_utils module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/neurotools.stats.spatiotemporal_glm_utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-neurotools.stats.spatiotemporal_glm_utils">
+<span id="neurotools-stats-spatiotemporal-glm-utils-module"></span><h1>neurotools.stats.spatiotemporal_glm_utils module<a class="headerlink" href="#module-neurotools.stats.spatiotemporal_glm_utils" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.orthogonalize">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">orthogonalize</code><span class="sig-paren">(</span><em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#orthogonalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.orthogonalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>B = orthogonalize(B)</p>
+<p>Orthogonalizes a basis; Assumes each row of B is a basis vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>B</strong> (<em>orthonomalized version of B</em>) – </p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>B</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.isInt">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">isInt</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#isInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.isInt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.local_ch_map">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">local_ch_map</code><span class="sig-paren">(</span><em>sr</em>, <em>sc</em>, <em>radius</em>, <em>width=64</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#local_ch_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.local_ch_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>chs,ch_map = local_ch_map(unit,radius)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sr</strong><strong>,</strong><strong>sc</strong> (<em>row</em><em>, </em><em>column of cell in image coordinates</em>) – </p></li>
+<li><p><strong>radius</strong> (<em>radius</em><em> (</em><em>in pixels</em><em>) </em><em>to include</em>) – </p></li>
+<li><p><strong>width</strong> (<em>width/height of the stim images</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.spatiotemporal_history_projection">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">spatiotemporal_history_projection</code><span class="sig-paren">(</span><em>stims</em>, <em>Bh</em>, <em>Bs</em>, <em>pad=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#spatiotemporal_history_projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.spatiotemporal_history_projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>X = spatiotemporal_history_projection(stims,Bh,Bs,pad=0)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.spatiotemporal_history">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">spatiotemporal_history</code><span class="sig-paren">(</span><em>stims</em>, <em>hlen</em>, <em>hn</em>, <em>hmin</em>, <em>chs=None</em>, <em>ncomp=None</em>, <em>pad=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#spatiotemporal_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.spatiotemporal_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>X,Bh,Bs = spatiotemporal_history(stimuli,channels,hlen,hn,hmin,ncomp,pad)</p>
+<p>Spatiotemporal features generator.</p>
+<p>Accepts a vector of stimuli <cite>stims</cite> and a set of indecies into
+this vector <cite>chs</cite>; constructs <cite>hn</cite> history basis elements
+spanning time <cite>hlen</cite> with the minum time resolution of <cite>hmin</cite>.
+Compresses the <cite>chs</cite> subset of <cite>stims</cite> into <cite>ncomp</cite> dimensions
+using PCA. Returns the spatiotemporal history features, as well
+as the bases <cite>Bs</cite> and <cite>Bh</cite> needed to reconstruct the spatial and
+temporal dimensions, respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stims</strong> (<em>nsamples x nchannels array of stimuli data</em>) – </p></li>
+<li><p><strong>hlen</strong> (<em>No. frames history to include</em>) – </p></li>
+<li><p><strong>hn</strong> (<em>No. history basis function</em>) – </p></li>
+<li><p><strong>hmin</strong> (<em>width of the narrowest history basis function in frames</em>) – </p></li>
+<li><p><strong>chs</strong> (<em>Channels to use</em>) – </p></li>
+<li><p><strong>ncomp</strong> (<em>No. PCA compressed features to keep;</em>) – set to len(channels) to keep all</p></li>
+<li><p><strong>pad</strong> (<em>int; No. zero samples added to the begining</em><em>,</em>) – used to add pad frames of latency</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>nsamples×ncomp*nh spatiotemporal history features</em>)</p></li>
+<li><p><strong>Bh</strong> (<em>hlen×nh history   basis functions</em>)</p></li>
+<li><p><strong>Bs</strong> (<em>nchannels×ncomp   spatial basis functions</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.plot_spatiotemporal">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">plot_spatiotemporal</code><span class="sig-paren">(</span><em>B</em>, <em>Bs</em>, <em>Bh</em>, <em>ch_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#plot_spatiotemporal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.plot_spatiotemporal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Q = plot_spatiotemporal(B,Bs,Bh,ch_map)
+Decompress and visualize spatiotemporal stimulus model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>B</strong> (<em>nspace * nhist    spatiotemporal parameter vector</em><em>, </em><em>compressed</em>) – </p></li>
+<li><p><strong>Bs</strong> (<em>nspace × channels spatial compression basis</em>) – </p></li>
+<li><p><strong>Bh</strong> (<em>nhist  × hframes  history compression basis</em>) – </p></li>
+<li><p><strong>ch_map</strong> (<em>2d array showing how to map stimulus indecies into a space</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Q</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>the ch_map.shape × hframes decompressed spatiotemporal history filter</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.plot_histfilter">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">plot_histfilter</code><span class="sig-paren">(</span><em>B</em>, <em>basis</em>, <em>bin_duration_ms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#plot_histfilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.plot_histfilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots stimulus filter in given basis projection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>B</strong> (<em>basis vector weights</em>) – </p></li>
+<li><p><strong>basis</strong> (<em>basis set</em><em>, </em><em>should be orthogonal</em>) – </p></li>
+<li><p><strong>bin_duration_ms</strong> (<em>time durations of bins</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.GLMPenaltyL2_subsampled">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">GLMPenaltyL2_subsampled</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>penalties=None</em>, <em>class_balance=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#GLMPenaltyL2_subsampled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.GLMPenaltyL2_subsampled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates objective, gradient, and hessian functions for the penalized
+L2 regularized poisson GLM for design matrix X and spike observations Y.</p>
+<p>Uses a subsampling of the no-spike examples to estimate expectations in
+the likelihood.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – N observation by D features design matrix</p></li>
+<li><p><strong>Y</strong> – N by 1 point-process counts</p></li>
+<li><p><strong>penalties</strong> – len D-1 list of L2 penalty weights (don’t penalize mean)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>objective, gradient(jacobian), hessian</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.spatiotemporal_glm_utils.gradientglmfit_subsampled">
+<code class="descclassname">neurotools.stats.spatiotemporal_glm_utils.</code><code class="descname">gradientglmfit_subsampled</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em>, <em>L2Penalty=0</em>, <em>class_balance=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/spatiotemporal_glm_utils.html#gradientglmfit_subsampled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.spatiotemporal_glm_utils.gradientglmfit_subsampled" title="Permalink to this definition">¶</a></dt>
+<dd><p>mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)
+Fit Poisson GLM using gradient descent with hessian</p>
+<p>Uses a likelihood function where expectations over the features
+are estimated using a random subsampling of the features.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="neurotools.dependencies.html" class="btn btn-neutral float-right" title="neurotools.dependencies module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="neurotools.stats.sde.html" class="btn btn-neutral float-left" title="neurotools.stats.sde module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

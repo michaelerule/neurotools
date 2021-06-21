@@ -43,7 +43,7 @@ def slog(x,eps=F64SAFE,returntype=LINALGMAXFLOAT):
     '''
     "safe" natural logarithm function, clips values avoiding NaN and inf
     '''
-    return returntype(np.log(np.maximum(eps,x)))
+    return returntype(np.log(np.clip(x,eps,1.7976931348623157e+308)))
 
 def sexp(x,limit=EMAX,returntype=LINALGMAXFLOAT):
     '''

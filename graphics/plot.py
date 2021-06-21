@@ -114,6 +114,7 @@ def colored_boxplot(data,positions,color,
                     showfliers=False,
                     linewidth=2,
                     whis=[5,95],
+                    bgcolor=WHITE,
                     **kwargs):
     '''
     Boxplot with nicely colored default style parameterss
@@ -135,7 +136,7 @@ def colored_boxplot(data,positions,color,
         flierprops   = {'linewidth':linewidth,'color':color},
         capprops     = {'linewidth':linewidth,'color':color},
         boxprops     = {'linewidth':linewidth,'color':color,
-                        'facecolor':color if filled else WHITE},
+                        'facecolor':color if filled else bgcolor},
         **kwargs);
     return bp
 
@@ -250,7 +251,7 @@ def nicex(**kwargs):
         plt.xticks([plt.xlim()[0],plt.xlim()[1]])
     fudgex(**kwargs)
 
-def nicexy(xby=10,yby=10,**kwargs):
+def nicexy(xby=None,yby=None,**kwargs):
     '''
     Mark only the min/max value of y/y axis. See `nicex` and `nicey`
     '''
@@ -836,7 +837,7 @@ def zoombox(ax1,ax2,xspan1=None,xspan2=None,draw_left=True,draw_right=True,lw=1,
                                        transform=fig.transFigure,lw=lw,color=color)
         fig.lines.append(line)
 
-def fudgex(by=10,ax=None,doshow=False):
+def fudgex(by=None,ax=None,doshow=False):
     '''
     Adjust x label spacing in pixels
 
@@ -847,12 +848,17 @@ def fudgex(by=10,ax=None,doshow=False):
     dishow : boolean; if true, calls plt.show()
     '''
     if ax is None: ax=plt.gca()
+    if by is None:
+        if min(ax.get_xlim())<0 and max(ax.get_xlim())>0:
+            by = 0
+        else:
+            by = 10
     ax.xaxis.labelpad = -by
     plt.draw()
     if doshow:
         plt.show()
 
-def fudgey(by=10,ax=None,doshow=False):
+def fudgey(by=None,ax=None,doshow=False):
     '''
     Adjust y label spacing in pixels
 
@@ -863,6 +869,11 @@ def fudgey(by=10,ax=None,doshow=False):
     dishow : boolean; if true, calls plt.show()
     '''
     if ax is None: ax=plt.gca()
+    if by is None:
+        if min(ax.get_ylim())<0 and max(ax.get_ylim())>0:
+            by = 5
+        else:
+            by = 13
     ax.yaxis.labelpad = -by
     plt.draw()
     if doshow:
@@ -1286,42 +1297,50 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
     for frame in z:
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
-def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
-    border=True,spacing=5,width=15,fontsize=12):
+def good_colorbar(vmin=None,
+vmax=None,
+cmap=None,
+title='',
+ax=None,
+sideways=False,
+border=True,
+spacing=5,
+width=15,
+labelpad=10,
+fontsize=10,):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'
 
     Parameters:
-        vmin (number): min value for colormap
-        vmax (number): mac value for colormap
-        cmap (colormap): what colormap to use
-        ax (axis): optional, defaults to plt.gca(). axis to which to add colorbar
-        title (string): Units for colormap
-        sideways (bool): Flips the axis label sideways
-        spacing (int): distance from axis in pixels. defaults to 5
+        vmin     (number)  : min value for colormap
+        vmax     (number)  : mac value for colormap
+        cmap     (colormap): what colormap to use
+        title    (string)  : Units for colormap
+        ax       (axis)    : optional, defaults to plt.gca(). axis to which to add colorbar
+        sideways (bool)    : Flips the axis label sideways
+        border   (bool)    : Draw border around colormap box? 
+        spacing  (number)  : distance from axis in pixels. defaults to 5
+        width    (number)  : width of colorbar in pixels. defaults to 15
+        labelpad (number)  : padding between colorbar and title in pixels, defaults to 10
+        fontsize (number)  : label font size, defaults to 12
     Returns:
         axis: colorbar axis
     '''
     if type(vmin)==matplotlib.image.AxesImage:
-        img = vmin
+        img  = vmin
         cmap = img.get_cmap()
         vmin = img.get_clim()[0]
         vmax = img.get_clim()[1]
         ax   = img.axes
     oldax = plt.gca() #remember previously active axis
-    if ax is None: 
-        ax=plt.gca()
-    # WIDTH   = 0.05
+    if ax is None: ax=plt.gca()
     SPACING = pixels_to_xfigureunits(spacing,ax=ax)
     CWIDTH  = pixels_to_xfigureunits(width,ax=ax)
     # manually add colorbar axes 
     bb = ax.get_position()
-    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    # ax.set_position((x,y,w-WIDTH,h))
-    bb = ax.get_position()
-    right,bottom = bb.xmax,bb.ymax
-    cax = plt.axes((right+SPACING,bottom-h,CWIDTH,h),facecolor='w',frameon=border)
+    x,y,w,h,r,b = bb.xmin,bb.ymin,bb.width,bb.height,bb.xmax,bb.ymax
+    cax = plt.axes((r+SPACING,b-h,CWIDTH,h),facecolor='w',frameon=border)
     plt.sca(cax)
     plt.imshow(np.array([np.linspace(vmax,vmin,100)]).T,
         extent=(0,1,vmin,vmax),
@@ -1333,7 +1352,7 @@ def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
     cax.yaxis.tick_right()
     if sideways:
         plt.text(
-            xlim()[1]+pixels_to_xunits(5,ax=cax),
+            xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
             np.mean(ylim()),
             title,
             fontsize=fontsize,
@@ -1341,7 +1360,14 @@ def good_colorbar(vmin=None,vmax=None,cmap=None,title='',ax=None,sideways=False,
             horizontalalignment='left',
             verticalalignment  ='center')
     else:
-        plt.ylabel(title,fontsize=fontsize)
+        plt.text(
+            xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
+            np.mean(ylim()),
+            title,
+            fontsize=fontsize,
+            rotation=90,
+            horizontalalignment='left',
+            verticalalignment  ='center')
     # Hide ticks
     noaxis()
     cax.tick_params('both', length=0, width=0, which='major')

@@ -263,7 +263,7 @@ def hue_angle(c1,c2):
     H2 = RGBtoHCL(*c2)[0]
     return H2-H1
 
-def hcl2rgb(h,c,l,target=None, method='standard'):
+def hcl2rgb(h,c,l,target=None, method='perceived'):
     '''
     
     Parameters

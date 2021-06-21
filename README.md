@@ -7,7 +7,7 @@ This project depends on
  - [scipy](https://www.scipy.org/)
  - [statsmodels](http://www.statsmodels.org/stable/index.html)
  - [pandas](http://pandas.pydata.org/)
- - [nipy](http://nipy.org/nitime/)
+ - [nitime](http://nipy.org/nitime/)
  - [spectrum](https://pyspectrum.readthedocs.io/en/latest/install.html) 
 
 Numpy, scipy, statsmodels, and pandas are probably provided with most scientific python distributions. You may need into install [nipy](http://nipy.org/nitime/) and [spectrum](https://pyspectrum.readthedocs.io/en/latest/install.html) manually. They are available via pip. 

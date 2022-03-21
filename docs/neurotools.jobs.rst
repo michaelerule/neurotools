@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.jobs.cache
    neurotools.jobs.closure
@@ -17,6 +18,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.jobs
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

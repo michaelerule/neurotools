@@ -5,15 +5,16 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
-    neurotools.gpu.cl
-    neurotools.gpu.cpu
-    neurotools.gpu.cu
+   neurotools.gpu.cl
+   neurotools.gpu.cpu
+   neurotools.gpu.cu
 
 Module contents
 ---------------
 
 .. automodule:: neurotools.gpu
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

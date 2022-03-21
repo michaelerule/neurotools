@@ -523,9 +523,13 @@ def close_pool(context=None,verbose=False):
             global mypool
             if not 'mypool' in globals() or mypool is None:
                 return
+            sys.stderr.write('\nClosing...')
             mypool.close()
+            sys.stderr.write('\n(ok) Terminating...')
             mypool.terminate()
+            sys.stderr.write('\n(ok) Joining...')
             mypool.join()
+            sys.stderr.write('\n(ok)...')
         def term(*args,**kwargs):
             sys.stderr.write('\nStopping.')
             stoppool=threading.Thread(target=_close_pool)

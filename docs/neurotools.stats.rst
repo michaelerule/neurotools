@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.stats.GLMFit
    neurotools.stats.Gaussian
@@ -36,6 +37,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.stats
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

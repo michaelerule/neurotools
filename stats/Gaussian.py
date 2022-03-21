@@ -10,7 +10,6 @@ from __future__ import print_function
 from neurotools.system import *
 
 import numpy as np
-from neurotools.functions import slog
 from neurotools.stats.distributions import poisson_logpdf
 import random
 from scipy.optimize import minimize
@@ -183,7 +182,7 @@ class Gaussian:
         np.array 
             PDF value at locations specified by `x`
         '''
-        return np.exp(-0.5*s.t*(x-s.m)**2)*np.sqrt(s.t/(2*np.pi))
+        return sexp(-0.5*s.t*(x-s.m)**2)*np.sqrt(s.t/(2*np.pi))
     def __str__(s):
         return 'm=%0.4f, t=%0.4f'%(s.m,s.t)
     def logpdf(s,x):

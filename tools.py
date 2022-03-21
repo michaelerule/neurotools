@@ -584,16 +584,13 @@ def progress_bar(x,N=None):
     for i,x in enumerate(x):
         time_ms = time.time()*1000
         if time_ms>=wait_til_ms:
-            k = int(i*50//N)
-            sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%3d%%'%(i*100//N))
-            sys.stdout.write(pattern%i)
-            sys.stdout.flush()
+            r = i*50/N
+            k = int(r)
+            q = ' ▏▎▍▌▋▊▉'[int((r-k)*8)]
+            print('\r['+('█'*k)+q+(' '*(50-k-1))+']%3d%%'%(i*100//N)+(pattern%i),end='',flush=True)
             wait_til_ms = time_ms+250
         yield x
-    #sys.stdout.write('\r['+('#'*50)+']100%')
-    #sys.stdout.flush()
-    sys.stdout.write('\r'+' '*70+'\r')
-    sys.stdout.flush()
+    print('\r'+' '*70+'\r',end='',flush=True)
 
 pbar = progress_bar
 pb   = progress_bar

@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.spatial.array
    neurotools.spatial.dct
@@ -21,6 +22,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.spatial
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -5,13 +5,15 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
-    neurotools.models.rbm.rbm_utils
+   neurotools.models.rbm.rbm_utils
 
 Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.models.rbm.rbm
    neurotools.models.rbm.rbm_helper
@@ -21,6 +23,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.models.rbm
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

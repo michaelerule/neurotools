@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.gpu.cu.convolution
    neurotools.gpu.cu.device
@@ -21,6 +22,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.gpu.cu
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -2,6 +2,6 @@ neurotools.functions module
 ===========================
 
 .. automodule:: neurotools.functions
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

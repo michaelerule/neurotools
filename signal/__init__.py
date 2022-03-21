@@ -97,10 +97,12 @@ def gaussian_smooth(x,sigma,mode='same'):#,axis=0):
     '''
     #x = concatenate([x::-1],x,x[::-1])
     K = gaussian_kernel(sigma)
+    n = len(K)
+    x = np.concatenate([np.ones(n)*x[0],x,np.ones(n)*x[-1]])
     #if len(x.shape)==1:
     x = np.convolve(x,K,mode=mode)
     #axes = tuple(sorted(list(set(range(len(x.shape)))-axis)))
-    return x
+    return x[n:-n]
 
 def circular_gaussian_smooth(x,sigma):
     '''
@@ -1069,17 +1071,25 @@ def fdiff(x,Fs=240.):
     return (x[2:]-x[:-2])*Fs*.5
 
 def interpolate_NaN(u):
+    '''
+    Fill in NaN (missing) data in a one-dimensional timeseries via linear
+    interpolation.
+    '''
     u = np.array(u)
     for s,e in list(zip(*get_edges(~np.isfinite(u)))):
         if s==0: continue
         if e==len(u): continue
         a = u[s-1]
         b = u[e]
-        u[s:e+1] = np.linspace(a,b,e-s+1)
+        u[s:e+1] = a + (b-a)*np.linspace(0,1,e-s+1)
     return u
 
 import warnings
 def interpolate_NaN_quadratic(u):
+    '''
+    Fill in NaN (missing) data in a one-dimensional timeseries via quadratic
+    interpolation.
+    '''
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", message="Polyfit may be poorly conditioned")
         u = np.array(u)
@@ -1565,7 +1575,6 @@ def span(data):
     return np.max(data)-np.min(data)
 
 
-
 def make_lagged(x,NLAGS=5,LAGSPACE=1):
     '''
     Create shifted/lagged copies of a 1D signal
@@ -1574,3 +1583,18 @@ def make_lagged(x,NLAGS=5,LAGSPACE=1):
         raise ValueError('Signal should be one-dimensional')
     t = np.arange(len(x))
     return np.array([np.interp(t-LAG,t,x) for LAG in np.arange(NLAGS)*LAGSPACE])
+  
+
+def zgrid(L):
+    '''
+    ----------------------------------------------------------------------------
+    2D grid coordinates as complex numbers
+    '''
+    c = np.arange(L)-L//2
+    return 1j*c[:,None]+c[None,:]
+
+
+
+
+
+

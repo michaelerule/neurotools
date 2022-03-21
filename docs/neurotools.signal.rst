@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.signal.coherence
    neurotools.signal.conv
@@ -20,6 +21,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.signal
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

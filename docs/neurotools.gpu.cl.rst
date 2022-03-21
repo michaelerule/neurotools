@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.gpu.cl.device
    neurotools.gpu.cl.function
@@ -14,6 +15,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.gpu.cl
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

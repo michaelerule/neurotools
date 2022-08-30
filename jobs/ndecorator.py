@@ -52,7 +52,7 @@ except:
 
 def listit(t):
     '''
-    Converts nested tuple structures in to nested list structures
+    Converts nested tuple to nested list
     
     Parameters
     ----------
@@ -67,6 +67,7 @@ def listit(t):
 
 def tupleit(t):
     '''
+    Converts nested list to nested tuple
     
     Parameters
     ----------
@@ -258,7 +259,7 @@ def memoize(f):
     '''
     Memoization decorator
     
-    Note: should create a way to purge all caches
+    TODO: create a way to purge all caches
 
     Parameters
     ----------

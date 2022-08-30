@@ -49,6 +49,18 @@ def weighted_avg_and_std(values, weights):
     variance = np.average((values-average)**2, weights=weights)  # Fast and numerically precise
     return (average, np.sqrt(variance))
 
+def partition_data(x,y,NFOLD=3):
+    groups = partition_trials_for_crossvalidation(x.T,NFOLD,shuffle=False)
+    groups = np.array(groups,dtype='object')
+    for i in range(NFOLD):
+        train  =  np.int32(np.concatenate(groups[[*({*range(NFOLD)}-{i})]]))
+        test   =  np.int32(groups[i])
+        xtrain = x[:,train]
+        ytrain = y[:,train]
+        xtest  = x[:,test]
+        ytest  = y[:,test]
+        yield xtrain,ytrain,xtest,ytest
+
 import neurotools.tools
 
 def partition_trials_for_crossvalidation(x,K,shuffle=False):
@@ -62,11 +74,13 @@ def partition_trials_for_crossvalidation(x,K,shuffle=False):
         be a Ntimepoints x Ndatapoints array.
     K : int
         Number of crossvalidation blocks to compute
-    
+    shuffle : bool, default False
+        
     Returns
     -------
     spans : list
         List of trial indecies to use for each block
+        
     '''
     # Number of trials
     N    = len(x)
@@ -104,7 +118,7 @@ def partition_trials_for_crossvalidation(x,K,shuffle=False):
         # Don't use length-based partitions in this case
         edge = np.int32(0.5+np.linspace(0,N,K+2)[1:-1])
     edge = np.array(sorted(list(set(edge))))
-    # Get star, end point for each edge, to define blocks to keep
+    # Get start and end point for each edge, to define blocks to keep
     a      = np.concatenate([[0],edge[:-1]+1])
     b      = np.concatenate([edge[:-1]+1,[N]])
     result = [indecies[np.arange(ai,bi)] for ai,bi in zip(a,b)]
@@ -161,6 +175,9 @@ error_functions = {
 
 import warnings
 def add_constant(data,axis=None):
+    '''
+    
+    '''
     data = np.array(data)
     # if Nsamples<Nfeatures:
     #     warnings.warn("data shape is %dx%d\n# samples < # features; is data transposed?"%data.shape)
@@ -331,12 +348,34 @@ def partition_data_for_crossvalidation(a,b,K):
         start = k*B
         stop  = start+B if k<K-1 else N
         # Training data (exclude testing block)
-        trainB.append(np.append(b[:start,...],b[stop:,...],axis=0))
-        trainA.append(np.append(a[:start,:  ],a[stop:,:  ],axis=0))
+        trainB = np.append(b[:start,...],b[stop:,...],axis=0)
+        trainA = np.append(a[:start,:  ],a[stop:,:  ],axis=0)
         # Testing data
-        testB.append(b[start:stop,...])
-        testA.append(a[start:stop,:  ])
-    return trainA,trainB,testA,testB
+        testB = b[start:stop,...]
+        testA = a[start:stop,:  ]
+        yield trainA,trainB,testA,testB
+
+def block_shuffle(x,BLOCKSIZE=None):
+    '''
+    Shuffle a 2D array in blocks along axis 0
+    For example, if you provide a NTIMES × NFEATURES array,
+    this will shuffle all features similarly in blocks along the time axis
+    '''
+    T = x.shape[0]
+    if BLOCKSIZE is None:
+        BLOCKSIZE = max(10,T//100)
+    else:
+        BLOCKSIZE = int(round(BLOCKSIZE))
+    nblocks = int(np.ceil(T/BLOCKSIZE))
+    PAD = nblocks*BLOCKSIZE-T
+    if PAD>0:
+        x2 = np.zeros((nblocks*BLOCKSIZE,)+x.shape[1:])
+        x2[:T,...] = x
+        x = x2
+    R = x.reshape((nblocks,BLOCKSIZE)+x.shape[1:])
+    R = R[np.random.permutation(nblocks),...]
+    R = R.reshape((nblocks*BLOCKSIZE,)+x.shape[1:])
+    return R[:T,...]
 
 def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None):
     '''

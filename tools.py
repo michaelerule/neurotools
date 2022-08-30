@@ -23,7 +23,8 @@ from matplotlib.cbook           import flatten
 from neurotools.jobs.ndecorator import *
 from scipy.io                   import loadmat
 from numbers                    import Number
-from collections                import Set, Mapping, deque
+#from collections                import Set, Mapping, deque
+from collections                import deque
 
 try: 
     # Python 2

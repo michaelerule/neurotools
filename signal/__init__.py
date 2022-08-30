@@ -14,6 +14,10 @@ import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
 
+from scipy.interpolate import interp1d
+
+#from scipy.fft         import *
+
 # this function is missing
 #from   pylab import find
 import warnings
@@ -1270,6 +1274,17 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]
 
+# Inverse of standar normal cumulative distribution function
+from scipy.special import ndtri
+from scipy.stats import rankdata
+def gaussianize(x,axis=-1,verbose=False):
+    '''
+    Use percentiles to force a timeseries to have a normal distribution.
+    '''
+    x = np.array(x)
+    if np.prod(x.shape)==0: return x
+    return ndtri((rankdata(x,axis=axis))/(x.shape[axis]+1))
+
 def deltaovermean(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     '''
     Subtracts, then divides by, the mean.
@@ -1577,7 +1592,13 @@ def span(data):
 
 def make_lagged(x,NLAGS=5,LAGSPACE=1):
     '''
-    Create shifted/lagged copies of a 1D signal
+    Create shifted/lagged copies of a 1D signal.
+    These are retrospective (causal) features. 
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     if not len(x.shape)==1:
         raise ValueError('Signal should be one-dimensional')
@@ -1589,6 +1610,11 @@ def zgrid(L):
     '''
     ----------------------------------------------------------------------------
     2D grid coordinates as complex numbers
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     c = np.arange(L)-L//2
     return 1j*c[:,None]+c[None,:]
@@ -1596,5 +1622,79 @@ def zgrid(L):
 
 
 
+def niceinterp(a,b,t):
+    '''
+    ----------------------------------------------------------------------------
+    interp1d with nice defaults
+    
+    Parameters
+    ----------
+    a: x values for interpolation
+    b: y values for interpolation
+    t: x values to sample at
+    
+    Returns
+    -------
+    '''
+    return interp1d(a,b,kind='cubic',fill_value=(b[0],b[-1]),bounds_error=False,axis=0)(t)
+    
+def fftacorr1d(x):
+    '''
+    autocorrelogram with fft
+    '''
+    x = np.float32(x)
+    x = x-np.mean(x)
+    N = len(x)
+    x = np.concatenate([x,x[::-1]])
+    a = fftshift(ifft(abs(fft(x))**2).real)[N:]
+    a = a/np.max(a)
+    return a
+    
+def fftsta(spikes,x):
+    '''
+    ----------------------------------------------------------------------------
+    Spike triggerd average using fft
+    Signal is z-scored
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    signal = np.float32((x-np.mean(x))/np.std(x))
+    spikes = np.float32(spikes)
+    sta    = fftshift(ifft(fft(spikes,axis=1)*\
+                    np.conj(fft(x),dtype=np.complex64)),axes=1).real
+    return sta/np.max(abs(sta),axis=1)[:,None]
 
-
+def interpmax1d(x):
+    '''
+    ----------------------------------------------------------------------------
+    Locate a peak by interpolation; see
+    dspguru.com/dsp/howtos/how-to-interpolate-fft-peak
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    i = np.argmax(x)
+    try:
+        y1,y2,y3 = x[i-1:i+2]
+        return i + (y3-y1)/(2*(2*y2-y1-y3))
+    except:
+        return i
+    
+def spaced_derivative(x):
+    '''
+    ----------------------------------------------------------------------------
+    Differentiate a 1D timeseries returning a new vector with the same
+    number of samples. This smoothly interpolates between a forward
+    difference at the start of the signal and a backward difference at
+    the end of the signal. 
+    '''
+    N = len(x)
+    return interp1d(
+        np.linspace(0,1,N-1),
+        np.diff(x))(
+        np.linspace(0,1,N))

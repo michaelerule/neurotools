@@ -44,19 +44,37 @@ try:
 except:
     print('could not find statsmodels; some plotting functions missing')
 
+
 def simpleaxis(ax=None):
     '''
     Only draw the bottom and left axis lines
     
     Parameters
     ----------
-    ax : optiona, defaults to plt.gca() if None
+    ax : optional, defaults to plt.gca() if None
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    ax.autoscale(enable=True, axis='x', tight=True)
+    
+def rightaxis(ax=None):
+    '''
+    Only draw the bottom and right axis lines.
+    Move y axis to the right.
+    
+    Parameters
+    ----------
+    ax : optional, defaults to plt.gca() if None
+    '''
+    if ax is None: ax=plt.gca()
+    ax.spines['top'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.yaxis.set_label_position("right")
+    ax.yaxis.tick_right()
+    ax.get_xaxis().tick_bottom()
     ax.autoscale(enable=True, axis='x', tight=True)
 
 def simpleraxis(ax=None):
@@ -73,6 +91,23 @@ def simpleraxis(ax=None):
     ax.spines['bottom'].set_visible(False)
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    ax.autoscale(enable=True, axis='x', tight=True)
+    
+def simplerright(ax=None):
+    '''
+    Only draw the left y axis, nothing else
+    
+    Parameters
+    ----------
+    ax : optiona, defaults to plt.gca() if None
+    '''
+    if ax is None: ax=plt.gca()
+    ax.spines['top'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_right()
+    ax.get_yaxis().set_label_position("right")
     ax.autoscale(enable=True, axis='x', tight=True)
 
 def noaxis(ax=None):
@@ -314,8 +349,8 @@ def noclip(ax=None):
     '''
     if ax is None: 
         ax = plt.gca()
-        for o in ax.findobj():
-            o.set_clip_on(False)
+    for o in ax.findobj():
+        o.set_clip_on(False)
 
 def notick(ax=None):
     '''
@@ -346,6 +381,27 @@ def noxyaxes():
     nox()
     noy()
     noaxis()
+    
+def noxlabels():
+    '''
+    Hide x tick labels and x axis label
+    '''
+    plt.tick_params(axis='x',which='both',labelbottom=False)
+    xlabel('')
+
+def noylabels():
+    '''
+    Hide y tick labels and y axis label
+    '''
+    plt.tick_params(axis='y',which='both',labelbottom=False)    
+    ylabel('')
+
+def nolabels():
+    '''
+    Hide tick labels and axis labels
+    '''
+    noxlabels()
+    noylabels()
 
 def righty(ax=None):
     '''
@@ -1299,6 +1355,7 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
     for frame in z:
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
+
 def good_colorbar(vmin=None,
     vmax=None,
     cmap=None,
@@ -1309,7 +1366,9 @@ def good_colorbar(vmin=None,
     spacing=5,
     width=15,
     labelpad=10,
-    fontsize=10,):
+    fontsize=10,
+    vscale=1.0,
+    va='c'):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'
@@ -1326,6 +1385,8 @@ def good_colorbar(vmin=None,
         width    (number)  : width of colorbar in pixels. defaults to 15
         labelpad (number)  : padding between colorbar and title in pixels, defaults to 10
         fontsize (number)  : label font size, defaults to 12
+        vscale   (float)   : height adjustment relative to parent axis, defaults to 1.0
+        va       (str)     : vertical alignment; "bottom" ('b'), "center" ('c'), or "top" ('t')
     Returns:
         axis: colorbar axis
     '''
@@ -1342,7 +1403,12 @@ def good_colorbar(vmin=None,
     # manually add colorbar axes 
     bb = ax.get_position()
     x,y,w,h,r,b = bb.xmin,bb.ymin,bb.width,bb.height,bb.xmax,bb.ymax
-    cax = plt.axes((r+SPACING,b-h,CWIDTH,h),facecolor='w',frameon=border)
+    y0 = {
+        'b':lambda:b-h,
+        'c':lambda:b-(h+h*vscale)/2,
+        't':lambda:b-h*vscale
+    }[va[0]]()
+    cax = plt.axes((r+SPACING,y0,CWIDTH,h*vscale),frameon=True)
     plt.sca(cax)
     plt.imshow(np.array([np.linspace(vmax,vmin,100)]).T,
         extent=(0,1,vmin,vmax),
@@ -1371,7 +1437,7 @@ def good_colorbar(vmin=None,
             horizontalalignment='left',
             verticalalignment  ='center')
     # Hide ticks
-    noaxis()
+    #noaxis()
     cax.tick_params('both', length=0, width=0, which='major')
     cax.yaxis.set_label_position("right")
     cax.yaxis.tick_right()
@@ -1649,11 +1715,18 @@ def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None,side='le
     ax.set_xlim(*xl)
     ax.set_ylim(*yl)
 
-def xscalebar(xcenter,xheight,label,y=None,color='k',fontsize=9,ax=None):
+def xscalebar(xcenter,xlength,label,y=None,color='k',fontsize=9,ax=None):
     '''
     Add horizontal scale bar to plot
+    
+    Parameters
+    ----------
+    xcenter: float
+        Horizontal center of the scale bar
+    xlength: float
+        How wide the scale bar is
     '''
-    xspan = [xcenter-xheight/2.0,xcenter+xheight/2.0]
+    xspan = [xcenter-xlength/2.0,xcenter+xlength/2.0]
     if ax is None:
         ax = plt.gca()
     plt.draw() # enforce packing of geometry
@@ -1662,14 +1735,13 @@ def xscalebar(xcenter,xheight,label,y=None,color='k',fontsize=9,ax=None):
     yl = ax.get_ylim()
     xl = ax.get_xlim()
     plt.plot(xspan,[y,y],
-        color=color,
+        color='k',
         lw=1,
         clip_on=False)
     plt.text(np.mean(xspan),y-pixels_to_yunits(5),label,
         fontsize=fontsize,
         horizontalalignment='center',
         verticalalignment='top',
-        color=color,
         clip_on=False)
     ax.set_ylim(*yl)
     ax.set_xlim(*xl)
@@ -1710,8 +1782,8 @@ def covariance_crosshairs(S,p=0.8,draw_ellipse=True,draw_cross=True):
     S: 2D covariance matrix
     p: fraction of data ellipse should enclose
     '''
-    sigma = scipy.stats.chi2.isf(1-p,df=2)
-    e,v = scipy.linalg.decomp.eigh(S)
+    sigma = np.sqrt(scipy.stats.chi2.isf(1-p,df=2))
+    e,v = scipy.linalg.eigh(S)
     lines = unit_crosshairs(draw_ellipse,draw_cross)*sigma
     lines *= (e**0.5)[:,None]
     return scipy.linalg.pinv(v).dot(lines)

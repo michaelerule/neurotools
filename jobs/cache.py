@@ -500,7 +500,7 @@ def validate_for_matfile(x):
     ==========  ================================================================================
     Type        Description
     ==========  ================================================================================
-    bool\_ 	    Boolean (True or False) stored as a byte
+    bool  	    Boolean (True or False) stored as a byte
     int8 	    Byte (-128 to 127)
     int16 	    Integer (-32768 to 32767)
     int32 	    Integer (-2147483648 to 2147483647)
@@ -537,6 +537,7 @@ def validate_for_matfile(x):
         raise ValueError("Numpy type %s is not on the list of compatible types"%x.dtype)
     return True
 
+import warnings
 
 def validate_for_numpy(x):
     '''
@@ -547,7 +548,7 @@ def validate_for_numpy(x):
     ==========  ================================================================================
     Type        Description
     ==========  ================================================================================
-    bool\_ 	    Boolean (True or False) stored as a byte
+    bool 	    Boolean (True or False) stored as a byte
     int8 	    Byte (-128 to 127)
     int16 	    Integer (-32768 to 32767)
     int32 	    Integer (-2147483648 to 2147483647)
@@ -577,7 +578,8 @@ def validate_for_numpy(x):
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
                   np.float64, np.complex64, np.complex128)
-    if not type(x) == np.ndarray:
+    warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
+    if not isinstance(x,np.ndarray):
         x = np.array(x)
     if x.dtype == np.object:
         # object arrays will be converted to cell arrays,
@@ -607,7 +609,7 @@ def disk_cacher(
     skip_fast  = False,
     verbose    = False,
     allow_mutable_bindings=False,
-    CACHE_IDENTIFIER='.__neurotools_cache__'):
+    CACHE_IDENTIFIER='__neurotools_cache__'):
     '''
     Decorator to memoize functions to disk.
     Currying pattern here where cache_location creates decotrators

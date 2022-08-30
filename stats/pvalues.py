@@ -21,7 +21,7 @@ from neurotools.tools import find
 
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''
-    Derived from the following matlab code (c) Wilson Truccolo
+    Derived from the following matlab code from Wilson Truccolo
     
         function [pID,pN] = fdr(p,q)
         % FORMAT pt = fdr(p,q)
@@ -66,11 +66,11 @@ def benjamini_hochberg_positive_correlations(pvalues,alpha):
     pvalues = sorted(np.ravel(np.array(list(pvalues))))
     V = len(pvalues)
     X = np.float64(np.arange(1,V+1))*alpha/V
-    cVN  = np.sum(1./np.arange(1,V+1))
-    pID  = np.where( pvalues<=X )[0]
-    pID  = pvalues[pID[-1]] if len(pID)>0 else 0#pvalues[0]
-    pN   = np.where( pvalues<=X/cVN )[0]
-    pN   = pvalues[pN [-1]] if len(pN )>0 else 0#pvalues[0]
+    cVN = np.sum(1./np.arange(1,V+1))
+    pID = np.where( pvalues<=X )[0]
+    pID = pvalues[pID[-1]] if len(pID)>0 else 0#pvalues[0]
+    pN  = np.where( pvalues<=X/cVN )[0]
+    pN  = pvalues[pN [-1]] if len(pN )>0 else 0#pvalues[0]
     print(pID, pN)
     return pID, pN
 

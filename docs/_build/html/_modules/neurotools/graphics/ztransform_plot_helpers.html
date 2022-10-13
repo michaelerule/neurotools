@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.graphics.ztransform_plot_helpers &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">neurotools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>neurotools.graphics.ztransform_plot_helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.graphics.ztransform_plot_helpers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">colorsys</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits</span> <span class="kn">import</span> <span class="n">axes_grid1</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.graphics.color</span> <span class="kn">import</span> <span class="n">hcl2rgb</span><span class="p">,</span><span class="n">hsv2rgb</span>
+
+<span class="c1"># Configure matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.dpi&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">300</span>
+<span class="n">TEXTWIDTH</span> <span class="o">=</span> <span class="mf">5.62708</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">TEXTWIDTH</span><span class="p">,</span> <span class="n">TEXTWIDTH</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">SMALL_SIZE</span>  <span class="o">=</span> <span class="mi">7</span>
+<span class="n">MEDIUM_SIZE</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">BIGGER_SIZE</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span>  <span class="p">,</span> <span class="n">size</span>     <span class="o">=</span><span class="n">SMALL_SIZE</span> <span class="p">)</span> <span class="c1"># controls default text sizes</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span>  <span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">MEDIUM_SIZE</span><span class="p">)</span> <span class="c1"># fontsize of the axes title</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span>  <span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">MEDIUM_SIZE</span><span class="p">)</span> <span class="c1"># fontsize of the x and y labels</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;xtick&#39;</span> <span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span> <span class="p">)</span> <span class="c1"># fontsize of the tick labels</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span> <span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span> <span class="p">)</span> <span class="c1"># fontsize of the tick labels</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;legend&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="n">SMALL_SIZE</span> <span class="p">)</span> <span class="c1"># legend fontsize</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;figure&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">BIGGER_SIZE</span><span class="p">)</span> <span class="c1"># fontsize of the figure title</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;lines&#39;</span> <span class="p">,</span> <span class="n">solid_capstyle</span><span class="o">=</span><span class="s1">&#39;round&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="add_circle"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.add_circle">[docs]</a><span class="k">def</span> <span class="nf">add_circle</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">360</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">circle</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="n">n</span><span class="p">))</span><span class="o">*</span><span class="n">radius</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">circle</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="label_complex_axes"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.label_complex_axes">[docs]</a><span class="k">def</span> <span class="nf">label_complex_axes</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;$\Im$&#39;</span><span class="p">,</span><span class="n">va</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;$\Re$&#39;</span><span class="p">,</span><span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="add_complex_axes"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.add_complex_axes">[docs]</a><span class="k">def</span> <span class="nf">add_complex_axes</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">limits</span><span class="o">=</span><span class="p">[(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)]):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">add_circle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="p">,</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="o">*</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">*</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">label_complex_axes</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span>  <span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+    
+<span class="c1"># Colorbar Patch from here</span>
+<span class="c1"># https://stackoverflow.com/questions/18195758/set-matplotlib-colorbar-size-to-match-graph</span>
+<div class="viewcode-block" id="add_colorbar"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.add_colorbar">[docs]</a><span class="k">def</span> <span class="nf">add_colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">pad_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Add a vertical color bar to an image plot.&quot;&quot;&quot;</span>
+    <span class="n">divider</span> <span class="o">=</span> <span class="n">axes_grid1</span><span class="o">.</span><span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">axes_grid1</span><span class="o">.</span><span class="n">axes_size</span><span class="o">.</span><span class="n">AxesY</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">1.</span><span class="o">/</span><span class="n">aspect</span><span class="p">)</span>
+    <span class="n">pad</span> <span class="o">=</span> <span class="n">axes_grid1</span><span class="o">.</span><span class="n">axes_size</span><span class="o">.</span><span class="n">Fraction</span><span class="p">(</span><span class="n">pad_fraction</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">current_ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">current_ax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">im</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="phase_magnitude_figure"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.phase_magnitude_figure">[docs]</a><span class="k">def</span> <span class="nf">phase_magnitude_figure</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+    <span class="c1"># The $\tan^{-1}|z|$ scaling on the magnitude is arbitrary,</span>
+    <span class="c1"># and done only to map ${0,\infty)$ to a finite color range</span>
+    <span class="n">ext</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">,</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">arctan</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">*</span><span class="mf">0.975</span><span class="o">+</span><span class="mf">0.0125</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">ext</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;bone&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$\Re$&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Im$&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Magnitude&#39;</span><span class="p">)</span>
+    <span class="n">add_complex_axes</span><span class="p">(</span><span class="n">limits</span><span class="o">=</span><span class="p">((</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">z</span><span class="p">),</span><span class="n">extent</span><span class="o">=</span><span class="n">ext</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hsv&#39;</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$\Re$&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Im$&#39;</span><span class="p">)</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">add_colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Phase $</span><span class="se">\\</span><span class="s2">theta$&quot;</span><span class="p">)</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([</span><span class="o">-</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.999</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.999</span><span class="p">])</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;-π&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;π&#39;</span><span class="p">])</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
+    <span class="n">add_complex_axes</span><span class="p">(</span><span class="n">limits</span><span class="o">=</span><span class="p">((</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tight_layout</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="joint_phase_magnitude_plot"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.joint_phase_magnitude_plot">[docs]</a><span class="k">def</span> <span class="nf">joint_phase_magnitude_plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="p">[(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
+    <span class="n">draw_complex_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">autoscale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">nonlinearscale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z: 2D complex-valued array</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    limit: </span>
+<span class="sd">        Plot limits as [(real_min,real_max),(imag_min,imag_max)]</span>
+<span class="sd">    color:</span>
+<span class="sd">        Matplotlib color specifier for annotations</span>
+<span class="sd">    draw_complex_axes:</span>
+<span class="sd">        Overlay axes atop plot?</span>
+<span class="sd">    autoscale:</span>
+<span class="sd">        Automatically re-center magniture scale. </span>
+<span class="sd">    nonlinearscale:</span>
+<span class="sd">        Use arctan magnitude mapping to compress possibly infinite </span>
+<span class="sd">        dynamic range</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">nonlinearscale</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">autoscale</span><span class="p">:</span> 
+            <span class="n">z</span> <span class="o">/=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">arctan</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    
+    <span class="n">h</span> <span class="o">=</span> <span class="p">((</span><span class="n">angle</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">+</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">v</span><span class="p">[</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">h</span><span class="p">[</span><span class="n">isnan</span><span class="p">(</span><span class="n">h</span><span class="p">)]</span><span class="o">=</span><span class="mi">0</span>
+    
+    <span class="c1"># Original flavor</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">*</span><span class="mf">0.975</span><span class="o">+</span><span class="mf">0.0125</span>
+    <span class="n">rgb</span> <span class="o">=</span> <span class="p">[</span><span class="n">colorsys</span><span class="o">.</span><span class="n">hsv_to_rgb</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">vi</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">vi</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> \
+        <span class="k">for</span> <span class="p">(</span><span class="n">hi</span><span class="p">,</span><span class="n">vi</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">v</span><span class="o">.</span><span class="n">ravel</span><span class="p">())]</span>
+    
+    <span class="c1">#rgb = [colorsys.hsv_to_rgb(hi,min(1,(1-vi)),min(1,vi)) \</span>
+    <span class="c1">#    for (hi,vi) in zip(h.ravel(),v.ravel())]</span>
+    
+    <span class="c1">#v = v*0.9+0.05</span>
+    <span class="c1">#rgb = [hsv2rgb(hi*360,min(1,2*(1-vi))**0.5,min(1,2*vi)**0.5,force_luminance=vi) \</span>
+    <span class="c1">#    for (hi,vi) in zip(h.ravel(),v.ravel())]</span>
+    
+    <span class="c1">#v = v*0.9+0.05</span>
+    <span class="c1">#rgb = [hcl2rgb(hi*360,min(1,2*(1-vi))**0.5,min(1,2*vi)**0.5,target=vi) \</span>
+    <span class="c1">#    for (hi,vi) in zip(h.ravel(),v.ravel())]</span>
+        
+    <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rgb</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="nb">tuple</span><span class="p">(</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">draw_complex_axes</span><span class="p">:</span>
+        <span class="n">add_complex_axes</span><span class="p">(</span><span class="n">limits</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Phase-magnitude plot&#39;</span><span class="p">)</span>
+    <span class="n">xticks</span><span class="p">([</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span></div>
+
+
+<div class="viewcode-block" id="do_bode_z"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.do_bode_z">[docs]</a><span class="k">def</span> <span class="nf">do_bode_z</span><span class="p">(</span><span class="n">ω</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">,</span><span class="n">stitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span><span class="n">drawlegend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ω: frequencies at which to evaluate</span>
+<span class="sd">    w: complex-valued output of z-transfer function at each frequency</span>
+<span class="sd">    ax1: axis for the magnitude (gain) plot</span>
+<span class="sd">    ax2: axis for phase plot</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">Y</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">ω</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">stitle</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+    <span class="n">semilogy</span><span class="p">(</span><span class="n">ω</span><span class="p">,(</span><span class="nb">abs</span><span class="p">(</span><span class="n">w</span><span class="p">)),</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Gain&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">do_axis</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_bottom</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_left</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xminorticklabels</span><span class="p">():</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">do_axis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="p">],[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+    <span class="n">title</span><span class="p">(</span><span class="n">stitle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">drawlegend</span><span class="p">:</span>
+        <span class="n">lg</span> <span class="o">=</span> <span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">lg</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax2</span><span class="p">)</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="c1">#%(2*pi)-2*pi</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">ω</span><span class="p">,</span><span class="n">θ</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
+    <span class="n">do_axis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="p">],[</span><span class="s1">&#39;-π&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;π&#39;</span><span class="p">])</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">pi</span><span class="p">],[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;π/2&#39;</span><span class="p">,</span><span class="s1">&#39;π&#39;</span><span class="p">])</span>
+    <span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Normalized frequency&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="do_nyquist"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.do_nyquist">[docs]</a><span class="k">def</span> <span class="nf">do_nyquist</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ζ</span> <span class="o">=</span> <span class="n">Y</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">ζ</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">ζ</span><span class="o">.</span><span class="n">imag</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">add_complex_axes</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">limits</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="n">extent</span><span class="p">,</span><span class="n">extent</span><span class="p">),(</span><span class="o">-</span><span class="n">extent</span><span class="p">,</span><span class="n">extent</span><span class="p">)))</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Nyquist plot&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$\Re$&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Im$&#39;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="do_bode_and_nyquist"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.do_bode_and_nyquist">[docs]</a><span class="k">def</span> <span class="nf">do_bode_and_nyquist</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">TEXTWIDTH</span><span class="p">,</span><span class="mf">2.75</span><span class="p">))</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">rowspan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ax2</span> <span class="o">=</span> <span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">rowspan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ax3</span> <span class="o">=</span> <span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">rowspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">do_bode_z</span><span class="p">(</span><span class="n">ω</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">,</span><span class="n">stitle</span><span class="o">=</span><span class="s1">&#39;Bode plot&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">drawlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="mi">10000</span><span class="p">))</span>
+    <span class="n">do_nyquist</span><span class="p">(</span><span class="n">ax3</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.125</span><span class="p">,</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="mf">0.975</span><span class="p">,</span><span class="n">wspace</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.55</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">,</span><span class="n">ax3</span></div>
+    
+<div class="viewcode-block" id="do_bode_s"><a class="viewcode-back" href="../../../neurotools.graphics.ztransform_plot_helpers.html#neurotools.graphics.ztransform_plot_helpers.do_bode_s">[docs]</a><span class="k">def</span> <span class="nf">do_bode_s</span><span class="p">(</span><span class="n">ω</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">,</span><span class="n">stitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ω : frequencies at which to evaluate</span>
+<span class="sd">    w : complex-valued output of z-transfer function at each frequency</span>
+<span class="sd">    ax1 : axis for the magnitude (gain) plot</span>
+<span class="sd">    ax2 : axis for phase plot</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">stitle</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+    <span class="n">loglog</span><span class="p">(</span><span class="n">ω</span><span class="p">,(</span><span class="nb">abs</span><span class="p">(</span><span class="n">w</span><span class="p">)),</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Gain&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">do_axis</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_bottom</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_left</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">do_axis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">title</span><span class="p">(</span><span class="n">stitle</span><span class="p">)</span>
+    <span class="n">lg</span> <span class="o">=</span> <span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span>
+    <span class="n">lg</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax2</span><span class="p">)</span>
+    <span class="n">semilogx</span><span class="p">(</span><span class="n">ω</span><span class="p">,</span><span class="n">angle</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
+    <span class="n">do_axis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="s1">&#39;-2π&#39;</span><span class="p">,</span><span class="s1">&#39;-π&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">])</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

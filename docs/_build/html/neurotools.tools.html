@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.tools module &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="neurotools.text module" href="neurotools.text.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">neurotools</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="neurotools.html">neurotools package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="neurotools.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="neurotools.dependencies.html">neurotools.dependencies module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.functions.html">neurotools.functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.getfftw.html">neurotools.getfftw module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.hdfmat.html">neurotools.hdfmat module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.nlab.html">neurotools.nlab module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.opto.html">neurotools.opto module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.system.html">neurotools.system module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.text.html">neurotools.text module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">neurotools.tools module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.varexists"><code class="docutils literal notranslate"><span class="pre">varexists()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.nowarn"><code class="docutils literal notranslate"><span class="pre">nowarn()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.okwarn"><code class="docutils literal notranslate"><span class="pre">okwarn()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.dowarn"><code class="docutils literal notranslate"><span class="pre">dowarn()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.warn"><code class="docutils literal notranslate"><span class="pre">warn()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.debug"><code class="docutils literal notranslate"><span class="pre">debug()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.wait"><code class="docutils literal notranslate"><span class="pre">wait()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.matlab"><code class="docutils literal notranslate"><span class="pre">matlab()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.zeroslike"><code class="docutils literal notranslate"><span class="pre">zeroslike()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.oneslike"><code class="docutils literal notranslate"><span class="pre">oneslike()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.history"><code class="docutils literal notranslate"><span class="pre">history()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.p2c"><code class="docutils literal notranslate"><span class="pre">p2c()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.c2p"><code class="docutils literal notranslate"><span class="pre">c2p()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.emitter"><code class="docutils literal notranslate"><span class="pre">emitter</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.piper"><code class="docutils literal notranslate"><span class="pre">piper</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.globalize"><code class="docutils literal notranslate"><span class="pre">globalize()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.exists"><code class="docutils literal notranslate"><span class="pre">exists()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.metaloadmat"><code class="docutils literal notranslate"><span class="pre">metaloadmat()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.find_all_extension"><code class="docutils literal notranslate"><span class="pre">find_all_extension()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.lmap"><code class="docutils literal notranslate"><span class="pre">lmap()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.amap"><code class="docutils literal notranslate"><span class="pre">amap()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.setinrange"><code class="docutils literal notranslate"><span class="pre">setinrange()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.mapdict"><code class="docutils literal notranslate"><span class="pre">mapdict()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.getdict"><code class="docutils literal notranslate"><span class="pre">getdict()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.ensure_dir"><code class="docutils literal notranslate"><span class="pre">ensure_dir()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.getsize"><code class="docutils literal notranslate"><span class="pre">getsize()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.saveContext"><code class="docutils literal notranslate"><span class="pre">saveContext()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.clear"><code class="docutils literal notranslate"><span class="pre">clear()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.restoreContext"><code class="docutils literal notranslate"><span class="pre">restoreContext()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.camel2underscore"><code class="docutils literal notranslate"><span class="pre">camel2underscore()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.underscore2camel"><code class="docutils literal notranslate"><span class="pre">underscore2camel()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.current_milli_time"><code class="docutils literal notranslate"><span class="pre">current_milli_time()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.today"><code class="docutils literal notranslate"><span class="pre">today()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.now"><code class="docutils literal notranslate"><span class="pre">now()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.tic"><code class="docutils literal notranslate"><span class="pre">tic()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.toc"><code class="docutils literal notranslate"><span class="pre">toc()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.waitfor"><code class="docutils literal notranslate"><span class="pre">waitfor()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.getVariable"><code class="docutils literal notranslate"><span class="pre">getVariable()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.arraymap"><code class="docutils literal notranslate"><span class="pre">arraymap()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.invert_permutation"><code class="docutils literal notranslate"><span class="pre">invert_permutation()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.find"><code class="docutils literal notranslate"><span class="pre">find()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.ezip"><code class="docutils literal notranslate"><span class="pre">ezip()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.asiterable"><code class="docutils literal notranslate"><span class="pre">asiterable()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#neurotools.tools.stuff"><code class="docutils literal notranslate"><span class="pre">stuff</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#module-neurotools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">neurotools</a> &raquo;</li>
+          <li><a href="neurotools.html">neurotools package</a> &raquo;</li>
+      <li>neurotools.tools module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/neurotools.tools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-neurotools.tools">
+<span id="neurotools-tools-module"></span><h1>neurotools.tools module<a class="headerlink" href="#module-neurotools.tools" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.varexists">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">varexists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#varexists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.varexists" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.nowarn">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">nowarn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#nowarn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.nowarn" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: merge warning control with something more standard</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.okwarn">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">okwarn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#okwarn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.okwarn" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: merge warning control with something more standard</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.dowarn">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">dowarn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#dowarn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.dowarn" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: merge warning control with something more standard</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.warn">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.warn" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: merge warning control with something more standard</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.debug">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.tools.debug" title="Permalink to this definition"></a></dt>
+<dd><p>TODO: merge warning control with something more standard</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.wait">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'---</span> <span class="pre">press</span> <span class="pre">enter</span> <span class="pre">to</span> <span class="pre">continue</span> <span class="pre">---'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#wait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.wait" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.matlab">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">matlab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#matlab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.matlab" title="Permalink to this definition"></a></dt>
+<dd><p>Runs Matlab commands through the shell
+TODO: make matlabpath configurable</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.zeroslike">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">zeroslike</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#zeroslike"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.zeroslike" title="Permalink to this definition"></a></dt>
+<dd><p>Create numpy array of zeros the same shape and type as x</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.oneslike">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">oneslike</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#oneslike"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.oneslike" title="Permalink to this definition"></a></dt>
+<dd><p>Create numpy array of ones the same shape and type as x</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.history">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.history" title="Permalink to this definition"></a></dt>
+<dd><p>Return last n lines of shell history</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.p2c">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">p2c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#p2c"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.p2c" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a point in terms of a length-2 iterable into a complex number</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.c2p">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">c2p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#c2p"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.c2p" title="Permalink to this definition"></a></dt>
+<dd><p>Convert complex point to tuple</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.tools.emitter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">emitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#emitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.emitter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is a toy example test of a concept used in the piper dectorator
+below. It extends callables so that using them with the logical or
+operator “|” will apply the callable as a side effect before
+returning the original value of the expression. The default side
+effect is printing the object value.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.tools.piper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">piper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#piper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.piper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Piper extends callables such that they can be called by using
+infix operators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="o">=</span> <span class="n">piper</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">pip</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@piper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">zscore</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zscore</span> <span class="o">&lt;</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.globalize">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">globalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">krgs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#globalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.globalize" title="Permalink to this definition"></a></dt>
+<dd><p>globalize allows the positional argument list of a python to be
+truncated.</p>
+<p>Missing arguments will be filled in by name from the
+globals dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.exists">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.tools.exists" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.metaloadmat">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">metaloadmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#metaloadmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.metaloadmat" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a matfile from the provided path, caching it in the global dict
+“matfilecache” using path as the lookup key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>string</em>) – unique absolute path to matfile to be loaded</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.find_all_extension">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">find_all_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#find_all_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.find_all_extension" title="Permalink to this definition"></a></dt>
+<dd><p>Locate all files with a given extension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> (<em>string</em>) – String representing a path in the filesystem</p></li>
+<li><p><strong>ext</strong> (<em>string</em>) – extension to locate. search is not case-sensitive.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>found</strong> – List of files with matching extension</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.lmap">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">lmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#lmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.lmap" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.amap">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">amap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#amap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.amap" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.setinrange">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">setinrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.tools.setinrange" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.mapdict">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">mapdict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.tools.mapdict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.getdict">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">getdict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.tools.getdict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.ensure_dir">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">ensure_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#ensure_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.ensure_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that a named directory exists; if it does not, attempt to create it.
+<a class="reference external" href="http://stackoverflow.com/questions/944536/efficient-way-of-creating-recursive-paths-python">http://stackoverflow.com/questions/944536/efficient-way-of-creating-recursive-paths-python</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dirname</strong> (<em>str</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.getsize">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">getsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#getsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.getsize" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively iterate to sum size of object &amp; members.
+<a class="reference external" href="http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python">http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.saveContext">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">saveContext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#saveContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.saveContext" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.clear">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.tools.clear" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.restoreContext">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">restoreContext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#restoreContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.restoreContext" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.camel2underscore">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">camel2underscore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#camel2underscore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.camel2underscore" title="Permalink to this definition"></a></dt>
+<dd><p><a class="reference external" href="http://stackoverflow.com/questions/1175208/">http://stackoverflow.com/questions/1175208/</a>
+elegant-python-function-to-convert-camelcase-to-camel-case</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.underscore2camel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">underscore2camel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#underscore2camel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.underscore2camel" title="Permalink to this definition"></a></dt>
+<dd><p><a class="reference external" href="http://stackoverflow.com/questions/4303492/">http://stackoverflow.com/questions/4303492/</a>
+how-can-i-simplify-this-conversion-from-underscore-to-camelcase-in-python</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.current_milli_time">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">current_milli_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#current_milli_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.current_milli_time" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the time in milliseconds</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.today">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">today</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#today"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.today" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>`string`</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>the date in YYMMDD format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.now">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">now</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#now"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.now" title="Permalink to this definition"></a></dt>
+<dd><p>Current date and time as a %Y%m%d_%H%M%S formatted string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.tic">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">tic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doprint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#tic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.tic" title="Permalink to this definition"></a></dt>
+<dd><p>Similar to Matlab tic
+stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>doprint</strong> (<em>bool</em>) – if True, print elapsed time. Else, return it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.toc">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">toc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doprint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#toc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.toc" title="Permalink to this definition"></a></dt>
+<dd><p>Similar to Matlab toc
+stackoverflow.com/questions/5849800/tic-toc-functions-analog-in-python</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>doprint</strong> (<em>bool</em>) – if True, print elapsed time. Else, return it.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>t</strong> (<em>number</em>) – Current timestamp</p></li>
+<li><p><strong>dt</strong> (<em>number</em>) – Time since the last call to the tic() or toc() function.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.waitfor">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">waitfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#waitfor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.waitfor" title="Permalink to this definition"></a></dt>
+<dd><p>Wait for t milliseconds</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.getVariable">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">getVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#getVariable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.getVariable" title="Permalink to this definition"></a></dt>
+<dd><p>Reads a variable from a .mat or .hdf5 file
+The read result is cached in ram for later access</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.arraymap">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">arraymap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">iterables</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#arraymap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.arraymap" title="Permalink to this definition"></a></dt>
+<dd><p>Map functionality over numpy arrays
+replaces depricated arraymap from pylab.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.invert_permutation">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">invert_permutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#invert_permutation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.invert_permutation" title="Permalink to this definition"></a></dt>
+<dd><p>Return inverse of a permutation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.find">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.find" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.ezip">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">ezip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#ezip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.ezip" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.tools.asiterable">
+<span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">asiterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#asiterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.asiterable" title="Permalink to this definition"></a></dt>
+<dd><p>Check if something is iterable</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.tools.stuff">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.tools.</span></span><span class="sig-name descname"><span class="pre">stuff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#stuff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.stuff" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.tools.stuff.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/tools.html#stuff.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.tools.stuff.add" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="neurotools.text.html" class="btn btn-neutral float-left" title="neurotools.text module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

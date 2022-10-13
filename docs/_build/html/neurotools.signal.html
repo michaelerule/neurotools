@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.signal package &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="neurotools.signal.coherence module" href="neurotools.signal.coherence.html" />
+    <link rel="prev" title="neurotools.models.lif module" href="neurotools.models.lif.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">neurotools</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="neurotools.html">neurotools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="neurotools.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="neurotools.encoding.html">neurotools.encoding package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.gpu.html">neurotools.gpu package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.graphics.html">neurotools.graphics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.jobs.html">neurotools.jobs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.linalg.html">neurotools.linalg package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.models.html">neurotools.models package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">neurotools.signal package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-neurotools.signal">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spatial.html">neurotools.spatial package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spikes.html">neurotools.spikes package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.stats.html">neurotools.stats package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.html#module-neurotools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">neurotools</a> &raquo;</li>
+          <li><a href="neurotools.html">neurotools package</a> &raquo;</li>
+      <li>neurotools.signal package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/neurotools.signal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="neurotools-signal-package">
+<h1>neurotools.signal package<a class="headerlink" href="#neurotools-signal-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.coherence.html">neurotools.signal.coherence module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.morlet_population_synchrony_spectrum"><code class="docutils literal notranslate"><span class="pre">morlet_population_synchrony_spectrum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.population_eigencoherence"><code class="docutils literal notranslate"><span class="pre">population_eigencoherence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.population_coherence_matrix"><code class="docutils literal notranslate"><span class="pre">population_coherence_matrix()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.multitaper_coherence"><code class="docutils literal notranslate"><span class="pre">multitaper_coherence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.sliding_multitaper_coherence"><code class="docutils literal notranslate"><span class="pre">sliding_multitaper_coherence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.sliding_multitaper_coherence_parallel"><code class="docutils literal notranslate"><span class="pre">sliding_multitaper_coherence_parallel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.coherence_pvalue"><code class="docutils literal notranslate"><span class="pre">coherence_pvalue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.coherence.html#neurotools.signal.coherence.multitaper_multitrial_coherence"><code class="docutils literal notranslate"><span class="pre">multitaper_multitrial_coherence()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.conv.html">neurotools.signal.conv module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.reflect2D"><code class="docutils literal notranslate"><span class="pre">reflect2D()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.reflect2D_1"><code class="docutils literal notranslate"><span class="pre">reflect2D_1()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.mirror2d"><code class="docutils literal notranslate"><span class="pre">mirror2d()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.convolve2dct"><code class="docutils literal notranslate"><span class="pre">convolve2dct()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.separable2d"><code class="docutils literal notranslate"><span class="pre">separable2d()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.gausskern2d"><code class="docutils literal notranslate"><span class="pre">gausskern2d()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.conv.html#neurotools.signal.conv.gausskern1d"><code class="docutils literal notranslate"><span class="pre">gausskern1d()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.linenoise.html">neurotools.signal.linenoise module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.linenoise.html#neurotools.signal.linenoise.virtual_reference_line_noise_removal"><code class="docutils literal notranslate"><span class="pre">virtual_reference_line_noise_removal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.linenoise.html#neurotools.signal.linenoise.band_stop_line_noise_removal"><code class="docutils literal notranslate"><span class="pre">band_stop_line_noise_removal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.morlet.html">neurotools.signal.morlet module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.normalized_morlet"><code class="docutils literal notranslate"><span class="pre">normalized_morlet()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.prepare_wavelet_fft_basis"><code class="docutils literal notranslate"><span class="pre">prepare_wavelet_fft_basis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.fft_cwt"><code class="docutils literal notranslate"><span class="pre">fft_cwt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.fft_cwt_transposed"><code class="docutils literal notranslate"><span class="pre">fft_cwt_transposed()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.logfreqs"><code class="docutils literal notranslate"><span class="pre">logfreqs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.prepare_wavelet_fft_basis_logspace"><code class="docutils literal notranslate"><span class="pre">prepare_wavelet_fft_basis_logspace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.fft_cwt_transposed_logspaced"><code class="docutils literal notranslate"><span class="pre">fft_cwt_transposed_logspaced()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.morlet_coherence.html">neurotools.signal.morlet_coherence module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet_coherence.html#neurotools.signal.morlet_coherence.prepare_wavelet_fft_basis"><code class="docutils literal notranslate"><span class="pre">prepare_wavelet_fft_basis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet_coherence.html#neurotools.signal.morlet_coherence.fft_cwt"><code class="docutils literal notranslate"><span class="pre">fft_cwt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet_coherence.html#neurotools.signal.morlet_coherence.population_coherence_spectrum"><code class="docutils literal notranslate"><span class="pre">population_coherence_spectrum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet_coherence.html#neurotools.signal.morlet_coherence.population_eigencoherence"><code class="docutils literal notranslate"><span class="pre">population_eigencoherence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet_coherence.html#neurotools.signal.morlet_coherence.mtm_cohere"><code class="docutils literal notranslate"><span class="pre">mtm_cohere()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.multitaper.html">neurotools.signal.multitaper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.dpss_cached"><code class="docutils literal notranslate"><span class="pre">dpss_cached()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_spectrum"><code class="docutils literal notranslate"><span class="pre">multitaper_spectrum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_squared_spectrum"><code class="docutils literal notranslate"><span class="pre">multitaper_squared_spectrum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.sliding_multitaper_spectrum"><code class="docutils literal notranslate"><span class="pre">sliding_multitaper_spectrum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_population_eigencoherence"><code class="docutils literal notranslate"><span class="pre">multitaper_population_eigencoherence()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.ppc.html">neurotools.signal.ppc module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.phase_randomize_complex"><code class="docutils literal notranslate"><span class="pre">phase_randomize_complex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.phase_randomize"><code class="docutils literal notranslate"><span class="pre">phase_randomize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc_biased"><code class="docutils literal notranslate"><span class="pre">fftppc_biased()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc"><code class="docutils literal notranslate"><span class="pre">fftppc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc_biased_multitaper"><code class="docutils literal notranslate"><span class="pre">fftppc_biased_multitaper()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.fftppc_multitaper"><code class="docutils literal notranslate"><span class="pre">fftppc_multitaper()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.nodc"><code class="docutils literal notranslate"><span class="pre">nodc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.discard_spikes_closer_than_delta"><code class="docutils literal notranslate"><span class="pre">discard_spikes_closer_than_delta()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.pairwise_phase_consistancy"><code class="docutils literal notranslate"><span class="pre">pairwise_phase_consistancy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.estimate_bias_in_uncorrected_ppc"><code class="docutils literal notranslate"><span class="pre">estimate_bias_in_uncorrected_ppc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.phase_randomized_bias_correction"><code class="docutils literal notranslate"><span class="pre">phase_randomized_bias_correction()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.temp_code_for_exploring_chance_level_delete_later"><code class="docutils literal notranslate"><span class="pre">temp_code_for_exploring_chance_level_delete_later()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.ppc_chance_level"><code class="docutils literal notranslate"><span class="pre">ppc_chance_level()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.ppc.html#neurotools.signal.ppc.ppc_phase_randomize_chance_level_sample"><code class="docutils literal notranslate"><span class="pre">ppc_phase_randomize_chance_level_sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.resonator.html">neurotools.signal.resonator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.resonator.html#neurotools.signal.resonator.resonantDrive"><code class="docutils literal notranslate"><span class="pre">resonantDrive()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.resonator.html#neurotools.signal.resonator.resonantFiltfilt"><code class="docutils literal notranslate"><span class="pre">resonantFiltfilt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.resonator.html#neurotools.signal.resonator.resonantFilter"><code class="docutils literal notranslate"><span class="pre">resonantFilter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.savitskygolay.html">neurotools.signal.savitskygolay module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGOrd"><code class="docutils literal notranslate"><span class="pre">SGOrd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGKern"><code class="docutils literal notranslate"><span class="pre">SGKern()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGKernV"><code class="docutils literal notranslate"><span class="pre">SGKernV()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGKernA"><code class="docutils literal notranslate"><span class="pre">SGKernA()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGKernJ"><code class="docutils literal notranslate"><span class="pre">SGKernJ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGfilt"><code class="docutils literal notranslate"><span class="pre">SGfilt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGfiltV"><code class="docutils literal notranslate"><span class="pre">SGfiltV()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGfiltA"><code class="docutils literal notranslate"><span class="pre">SGfiltA()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGfiltJ"><code class="docutils literal notranslate"><span class="pre">SGfiltJ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGaccelerate"><code class="docutils literal notranslate"><span class="pre">SGaccelerate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGjerk"><code class="docutils literal notranslate"><span class="pre">SGjerk()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGdifferentiate"><code class="docutils literal notranslate"><span class="pre">SGdifferentiate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.savitskygolay.html#neurotools.signal.savitskygolay.SGsmooth"><code class="docutils literal notranslate"><span class="pre">SGsmooth()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-neurotools.signal">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-neurotools.signal" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.find">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.find" title="Permalink to this definition"></a></dt>
+<dd><p>Cheap mock-up of pylab’s discontinued <cite>find</cite> function for backwards
+compatibility of some code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>1-dimensionary array-like</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>boolean array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.geometric_window">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">geometric_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#geometric_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.geometric_window" title="Permalink to this definition"></a></dt>
+<dd><p>Gemoetrically center a frequency window</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>float</em>) – Center of frequency window</p></li>
+<li><p><strong>w</strong> (<em>float</em>) – width of frequency window</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>fa</strong> (<em>float</em>) – low-frequency cutoff</p></li>
+<li><p><strong>fb</strong> (<em>float</em>) – high-frequency cutoff</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.gaussian_kernel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">gaussian_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#gaussian_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.gaussian_kernel" title="Permalink to this definition"></a></dt>
+<dd><p>generate 1D Guassian kernel for smoothing
+sigma: standard deviation, &gt;0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sigma</strong> (<em>scalar</em>) – Standard deviation of kernel. Kernel size is automatically
+adjusted to ceil(sigma*2)*2+1 (which is a little small but eh)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>K</strong> – normalized Gaussian kernel</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.gaussian_smooth">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">gaussian_smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#gaussian_smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.gaussian_smooth" title="Permalink to this definition"></a></dt>
+<dd><p>Smooth signal x with gaussian of standard deviation sigma.</p>
+<p>sigma: standard deviation
+x: 1D array-like signal</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.circular_gaussian_smooth">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">circular_gaussian_smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#circular_gaussian_smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.circular_gaussian_smooth" title="Permalink to this definition"></a></dt>
+<dd><p>Smooth signal x with gaussian of standard deviation sigma
+Circularly wrapped using Fourier transform</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sigma</strong> (<em>standard deviation</em>) – </p></li>
+<li><p><strong>x</strong> (<em>1D array-like signal</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.circular_gaussian_smooth_2D">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">circular_gaussian_smooth_2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#circular_gaussian_smooth_2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.circular_gaussian_smooth_2D" title="Permalink to this definition"></a></dt>
+<dd><p>Smooth signal x with gaussian of standard deviation sigma
+Circularly wrapped using Fourier transform</p>
+<p>sigma: standard deviation
+x: 2D array-like signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – Smoothing is performed over the last two dimensions,
+which should have the same length</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.linear_cosine_basis">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">linear_cosine_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">TIMERES</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NBASIS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#linear_cosine_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.linear_cosine_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Cosine basis tiling unit interval</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.circular_cosine_basis">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">circular_cosine_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#circular_cosine_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.circular_cosine_basis" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>number</em><em> of </em><em>basis functions</em>) – </p></li>
+<li><p><strong>T</strong> (<em>grid resolution</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Circularly-wrapped cosine basis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.unitscale">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">unitscale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#unitscale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.unitscale" title="Permalink to this definition"></a></dt>
+<dd><p>Rescales <cite>signal</cite> so that its minimum is 0 and its maximum is 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>signal</strong> – array-like real-valued signal</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rescaled signal-min(signal)/(max(signal)-min(signal))</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>signal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.topercentiles">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">topercentiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#topercentiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.topercentiles" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.local_maxima">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_maxima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_maxima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_maxima" title="Permalink to this definition"></a></dt>
+<dd><p>Returns signal index and values at those indecies</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.local_minima">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_minima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_minima" title="Permalink to this definition"></a></dt>
+<dd><p>Returns signal index and values at those indecies for all local minima.
+See local_maxima</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.amp">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">amp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#amp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.amp" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts amplitude envelope using Hilbert transform. X must be narrow
+band. No padding is performed so watch out for boundary effects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>sequence</em>) – numeric time-series data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>abs(hilbert(x))</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.get_snips">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">get_snips</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#get_snips"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.get_snips" title="Permalink to this definition"></a></dt>
+<dd><p>Extract snippits of a time series surronding a list of times. Typically
+used for spike-triggered statistics</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.triggered_average">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">triggered_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#triggered_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.triggered_average" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.get_triggered_stats">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">get_triggered_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#get_triggered_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.get_triggered_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Get a statistical summary of data in length window around time point
+times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>one-dimensional array-like</em>) – Signal to summarize</p></li>
+<li><p><strong>times</strong> (<em>one-dimensionan array-like</em>) – list of time-points around which to summarize (in frames)</p></li>
+<li><p><strong>window</strong> (<em>positive int</em>) – window (in frames) around each time-point to use for statistical
+summary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>means</em> – means of <cite>signal</cite> for all time-windows specified in <cite>times</cite></p></li>
+<li><p><em>standard-deviations</em> – std of <cite>signal</cite> for all time-windows specified in <cite>times</cite></p></li>
+<li><p><em>standard-erros</em> – standard errors of the mean of <cite>signal</cite> for all time-windows
+specified in <cite>times</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.padout">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">padout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#padout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.padout" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a reflected version of a 1-dimensional signal. This can be
+handy for achieving reflected boundary conditions in algorithms that
+do not support this condition by default.</p>
+<p>The original data is placed in the middle, between the mirrord copies.
+Use the function “padin” to strip the padding</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.padin">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">padin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#padin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.padin" title="Permalink to this definition"></a></dt>
+<dd><p>Removes padding added by the <cite>padout</cite> function;
+<cite>padin</cite> and <cite>padout</cite> together are used to control the
+boundary condtitions for filtering. See the documentation
+for padout for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>array-like</em>) – Data array produced by the <cite>padout function</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data with edge padding removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.nonnegative_bandpass_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">nonnegative_bandpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zerophase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandstop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#nonnegative_bandpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.nonnegative_bandpass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>For filtering data that must remain non-negative. Due to ringing
+conventional fitering can create values less than zero for non-
+negative real inputs. This may be unrealistic for some data.</p>
+<p>To compensate, this performs the filtering on the natural
+logarithm of the input data. For small numbers, this can lead to
+numeric underflow, so an offset parameter (default 1) is added
+to the data for stability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>ndarray</strong><strong>)</strong> (<em>data</em>) – data, filtering performed over last dimension</p></li>
+<li><p><strong>(</strong><strong>number</strong><strong>)</strong> (<em>fb</em>) – low-freq cutoff Hz. If none, lowpass at fb</p></li>
+<li><p><strong>(</strong><strong>number</strong><strong>)</strong> – high-freq cutoff Hz. If none, highpass at fa</p></li>
+<li><p><strong>(</strong><strong>int</strong><strong>)</strong> (<em>Fs</em>) – Sample rate in Hz</p></li>
+<li><p><strong>(</strong><strong>1..6</strong><strong>)</strong> (<em>order</em>) – butterworth filter order. Default 4</p></li>
+<li><p><strong>(</strong><strong>boolean</strong><strong>)</strong> (<em>bandstop</em>) – Use forward-backward filtering? (true)</p></li>
+<li><p><strong>(</strong><strong>boolean</strong><strong>)</strong> – Do band-stop rather than band-pass</p></li>
+<li><p><strong>number</strong><strong>)</strong> (<em>offset</em><em> (</em><em>positive</em>) – Offset data to avoid underflow (1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Filtered signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>filtered</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.pad_signal">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">pad_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#pad_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.pad_signal" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.bandpass_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">bandpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zerophase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandstop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#bandpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.bandpass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>IF fa is None, assumes lowpass with cutoff fb
+IF fb is None, assume highpass with cutoff fa
+Array can be any dimension, filtering performed over last dimension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – data, filtering performed over last dimension</p></li>
+<li><p><strong>fa</strong> (<em>number</em>) – low-frequency cutoff. If none, highpass at fb</p></li>
+<li><p><strong>fb</strong> (<em>number</em>) – high-frequency cutoff. If none, lowpass at fa</p></li>
+<li><p><strong>order</strong> (<em>1..6</em>) – butterworth filter order. Default 4</p></li>
+<li><p><strong>zerophase</strong> (<em>boolean</em>) – Use forward-backward filtering? (true)</p></li>
+<li><p><strong>bandstop</strong> (<em>boolean</em>) – Do band-stop rather than band-pass</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.box_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">box_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reflect'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#box_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.box_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Smooths data by convolving with a size smoothat box
+provide smoothat in units of frames i.e. samples (not ms or seconds)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</p></li>
+<li><p><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</p></li>
+<li><p><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional filtered signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.median_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">median_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#median_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.median_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Filters a signal by calculating the median in a sliding window of
+width ‘window’</p>
+<dl class="simple">
+<dt>mode=’same’ will compute median even at the edges, where a full window</dt><dd><p>is not available</p>
+</dd>
+<dt>mode=’valid’ will compute median only at points where the full window</dt><dd><p>is available</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</p></li>
+<li><p><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</p></li>
+<li><p><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional filtered signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.percentile_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">percentile_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#percentile_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.percentile_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Filters a signal by calculating the median in a sliding window of
+width ‘window’</p>
+<dl class="simple">
+<dt>mode=’same’ will compute median even at the edges, where a full window</dt><dd><p>is not available</p>
+</dd>
+<dt>mode=’valid’ will compute median only at points where the full window</dt><dd><p>is available</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</p></li>
+<li><p><strong>pct</strong> (<em>float in 0..100</em>) – Percentile to apply</p></li>
+<li><p><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</p></li>
+<li><p><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional filtered signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.variance_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">variance_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#variance_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.variance_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts signal variance in a sliding window</p>
+<p>mode=’same’ will compute median even at the edges, where a full window
+is not available</p>
+<p>mode=’valid’ will compute median only at points where the full window
+is available</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – One-dimensional numpy array of the signal to be filtred</p></li>
+<li><p><strong>window</strong> (<em>positive int</em>) – Filtering window length in samples</p></li>
+<li><p><strong>mode</strong> (<em>string</em><em>, </em><em>default 'same'</em>) – If ‘same’, the returned signal will have the same time-base and
+length as the original signal. if ‘valid’, edges which do not
+have the full window length will be trimmed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional filtered signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.rewrap">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">rewrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#rewrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.rewrap" title="Permalink to this definition"></a></dt>
+<dd><p>Used to handle wraparound when getting phase derivatives.
+See pdiff.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.pdiff">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">pdiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#pdiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.pdiff" title="Permalink to this definition"></a></dt>
+<dd><p>Take the derivative of a sequence of phases.
+Times when this derivative wraps around form 0 to 2*np.pi are correctly
+handeled.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.pghilbert">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">pghilbert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#pghilbert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.pghilbert" title="Permalink to this definition"></a></dt>
+<dd><p>Extract phase gradient using the hilbert transform. See also pdiff.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.fudge_derivative">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fudge_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fudge_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fudge_derivative" title="Permalink to this definition"></a></dt>
+<dd><p>Discretely differentiating a signal reduces its signal by one sample.
+In some cases, this may be undesirable. It also creates ambiguity as
+the sample times of the differentiated signal occur halfway between the
+sample times of the original signal. This procedure uses averaging to
+move the sample times of a differentiated signal back in line with the
+original.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.ifreq">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">ifreq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#ifreq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.ifreq" title="Permalink to this definition"></a></dt>
+<dd><p>Extract the instantaneous frequency from a narrow-band signal using
+the Hilbert transform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Fs</strong> (<em>int</em>) – defaults to 1000</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – ‘pad’ will return a signal of the original length
+‘valid’ will return a signal 1 sample shorter, with derivative
+computed between each pair od points in the original signal.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.unwrap">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">unwrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#unwrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.unwrap" title="Permalink to this definition"></a></dt>
+<dd><p>Unwraps a sequences of phase measurements so that rather than
+ranging from 0 to 2*np.pi, the values increase (or decrease) continuously.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.ang">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">ang</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#ang"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.ang" title="Permalink to this definition"></a></dt>
+<dd><p>Uses the Hilbert transform to extract the phase of x. X should be
+narrow-band. The signal is not padded, so be wary of boundary effects.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.randband">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">randband</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#randband"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.randband" title="Permalink to this definition"></a></dt>
+<dd><p>Returns Gaussian random noise band-pass filtered between fa and fb.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.arenear">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">arenear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#arenear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.arenear" title="Permalink to this definition"></a></dt>
+<dd><p>Expand a boolean/binary sequence by K samples in each direction.
+See “aresafe”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.aresafe">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">aresafe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#aresafe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.aresafe" title="Permalink to this definition"></a></dt>
+<dd><p>Contract a boolean/binary sequence by K samples in each direction.
+For example, you may want to test for a condition, but avoid samples
+close to edges in that condition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.get_edges">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">get_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#get_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.get_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Assuming a binary signal, get the start and stop times of each
+treatch of “1s”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>1-dimensional array-like</em>) – </p></li>
+<li><p><strong>pad_edges</strong> (<em>True</em>) – Should we treat blocks that start or stop at the beginning or end
+of the signal as valid?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>2xN array of bin start and stop indecies</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.set_edges">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">set_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#set_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.set_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Converts list of start, stop times over time period N into a [0,1]
+array which is 1 for any time between a [start,stop)
+edge info outsize [0,N] results in undefined behavior</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.remove_gaps">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">remove_gaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#remove_gaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.remove_gaps" title="Permalink to this definition"></a></dt>
+<dd><p>Removes gaps (streaches of zeros bordered by ones) from
+binary signal <cite>w</cite> that are shorter than <cite>cutoff</cite> in duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> (<em>one-dimensional array-like</em>) – Binary signal</p></li>
+<li><p><strong>cutoff</strong> (<em>positive int</em>) – Minimum gap duration to keep</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Copy of w with gaps shorter than <cite>cutoff</cite> removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.remove_short">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">remove_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#remove_short"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.remove_short" title="Permalink to this definition"></a></dt>
+<dd><p>Removes spans of ones bordered by zeros from
+binary signal <cite>w</cite> that are shorter than <cite>cutoff</cite> in duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> (<em>one-dimensional array-like</em>) – Binary signal</p></li>
+<li><p><strong>cutoff</strong> (<em>positive int</em>) – Minimum gap duration to keep</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Copy of w with spans shorter than <cite>cutoff</cite> removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.phase_rotate">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">phase_rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#phase_rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.phase_rotate" title="Permalink to this definition"></a></dt>
+<dd><p>Only the phase advancement portion of a resonator.
+See resonantDrive</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.fm_mod">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fm_mod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fm_mod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fm_mod" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.pieces">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">pieces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#pieces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.pieces" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.stats_block">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">stats_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statfunction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#stats_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.stats_block" title="Permalink to this definition"></a></dt>
+<dd><p>Compute function of signal in blocks of size $N$ over the last axis
+of the data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em>) – N-dimensional numpy array. Blocking is performed over the last axis</p></li>
+<li><p><strong>statfunction</strong> (<em>function</em>) – Statistical function to compute on each block. Should be, or
+behave similarly to, the <cite>numpy</cite> buit-ins, e.g. np.mean,
+np.median, etc.</p></li>
+<li><p><strong>N</strong> (<em>positive integer</em><em>, </em><em>default 100</em>) – Block size in which to break data. If data cannot be split
+evenly into blocks of size $N$, then data are truncated to the
+largest integer multiple of N.</p></li>
+<li><p><strong>sample_match</strong> (<em>positive integer</em><em>, </em><em>default None</em>) – If not None, then blocks will be sub-sampled to contain
+<cite>sample_match</cite> samples. <cite>sample_match</cite> should not exceed
+data.shape[-1]//N</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Blocked data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.mean_block">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">mean_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#mean_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.mean_block" title="Permalink to this definition"></a></dt>
+<dd><p>Calls stats_block using np.mean. See documentation of stats_block for
+details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>documentation</strong> (<em>See stats_block</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Block-averaged data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.var_block">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">var_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#var_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.var_block" title="Permalink to this definition"></a></dt>
+<dd><p>Calls stats_block using np.var. See documentation of stats_block for
+details.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.median_block">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">median_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#median_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.median_block" title="Permalink to this definition"></a></dt>
+<dd><p>Calls stats_block using np.median. See documentation of stats_block for
+details.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.phase_randomize">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">phase_randomize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#phase_randomize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.phase_randomize" title="Permalink to this definition"></a></dt>
+<dd><p>Phase randomizes a signal by rotating frequency components by a random
+angle. Negative frequencies are rotated in the opposite direction.
+The nyquist frequency, if present, has it’s sign randomly flipped.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.phase_randomize_from_amplitudes">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">phase_randomize_from_amplitudes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#phase_randomize_from_amplitudes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.phase_randomize_from_amplitudes" title="Permalink to this definition"></a></dt>
+<dd><p>treats input amplitudes as amplitudes of fourier components</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.estimate_padding">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">estimate_padding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#estimate_padding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.estimate_padding" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the amount of padding needed to address boundary conditions
+when filtering. Takes into account the filter bandwidth, which is
+related to the time-locality of the filter, and therefore the amount
+of padding needed to prevent artifacts at the edge.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.lowpass_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">lowpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#lowpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.lowpass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a butterworth low pass Filter at frequency “cut”
+Defaults to order=4 and Fs=1000</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.highpass_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">highpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#highpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.highpass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a butterworth high pass Filter at frequency “cut”
+Defaults to order=4 and Fs=1000</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.fdiff">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fdiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">240.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fdiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fdiff" title="Permalink to this definition"></a></dt>
+<dd><p>Take the discrete derivative of a signal, correcting result for
+sample rate. This procedure returns a singnal two samples shorter than
+the original.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.interpolate_NaN">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">interpolate_NaN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpolate_NaN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.interpolate_NaN" title="Permalink to this definition"></a></dt>
+<dd><p>Fill in NaN (missing) data in a one-dimensional timeseries via linear
+interpolation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.interpolate_NaN_quadratic">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">interpolate_NaN_quadratic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpolate_NaN_quadratic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.interpolate_NaN_quadratic" title="Permalink to this definition"></a></dt>
+<dd><p>Fill in NaN (missing) data in a one-dimensional timeseries via quadratic
+interpolation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.killSpikes">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">killSpikes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#killSpikes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.killSpikes" title="Permalink to this definition"></a></dt>
+<dd><p>Remove times when the signal exceeds a given threshold of the
+standard deviation of the underlying signal. Removed data are
+re-interpolated from the edges. This procedure is particularly
+useful in correcting higkinematics velocity trajectories. Velocity
+should be smooth, but motion tracking errors can cause sharp spikes
+in the signal.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.peak_within">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">peak_within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#peak_within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.peak_within" title="Permalink to this definition"></a></dt>
+<dd><p>Find maximum within a band</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>freqs</strong> (<em>np.array</em>) – Frequencies</p></li>
+<li><p><strong>spectrum</strong> – </p></li>
+<li><p><strong>fa</strong> (<em>float</em>) – low-frequency cutoff</p></li>
+<li><p><strong>fb</strong> (<em>float</em>) – high-frequency cutoff</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.local_peak_within">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_peak_within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_peak_within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_peak_within" title="Permalink to this definition"></a></dt>
+<dd><p>For a spectrum, identify the largest local maximum in the frequency
+range [fa,fb].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>freqs</strong> (<em>np.array</em>) – Frequencies</p></li>
+<li><p><strong>cc</strong> (<em>np.array</em>) – Amplitude</p></li>
+<li><p><strong>fa</strong> (<em>float</em>) – low-frequency cutoff</p></li>
+<li><p><strong>fb</strong> (<em>float</em>) – high-frequency cutoff</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>i</em> – index of peak, or None if no local peak found</p></li>
+<li><p><em>frequency</em> – frequency at peak, or None if no local peak found</p></li>
+<li><p><em>peak</em> – amplitude at peak, or None if no local peak found</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.take_axis_slice">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">take_axis_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#take_axis_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.take_axis_slice" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.take_axis">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">take_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#take_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.take_axis" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.ndargmax">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">ndargmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#ndargmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.ndargmax" title="Permalink to this definition"></a></dt>
+<dd><p>Get coordinates of largest value in a multidimensional array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.complex_to_nan">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">complex_to_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#complex_to_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.complex_to_nan" title="Permalink to this definition"></a></dt>
+<dd><p>Replce complex entries with NaN or othe value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.make_rebroadcast_slice">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">make_rebroadcast_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#make_rebroadcast_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.make_rebroadcast_slice" title="Permalink to this definition"></a></dt>
+<dd><p>Generate correct slice object for broadcasting stastistics averaged
+over the given axis back to the original shape.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.zeromean">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">zeromean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#zeromean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.zeromean" title="Permalink to this definition"></a></dt>
+<dd><p>Remove the mean trend from data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – Data to remove mean trend from</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>default None</em>) – Axis over which to take the mean;
+forwarded to np.mean axis parameter</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.zscore">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">zscore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#zscore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.zscore" title="Permalink to this definition"></a></dt>
+<dd><p>Z-scores data, defaults to the first axis.
+A regularization factor is added to the standard deviation to preven
+numerical instability when the standard deviation is extremely small.
+The default refularization is 1e-30.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Array-like real-valued signal.</p></li>
+<li><p><strong>axis</strong> – Axis to zscore; default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x</strong> – (x-mean(x))/std(x)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.gaussianize">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">gaussianize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#gaussianize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.gaussianize" title="Permalink to this definition"></a></dt>
+<dd><p>Use percentiles to force a timeseries to have a normal distribution.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.deltaovermean">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">deltaovermean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#deltaovermean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.deltaovermean" title="Permalink to this definition"></a></dt>
+<dd><p>Subtracts, then divides by, the mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Array-like real-valued signal.</p></li>
+<li><p><strong>axis</strong> – Axis to zscore; default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x</strong> – (x-mean(x))/std(x)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.unit_length">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">unit_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#unit_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.unit_length" title="Permalink to this definition"></a></dt>
+<dd><p>Interpret given axis of multidimensional array as vectors,
+and normalize them to unit length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>default None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u</strong> – vectors in <cite>x</cite> normalized to unit length</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.sign_preserving_amplitude_demodulate">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">sign_preserving_amplitude_demodulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analytic_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#sign_preserving_amplitude_demodulate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.sign_preserving_amplitude_demodulate" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts an amplitude-modulated component from an analytic signal,
+Correctly flipping the sign of the signal when it crosses zero,
+rather than returning a rectified result.</p>
+<dl class="simple">
+<dt>Sign-changes are heuriddddstically detected basd on the following:</dt><dd><ul class="simple">
+<li><p>An abnormally large skip in phase between two time points,
+larger than np.pi/2, that is also a local extremum in phase velocity</p></li>
+<li><p>local minima in the amplitude at low-voltage with high curvature</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>analytic_signal</strong> – </p></li>
+<li><p><strong>doplot</strong> (<em>boolean</em><em>, </em><em>False</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>demodulated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.autocorrelation">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">autocorrelation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#autocorrelation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.autocorrelation" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the normalized autocorrelation over the specified
+time-lags using convolution. Autocorrelation is normalized
+such that the zero-lag autocorrelation is 1.</p>
+<p>TODO, fix: For long
+lags it uses FFT, but has a different normalization from the
+time-domain implementation for short lags. In practice this
+will not matter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1d array</em>) – Data for which to compute autocorrelation function</p></li>
+<li><p><strong>lags</strong> (<em>int</em><em>, </em><em>default length</em><em> of </em><em>signal</em><em> or </em><em>200</em><em>, </em><em>whichever is smaller</em>) – Number of time-lags over which to compute the ACF. Default
+is min(200,len(x))</p></li>
+<li><p><strong>center</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to mean-center data before taking autocorrelation</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to normalize by zero-lag signal variance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Autocorrelation function, length 2*lags + 1</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.upsample">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">upsample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#upsample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.upsample" title="Permalink to this definition"></a></dt>
+<dd><p>Uses fourier transform to upsample x by some factor.</p>
+<p>Operations:</p>
+<ol class="arabic simple">
+<li><p>remove linear trend</p></li>
+<li><p>mirror to get reflected boundary</p></li>
+<li><p>take the fourier transform</p></li>
+<li><p>add padding zeros to FFT to effectively upsample</p></li>
+<li><p>taking inverse fourier transform</p></li>
+<li><p>remove mirroring</p></li>
+<li><p>restore linear tend</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>factor</strong> (<em>int</em>) – Integer upsampling factor. Default is 4.</p></li>
+<li><p><strong>x</strong> (<em>array-like</em>) – X is cast to float64 before processing. Complex values are
+not supported.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x</strong> – upsampled <cite>x</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.linfilter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">linfilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#linfilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.linfilter" title="Permalink to this definition"></a></dt>
+<dd><p>Linear response filter on data $x$ for system</p>
+<p>$$
+partial_t z = A z + C x(t)
+$$</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>matrix</em>) – K x K matrix defining linear syste,</p></li>
+<li><p><strong>C</strong> (<em>matrix</em>) – K x N matrix defining projection from signal $x$ to linear system</p></li>
+<li><p><strong>x</strong> (<em>vector</em><em> or </em><em>matrix</em>) – T x N sequence of states to filter</p></li>
+<li><p><strong>initial</strong> (<em>vector</em>) – Optional length N vector of initial filter conditions. Set to 0
+by default</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>filtered</strong> – filtered data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.span">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">span</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#span"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.span" title="Permalink to this definition"></a></dt>
+<dd><p>Get the range of values (min,max) spanned by a dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>array-like</em><em>, </em><em>numeric</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.max(data)-np.min(data)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>span</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.make_lagged">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">make_lagged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NLAGS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LAGSPACE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#make_lagged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.make_lagged" title="Permalink to this definition"></a></dt>
+<dd><p>Create shifted/lagged copies of a 1D signal.
+These are retrospective (causal) features.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.zgrid">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">zgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#zgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.zgrid" title="Permalink to this definition"></a></dt>
+<dd><p>2D grid coordinates as complex numbers, ranging from -L/2 to L/2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>L</strong> (<em>int</em>) – Desired size of LxL grid</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>np.complex64</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>LxL coordinate grid; center is zero.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.nice_interp">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">nice_interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#nice_interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.nice_interp" title="Permalink to this definition"></a></dt>
+<dd><p>numpy.interp1d with nice defaults</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>x values for interpolation</em>) – </p></li>
+<li><p><strong>b</strong> (<em>y values for interpolation</em>) – </p></li>
+<li><p><strong>t</strong> (<em>x values to sample at</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>np.array</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>interpolated values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.fftacorr1d">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fftacorr1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fftacorr1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fftacorr1d" title="Permalink to this definition"></a></dt>
+<dd><p>Autocorrelogram via FFT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>bp.float32</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.fftsta">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fftsta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spikes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fftsta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fftsta" title="Permalink to this definition"></a></dt>
+<dd><p>Spike triggerd average (STA) via FFT
+Signal <cite>x</cite> is z-scored befor calculating the spike-triggered average
+(a.k.a. reverse correlation).
+The returned STA is normalized so that the maximum magnitude is 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spikes</strong> (<em>np.array</em>) – 1D spike count vector</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>np.float32</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>normalized spike-triggered average</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.interpmax1d">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">interpmax1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpmax1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.interpmax1d" title="Permalink to this definition"></a></dt>
+<dd><p>Locate a peak in a 1D array by interpolation; see
+dspguru.com/dsp/howtos/how-to-interpolate-fft-peak</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>1D np.array; Signal in which to locate the gloabal maximum.</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>i</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float; Interpolated index of global maximum in <cite>x</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.spaced_derivative">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">spaced_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#spaced_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.spaced_derivative" title="Permalink to this definition"></a></dt>
+<dd><p>Differentiate a 1D timeseries returning a new vector with the same
+number of samples. This smoothly interpolates between a forward
+difference at the start of the signal and a backward difference at
+the end of the signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="neurotools.models.lif.html" class="btn btn-neutral float-left" title="neurotools.models.lif module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="neurotools.signal.coherence.html" class="btn btn-neutral float-right" title="neurotools.signal.coherence module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

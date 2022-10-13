@@ -1832,11 +1832,20 @@ def simple_arrow(x1,y1,x2,y2,ax=None,s=5,color='k',lw=1.5,**kwargs):
                 arrowprops=dict(shrink=0,width=lw,lw=0,color=color,headwidth=s,headlength=s),
                 **kwargs)
 
-def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5,color='k'):
+def inhibition_arrow(x1,y1,x2,y2,ax=None,width=0.5,color='k'):
     '''
+    Parameters
+    ----------
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+
     Other Parameters
     ----------------
-    ax : axis, if None (default), uses the current axis.
+    ax : axis; if None (default), uses the current axis.
+    width: float
+    color: matplotlib color
     '''
     if ax is None: ax = plt.gca()
     ax.annotate(None,
@@ -1850,6 +1859,9 @@ def inhibition_arrow(x1,y1,x2,y2,ax=None,s=5,width=0.5,color='k'):
                 })
 
 def figurebox(color=(0.6,0.6,0.6)):
+    '''
+    Draw a colored border around the edge of a figure.
+    '''
     # new clear axis overlay with 0-1 limits
     from matplotlib import pyplot, lines
     ax2 = pyplot.axes([0,0,1,1],facecolor=(1,1,1,0))# axisbg=(1,1,1,0))

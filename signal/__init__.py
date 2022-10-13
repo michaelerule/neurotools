@@ -1706,16 +1706,20 @@ def zgrid(L):
     '''
     ----------------------------------------------------------------------------
     2D grid coordinates as complex numbers
+<<<<<<< HEAD
     
     Parameters
     ----------
     Returns
     -------
+=======
+>>>>>>> refs/remotes/origin/master
     '''
     c = np.arange(L)-L//2
     return 1j*c[:,None]+c[None,:]
 
 
+<<<<<<< HEAD
 def niceinterp(a,b,t):
     '''
     ----------------------------------------------------------------------------
@@ -1805,3 +1809,9 @@ def spaced_derivative(x):
         np.linspace(0,1,N-1),
         np.diff(x))(
         np.linspace(0,1,N))
+=======
+
+
+
+
+>>>>>>> refs/remotes/origin/master

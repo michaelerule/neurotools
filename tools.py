@@ -594,6 +594,7 @@ def progress_bar(x,N=None):
             r = i*50/N
             k = int(r)
             q = ' ▏▎▍▌▋▊▉'[int((r-k)*8)]
+<<<<<<< HEAD
             print(
                 '\r['+
                 ('█'*k)+    
@@ -604,6 +605,10 @@ def progress_bar(x,N=None):
                 end='',
                 flush=True)
             wait_til_ms = time_ms+1000
+=======
+            print('\r['+('█'*k)+q+(' '*(50-k-1))+']%3d%%'%(i*100//N)+(pattern%i),end='',flush=True)
+            wait_til_ms = time_ms+250
+>>>>>>> refs/remotes/origin/master
         yield x
     print('\r'+' '*70+'\r',end='',flush=True)
 

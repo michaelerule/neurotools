@@ -1369,9 +1369,13 @@ def good_colorbar(vmin=None,
     spacing=5,
     width=15,
     labelpad=10,
+<<<<<<< HEAD
     fontsize=10,
     vscale=1.0,
     va='c'):
+=======
+    fontsize=10,):
+>>>>>>> refs/remotes/origin/master
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'
@@ -1738,13 +1742,14 @@ def xscalebar(xcenter,xlength,label,y=None,color='k',fontsize=9,ax=None):
     yl = ax.get_ylim()
     xl = ax.get_xlim()
     plt.plot(xspan,[y,y],
-        color='k',
+        color=color,
         lw=1,
         clip_on=False)
     plt.text(np.mean(xspan),y-pixels_to_yunits(5),label,
         fontsize=fontsize,
         horizontalalignment='center',
         verticalalignment='top',
+        color=color,
         clip_on=False)
     ax.set_ylim(*yl)
     ax.set_xlim(*xl)
@@ -2099,6 +2104,7 @@ def shellplot(x,y,z,SHELLS,label='',vmin=None,vmax=None,ax=None):
 def arrow_between(A,B,size=None):
     draw()
     fig = plt.gcf()
+<<<<<<< HEAD
 
     position = A.get_position().transformed(fig.transFigure)
     ax0,ay0,ax1,ay1 = position.x0,position.y0,position.x1,position.y1
@@ -2169,5 +2175,51 @@ def plotz(x,z,thr=1e-9,**k):
     
     
     
+=======
+>>>>>>> refs/remotes/origin/master
 
+    position = A.get_position().transformed(fig.transFigure)
+    ax0,ay0,ax1,ay1 = position.x0,position.y0,position.x1,position.y1
+    position = B.get_position().transformed(fig.transFigure)
+    bx0,by0,bx1,by1 = position.x0,position.y0,position.x1,position.y1
+
+    # arrow outline
+    cx  = array([0,1.5,1.5,3,1.5,1.5,0])
+    cy  = array([0,0,-0.5,0.5,1.5,1,1])
+    cx -= (np.max(cx)-np.min(cx))/2
+    cy -= (np.max(cy)-np.min(cy))/2
+    cwidth = np.max(cx)-np.min(cx)
+
+    horizontal = vertical = None
+    if   max(ax0,ax1)<min(bx0,bx1): horizontal = -1 # axis A is to the left of axis B
+    elif max(bx0,bx1)<min(ax0,ax1): horizontal =  1 # axis A is to the right of axis B
+    elif max(ay0,ay1)<min(by0,by1): vertical   = -1 # axis A is above B
+    elif max(by0,by1)<min(ay0,ay1): vertical   =  1 # axis A is below B
+    assert not (horizontal is None     and vertical is None    )
+    assert not (horizontal is not None and vertical is not None)
+
+    if horizontal is not None:
+        x0 = max(*((ax0,ax1) if horizontal==-1 else (bx0,bx1)))
+        x1 = min(*((bx0,bx1) if horizontal==-1 else (ax0,ax1)))
+        span     = x1 - x0
+        pad      = 0.1 * span
+        width    = span - 2*pad
+        scale = width/cwidth if size is None else size
+        px = -horizontal*cx*scale + (x0+x1)/2
+        py = cy*scale + (ay0+ay1+by0+by1)/4
+        polygon = Polygon(array([px,py]).T,facecolor=BLACK)#,transform=tt)
+        fig.patches.append(polygon)
+
+    if vertical is not None:
+        y0 = max(*((ay0,ay1) if vertical==-1 else (by0,by1)))
+        y1 = min(*((by0,by1) if vertical==-1 else (ay0,ay1)))
+        span     = y1 - y0
+        pad      = 0.1 * span
+        width    = span - 2*pad
+        scale = width/cwidth if size is None else size
+        px = -vertical*cx*scale + (y0+y1)/2
+        py = cy*scale + (ax0+ax1+bx0+bx1)/4
+        polygon = Polygon(array([py,px]).T,facecolor=BLACK)#,transform=tt)
+        fig.patches.append(polygon)
+        
 

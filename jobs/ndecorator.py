@@ -172,15 +172,18 @@ def argument_signature(function,*args,**kwargs):
     nargs     = 1 if type(available) is str else 0 if available is None else len(available)
     ndefault  = 1 if type(defaults)  is str else 0 if defaults  is None else len(defaults)
     nnamed    = 1 if type(named)     is str else 0 if named     is None else len(named)
+    
     # All positional arguments must be filled
     nmandatory = nnamed - ndefault
     if nargs<nmandatory: 
         details = "%s %s %s %s %s %s %s"%(available,nargs,nnamed,named,ndefault,defaults,nmandatory)
         raise ValueError('Not enough positional arguments\n'+details)
+        
     # Assign available positional arguments to names
     for k,v in available:
         if k in named_store: raise ValueError('Duplicate argument',k)
         named_store[k] = v
+        
     # If not all arguments are provided, check **kwargs and defaults
     ndefaulted   = max(0,nnamed - nargs)
     default_map = dict(zip(named[-ndefault:],defaults)) if ndefault>0 else {}
@@ -189,12 +192,14 @@ def argument_signature(function,*args,**kwargs):
             if k in named_store: raise ValueError('Duplicate argument',k)
             named_store[k] = kwargs[k] if k in kwargs else default_map[k]
             if k in kwargs: del kwargs[k]
-    # Store excess positional arguments in *vargs if possible
+            
+    # Store excess positional arguments in *varargs if possible
     vargs = None
     if len(args)>nnamed:
         if vargname is None:
             raise ValueError('Excess positional arguments, but function does not accept *vargs!')
         vargs = args[nnamed:]
+        
     # Store excess keyword arguments if the function accepts **kwargs
     if len(kwargs):
         if kwargname is None:
@@ -202,6 +207,7 @@ def argument_signature(function,*args,**kwargs):
         for k in kwargs:
             if k in named_store: raise ValueError('Duplicate argument',k)
             named_store[k] = kwargs[k]
+            
     # Construct a tuple reflecting argument signature
     keys  = sorted(named_store.keys())
     vals  = tuple(named_store[k] for k in keys)

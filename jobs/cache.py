@@ -420,9 +420,11 @@ def human_encode(sig):
     
     Parameters
     ----------
+    sig: argument signature as a safe nested tuple
     
     Returns
     -------
+    result (str): human-readable argument-signature filename
     '''
     sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
     named, vargs = sig
@@ -439,9 +441,11 @@ def human_decode(key):
     
     Parameters
     ----------
+    key (str): human-readable argument-signature filename
     
     Returns
     -------
+    sig: argument signature as a nested tuple
     '''
     params = [k.split('=') for k in key.split(',')]
     params = tuple((n,ast.literal_eval(v)) for n,v in params)
@@ -449,13 +453,19 @@ def human_decode(key):
     sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
     return sig
 
-def get_cache_path(cache_root,f,method):
+def get_cache_path(cache_root,f):
+    '''
+    
+    Parameters
+    ----------
+    cache_root: 
+    f: 
+    '''
     sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
             mode        ='repr',
             compressed  =True,
             base64encode=True)
-
     pieces   = fn.split('.')
     # first two words used as directories
     path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
@@ -467,18 +477,18 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     Parameters
     ----------
     cache_root: directory/path as string
-    f: function
-    methods: caching naming method
-    args: function parameters
-    kwargs: function keyword arguments
+    f:          function
+    method:     cache file extension e.g. .npy, .mat, etc. 
+    args:       function parameters
+    kwargs:     function keyword arguments
     
     Returns
     -------
-    fn
-    sig
-    path
-    filename
-    location
+    fn (str):   File name of cache entry without extension
+    sig:        Tuple of (args,kwargs) info from `argument_signature()`
+    path (str): Directory containing cache file    
+    filename:   File name with extension
+    location:   Full absolute path to cache entry
     '''
     sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
@@ -674,11 +684,17 @@ def disk_cacher(
     cache_root     = cache_location+CACHE_IDENTIFIER
     neurotools.tools.ensure_dir(cache_location)
     neurotools.tools.ensure_dir(cache_root)
+    
     def cached(f):
         '''
-        This is a wrapper for memoizing results to disk. 
-        This docstring should be overwritten by the docstring of
-        the wrapped function.
+        The `disk_cacher` function constructs a decorator `cached` that
+        can be used to wrap functions to memoize their results to disk. 
+        `cached` returns the `decorated` object which is constructed by
+        calling the inner function `wrapped`.
+        
+            cached <-- disk_cacher(location,...)
+            caching_function <-- cached(somefunction)
+        
         '''
         if not allow_mutable_bindings:
             verify_function_closure(f)
@@ -698,7 +714,7 @@ def disk_cacher(
             '''
             t0 = neurotools.tools.current_milli_time()
 
-            # Store parameters; I hope we can save these in numpy...
+            # Store parameters; These will be saved in the cached result
             params = (args,tuple(list(kwargs.items())))
 
             try:
@@ -796,9 +812,10 @@ def disk_cacher(
                     #        print('  Zeroing out the file, hopefully that causes it to crash on load?')
                     #    with open(location, 'w'): pass
             return result
+        
         def purge(*args,**kwargs):
             '''
-            Delete cache entries matching arguments. This is a destructive
+            Delete cache entries matching arguments. This is a diestructive
             operation, execute with care.
     
             Parameters
@@ -822,7 +839,12 @@ def disk_cacher(
                     else:
                         raise
             pass
+        
         def lscache(verbose=False):
+            '''
+            List all files associated with cached invocations of the wrapped function.
+            ("cache entries")
+            '''
             path = cache_root + os.sep + os.sep.join(function_signature(f).split('.'))
             try:
                 files = os.listdir(path)
@@ -832,11 +854,34 @@ def disk_cacher(
                 print('Cache %s contains:'%path)
                 print('\n  '+'\n  '.join([f[:20]+'…' for f in files]))
             return path,files
+        
+        @neurotools.jobs.ndecorator.robust_decorator
+        def locate(f,*args,**kwargs):
+            '''
+            A version of the decorator that simply locates the cache file.
+            The result of `locate_cached` is returned directly. It is a tuple:
+                (fn,sig,path,filename,location)
+            
+            Returns
+            -------
+            fn (str):   File name of cache entry without extension
+            sig:        Tuple of (args,kwargs) info from `argument_signature()`
+            path (str): Directory containing cache file    
+            filename:   File name with extension
+            location:   Full absolute path to cache entry
+            '''
+            return locate_cached(cache_root,f,method,*args,**kwargs)
+        
+        # Bulid decorated function and
+        # Save additional methods associated with decorated object
         decorated            = wrapped(neurotools.jobs.ndecorator.timed(f))
         decorated.purge      = purge
         decorated.cache_root = cache_root
-        decorated.lscache    = lscache 
+        decorated.lscache    = lscache
+        decorated.locate     = locate(f)
         return decorated
+    
+    cached.cache_root = cache_root
     return cached
 
 

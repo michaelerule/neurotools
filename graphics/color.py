@@ -59,8 +59,10 @@ mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CYCLE)
 ######################################################################
 # Hex codes
 
+
 def rgb2hex(r,g,b):
     return "#{:02x}{:02x}{:02x}".format(r,g,b)
+
 
 def hex2rgb(hexcode):
     return tuple(map(ord,hexcode[1:].decode('hex')))
@@ -68,7 +70,8 @@ def hex2rgb(hexcode):
 ######################################################################
 # Hue / Saturation / Luminance color space code
 
-def hsv2rgb(h,s,v):
+
+def hsv2rgb(h,s,v,force_luminance=None,method='perceived'):
     '''
     Convert HSV colors to RGB 
     
@@ -94,7 +97,20 @@ def hsv2rgb(h,s,v):
     t = min(1.,max(0.,t))
     p = min(1.,max(0.,p))
     q = min(1.,max(0.,q))
-    return ((v,t,p),(q,v,p),(p,v,t),(p,q,v),(t,p,v),(v,p,q))[hi]
+    RGB = ((v,t,p),(q,v,p),(p,v,t),(p,q,v),(t,p,v),(v,p,q))[hi]
+    RGB = np.array(RGB)
+    if not force_luminance is None:
+        Lmtx = luminance_matrix(method)
+        for i in range(10):
+            lum    = np.dot(Lmtx,RGB)
+            delta  = (force_luminance-lum)*0.1
+            newRGB = np.clip(RGB+delta,0,1)
+            newRGB = np.clip(newRGB*(force_luminance/np.dot(Lmtx,newRGB)),0,1)
+            if np.allclose(RGB,newRGB):
+                break
+            RGB = newRGB
+            
+    return RGB
 
 def lightness(r,g,b,method='lightness'):
     '''
@@ -113,6 +129,7 @@ def lightness(r,g,b,method='lightness'):
         Weights to convert RGB vectors into a luminance value.
     '''
     return luminance_matrix(method=method).dot((r,g,b))
+
 
 def luminance_matrix(method='perceived'):
     '''
@@ -142,6 +159,7 @@ def luminance_matrix(method='perceived'):
     LRGB = np.array(methods[method])
     LRGB = LRGB / np.sum(LRGB)
     return LRGB
+
 
 def match_luminance(target,color,
     THRESHOLD=0.01,squared=False,method='perceived'):
@@ -191,6 +209,7 @@ def match_luminance(target,color,
             source = np.dot(LRGB,color)
     return color
 
+
 def rotate(colors,th):
     '''
     Rotate a list of rgb colors by angle theta
@@ -223,6 +242,7 @@ def rotate(colors,th):
         results.append((r,g,b))
     return results
 
+
 def RGBtoHCL(r,g,b,method='perceived'):
     '''
     Convert RGB colors to Hue, Chroma, Luminance color space
@@ -246,6 +266,7 @@ def RGBtoHCL(r,g,b,method='perceived'):
     L = lightness(r,g,b)
     return hue,chroma,L
 
+
 def hue_angle(c1,c2):
     '''
     Calculates the angular difference in hue between two colors in Hue, 
@@ -264,32 +285,51 @@ def hue_angle(c1,c2):
     H2 = RGBtoHCL(*c2)[0]
     return H2-H1
 
+
 def hcl2rgb(h,c,l,target=None, method='perceived'):
     '''
     
     Parameters
     ----------
-    h: hue
+    h: hue in degrees
     c: chroma
     l: luminosity
     
     Returns
     -------
+    RGB: ndarray
+        Length-3 numpy array of RGB color components
     '''
-    LRGB = luminance_matrix(method)
+    LRGB     = luminance_matrix(method)
     x1,x2,x3 = LRGB
-    h = h*pi/180.0
+    h     = h*pi/180.0
     alpha = np.cos(h)
-    beta = np.sin(h)*2/np.sqrt(3)
-    B = l - x1*(alpha+beta/2)-x2*beta
-    R = alpha + beta/2+B
-    G = beta+B
-    RGB = np.array([R,G,B])
-    RGB = np.clip(RGB,0,1)
-    if not target==None:
-        # Try to correct for effect of clipping
-        RGB = match_luminance(target,RGB,method=method)
+    beta  = np.sin(h)*2/np.sqrt(3)
+    B     = l - x1*(alpha+beta/2)-x2*beta
+    R     = alpha + beta/2 + B
+    G     = beta + B
+    RGB   = np.array([R,G,B])
+    RGB   = np.clip(RGB,0,1)
+    #if not target==None:
+    # Try to correct for effect of clipping
+    #RGB = match_luminance(target,RGB,method=method)
+    if not target is None:
+        Lmtx = luminance_matrix(method)
+        reference = np.ones(3,'f')
+        reference = reference*(target/np.dot(Lmtx,reference))
+        for i in range(5):
+            lum    = np.dot(Lmtx,RGB)
+            delta  = (target-lum)*0.1
+            newRGB = np.array(RGB)
+            if any( abs(abs(RGB-0.5*2)-1.0) < 0.001):
+                newRGB = newRGB*.95+0.05*reference
+            newRGB = np.clip(newRGB*(target/np.dot(Lmtx,newRGB)),0,1)
+            if np.allclose(RGB,newRGB):
+                break
+            RGB = newRGB
+    
     return RGB
+
 
 def circularly_smooth_colormap(cm,s):
     '''
@@ -319,6 +359,7 @@ def circularly_smooth_colormap(cm,s):
     #return np.array([np.fft.fftshift(c) for c in RGB.T]).T
     return RGB
 
+
 def isoluminance1(h,l=.5):
     '''
     
@@ -330,6 +371,7 @@ def isoluminance1(h,l=.5):
     -------
     '''
     return hcl2rgb(h,1,l,target=float(l))
+
 
 def isoluminance2(h):
     '''
@@ -343,6 +385,7 @@ def isoluminance2(h):
     '''
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%5))/5
 
+
 def isoluminance3(h):
     '''
     
@@ -354,6 +397,7 @@ def isoluminance3(h):
     -------
     '''
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%15))/15
+
 
 def isoluminance4(h):
     '''
@@ -367,6 +411,7 @@ def isoluminance4(h):
     '''
     return hcl2rgb(h,1,1.0,target=.5)*(1+(h%60))/60
 
+
 def lighthues(N=10,l=0.7):
     '''
     
@@ -379,6 +424,7 @@ def lighthues(N=10,l=0.7):
     -------
     '''
     return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
+
 
 def darkhues(N=10,l=0.4):
     '''
@@ -394,6 +440,7 @@ def darkhues(N=10,l=0.4):
     '''
     return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
 
+
 def medhues(N=10,l=0.6):
     '''
     
@@ -406,6 +453,7 @@ def medhues(N=10,l=0.6):
     -------
     '''
     return [isoluminance1(h,l) for h in np.linspace(0,360,N+1)[:-1]]
+
 
 def radl2rgb(h,l=1.0):
     '''
@@ -448,6 +496,7 @@ try:
 except:
     pass
 
+
 def radl2rgbLUT(h,l=1.0):
     '''
     radl2rgb backed with a limited resolution lookup table
@@ -460,6 +509,7 @@ def radl2rgbLUT(h,l=1.0):
     '''
     N = __N_HL_LUT__
     return __HL_LUT__[int(h*N/(2*pi))%N,int(l*(N-1))]
+
 
 def complexHLArr2RGB(z):
     ''' 
@@ -474,10 +524,11 @@ def complexHLArr2RGB(z):
     N = __N_HL_LUT__
     h = np.ravel(np.int32(np.angle(z)*N/(2*pi))%N)
     v = np.ravel(np.int32(np.clip(np.abs(z),0,1)*(N-1)))
-    return np.reshape(__HL_LUT__[h,v],shape(z)+(3,))
+    return np.reshape(__HL_LUT__[h,v],np.shape(z)+(3,))
 
 ######################################################################
 # Matplotlib extensions
+
 def color_boxplot(bp,COLOR):
     '''
     The Boxplot defaults are awful.
@@ -491,6 +542,7 @@ def color_boxplot(bp,COLOR):
 
 ######################################################################
 # Bit-packed color fiddling
+
 
 def hex_pack_BGR(RGB):
     '''
@@ -510,6 +562,7 @@ def hex_pack_BGR(RGB):
     '''
     RGB = clip(np.array(RGB),0,1)
     return ['0x%02x%02x%02x'%(B*255,G*255,R*255) for (R,G,B) in RGB]
+
 
 def code_to_16bit(code):
     '''
@@ -532,20 +585,26 @@ def code_to_16bit(code):
     B = B & 0xF8
     return (R)|(G<<3)|(B>>3)
 
+
 def bit16_RGB_to_tuple(RGB):
     '''
     Converts 16-bit RRRRR GGGGGG BBBBB into (R,G,B) tuple form
     
     Parameters
     ----------
+    RGB: int
+        16-bit RRRRR GGGGGG BBBBB packed color
     
     Returns
     -------
+    R,G,B
+        Components in [0,1]
     '''
     R = float(0b11111  & (RGB>>11))/0b11111
     G = float(0b111111 & (RGB>>5) )/0b111111
     B = float(0b11111  & (RGB)    )/0b11111
     return R,G,B
+
 
 def enumerate_fast_colors():
     '''
@@ -565,6 +624,7 @@ def enumerate_fast_colors():
     colors = [bit16_RGB_to_tuple(x*256|x) for x in bytes]
     return colors
 
+
 def tuple_to_bit16(c):
     '''
     convert RGB float tuple in 565 bit packed RGB format
@@ -582,6 +642,7 @@ def tuple_to_bit16(c):
     B = int(B*0b11111)
     RGB = (R<<11)|(G<<5)|B
     return RGB
+
 
 def tuple_to_bit24(c):
     '''
@@ -601,6 +662,7 @@ def tuple_to_bit24(c):
     RGB = (R<<16)|(G<<8)|B
     return RGB
 
+
 def bit16_print_color(c):
     '''
     Convert RGB tuple to 16 bit 565 RGB formt as a binary string literal
@@ -613,6 +675,7 @@ def bit16_print_color(c):
     -------
     '''
     return bin(tuple_to_bit16(c))
+
 
 def show_fast_pallet():
     '''
@@ -646,6 +709,7 @@ def show_fast_pallet():
             print('%06x'%tuple_to_bit24(cA))
     plt.draw()
 
+
 def show_complete_fast_pallet():
     '''
     Parameters
@@ -673,6 +737,7 @@ def show_complete_fast_pallet():
             print('#%06x'%tuple_to_bit24(cA))
     plt.draw()
 
+
 def show_complete_fastest_pallet():
     '''
     16 bit RGB 565; but don't even write the lower byte
@@ -694,6 +759,7 @@ def show_complete_fastest_pallet():
             ax.add_patch(matplotlib.patches.Rectangle((k,ij),1,1,facecolor=cA,edgecolor=cA))
             print("'#%06x',"%tuple_to_bit24(cA),)
     plt.draw()
+
 
 def show_hex_pallet(colors):
     '''

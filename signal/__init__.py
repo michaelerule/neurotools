@@ -89,7 +89,7 @@ def gaussian_kernel(sigma):
 
 def gaussian_smooth(x,sigma,mode='same'):#,axis=0):
     '''
-    Smooth signal x with gaussian of standard deviation sigma
+    Smooth signal x with gaussian of standard deviation sigma.
 
     sigma: standard deviation
     x: 1D array-like signal
@@ -134,20 +134,29 @@ def circular_gaussian_smooth_2D(x,sigma):
     Circularly wrapped using Fourier transform
     
     sigma: standard deviation
-    x: 1D array-like signal
+    x: 2D array-like signal
     
     Parameters
     ----------
+    x: ndarray
+        Smoothing is performed over the last two dimensions, 
+        which should have the same length
+        
     Returns
     -------
     '''
-    np.fft.fft2(x)
-    N = x.shape[0]
-    grid = np.linspace(-N/2,N/2,N)
-    dist = abs(grid[:,None]+grid[None,:]*1j)**2
+    # Make coordinate grid
+    Nr,Nc = x.shape[-2:]
+    gridr = np.linspace(-Nr/2,Nr/2,Nr)
+    gridc = np.linspace(-Nc/2,Nc/2,Nc)
+    
+    # Make kernel
+    dist  = abs(gridr[:,None]+gridc[None,:]*1j)**2
     g = np.exp(-dist/sigma**2)
     g/= np.sum(g)
-    f = np.fft.fft2(g)
+    f = np.fft.fft2(np.fft.fftshift(g))
+    
+    # convolution via 2D FFT
     return np.fft.ifft2(np.fft.fft2(x)*f).real
 
 def linear_cosine_basis(TIMERES=100,NBASIS=10,normalize=True):
@@ -207,6 +216,13 @@ def unitscale(signal,axis=None):
     return signal
 
 def topercentiles(x):
+    '''
+
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
     n = len(x)
     x = np.array(x)
     order = x.argsort()
@@ -254,7 +270,7 @@ def amp(x):
     '''
     return np.abs(hilbert(np.array(x)))
 
-def getsnips(signal,times,window):
+def get_snips(signal,times,window):
     '''
     Extract snippits of a time series surronding a list of times. Typically
     used for spike-triggered statistics
@@ -269,7 +285,7 @@ def getsnips(signal,times,window):
     snips = np.array([signal[t-window:t+window+1] for t in times])
     return snips
 
-def triggeredaverage(signal,times,window):
+def triggered_average(signal,times,window):
     '''
     
     Parameters
@@ -277,9 +293,9 @@ def triggeredaverage(signal,times,window):
     Returns
     -------
     '''
-    return np.mean(getsnips(signal,times,window),0)
+    return np.mean(get_snips(signal,times,window),0)
 
-def gettriggeredstats(signal,times,window):
+def get_triggered_stats(signal,times,window):
     '''
     Get a statistical summary of data in length window around time point
     times.
@@ -304,7 +320,7 @@ def gettriggeredstats(signal,times,window):
         standard errors of the mean of `signal` for all time-windows 
         specified in `times`
     '''
-    s = getsnips(signal,times,window)
+    s = get_snips(signal,times,window)
     return np.mean(s,0),np.std(s,0),np.std(s,0)/np.sqrt(len(times))*1.96
 
 def padout(data):
@@ -539,6 +555,48 @@ def median_filter(x,window=100,mode='same'):
         return np.array(filtered)
     assert 0
 
+def percentile_filter(x,pct,window=100,mode='same'):
+    '''
+    percentile_filter(x,pct,window=100,mode='same')
+    Filters a signal by calculating the median in a sliding window of
+    width 'window'
+
+    mode='same' will compute median even at the edges, where a full window
+        is not available
+
+    mode='valid' will compute median only at points where the full window
+        is available
+
+    Parameters
+    ----------
+    x : np.array
+        One-dimensional numpy array of the signal to be filtred
+    pct: float in 0..100
+        Percentile to apply
+    window : positive int
+        Filtering window length in samples
+    mode : string, default 'same'
+        If 'same', the returned signal will have the same time-base and
+        length as the original signal. if 'valid', edges which do not
+        have the full window length will be trimmed
+    
+    Returns
+    -------
+    np.array :
+        One-dimensional filtered signal
+    '''
+    x = np.array(x)
+    n = x.shape[0]
+    if mode=='valid':
+        filtered = [np.percentile(x[i:i+window],pct) for i in range(n-window)]
+        return np.array(filtered)
+    if mode=='same':
+        a = window // 2
+        b = window - a
+        filtered = [np.percentile(x[max(0,i-a):min(n,i+b)],pct) for i in range(n)]
+        return np.array(filtered)
+    assert 0
+
 def variance_filter(x,window=100,mode='same'):
     '''
     Extracts signal variance in a sliding window
@@ -603,6 +661,7 @@ def pdiff(x):
     '''
     x = np.array(x)
     return rewrap(np.diff(x))
+    #return rewrap(spaced_derivative(x))
 
 def pghilbert(x):
     '''
@@ -1202,8 +1261,45 @@ def local_peak_within(freqs,cc,fa,fb):
     i     = peaks[argmax(cc[peaks])]
     return i, freqs[i], cc[i]
 
+
+def take_axis_slice(shape,axis,index):
+    ndims = len(shape)
+    if axis<0 or axis>=ndims:
+        raise ValueError('axis %d invalid for shape %s'%(axis,shape))
+    before = axis
+    after  = ndims-1-axis
+    return (np.s_[:],)*before + (index,) + (np.s_[:],)*after
+
+
+def take_axis(x,axis,index):
+    return x[take_axis_slice(x.shape,axis,index)]
+
+    
+def ndargmax(x):
+    '''
+    Get coordinates of largest value in a multidimensional array
+    
+    Parameters
+    ----------
+    x: np.array
+    '''
+    x = np.array(x)
+    return np.unravel_index(np.nanargmax(x),x.shape)
+    
+ 
+def complex_to_nan(x,value=np.NaN):
+    '''
+    Replce complex entries with NaN or othe value
+    '''
+    x = np.array(x)
+    x[np.iscomplex(x)]=value
+    return x.real
+
+
 def make_rebroadcast_slice(x,axis=0,verbose=False):
     '''
+    Generate correct slice object for broadcasting stastistics averaged
+    over the given axis back to the original shape.
     '''
     x = np.array(x)
     naxes = len(np.shape(x))
@@ -1620,8 +1716,6 @@ def zgrid(L):
     return 1j*c[:,None]+c[None,:]
 
 
-
-
 def niceinterp(a,b,t):
     '''
     ----------------------------------------------------------------------------
@@ -1638,6 +1732,7 @@ def niceinterp(a,b,t):
     '''
     return interp1d(a,b,kind='cubic',fill_value=(b[0],b[-1]),bounds_error=False,axis=0)(t)
     
+    
 def fftacorr1d(x):
     '''
     autocorrelogram with fft
@@ -1649,6 +1744,7 @@ def fftacorr1d(x):
     a = fftshift(ifft(abs(fft(x))**2).real)[N:]
     a = a/np.max(a)
     return a
+    
     
 def fftsta(spikes,x):
     '''
@@ -1667,6 +1763,7 @@ def fftsta(spikes,x):
                     np.conj(fft(x),dtype=np.complex64)),axes=1).real
     return sta/np.max(abs(sta),axis=1)[:,None]
 
+
 def interpmax1d(x):
     '''
     ----------------------------------------------------------------------------
@@ -1675,6 +1772,8 @@ def interpmax1d(x):
     
     Parameters
     ----------
+    x:
+    
     Returns
     -------
     '''
@@ -1685,6 +1784,7 @@ def interpmax1d(x):
     except:
         return i
     
+    
 def spaced_derivative(x):
     '''
     ----------------------------------------------------------------------------
@@ -1692,6 +1792,13 @@ def spaced_derivative(x):
     number of samples. This smoothly interpolates between a forward
     difference at the start of the signal and a backward difference at
     the end of the signal. 
+    
+    Parameters
+    ----------
+    x:
+    
+    Returns
+    -------
     '''
     N = len(x)
     return interp1d(

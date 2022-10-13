@@ -19,9 +19,9 @@ from scipy.signal import convolve2d
 from neurotools.graphics.plot import *
 
 from neurotools.spatial.triangulation import mergeNearby
-from neurotools.tools import zeroslike,find
+from neurotools.tools import zeroslike,find,c2p
 
-def plot_phase_gradient(dz):
+def plot_phase_gradient(dz,skip=1,lw=1,zorder=None,cmap='hsv'):
     '''
     Plot a phase-gradient map using a hue wheel to show direction
     and local flow lines to indicate magnitude
@@ -34,17 +34,18 @@ def plot_phase_gradient(dz):
         anf the second dimension (y) in the imaginary component.
     '''
     plt.cla()
-    plt.imshow(np.angle(dz),interpolation='nearest')
-    plt.hsv()
-    for i,row in list(enumerate(dz))[::1]:
-        for j,z in list(enumerate(row))[::1]:
+    plt.imshow(np.angle(dz),interpolation='nearest',cmap=cmap)
+    lines = []
+    for i,row in list(enumerate(dz))[::skip]:
+        for j,z in list(enumerate(row))[::skip]:
             z *=5
-            plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'w',lw=1)
+            lines += [np.NaN,j+1j*i,j+1j*i+z]
+    plt.plot(*c2p(lines),'w',lw=lw,zorder=zorder)
     h,w = np.shape(dz)
     plt.xlim(0-0.5,w-0.5)
     plt.ylim(h-0.5,0-0.5)
 
-def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
+def plot_phase_direction(dz,skip=1,lw=1,zorder=None,cmap='hsv'):
     '''
     Plot a phase-gradient map using a hue wheel to show direction
     and compass needles. Gradient magnitude is not shown.
@@ -63,14 +64,16 @@ def plot_phase_direction(dz,skip=1,lw=1,zorder=None):
     -------
     '''
     plt.cla()
-    plt.imshow(np.angle(dz),interpolation='nearest')
-    plt.hsv()
-    for i,row in list(enumerate(dz))[skip/2::skip]:
-        for j,z in list(enumerate(row))[skip/2::skip]:
+    plt.imshow(np.angle(dz),interpolation='nearest',cmap=cmap)
+    lines1 = []
+    lines2 = []
+    for i,row in list(enumerate(dz))[skip//2::skip]:
+        for j,z in list(enumerate(row))[skip//2::skip]:
             z = 0.25*skip*z/np.abs(z)
-            plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'w',lw=lw,zorder=zorder)
-            z = -z
-            plt.plot([j,j+np.real(z)],[i,i+np.imag(z)],'k',lw=lw,zorder=zorder)
+            lines1 += [np.NaN,j+1j*i,j+1j*i+z]
+            lines2 += [np.NaN,j+1j*i,j+1j*i-z]
+    plt.plot(*c2p(lines1),'w',lw=lw,zorder=zorder)
+    plt.plot(*c2p(lines2),'k',lw=lw,zorder=zorder)
     h,w = np.shape(dz)
     plt.xlim(0-0.5,w-0.5)
     plt.ylim(h-0.5,0-0.5)
@@ -227,7 +230,7 @@ def find_critical_points(data,docoalesce=False,radius=4.0,edgeavoid=None):
     Parameters
     ----------
     data : np.array
-        2D array complex phase values
+        2D array of complex phase values
         
     Other Parameters
     ----------------
@@ -298,7 +301,10 @@ def find_critical_points(data,docoalesce=False,radius=4.0,edgeavoid=None):
             if np.prod(pts.shape)==0:
                 # No points to check
                 return pts
-            outofbounds = (pts[:,0]<=edgeavoid)|(pts[:,1]<=edgeavoid)|(pts[:,0]>=Ncol-edgeavoid)|(pts[:,1]>=Nrow-edgeavoid)
+            outofbounds = (pts[:,0]<=edgeavoid)\
+                | (pts[:,1]<=edgeavoid)\
+                | (pts[:,0]>=Ncol-edgeavoid)\
+                | (pts[:,1]>=Nrow-edgeavoid)
             return pts[~outofbounds,:]
         anticlockwise = inbounds(anticlockwise)
         clockwise = inbounds(clockwise)
@@ -309,7 +315,14 @@ def find_critical_points(data,docoalesce=False,radius=4.0,edgeavoid=None):
         
     return clockwise, anticlockwise, saddles, peaks, maxima, minima
 
-def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect='auto',extent=None):
+def plot_critical_points(data,
+    lw=1,
+    ss=14,
+    skip=5,
+    ff=None,
+    plotsaddles=True,
+    aspect='auto',
+    extent=None):
     '''
     
     Parameters
@@ -325,6 +338,8 @@ def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect=
         plotting point size
     skip : int, default=5
         Skip every `skip` points when plotting phase direction map
+    ff:?
+        Unknown
     plotsaddles : bool, defualt=True
         Whether to plot saddes points
     aspect : string, default='auto'
@@ -335,7 +350,7 @@ def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect=
     clockwise,anticlockwise,saddles,peaks,maxima,minima = find_critical_points(data)
     dx,dy,dz = get_phase_gradient_as_complex(data)
     plt.cla()
-    plot_phase_direction(dz,skip=skip,lw=lw,zorder=Inf)
+    plot_phase_direction(dz,skip=skip,lw=lw,zorder=np.Inf)
     N = np.shape(data)[0]
     if ff is None: 
         ff = np.arange(N)
@@ -346,17 +361,18 @@ def plot_critical_points(data,lw=1,ss=14,skip=5,ff=None,plotsaddles=True,aspect=
         for d in [clockwise,anticlockwise,saddles,peaks,maxima,minima]:
             if d.size>0:
                 d[:,1] = d[:,1]*s+a
+    
     plot_complex(data,extent=extent,onlyphase=1)
-    if len(clockwise)>0: 
-        plt.scatter(*clockwise.T,s=ss**2,color='k',edgecolor='k',lw=lw,label='Clockwise')
-    if len(anticlockwise)>0: 
-        plt.scatter(*anticlockwise.T,s=ss**2,color='w',edgecolor='k',lw=lw,label='Anticlockwise')
-    if len(maxima)>0:    
-        plt.scatter(*maxima.T   ,s=ss**2,color='r',edgecolor='k',lw=lw,label='Maxima')
-    if len(minima)>0:    
-        plt.scatter(*minima.T   ,s=ss**2,color='g',edgecolor='k',lw=lw,label='Minima')
-    if plotsaddles and len(saddles)>0:   
-        plt.scatter(*saddles.T  ,s=ss**2,color=(1,0,1),edgecolor='k',lw=lw,label='Saddles')
+    if np.size(clockwise)>0: 
+        plt.scatter(*clockwise,s=ss**2,color='k',edgecolor='k',lw=lw,label='Clockwise')
+    if np.size(anticlockwise)>0: 
+        plt.scatter(*anticlockwise,s=ss**2,color='w',edgecolor='k',lw=lw,label='Anticlockwise')
+    if np.size(maxima)>0:    
+        plt.scatter(*maxima   ,s=ss**2,color='r',edgecolor='k',lw=lw,label='Maxima')
+    if np.size(minima)>0:    
+        plt.scatter(*minima   ,s=ss**2,color='g',edgecolor='k',lw=lw,label='Minima')
+    if plotsaddles and np.size(saddles)>0:   
+        plt.scatter(*saddles  ,s=ss**2,color=(1,0,1),edgecolor='k',lw=lw,label='Saddles')
     nice_legend()
 
 
@@ -389,7 +405,16 @@ def find_critical_potential_points(data):
     minima  = np.array(np.where(minima ))+1
     return saddles, peaks, maxima, minima
 
+
 def grad(x):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     dx = np.diff(x,axis=1)
     dy = np.diff(x,axis=0)
     resultx = zeroslike(x)
@@ -415,16 +440,19 @@ def quickgrad(x):
     dy = np.diff(x,axis=0)[:,:-1]
     return dx,dy
 
+
 def getp(x):
     '''
     
     Parameters
     ----------
+    x: 
     
     Returns
     -------
     '''
     return unwrap_indecies(coalesce(x))+1
+
 
 def get_critical_spectra(ff,wt):
     '''
@@ -437,7 +465,7 @@ def get_critical_spectra(ff,wt):
     Returns
     -------
     '''
-    wt      = squeeze(wt)
+    wt      = np.squeeze(wt)
     dx,dy   = quickgrad(np.abs(wt))
     ddx     = np.diff(np.sign(dx),1,1)[:-1,:]/2
     ddy     = np.diff(np.sign(dy),1,0)[:,:-1]/2
@@ -452,6 +480,7 @@ def get_critical_spectra(ff,wt):
     mins[:,1] = ff[aminima[:,1]]
     return mins,maxs
 
+
 def plot_critical_spectra(ff,wt,ss=5,aspect=None):
     '''
     smt and smf are time and frequency smoothing scales
@@ -463,7 +492,7 @@ def plot_critical_spectra(ff,wt,ss=5,aspect=None):
     Returns
     -------
     '''
-    wt      = squeeze(wt)
+    wt      = np.squeeze(wt)
     nf,nt = np.shape(wt)
     if aspect is None: aspect = float(nt)/nf/3
     dx,dy   = quickgrad(np.abs(wt))
@@ -484,6 +513,7 @@ def plot_critical_spectra(ff,wt,ss=5,aspect=None):
     show()
     return aminima,amaxima
 
+
 def cut_array_data(data,arrayMap,cutoff=1.8,spacing=0.4):
     '''
     data should be a NChannel x Ntimes array
@@ -501,6 +531,14 @@ def cut_array_data(data,arrayMap,cutoff=1.8,spacing=0.4):
     
     
 def mirror2D(C):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     C = np.array(C)
     C = np.cat([C,C[::-1]])
     C = np.cat([C,C[:,::-1]],1)

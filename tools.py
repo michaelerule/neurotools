@@ -192,7 +192,15 @@ class piper():
         return self.operation(other)
     def __lt__(self,other):
         return self.operation(other)
+    def __rlt__(self,other):
+        return self.operation(other)
     def __lshift__(self,other):
+        return self.operation(other)
+    def __rlshift__(self,other):
+        return self.operation(other)
+    def __le__(self,other):
+        return self.operation(other)
+    def __rshift__(self,other):
         return self.operation(other)
     def __rgt__(self,other):
         return self.operation(other)
@@ -334,9 +342,7 @@ def ensure_dir(dirname):
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    dirname : str
     """
     try:
         os.makedirs(dirname)
@@ -588,8 +594,16 @@ def progress_bar(x,N=None):
             r = i*50/N
             k = int(r)
             q = ' ▏▎▍▌▋▊▉'[int((r-k)*8)]
-            print('\r['+('█'*k)+q+(' '*(50-k-1))+']%3d%%'%(i*100//N)+(pattern%i),end='',flush=True)
-            wait_til_ms = time_ms+250
+            print(
+                '\r['+
+                ('█'*k)+    
+                q+
+                (' '*(50-k-1))+
+                ']%3d%%'%(i*100//N)+
+                (pattern%i),
+                end='',
+                flush=True)
+            wait_til_ms = time_ms+1000
         yield x
     print('\r'+' '*70+'\r',end='',flush=True)
 

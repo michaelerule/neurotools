@@ -352,13 +352,13 @@ def noclip(ax=None):
     for o in ax.findobj():
         o.set_clip_on(False)
 
-def notick(ax=None):
+def notick(ax=None,axis='both',which='both'):
     '''
     Hide axis ticks, but not their labels
     '''
     if ax is None:
         ax = plt.gca()
-    ax.tick_params('both', length=0, width=0, which='both')
+    ax.tick_params(axis, length=0, width=0, which=which)
 
 def nox():
     '''
@@ -1162,21 +1162,21 @@ def plotCWT(ff,cwt,aspect='auto',
     cwt : numeric
         wavelet transformed data (what orientation?)
     '''
-    cwt = squeeze(cwt)
-    nf,N = shape(cwt)
-    pwr    = np.abs(cwt)
-    fest   = ff[argmax(pwr,0)]
-    cla()
+    cwt  = np.squeeze(cwt)
+    nf,N = np.shape(cwt)
+    pwr  = np.abs(cwt)
+    fest = ff[np.argmax(pwr,0)]
+    plt.cla()
     imshow(pwr,aspect=aspect,extent=(0,N,ff[-1],ff[0]),vmin=vmin,vmax=vmax,interpolation=interpolation,cmap=cm)
-    xlim(0,N)
-    ylim(ff[0],ff[-1])
+    plt.xlim(0,N)
+    plt.ylim(ff[0],ff[-1])
     try:
-        tight_layout()
+        plt.tight_layout()
     except:
         print('tight_layout missing, how old is your python? seriously')
     if dodraw:
-        draw()
-        show()
+        plt.draw()
+        plt.show()
 
 def complex_axis(scale):
     '''
@@ -1204,8 +1204,8 @@ def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     ----------
     
     '''
-    cwt = squeeze(cwt)
-    nf,N = shape(cwt)
+    cwt = np.squeeze(cwt)
+    nf,N = np.shape(cwt)
     if aspect is None: aspect = N/float(nf)*0.5
     pwr = np.abs(cwt)
     rgb = complexHLArr2RGB(cwt*(0.9/nmx(pwr)))
@@ -1304,7 +1304,10 @@ class HandlerSquare(HandlerPatch):
         return [p]
 
 def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
-    extent=None,onlyphase=False,previous=None,origin='lower'):
+    extent=None,
+    onlyphase=False,
+    previous=None,
+    origin='lower'):
     '''
     Renders complex np.array as image, in polar form with magnitude mapped to
     lightness and hue mapped to phase.
@@ -1321,10 +1324,10 @@ def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
     :return img: a copy of the result of imshow, which can be reused in
         subsequent calls to speed things up, if animating a video
     '''
-    z   = squeeze(z)
-    h,w = shape(z)
+    z   = np.squeeze(z)
+    h,w = np.shape(z)
     a   = np.abs(z)
-    if vm is None: vm = numpy.max(a)
+    if vm     is None: vm     = numpy.max(a)
     if aspect is None: aspect = w/float(h)
     if onlyphase:
         rgb = complexHLArr2RGB(0.5*z/np.abs(z))
@@ -1346,7 +1349,7 @@ def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
 def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
     extent=None,onlyphase=False,previous=None,origin='lower'):
     '''
-    Like plot_complex except has an additional dimention for time
+    Like plot_complex except has an additional dimension for time
 
     Parameters
     ----------
@@ -2141,4 +2144,30 @@ def arrow_between(A,B,size=None):
         polygon = Polygon(array([py,px]).T,facecolor=BLACK)#,transform=tt)
         fig.patches.append(polygon)
         
+def splitz(z,thr=1e-9):
+    z   = np.complex64(z)
+    r,i = np.float32(np.real(z)),np.float32(np.imag(z))
+    r[abs(r)<thr]=np.NaN
+    i[abs(i)<thr]=np.NaN
+    return r,i
+
+def plotz(x,z,thr=1e-9,**k):
+    r,i = splitz(z,thr=thr)
+    anyr = np.any(~np.isnan(r))
+    anyi = np.any(~np.isnan(i))
+    if anyr:
+        l = None
+        if 'label' in k:
+            l = k['label']
+            if anyi:
+                l += r' $(\Re)$'
+        plot(x,r,**{**k,'linestyle':'-','label':l})
+    if anyi:
+        l=k['label']+r'$(\Im)$' if 'label' in k else None
+        plot(x,i,**{**k,'linestyle':':','label':l})
+    
+    
+    
+    
+
 

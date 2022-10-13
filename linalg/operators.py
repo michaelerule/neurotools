@@ -18,7 +18,158 @@ Functions for generating discrete representations of certain operators.
 Note: This is partially redundant with `neurotools.spatial.kernels`.
 '''
 
-def laplace1D(N):
+
+def adjacency1D(L,circular=True):
+    '''
+    1D adjacency matrix.
+    
+    Parameters
+    ----------
+    N: int
+        Size of operator
+    
+    Returns
+    -------
+    L: NxN sparse array
+        Adjacency matrix.
+    '''
+    # Make adjacency matrix
+    # [1 0 1 .. 0]
+    A1d = scipy.sparse.eye(L,k=-1) + scipy.sparse.eye(L,k=1)
+    if circular:
+        A1d += scipy.sparse.eye(L,k=L-1) + scipy.sparse.eye(L,k=1-L) 
+    return A1d
+
+
+def laplacian1D_circular(N):
+    '''
+    Laplacian operator on a closed, discrete, one-dimensional domain
+    of length `N`, with circularly-wrapped boundary condition.
+
+    Parameters
+    ----------
+    N: int
+        Size of operator
+    
+    Returns
+    -------
+    L: NxN array
+        Matrix representation of Laplacian operator on a finite, 
+        discrete domain of length N.
+    '''
+    return adjacency1D_circular(N)-2*np.eye(N)
+
+    
+def adjacency2D(L,H=None,circular=True):
+    '''
+    2D adjacency matrix in 3x3 neighborhood.
+    
+    Parameters
+    ----------
+    L: int
+        Size of operator, or width if H is provided
+    H: int
+        Height of operator, if different from width
+    circular: bool
+        If true, operator will wrap around the edge in both directions
+    
+    Returns
+    -------
+    L: NxN sparse array
+        Adjacency matrix.
+    '''
+    W = int(L)
+    H = W if H is None else int(H)
+    a1drow = adjacency1D(H,circular=circular)
+    a1dcol = adjacency1D(W,circular=circular)
+    A2d_cross  = scipy.sparse.kronsum(a1drow,a1dcol)
+    A2d_corner = scipy.sparse.kron   (a1dcol,a1drow)
+    A2d = (A2d_cross*2/3+A2d_corner*1/3).toarray()
+    return A2d
+
+
+def laplacian2D(L,H=None,circular=True,mask=None,boundary='dirichlet'):
+    '''
+    Build a discrete Laplacian operator.
+    This is uses an approximatelly radially-symmetric Laplacian in a 3×3 cell
+    
+    Parameters
+    ----------
+    L: int
+        Size of operator, or width if H is provided
+    H: int
+        Height of operator, if different from width
+    circular: bool
+        If true, operator will wrap around the edge in both directions
+    mask: LxL np.bool
+        Which pixels are in the domain
+    boundary: str
+        Can be 'dirichlet', which is a zero boundary, or
+        'neumann', which is a reflecting boundary.
+        
+    Returns
+    -------
+    scipy.sparse.csr_matrix
+    '''
+    
+    W = int(L)
+    H = W if H is None else int(H)
+    
+    ncols = H
+    nrows = W
+    
+    if not mask is None:
+        mask = np.array(mask)
+        if not mask.shape==(nrows,ncols):
+            raise ValueError(('Mask with shape %s provided, '
+            'but operator shape is %s')%(mask.shape,(W,H)))
+    
+    boundary = str(boundary).lower()[0]
+    if not boundary in 'dn':
+        raise ValueError('Boundary can be "dirichlet" or "neumann"')
+        
+    Ad = adjacency2D(W,H,circular)
+        
+    if boundary == 'n':
+        # We get a reflecting boundary if we remove neighbors first
+        if mask is None:
+            Ad[~mask.ravel(),:] = Ad[:,~mask.ravel()] = 0
+        Lp = Ad - np.diag(sum(Ad,0))
+    elif boundary =='d':
+        # We get a zero boundary if we remove neighbors after
+        Lp = Ad - np.diag(sum(Ad,0))
+        if not mask is None:
+            Lp[~mask.ravel(),:] = Lp[:,~mask.ravel()] = 0
+    return scipy.sparse.csr_matrix(Lp)
+
+def adjacency2D_circular(N):
+    '''
+    Adjacency matric on a closed NxN domain with circularly-wrapped boundary.
+
+    Parameters
+    ----------
+    N: int
+        Size of operator
+    
+    Returns
+    -------
+    L: N²xN² array
+        Adjacency matrix. The diagonal is zero (no self edges)
+    '''
+    A1d = adjacency1D_circular(N)
+    return scipy.sparse.kronsum(A1d,A1d).toarray()
+
+def adjacency2d_rotational(L):
+    '''
+    2D adjacency matrix with nonzero weights for corner neighbors to improve
+    rotational symmetry. 
+    '''
+    A1d = eye(L,k=-1) + eye(L,k=1) + eye(L,k=L-1) + eye(L,k=1-L) 
+    A2d_cross  = scipy.sparse.kronsum(A1d,A1d).toarray()
+    A2d_corner = scipy.sparse.kron(A1d,A1d).toarray()
+    return A2d_cross*2/3+A2d_corner*1/3
+
+def laplacian1D(N):
     '''
     Laplacian operator on a closed, discrete, one-dimensional domain
     of length `N`
@@ -38,7 +189,7 @@ def laplace1D(N):
     L[0,0] = L[-1,-1] = -1
     return L
 
-def laplaceFT1D(N):
+def laplacianFT1D(N):
     '''
     Parameters
     ----------
@@ -72,7 +223,7 @@ def wienerFT1D(N):
     Returns
     -------
     '''
-    x = laplaceop(N)
+    x = laplacianop(N)
     x[np.abs(x)<1e-5]=1
     sqrtcov = 1/np.sqrt(x)
     return sqrtcov
@@ -326,3 +477,8 @@ def make_cosine_basis(N,L,min_interval):
     b = np.exp(np.log(t[-1])/(N+1))
     B = log_cosine_basis(arange(N),t,base=b,offset=0)
     return B
+    
+    
+    
+    
+    

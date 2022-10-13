@@ -1705,25 +1705,25 @@ def make_lagged(x,NLAGS=5,LAGSPACE=1):
 def zgrid(L):
     '''
     ----------------------------------------------------------------------------
-    2D grid coordinates as complex numbers
-<<<<<<< HEAD
+    2D grid coordinates as complex numbers, ranging from -L/2 to L/2
     
     Parameters
     ----------
+    L: int
+        Desired size of LxL grid
+    
     Returns
     -------
-=======
->>>>>>> refs/remotes/origin/master
+    np.complex64: LxL coordinate grid; center is zero.
     '''
     c = np.arange(L)-L//2
     return 1j*c[:,None]+c[None,:]
 
 
-<<<<<<< HEAD
-def niceinterp(a,b,t):
+def nice_interp(a,b,t):
     '''
     ----------------------------------------------------------------------------
-    interp1d with nice defaults
+    numpy.interp1d with nice defaults
     
     Parameters
     ----------
@@ -1733,13 +1733,22 @@ def niceinterp(a,b,t):
     
     Returns
     -------
+    np.array: interpolated values
     '''
-    return interp1d(a,b,kind='cubic',fill_value=(b[0],b[-1]),bounds_error=False,axis=0)(t)
+    return interp1d(a,b,
+        kind='cubic',fill_value=(b[0],b[-1]),bounds_error=False,axis=0)(t)
     
     
 def fftacorr1d(x):
     '''
-    autocorrelogram with fft
+    Autocorrelogram via FFT.
+    
+    Parameters
+    ----------
+    x: bp.float32
+    
+    Returns
+    -------
     '''
     x = np.float32(x)
     x = x-np.mean(x)

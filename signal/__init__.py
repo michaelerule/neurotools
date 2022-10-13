@@ -1762,13 +1762,20 @@ def fftacorr1d(x):
 def fftsta(spikes,x):
     '''
     ----------------------------------------------------------------------------
-    Spike triggerd average using fft
-    Signal is z-scored
+    Spike triggerd average (STA) via FFT
+    Signal `x` is z-scored befor calculating the spike-triggered average
+    (a.k.a. reverse correlation).
+    The returned STA is normalized so that the maximum magnitude is 1.
     
     Parameters
     ----------
+    spikes: np.array
+        1D spike count vector
+    x: np.array
+        
     Returns
     -------
+    np.float32 : normalized spike-triggered average
     '''
     signal = np.float32((x-np.mean(x))/np.std(x))
     spikes = np.float32(spikes)
@@ -1780,15 +1787,16 @@ def fftsta(spikes,x):
 def interpmax1d(x):
     '''
     ----------------------------------------------------------------------------
-    Locate a peak by interpolation; see
+    Locate a peak in a 1D array by interpolation; see
     dspguru.com/dsp/howtos/how-to-interpolate-fft-peak
     
     Parameters
     ----------
-    x:
+    x: 1D np.array; Signal in which to locate the gloabal maximum.
     
     Returns
     -------
+    i: float; Interpolated index of global maximum in `x`.
     '''
     i = np.argmax(x)
     try:
@@ -1818,9 +1826,7 @@ def spaced_derivative(x):
         np.linspace(0,1,N-1),
         np.diff(x))(
         np.linspace(0,1,N))
-=======
 
 
 
 
->>>>>>> refs/remotes/origin/master

@@ -15,6 +15,15 @@ def brute_force_local_2d_maxima(x,R=5):
     '''
     Find points higher than all neighbors within 
     radius r in a 2D array. 
+    
+    Parameters
+    ----------
+    x: 2D np.array; Signal in which to locate local maxima.
+    R: int; RxR region in which a peak must be a local maxima to be included.
+    
+    Returns
+    -------
+    (x,y): tuple of np.int32 arrays with peak coordinates.
     '''
     R   = int(np.ceil(R))
     pad = 2*R

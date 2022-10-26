@@ -165,7 +165,7 @@ for entry in DEPENDENCIES:
     if loaded_version is None:
         sys.stdout.write('\tNo version information found.')
     else:
-        loaded_version = loaded_version.split('\n')[0]
+        loaded_version = map(int,loaded_version.split('\n')[0].split('.'))
         sys.stdout.write('\tVersion '+str(loaded_version ))
         if loaded_version < version:
             sys.stdout.write('\tLoaded version older than expected '+str(version))

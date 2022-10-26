@@ -26,6 +26,14 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     Ensure the return value is compatible with this datatype.
     This uses the standard error of the mean to check for convergence. 
     It converges slowly at 1/sqrt(n)
+
+    Example:
+    
+        def f():
+            x = randn(2)+array([9,-9])
+            return x
+        Ex = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)
+        print('Ex:\n',Ex)
     
     Parameters
     ----------
@@ -40,15 +48,6 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     -------
     number or array-like:
         Estimate of the mean of f
-
-    Example
-    -------
-    
-        def f():
-            x = randn(2)+array([9,-9])
-            return x
-        Ex = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)
-        print('Ex:\n',Ex)
     '''
     # perform argument validation
     maxiter=int(maxiter)
@@ -97,19 +96,8 @@ def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     Ensure the return value is compatible with this datatype.
     This uses the standard error of the mean to check for convergence. 
     It converges very slowly (1/sqrt(n)), so don't ask for too much precision.
-    
-    Parameters
-    ----------
-    f : function that returns array_like.
-    maxiter : maximum number of samples to draw
-    converge : maximum absolute error tolerated
-    
-    Returns
-    -------
-    Estimate of the mean and second moment of f
 
-    Example
-    -------
+    Example::
     
         def f():
             x = randn(2)+array([9,-9])
@@ -117,6 +105,19 @@ def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
         Ex,Exx = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)
         print('Ex:\n',Ex)
         print('Exx:\n',Exx)
+    
+    Parameters
+    ----------
+    f : 
+        function that returns array_like.
+    maxiter : 
+        maximum number of samples to draw
+    converge : 
+        maximum absolute error tolerated
+    
+    Returns
+    -------
+    Estimate of the mean and second moment of f
     '''
     # perform argument validation
     maxiter=int(maxiter)

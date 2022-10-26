@@ -22,8 +22,6 @@ from   numpy import pi
 
 from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_finite_real, logdet
 from neurotools.stats.Gaussian import *
-# TODO fix imports
-#from neurotools.matrix import *
 from neurotools.linalg.matrix import real_eig
 
 def MVG_check(M,C,eps=1e-6):
@@ -106,14 +104,14 @@ def MVG_sample(M,P=None,C=None,N=1,safe=1):
             MVG_check(M,C)
         w,v = real_eig(C)
         Q   = v.dot(np.diag(np.sqrt(w*(w>0)))).dot(v.T)
-        return M[:,None]+Q.dot(randn(len(M),N))
+        return M[:,None]+Q.dot(np.random.randn(len(M),N))
     if C is None:
         # Use precision
         if safe:
             MVG_check(M,P)
         w,v = real_eig(P)
         Q   = v.dot(np.diag((w*(w>0))**-0.5)).dot(v.T)
-        return M[:,None]+Q.dot(randn(len(M),N))
+        return M[:,None]+Q.dot(np.random.randn(len(M),N))
 
 def MVG_multiply(M1,P1,M2,P2,safe=1):
     '''

@@ -15,8 +15,6 @@ Collected functions from 2018--2023 concerning analyses of 2D data.
 These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.
 '''
 
-
-from pylab import *
 from numpy import *
 
 def p2z(px,py=None):

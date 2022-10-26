@@ -19,7 +19,6 @@ found elsehwere.
 '''
 
 
-from pylab import *
 from numpy import *
 
 

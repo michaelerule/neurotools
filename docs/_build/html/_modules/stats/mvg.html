@@ -41,7 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">neurotools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.html">neurotools package</a></li>
 </ul>
 
         </div>
@@ -94,8 +94,6 @@
 
 <span class="kn">from</span> <span class="nn">neurotools.linalg.matrix</span> <span class="kn">import</span> <span class="n">check_covmat</span><span class="p">,</span> <span class="n">check_covmat_fast</span><span class="p">,</span> <span class="n">check_finite_real</span><span class="p">,</span> <span class="n">logdet</span>
 <span class="kn">from</span> <span class="nn">neurotools.stats.Gaussian</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="c1"># TODO fix imports</span>
-<span class="c1">#from neurotools.matrix import *</span>
 <span class="kn">from</span> <span class="nn">neurotools.linalg.matrix</span> <span class="kn">import</span> <span class="n">real_eig</span>
 
 <div class="viewcode-block" id="MVG_check"><a class="viewcode-back" href="../../stats.mvg.html#stats.mvg.MVG_check">[docs]</a><span class="k">def</span> <span class="nf">MVG_check</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
@@ -178,14 +176,14 @@
             <span class="n">MVG_check</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">C</span><span class="p">)</span>
         <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">real_eig</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
         <span class="n">Q</span>   <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="p">(</span><span class="n">w</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">))))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">M</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">+</span><span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">),</span><span class="n">N</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">M</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">+</span><span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">),</span><span class="n">N</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">C</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Use precision</span>
         <span class="k">if</span> <span class="n">safe</span><span class="p">:</span>
             <span class="n">MVG_check</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">P</span><span class="p">)</span>
         <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">real_eig</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
         <span class="n">Q</span>   <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">((</span><span class="n">w</span><span class="o">*</span><span class="p">(</span><span class="n">w</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">))</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">M</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">+</span><span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">),</span><span class="n">N</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">M</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">+</span><span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">),</span><span class="n">N</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="MVG_multiply"><a class="viewcode-back" href="../../stats.mvg.html#stats.mvg.MVG_multiply">[docs]</a><span class="k">def</span> <span class="nf">MVG_multiply</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">P1</span><span class="p">,</span><span class="n">M2</span><span class="p">,</span><span class="n">P2</span><span class="p">,</span><span class="n">safe</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

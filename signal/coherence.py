@@ -11,7 +11,6 @@ from __future__ import print_function
 Routines for calculating coherence
 """
 
-from numpy import *
 import numpy as np
 from collections import defaultdict
 
@@ -22,9 +21,10 @@ import scipy.stats
 
 from neurotools.signal.morlet     import *
 from neurotools.getfftw           import *
-from neurotools.signal     import zscore
+from neurotools.signal            import zscore
 from neurotools.signal.multitaper import dpss_cached
 from neurotools.stats.circular    import squared_first_circular_moment
+
 try:
     import nitime
     from nitime.algorithms import coherence

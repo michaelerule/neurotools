@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
 
-from neurotools.nlab import *
+
 from neurotools.models.rbm.rbm import *
 from neurotools.models.rbm.rbm_sample import *
 
@@ -18,7 +18,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from scipy.stats  import entropy
-from numpy.random import *
 
 import glob
 import itertools

@@ -35,4 +35,4 @@ Indices and tables
    :maxdepth: 5
    :caption: Contents:
    
-   modules
+   neurotools

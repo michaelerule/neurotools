@@ -1,5 +1,14 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+
+'''
+This is a wrapper module that imports pylab as well
+as commonly used routines from neurotools. Try
+
+    from nlab import *
+
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division

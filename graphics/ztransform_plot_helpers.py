@@ -8,7 +8,10 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from pylab import *
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
 import colorsys
 import matplotlib.pyplot as plt
 from mpl_toolkits import axes_grid1

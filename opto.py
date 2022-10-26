@@ -15,11 +15,13 @@ __PYTHON_2__ = sys.version_info<(3, 0)
 
 
 '''
-Routines specific to working with Optogenetics datasets from the 
-Donoghue lab. These routines need to be ported to make them general.
-This module refers to and depends on unpublished data. 
+Routines specific to working with Optogenetics datasets from
+the Donoghue lab. These routines need to be ported to make 
+them general. This module refers to and depends on 
+unpublished data. 
 
-TODO: once data can be publicly released, re-package these routines.
+You'll need to set the `opto_dataset` path variable to the
+location of `TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001.mat`.
 '''
 
 opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001';
@@ -27,9 +29,7 @@ opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_tr
 import sys, os
 sys.path.insert(1,os.path.expanduser('~/Dropbox/bin'))
 import neurotools
-from neurotools.nlab import *
 from neurotools.tools import metaloadmat,globalize
-nowarn()
 import numpy as np
 
 @memoize

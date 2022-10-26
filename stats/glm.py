@@ -7,7 +7,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
 
 '''
 Tutorial in Poisson generalized linear point-process models for neural
@@ -309,7 +308,6 @@ def fitGLM(X,Y,L2Penalty=0.0,mu0=None,B0=None,**kwargs):
     mu,B = M[0],M[1:]
     return mu,B
 
-from numpy.random import permutation
 def crossvalidatedAUC(X,Y,NXVAL=4):
     '''
     Crossvalidated area under the ROC curve calculation. This routine
@@ -332,7 +330,7 @@ def crossvalidatedAUC(X,Y,NXVAL=4):
         GLM point process model fit
     '''
     N = X.shape[0]
-    P = permutation(N)
+    P = np.random.permutation(N)
     X = X[P,:]
     Y = Y[P]
     blocksize = N//NXVAL

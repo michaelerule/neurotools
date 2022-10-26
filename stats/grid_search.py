@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-from pylab import *
-
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 def grid_search(pargrid,evaluate):
     '''

@@ -174,3 +174,25 @@ def pair_neighbors(z1,z2,radius=inf):
     keep  = delta<radius
     edges = int32([a,b])
     return edges.T[keep], pairs.T[keep], delta[keep]
+    
+def paired_distances(z1,z2):
+    '''
+    Calculate pairwise distances between two sets of 
+    (x,y) points encoded as x+iy complex numbers
+    
+    Parameters
+    ----------
+    z1: 1D np.complex64 
+        List of x+iy points
+    z2: 1D np.complex64 
+    
+    Returns
+    -------
+    distance: np.float32 with shape z1.shape+z2.shape
+        Array of paired distances
+    '''
+    z1,z2 = p2c(z1),p2c(z2)
+    s1,s2 = z1.shape,z2.shape
+    z1,z2 = z1.ravel(),z2.ravel()
+    distance = abs(z1[:,None]-z2[None,:])
+    return distance.reshape(*(s1+s2))

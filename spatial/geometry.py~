@@ -16,7 +16,6 @@ These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.
 '''
 
 
-from pylab import *
 from numpy import *
 
 def p2z(px,py=None):
@@ -234,16 +233,4 @@ def in_hull(z,hull):
     b = hull.equations[:,-1].T  # half-plane thresholds
     return all(m@z2p(z) <= -b[:,None],0).reshape(*s)
 
-    
-def ndargmax(x):
-    '''
-    Get coordinates of largest value in a multidimensional array
-    
-    Parameters
-    ----------
-    x: np.array
-    '''
-    x = np.array(x)
-    return unravel_index(np.nanargmax(x),x.shape)
-    
-    
+

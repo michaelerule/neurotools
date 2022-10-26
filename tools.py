@@ -23,7 +23,6 @@ from matplotlib.cbook           import flatten
 from neurotools.jobs.ndecorator import *
 from scipy.io                   import loadmat
 from numbers                    import Number
-#from collections                import Set, Mapping, deque
 from collections                import deque
 
 try: 
@@ -147,12 +146,12 @@ class emitter():
     operator "|" will apply the callable as a side effect before
     returning the original value of the expression. The default side
     effect is printing the object value.
-    '''
-    '''
-    :Example:
-    >>> emit = emitter()
-    >>> emit | cos(10)
+
+    Example:
     
+        >>> emit = emitter()
+        >>> emit | cos(10)
+        
     '''
     def __init__(self,operation=None):
         if operation is None:
@@ -169,18 +168,19 @@ class emitter():
 
 class piper():
     '''
-    Piper extends callables such that they can be called by using 
-    infix operators. 
+    Piper extends callables such that they can be called by 
+    using infix operators. This is just for fun and you
+    should probably not use it.
     
-    :Example:
-    >>> def foo(x):
-    >>>     return x+1
-    >>> pip = piper(foo)
-    >>> 1 + 1 | pip
-    >>> @piper
-    >>> def zscore(x):
-    >>>     return (x-mean(x,0))/std(x,0)
-    >>> zscore < rand(10)
+    Example:
+        >>> def foo(x):
+        >>>     return x+1
+        >>> pip = piper(foo)
+        >>> 1 + 1 | pip
+        >>> @piper
+        >>> def zscore(x):
+        >>>     return (x-mean(x,0))/std(x,0)
+        >>> zscore < rand(10)
     
     '''
     def __init__(self,operation):

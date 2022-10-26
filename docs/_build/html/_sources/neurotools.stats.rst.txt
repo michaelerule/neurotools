@@ -17,6 +17,7 @@ Submodules
    neurotools.stats.fast_kde
    neurotools.stats.glm
    neurotools.stats.gmm
+   neurotools.stats.grid_search
    neurotools.stats.history_basis
    neurotools.stats.hmm
    neurotools.stats.information

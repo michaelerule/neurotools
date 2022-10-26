@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.spatial.masking module &mdash; Neurotools 2 documentation</title>
+  <title>neurotools.stats.grid_search module &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,8 +21,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="neurotools.spatial.phase module" href="neurotools.spatial.phase.html" />
-    <link rel="prev" title="neurotools.spatial.kernels module" href="neurotools.spatial.kernels.html" /> 
+    <link rel="next" title="neurotools.stats.history_basis module" href="neurotools.stats.history_basis.html" />
+    <link rel="prev" title="neurotools.stats.gmm module" href="neurotools.stats.gmm.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,13 +55,13 @@
 <li class="toctree-l4"><a class="reference internal" href="neurotools.linalg.html">neurotools.linalg package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="neurotools.models.html">neurotools.models package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="neurotools.signal.html">neurotools.signal package</a></li>
-<li class="toctree-l4 current"><a class="reference internal" href="neurotools.spatial.html">neurotools.spatial package</a><ul class="current">
-<li class="toctree-l5 current"><a class="reference internal" href="neurotools.spatial.html#submodules">Submodules</a></li>
-<li class="toctree-l5"><a class="reference internal" href="neurotools.spatial.html#module-neurotools.spatial">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spatial.html">neurotools.spatial package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neurotools.spikes.html">neurotools.spikes package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="neurotools.stats.html">neurotools.stats package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="neurotools.stats.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="neurotools.stats.html#module-neurotools.stats">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="neurotools.spikes.html">neurotools.spikes package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="neurotools.stats.html">neurotools.stats package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.html#submodules">Submodules</a></li>
@@ -88,10 +88,10 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="modules.html">neurotools</a> &raquo;</li>
           <li><a href="neurotools.html">neurotools package</a> &raquo;</li>
-          <li><a href="neurotools.spatial.html">neurotools.spatial package</a> &raquo;</li>
-      <li>neurotools.spatial.masking module</li>
+          <li><a href="neurotools.stats.html">neurotools.stats package</a> &raquo;</li>
+      <li>neurotools.stats.grid_search module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/neurotools.spatial.masking.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/neurotools.stats.grid_search.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -99,135 +99,57 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-neurotools.spatial.masking">
-<span id="neurotools-spatial-masking-module"></span><h1>neurotools.spatial.masking module<a class="headerlink" href="#module-neurotools.spatial.masking" title="Permalink to this heading"></a></h1>
+  <section id="module-neurotools.stats.grid_search">
+<span id="neurotools-stats-grid-search-module"></span><h1>neurotools.stats.grid_search module<a class="headerlink" href="#module-neurotools.stats.grid_search" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.as_mask">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">as_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#as_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.as_mask" title="Permalink to this definition"></a></dt>
-<dd><p>Verify that x is a 2D np.bool array, or attempt to convert it to one if
-not.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>2D np.array</em>) – This routine understands np.bool, as well as numeric arrays that contain
-only two distinct values, and use a positive value for True and any
-other value for False.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.mask_to_points">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">mask_to_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#mask_to_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.mask_to_points" title="Permalink to this definition"></a></dt>
-<dd><p>Get locations of all <cite>True</cite> pixels in a 2D boolean array encoded as
-z = column + i*row.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>2D np.bool</em>) – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>z</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.complex64</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.extend_mask">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">extend_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#extend_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.extend_mask" title="Permalink to this definition"></a></dt>
-<dd><p>Extend 2D image mask by blurring and thresholding.
-Note: this uses circular convolution; Pad accordingly.</p>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.grid_search">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">grid_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pargrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/grid_search.html#grid_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.grid_search.grid_search" title="Permalink to this definition"></a></dt>
+<dd><p>Grid search hyperparameter optimization</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mask</strong> (<em>2D np.bool</em>) – Image mask to extend.</p></li>
-<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>default 3</em>) – Gaussian blur radius.</p></li>
-<li><p><strong>thr</strong> – (float, default .5): Threshold for new mask.</p></li>
+<li><p><strong>pargrid</strong> (<em>list</em><em> of </em><em>arrays</em>) – A list; Each element is a list of values for a given
+parameter to search over</p></li>
+<li><p><strong>evaluate</strong> (<em>function</em>) – <dl class="simple">
+<dt>Arguments:</dt><dd><dl class="simple">
+<dt>Parameters: Tuple</dt><dd><p>Parameters taken from the parameter search grid</p>
+</dd>
+<dt>State: List of arrays</dt><dd><p>Saves initial conditions (optional, default None)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>state: the inferred model fit, in the form of a list</dt><dd><p>of floating-point numpy arrays, to be re-used as
+initial conditions for subsequent parameters.</p>
+</dd>
+<dt>likelihood: float</dt><dd><p>Scalar summary of fit quality, higher is better</p>
+</dd>
+<dt>info: object</dt><dd><p>Anything else you’d like to save</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>smoothed mask</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>2D np.bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.pgrid">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">pgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">W</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#pgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.pgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Create a (W,H) = (Nrows,Ncols) coordinate grid where each cell
-is z = irow + 1j * icol</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>W</strong> (<em>int</em><em> or </em><em>2D np.array</em>) – If <cite>int</cite>: the number of columns in the grid.
-if <cite>np.array</cite>: Take (H,W) from the array’s shape</p></li>
-<li><p><strong>H</strong> (<em>int</em>) – Number of rows in grid; Defaults to H=W if H=None.</p></li>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>best</em> – best index into parameter grid</p></li>
+<li><p><em>pars</em> – values of best parameters</p></li>
+<li><p><em>results[best]</em> – (state, likelihood, info) at best parameters.
+<cite>info</cite> is determined by the third element in the
+3-tuple return-value of the <cite>evaluate</cite> function,
+passed by the user. <cite>state</cite> is also user-defined.</p></li>
+<li><p><em>allresults</em> – all other results</p></li>
 </ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.nan_mask">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">nan_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nanvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#nan_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.nan_mask" title="Permalink to this definition"></a></dt>
-<dd><p>Create a (W,H) = (Nrows,Ncols) coordinate grid where each cell
-is z = irow + 1j * icol</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mask</strong> (<em>2D np.bool</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.maskout">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">maskout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#maskout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.maskout" title="Permalink to this definition"></a></dt>
-<dd><p>Set pixels in x where mask is False to NaN</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>2D np.float32</em>) – </p></li>
-<li><p><strong>mask</strong> (<em>2D np.bool</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.trim_mask">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">trim_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#trim_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.trim_mask" title="Permalink to this definition"></a></dt>
-<dd><p>Remove empty edges of boolean mask.
-See <cite>mask_crop(array,mask)</cite> to use a mask to trim another array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mask</strong> (<em>2D np.bool</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.mask_crop">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">mask_crop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#mask_crop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.mask_crop" title="Permalink to this definition"></a></dt>
-<dd><p>Set pixels in x where mask is False to NaN,
-and then remove empty rows and columns.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>2D np.float32</em>) – </p></li>
-<li><p><strong>mask</strong> (<em>2D np.bool</em>) – </p></li>
-<li><p><strong>fill_nan</strong> (<em>bool</em>) – Whether to fill “false” values with NaN; default is true</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.beta">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.beta" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.beta">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.beta" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Beta distribution.</p>
 <p>The Beta distribution is a special case of the Dirichlet distribution,
 and is related to the Gamma distribution.  It has the probability
@@ -273,8 +195,8 @@ Otherwise, <code class="docutils literal notranslate"><span class="pre">np.broad
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.binomial">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">binomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.binomial" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.binomial">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">binomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.binomial" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a binomial distribution.</p>
 <p>Samples are drawn from a binomial distribution with specified
 parameters, n trials and p probability of success where
@@ -370,8 +292,8 @@ generate zero positive results.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.chisquare">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">chisquare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.chisquare" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.chisquare">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">chisquare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.chisquare" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a chi-square distribution.</p>
 <p>When <cite>df</cite> independent random variables, each with standard normal
 distributions (mean 0, variance 1), are squared and summed, the
@@ -440,8 +362,8 @@ x^{k/2 - 1} e^{-x/2},\]</div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.choice">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.choice" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.choice">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.choice" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a random sample from a given 1-D array</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 1.7.0.</span></p>
@@ -482,7 +404,7 @@ entries in <code class="docutils literal notranslate"><span class="pre">a</span>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#neurotools.spatial.masking.randint" title="neurotools.spatial.masking.randint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randint</span></code></a>, <a class="reference internal" href="#neurotools.spatial.masking.shuffle" title="neurotools.spatial.masking.shuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code></a>, <a class="reference internal" href="#neurotools.spatial.masking.permutation" title="neurotools.spatial.masking.permutation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permutation</span></code></a></p>
+<p><a class="reference internal" href="#neurotools.stats.grid_search.randint" title="neurotools.stats.grid_search.randint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randint</span></code></a>, <a class="reference internal" href="#neurotools.stats.grid_search.shuffle" title="neurotools.stats.grid_search.shuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code></a>, <a class="reference internal" href="#neurotools.stats.grid_search.permutation" title="neurotools.stats.grid_search.permutation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permutation</span></code></a></p>
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.choice</span></code></dt><dd><p>which should be used in new code</p>
 </dd>
@@ -530,8 +452,8 @@ instead of just integers. For instance:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.dirichlet">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">dirichlet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.dirichlet" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.dirichlet">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">dirichlet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.dirichlet" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from the Dirichlet distribution.</p>
 <p>Draw <cite>size</cite> samples of dimension k from a Dirichlet distribution. A
 Dirichlet-distributed random variable can be seen as a multivariate
@@ -616,8 +538,8 @@ the pieces.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.exponential">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">exponential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.exponential" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.exponential">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">exponential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.exponential" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from an exponential distribution.</p>
 <p>Its probability density function is</p>
 <div class="math notranslate nohighlight">
@@ -625,11 +547,11 @@ the pieces.</p>
 <p>for <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> and 0 elsewhere. <span class="math notranslate nohighlight">\(\beta\)</span> is the scale parameter,
 which is the inverse of the rate parameter <span class="math notranslate nohighlight">\(\lambda = 1/\beta\)</span>.
 The rate parameter is an alternative, widely used parameterization
-of the exponential distribution <a href="#id78"><span class="problematic" id="id9">[3]_</span></a>.</p>
+of the exponential distribution <a href="#id80"><span class="problematic" id="id9">[3]_</span></a>.</p>
 <p>The exponential distribution is a continuous analogue of the
 geometric distribution.  It describes many common situations, such as
-the size of raindrops measured over many rainstorms <a href="#id79"><span class="problematic" id="id10">[1]_</span></a>, or the time
-between page requests to Wikipedia <a href="#id80"><span class="problematic" id="id11">[2]_</span></a>.</p>
+the size of raindrops measured over many rainstorms <a href="#id81"><span class="problematic" id="id10">[1]_</span></a>, or the time
+between page requests to Wikipedia <a href="#id82"><span class="problematic" id="id11">[2]_</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>New code should use the <code class="docutils literal notranslate"><span class="pre">exponential</span></code> method of a <code class="docutils literal notranslate"><span class="pre">default_rng()</span></code>
@@ -678,8 +600,8 @@ Random Signal Principles”, 4th ed, 2001, p. 57.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.f">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfden</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.f" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.f">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfden</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.f" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from an F distribution.</p>
 <p>Samples are drawn from an F distribution with specified parameters,
 <cite>dfnum</cite> (degrees of freedom in numerator) and <cite>dfden</cite> (degrees of
@@ -766,8 +688,8 @@ level.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.gamma">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.gamma" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.gamma">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.gamma" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Gamma distribution.</p>
 <p>Samples are drawn from a Gamma distribution with specified parameters,
 <cite>shape</cite> (sometimes designated “k”) and <cite>scale</cite> (sometimes designated
@@ -846,8 +768,8 @@ the probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.geometric">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">geometric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.geometric" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.geometric">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">geometric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.geometric" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from the geometric distribution.</p>
 <p>Bernoulli trials are experiments with one of two outcomes:
 success or failure (an example of such an experiment is flipping
@@ -901,8 +823,8 @@ with the probability of an individual success equal to 0.35:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.get_state">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.get_state" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.get_state">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.get_state" title="Permalink to this definition"></a></dt>
 <dd><p>Return a tuple representing the internal state of the generator.</p>
 <p>For more details, see <cite>set_state</cite>.</p>
 <dl class="field-list simple">
@@ -929,7 +851,7 @@ state is returned as a dictionary.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#neurotools.spatial.masking.set_state" title="neurotools.spatial.masking.set_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_state</span></code></a></p>
+<p><a class="reference internal" href="#neurotools.stats.grid_search.set_state" title="neurotools.stats.grid_search.set_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_state</span></code></a></p>
 </div>
 <p class="rubric">Notes</p>
 <p><cite>set_state</cite> and <cite>get_state</cite> are not needed to work with any of the
@@ -938,8 +860,8 @@ the user should know exactly what he/she is doing.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.gumbel">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">gumbel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.gumbel" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.gumbel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">gumbel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.gumbel" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Gumbel distribution.</p>
 <p>Draw samples from a Gumbel distribution with specified location and
 scale.  For more information on the Gumbel distribution, see
@@ -970,7 +892,7 @@ Otherwise, <code class="docutils literal notranslate"><span class="pre">np.broad
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.gumbel_l</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.gumbel_r</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.genextreme</span></code>, <a class="reference internal" href="#neurotools.spatial.masking.weibull" title="neurotools.spatial.masking.weibull"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weibull</span></code></a></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.gumbel_l</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.gumbel_r</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.genextreme</span></code>, <a class="reference internal" href="#neurotools.stats.grid_search.weibull" title="neurotools.stats.grid_search.weibull"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weibull</span></code></a></p>
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.gumbel</span></code></dt><dd><p>which should be used for new code.</p>
 </dd>
@@ -1052,8 +974,8 @@ and compare to a Gaussian:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.hypergeometric">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">hypergeometric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ngood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.hypergeometric" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.hypergeometric">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">hypergeometric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ngood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.hypergeometric" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Hypergeometric distribution.</p>
 <p>Samples are drawn from a hypergeometric distribution with specified
 parameters, <cite>ngood</cite> (ways to make a good selection), <cite>nbad</cite> (ways to make
@@ -1149,8 +1071,8 @@ If you pull 15 marbles at random, how likely is it that
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.laplace">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">laplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.laplace" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.laplace">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">laplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.laplace" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from the Laplace or double exponential distribution with
 specified location (or mean) and scale (decay).</p>
 <p>The Laplace distribution is similar to the Gaussian/normal distribution,
@@ -1244,8 +1166,8 @@ the probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.logistic">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">logistic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.logistic" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.logistic">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">logistic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.logistic" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a logistic distribution.</p>
 <p>Samples are drawn from a logistic distribution with specified
 parameters, loc (location or mean, also median), and scale (&gt;0).</p>
@@ -1328,8 +1250,8 @@ MathWorld–A Wolfram Web Resource.
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.lognormal">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">lognormal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.lognormal" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.lognormal">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">lognormal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.lognormal" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a log-normal distribution.</p>
 <p>Draw samples from a log-normal distribution with specified mean,
 standard deviation, and array shape.  Note that the mean and standard
@@ -1446,8 +1368,8 @@ function.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.logseries">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">logseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.logseries" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.logseries">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">logseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.logseries" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a logarithmic series distribution.</p>
 <p>Samples are drawn from a log series distribution with specified
 shape parameter, 0 &lt; <code class="docutils literal notranslate"><span class="pre">p</span></code> &lt; 1.</p>
@@ -1533,8 +1455,8 @@ Data Sets, CRC Press, 1994.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.multinomial">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">multinomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.multinomial" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.multinomial">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">multinomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.multinomial" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a multinomial distribution.</p>
 <p>The multinomial distribution is a multivariate generalization of the
 binomial distribution.  Take an experiment with one of <code class="docutils literal notranslate"><span class="pre">p</span></code>
@@ -1617,8 +1539,8 @@ other should be sampled like so:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.multivariate_normal">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">multivariate_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'warn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.multivariate_normal" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.multivariate_normal">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">multivariate_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'warn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.multivariate_normal" title="Permalink to this definition"></a></dt>
 <dd><p>Draw random samples from a multivariate normal distribution.</p>
 <p>The multivariate normal, multinormal or Gaussian distribution is a
 generalization of the one-dimensional normal distribution to higher
@@ -1753,8 +1675,8 @@ components of this sample.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.negative_binomial">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">negative_binomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.negative_binomial" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.negative_binomial">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">negative_binomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.negative_binomial" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a negative binomial distribution.</p>
 <p>Samples are drawn from a negative binomial distribution with specified
 parameters, <cite>n</cite> successes and <cite>p</cite> probability of success where <cite>n</cite>
@@ -1833,8 +1755,8 @@ single success after drilling 5 wells, after 6 wells, etc.?</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.noncentral_chisquare">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">noncentral_chisquare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.noncentral_chisquare" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.noncentral_chisquare">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">noncentral_chisquare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.noncentral_chisquare" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a noncentral chi-square distribution.</p>
 <p>The noncentral <span class="math notranslate nohighlight">\(\chi^2\)</span> distribution is a generalization of
 the <span class="math notranslate nohighlight">\(\chi^2\)</span> distribution.</p>
@@ -1917,8 +1839,8 @@ distribution.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.noncentral_f">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">noncentral_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfden</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.noncentral_f" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.noncentral_f">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">noncentral_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfden</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.noncentral_f" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from the noncentral F distribution.</p>
 <p>Samples are drawn from an F distribution with specified parameters,
 <cite>dfnum</cite> (degrees of freedom in numerator) and <cite>dfden</cite> (degrees of
@@ -2001,17 +1923,17 @@ distributions for comparison.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.normal">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.normal" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.normal">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.normal" title="Permalink to this definition"></a></dt>
 <dd><p>Draw random samples from a normal (Gaussian) distribution.</p>
 <p>The probability density function of the normal distribution, first
 derived by De Moivre and 200 years later by both Gauss and Laplace
-independently <a href="#id81"><span class="problematic" id="id44">[2]_</span></a>, is often called the bell curve because of
+independently <a href="#id83"><span class="problematic" id="id44">[2]_</span></a>, is often called the bell curve because of
 its characteristic shape (see the example below).</p>
 <p>The normal distributions occurs often in nature.  For example, it
 describes the commonly occurring distribution of samples influenced
 by a large number of tiny, random disturbances, each with its own
-unique distribution <a href="#id82"><span class="problematic" id="id45">[2]_</span></a>.</p>
+unique distribution <a href="#id84"><span class="problematic" id="id45">[2]_</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>New code should use the <code class="docutils literal notranslate"><span class="pre">normal</span></code> method of a <code class="docutils literal notranslate"><span class="pre">default_rng()</span></code>
@@ -2055,7 +1977,7 @@ deviation. The square of the standard deviation, <span class="math notranslate n
 is called the variance.</p>
 <p>The function has its peak at the mean, and its “spread” increases with
 the standard deviation (the function reaches 0.607 times its maximum at
-<span class="math notranslate nohighlight">\(x + \sigma\)</span> and <span class="math notranslate nohighlight">\(x - \sigma\)</span> <a href="#id83"><span class="problematic" id="id46">[2]_</span></a>).  This implies that
+<span class="math notranslate nohighlight">\(x + \sigma\)</span> and <span class="math notranslate nohighlight">\(x - \sigma\)</span> <a href="#id85"><span class="problematic" id="id46">[2]_</span></a>).  This implies that
 normal is more likely to return samples lying close to the mean, rather
 than those far away.</p>
 <p class="rubric">References</p>
@@ -2104,8 +2026,8 @@ the probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.pareto">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">pareto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.pareto" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.pareto">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">pareto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.pareto" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Pareto II or Lomax distribution with
 specified shape.</p>
 <p>The Lomax or Pareto II distribution is a shifted Pareto
@@ -2169,7 +2091,7 @@ distribution. Pareto developed the distribution to describe
 the distribution of wealth in an economy.  It has also found
 use in insurance, web page access statistics, oil field sizes,
 and many other problems, including the download frequency for
-projects in Sourceforge <a href="#id84"><span class="problematic" id="id49">[1]_</span></a>.  It is one of the so-called
+projects in Sourceforge <a href="#id86"><span class="problematic" id="id49">[1]_</span></a>.  It is one of the so-called
 “fat-tailed” distributions.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
@@ -2207,8 +2129,8 @@ density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.permutation">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">permutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.permutation" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.permutation">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">permutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.permutation" title="Permalink to this definition"></a></dt>
 <dd><p>Randomly permute a sequence, or return a permuted range.</p>
 <p>If <cite>x</cite> is a multi-dimensional array, it is only shuffled along its
 first index.</p>
@@ -2256,8 +2178,8 @@ randomly.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.poisson">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">poisson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.poisson" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.poisson">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">poisson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.poisson" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Poisson distribution.</p>
 <p>The Poisson distribution is the limit of the binomial distribution
 for large N.</p>
@@ -2334,8 +2256,115 @@ From MathWorld–A Wolfram Web Resource.
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.rand">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.rand" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.power">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.power" title="Permalink to this definition"></a></dt>
+<dd><p>Draws samples in [0, 1] from a power distribution with positive
+exponent a - 1.</p>
+<p>Also known as the power function distribution.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>New code should use the <code class="docutils literal notranslate"><span class="pre">power</span></code> method of a <code class="docutils literal notranslate"><span class="pre">default_rng()</span></code>
+instance instead; please see the <span class="xref std std-ref">random-quick-start</span>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>float</em><em> or </em><em>array_like</em><em> of </em><em>floats</em>) – Parameter of the distribution. Must be non-negative.</p></li>
+<li><p><strong>size</strong> (<em>int</em><em> or </em><em>tuple</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Output shape.  If the given shape is, e.g., <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  If size is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
+a single value is returned if <code class="docutils literal notranslate"><span class="pre">a</span></code> is a scalar.  Otherwise,
+<code class="docutils literal notranslate"><span class="pre">np.array(a).size</span></code> samples are drawn.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Drawn samples from the parameterized power distribution.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray or scalar</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a &lt;= 0.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.power</span></code></dt><dd><p>which should be used for new code.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The probability density function is</p>
+<div class="math notranslate nohighlight">
+\[P(x; a) = ax^{a-1}, 0 \le x \le 1, a&gt;0.\]</div>
+<p>The power function distribution is just the inverse of the Pareto
+distribution. It may also be seen as a special case of the Beta
+distribution.</p>
+<p>It is used, for example, in modeling the over-reporting of insurance
+claims.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id56"><span class="brackets">1</span></dt>
+<dd><p>Christian Kleiber, Samuel Kotz, “Statistical size distributions
+in economics and actuarial sciences”, Wiley, 2003.</p>
+</dd>
+<dt class="label" id="id57"><span class="brackets">2</span></dt>
+<dd><p>Heckert, N. A. and Filliben, James J. “NIST Handbook 148:
+Dataplot Reference Manual, Volume 2: Let Subcommands and Library
+Functions”, National Institute of Standards and Technology
+Handbook Series, June 2003.
+<a class="reference external" href="https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/powpdf.pdf">https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/powpdf.pdf</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Draw samples from the distribution:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mf">5.</span> <span class="c1"># shape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Display the histogram of the samples, along with
+the probability density function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">ignored</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normed_y</span> <span class="o">=</span> <span class="n">samples</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normed_y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Compare the power function distribution to the inverse of the Pareto.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rvs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rvsp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">pareto</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">powpdf</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">powerlaw</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>  
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">rvs</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">powpdf</span><span class="p">,</span><span class="s1">&#39;r-&#39;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;np.random.power(5)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">rvsp</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">powpdf</span><span class="p">,</span><span class="s1">&#39;r-&#39;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;inverse of 1 + np.random.pareto(5)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">rvsp</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">powpdf</span><span class="p">,</span><span class="s1">&#39;r-&#39;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;inverse of stats.pareto(5)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.rand">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.rand" title="Permalink to this definition"></a></dt>
 <dd><p>Random values in a given shape.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2369,7 +2398,7 @@ If no argument is given a single Python float is returned.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">random</span></code></p>
+<p><a class="reference internal" href="#neurotools.stats.grid_search.random" title="neurotools.stats.grid_search.random"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
@@ -2381,8 +2410,8 @@ If no argument is given a single Python float is returned.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.randint">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">randint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.randint" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.randint">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">randint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.randint" title="Permalink to this definition"></a></dt>
 <dd><p>Return random integers from <cite>low</cite> (inclusive) to <cite>high</cite> (exclusive).</p>
 <p>Return random integers from the “discrete uniform” distribution of
 the specified dtype in the “half-open” interval [<cite>low</cite>, <cite>high</cite>). If
@@ -2423,7 +2452,7 @@ distribution, or a single such random int if <cite>size</cite> not provided.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#neurotools.spatial.masking.random_integers" title="neurotools.spatial.masking.random_integers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_integers</span></code></a></dt><dd><p>similar to <cite>randint</cite>, only for the closed interval [<cite>low</cite>, <cite>high</cite>], and 1 is the lowest value if <cite>high</cite> is omitted.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.random_integers" title="neurotools.stats.grid_search.random_integers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_integers</span></code></a></dt><dd><p>similar to <cite>randint</cite>, only for the closed interval [<cite>low</cite>, <cite>high</cite>], and 1 is the lowest value if <cite>high</cite> is omitted.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.integers</span></code></dt><dd><p>which should be used for new code.</p>
 </dd>
@@ -2461,8 +2490,8 @@ distribution, or a single such random int if <cite>size</cite> not provided.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.randn">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">randn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.randn" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.randn">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">randn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.randn" title="Permalink to this definition"></a></dt>
 <dd><p>Return a sample (or samples) from the “standard normal” distribution.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2506,9 +2535,9 @@ no parameters were supplied.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#neurotools.spatial.masking.standard_normal" title="neurotools.spatial.masking.standard_normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">standard_normal</span></code></a></dt><dd><p>Similar, but takes a tuple as its argument.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.standard_normal" title="neurotools.stats.grid_search.standard_normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">standard_normal</span></code></a></dt><dd><p>Similar, but takes a tuple as its argument.</p>
 </dd>
-<dt><a class="reference internal" href="#neurotools.spatial.masking.normal" title="neurotools.spatial.masking.normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normal</span></code></a></dt><dd><p>Also accepts mu and sigma arguments.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.normal" title="neurotools.stats.grid_search.normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normal</span></code></a></dt><dd><p>Also accepts mu and sigma arguments.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.standard_normal</span></code></dt><dd><p>which should be used for new code.</p>
 </dd>
@@ -2531,8 +2560,15 @@ no parameters were supplied.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.random_integers">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">random_integers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.random_integers" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.random">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.random" title="Permalink to this definition"></a></dt>
+<dd><p>Return random floats in the half-open interval [0.0, 1.0). Alias for
+<cite>random_sample</cite> to ease forward-porting to the new random API.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.random_integers">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">random_integers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.random_integers" title="Permalink to this definition"></a></dt>
 <dd><p>Random integers of type <cite>np.int_</cite> between <cite>low</cite> and <cite>high</cite>, inclusive.</p>
 <p>Return random integers of type <cite>np.int_</cite> from the “discrete uniform”
 distribution in the closed interval [<cite>low</cite>, <cite>high</cite>].  If <cite>high</cite> is
@@ -2567,7 +2603,7 @@ distribution, or a single such random int if <cite>size</cite> not provided.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#neurotools.spatial.masking.randint" title="neurotools.spatial.masking.randint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randint</span></code></a></dt><dd><p>Similar to <cite>random_integers</cite>, only for the half-open interval [<cite>low</cite>, <cite>high</cite>), and 0 is the lowest value if <cite>high</cite> is omitted.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.randint" title="neurotools.stats.grid_search.randint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randint</span></code></a></dt><dd><p>Similar to <cite>random_integers</cite>, only for the half-open interval [<cite>low</cite>, <cite>high</cite>), and 0 is the lowest value if <cite>high</cite> is omitted.</p>
 </dd>
 </dl>
 </div>
@@ -2610,8 +2646,8 @@ numbers between 0 and 2.5, inclusive (<em>i.e.</em>, from the set
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.random_sample">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">random_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.random_sample" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.random_sample">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">random_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.random_sample" title="Permalink to this definition"></a></dt>
 <dd><p>Return random floats in the half-open interval [0.0, 1.0).</p>
 <p>Results are from the “continuous uniform” distribution over the
 stated interval.  To sample <span class="math notranslate nohighlight">\(Unif[a, b), b &gt; a\)</span> multiply
@@ -2664,8 +2700,8 @@ case a single float is returned).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.rayleigh">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">rayleigh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.rayleigh" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.rayleigh">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">rayleigh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.rayleigh" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Rayleigh distribution.</p>
 <p>The <span class="math notranslate nohighlight">\(\chi\)</span> and Weibull distributions are generalizations of the
 Rayleigh.</p>
@@ -2708,11 +2744,11 @@ Gaussian distributions.  Then the wind speed would have a Rayleigh
 distribution.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id56"><span class="brackets">1</span></dt>
+<dt class="label" id="id58"><span class="brackets">1</span></dt>
 <dd><p>Brighton Webs Ltd., “Rayleigh Distribution,”
 <a class="reference external" href="https://web.archive.org/web/20090514091424/http://brighton-webs.co.uk:80/distributions/rayleigh.asp">https://web.archive.org/web/20090514091424/http://brighton-webs.co.uk:80/distributions/rayleigh.asp</a></p>
 </dd>
-<dt class="label" id="id57"><span class="brackets">2</span></dt>
+<dt class="label" id="id59"><span class="brackets">2</span></dt>
 <dd><p>Wikipedia, “Rayleigh distribution”
 <a class="reference external" href="https://en.wikipedia.org/wiki/Rayleigh_distribution">https://en.wikipedia.org/wiki/Rayleigh_distribution</a></p>
 </dd>
@@ -2739,8 +2775,8 @@ meters?</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.seed">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.seed" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.seed">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.seed" title="Permalink to this definition"></a></dt>
 <dd><p>Reseed a legacy MT19937 BitGenerator</p>
 <p class="rubric">Notes</p>
 <p>This is a convenience, legacy function.</p>
@@ -2757,12 +2793,12 @@ This example demonstrates best practice.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.set_state">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.set_state" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.set_state">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.set_state" title="Permalink to this definition"></a></dt>
 <dd><p>Set the internal state of the generator from a tuple.</p>
 <p>For use if one has reason to manually (re-)set the internal state of
 the bit generator used by the RandomState instance. By default,
-RandomState uses the “Mersenne Twister”<a href="#id85"><span class="problematic" id="id58">[1]_</span></a> pseudo-random number
+RandomState uses the “Mersenne Twister”<a href="#id87"><span class="problematic" id="id60">[1]_</span></a> pseudo-random number
 generating algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2787,7 +2823,7 @@ generating algorithm.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#neurotools.spatial.masking.get_state" title="neurotools.spatial.masking.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a></p>
+<p><a class="reference internal" href="#neurotools.stats.grid_search.get_state" title="neurotools.stats.grid_search.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a></p>
 </div>
 <p class="rubric">Notes</p>
 <p><cite>set_state</cite> and <cite>get_state</cite> are not needed to work with any of the
@@ -2798,7 +2834,7 @@ also accepted although it is missing some information about the cached
 Gaussian value: <code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">=</span> <span class="pre">('MT19937',</span> <span class="pre">keys,</span> <span class="pre">pos)</span></code>.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id59"><span class="brackets">1</span></dt>
+<dt class="label" id="id61"><span class="brackets">1</span></dt>
 <dd><p>M. Matsumoto and T. Nishimura, “Mersenne Twister: A
 623-dimensionally equidistributed uniform pseudorandom number
 generator,” <em>ACM Trans. on Modeling and Computer Simulation</em>,
@@ -2808,8 +2844,8 @@ Vol. 8, No. 1, pp. 3-30, Jan. 1998.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.shuffle">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.shuffle" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.shuffle">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.shuffle" title="Permalink to this definition"></a></dt>
 <dd><p>Modify a sequence in-place by shuffling its contents.</p>
 <p>This function only shuffles the array along the first axis of a
 multi-dimensional array. The order of sub-arrays is changed but
@@ -2853,8 +2889,8 @@ instance instead; please see the <span class="xref std std-ref">random-quick-sta
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.standard_cauchy">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">standard_cauchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.standard_cauchy" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.standard_cauchy">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">standard_cauchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.standard_cauchy" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a standard Cauchy distribution with mode = 0.</p>
 <p>Also known as the Lorentz distribution.</p>
 <div class="admonition note">
@@ -2899,17 +2935,17 @@ their sensitivity to a heavy-tailed distribution, since the Cauchy looks
 very much like a Gaussian distribution, but with heavier tails.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id60"><span class="brackets">1</span></dt>
+<dt class="label" id="id62"><span class="brackets">1</span></dt>
 <dd><p>NIST/SEMATECH e-Handbook of Statistical Methods, “Cauchy
 Distribution”,
 <a class="reference external" href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda3663.htm">https://www.itl.nist.gov/div898/handbook/eda/section3/eda3663.htm</a></p>
 </dd>
-<dt class="label" id="id61"><span class="brackets">2</span></dt>
+<dt class="label" id="id63"><span class="brackets">2</span></dt>
 <dd><p>Weisstein, Eric W. “Cauchy Distribution.” From MathWorld–A
 Wolfram Web Resource.
 <a class="reference external" href="http://mathworld.wolfram.com/CauchyDistribution.html">http://mathworld.wolfram.com/CauchyDistribution.html</a></p>
 </dd>
-<dt class="label" id="id62"><span class="brackets">3</span></dt>
+<dt class="label" id="id64"><span class="brackets">3</span></dt>
 <dd><p>Wikipedia, “Cauchy distribution”
 <a class="reference external" href="https://en.wikipedia.org/wiki/Cauchy_distribution">https://en.wikipedia.org/wiki/Cauchy_distribution</a></p>
 </dd>
@@ -2926,8 +2962,8 @@ Wolfram Web Resource.
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.standard_exponential">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">standard_exponential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.standard_exponential" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.standard_exponential">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">standard_exponential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.standard_exponential" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from the standard exponential distribution.</p>
 <p><cite>standard_exponential</cite> is identical to the exponential distribution
 with a scale parameter of 1.</p>
@@ -2964,8 +3000,8 @@ single value is returned.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.standard_gamma">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">standard_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.standard_gamma" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.standard_gamma">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">standard_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.standard_gamma" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a standard Gamma distribution.</p>
 <p>Samples are drawn from a Gamma distribution with specified parameters,
 shape (sometimes designated “k”) and scale=1.</p>
@@ -3011,12 +3047,12 @@ electronic components, and arises naturally in processes for which the
 waiting times between Poisson distributed events are relevant.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id63"><span class="brackets">1</span></dt>
+<dt class="label" id="id65"><span class="brackets">1</span></dt>
 <dd><p>Weisstein, Eric W. “Gamma Distribution.” From MathWorld–A
 Wolfram Web Resource.
 <a class="reference external" href="http://mathworld.wolfram.com/GammaDistribution.html">http://mathworld.wolfram.com/GammaDistribution.html</a></p>
 </dd>
-<dt class="label" id="id64"><span class="brackets">2</span></dt>
+<dt class="label" id="id66"><span class="brackets">2</span></dt>
 <dd><p>Wikipedia, “Gamma distribution”,
 <a class="reference external" href="https://en.wikipedia.org/wiki/Gamma_distribution">https://en.wikipedia.org/wiki/Gamma_distribution</a></p>
 </dd>
@@ -3041,8 +3077,8 @@ the probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.standard_normal">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">standard_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.standard_normal" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.standard_normal">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">standard_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.standard_normal" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a standard Normal distribution (mean=0, stdev=1).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3066,7 +3102,7 @@ single sample if <code class="docutils literal notranslate"><span class="pre">si
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#neurotools.spatial.masking.normal" title="neurotools.spatial.masking.normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normal</span></code></a></dt><dd><p>Equivalent function with additional <code class="docutils literal notranslate"><span class="pre">loc</span></code> and <code class="docutils literal notranslate"><span class="pre">scale</span></code> arguments for setting the mean and standard deviation.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.normal" title="neurotools.stats.grid_search.normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normal</span></code></a></dt><dd><p>Equivalent function with additional <code class="docutils literal notranslate"><span class="pre">loc</span></code> and <code class="docutils literal notranslate"><span class="pre">scale</span></code> arguments for setting the mean and standard deviation.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.standard_normal</span></code></dt><dd><p>which should be used for new code.</p>
 </dd>
@@ -3103,8 +3139,8 @@ single sample if <code class="docutils literal notranslate"><span class="pre">si
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.standard_t">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">standard_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.standard_t" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.standard_t">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">standard_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.standard_t" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a standard Student’s t distribution with <cite>df</cite> degrees
 of freedom.</p>
 <p>A special case of the hyperbolic distribution.  As <cite>df</cite> gets
@@ -3154,17 +3190,17 @@ in Dublin. Due to proprietary issues, he had to publish under
 a pseudonym, and so he used the name Student.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id65"><span class="brackets">1</span></dt>
+<dt class="label" id="id67"><span class="brackets">1</span></dt>
 <dd><p>Dalgaard, Peter, “Introductory Statistics With R”,
 Springer, 2002.</p>
 </dd>
-<dt class="label" id="id66"><span class="brackets">2</span></dt>
+<dt class="label" id="id68"><span class="brackets">2</span></dt>
 <dd><p>Wikipedia, “Student’s t-distribution”
 <a class="reference external" href="https://en.wikipedia.org/wiki/Student's_t-distribution">https://en.wikipedia.org/wiki/Student’s_t-distribution</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>From Dalgaard page 83 <a href="#id86"><span class="problematic" id="id67">[1]_</span></a>, suppose the daily energy intake for 11
+<p>From Dalgaard page 83 <a href="#id88"><span class="problematic" id="id69">[1]_</span></a>, suppose the daily energy intake for 11
 women in kilojoules (kJ) is:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">intake</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5260.</span><span class="p">,</span> <span class="mi">5470</span><span class="p">,</span> <span class="mi">5640</span><span class="p">,</span> <span class="mi">6180</span><span class="p">,</span> <span class="mi">6390</span><span class="p">,</span> <span class="mi">6515</span><span class="p">,</span> <span class="mi">6805</span><span class="p">,</span> <span class="mi">7515</span><span class="p">,</span> \
 <span class="gp">... </span>                   <span class="mi">7515</span><span class="p">,</span> <span class="mi">8230</span><span class="p">,</span> <span class="mi">8770</span><span class="p">])</span>
@@ -3211,23 +3247,8 @@ the null hypothesis of no deviation.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.to_image">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#to_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.to_image" title="Permalink to this definition"></a></dt>
-<dd><p>Assign list of values <cite>x</cite> to locations in <cite>mask</cite> that are True,
-in row-major order.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>1D np.array</em>) – </p></li>
-<li><p><strong>mask</strong> (<em>2D np.bool</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.triangular">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">triangular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.triangular" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.triangular">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">triangular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.triangular" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from the triangular distribution over the
 interval <code class="docutils literal notranslate"><span class="pre">[left,</span> <span class="pre">right]</span></code>.</p>
 <p>The triangular distribution is a continuous probability
@@ -3281,7 +3302,7 @@ some knowledge of the limits and mode exists. Often it is used
 in simulations.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id68"><span class="brackets">1</span></dt>
+<dt class="label" id="id70"><span class="brackets">1</span></dt>
 <dd><p>Wikipedia, “Triangular distribution”
 <a class="reference external" href="https://en.wikipedia.org/wiki/Triangular_distribution">https://en.wikipedia.org/wiki/Triangular_distribution</a></p>
 </dd>
@@ -3297,8 +3318,8 @@ in simulations.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.uniform">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">uniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.uniform" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.uniform">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">uniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.uniform" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a uniform distribution.</p>
 <p>Samples are uniformly distributed over the half-open interval
 <code class="docutils literal notranslate"><span class="pre">[low,</span> <span class="pre">high)</span></code> (includes low, but excludes high).  In other words,
@@ -3335,15 +3356,15 @@ Otherwise, <code class="docutils literal notranslate"><span class="pre">np.broad
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#neurotools.spatial.masking.randint" title="neurotools.spatial.masking.randint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randint</span></code></a></dt><dd><p>Discrete uniform distribution, yielding integers.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.randint" title="neurotools.stats.grid_search.randint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randint</span></code></a></dt><dd><p>Discrete uniform distribution, yielding integers.</p>
 </dd>
-<dt><a class="reference internal" href="#neurotools.spatial.masking.random_integers" title="neurotools.spatial.masking.random_integers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_integers</span></code></a></dt><dd><p>Discrete uniform distribution over the closed interval <code class="docutils literal notranslate"><span class="pre">[low,</span> <span class="pre">high]</span></code>.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.random_integers" title="neurotools.stats.grid_search.random_integers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_integers</span></code></a></dt><dd><p>Discrete uniform distribution over the closed interval <code class="docutils literal notranslate"><span class="pre">[low,</span> <span class="pre">high]</span></code>.</p>
 </dd>
-<dt><a class="reference internal" href="#neurotools.spatial.masking.random_sample" title="neurotools.spatial.masking.random_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_sample</span></code></a></dt><dd><p>Floats uniformly distributed over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code>.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.random_sample" title="neurotools.stats.grid_search.random_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_sample</span></code></a></dt><dd><p>Floats uniformly distributed over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code>.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random</span></code></dt><dd><p>Alias for <cite>random_sample</cite>.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.random" title="neurotools.stats.grid_search.random"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random</span></code></a></dt><dd><p>Alias for <cite>random_sample</cite>.</p>
 </dd>
-<dt><a class="reference internal" href="#neurotools.spatial.masking.rand" title="neurotools.spatial.masking.rand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand</span></code></a></dt><dd><p>Convenience function that accepts dimensions as input, e.g., <code class="docutils literal notranslate"><span class="pre">rand(2,2)</span></code> would generate a 2-by-2 array of floats, uniformly distributed over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code>.</p>
+<dt><a class="reference internal" href="#neurotools.stats.grid_search.rand" title="neurotools.stats.grid_search.rand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand</span></code></a></dt><dd><p>Convenience function that accepts dimensions as input, e.g., <code class="docutils literal notranslate"><span class="pre">rand(2,2)</span></code> would generate a 2-by-2 array of floats, uniformly distributed over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code>.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.uniform</span></code></dt><dd><p>which should be used for new code.</p>
 </dd>
@@ -3389,8 +3410,8 @@ probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.vonmises">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">vonmises</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.vonmises" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.vonmises">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">vonmises</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.vonmises" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a von Mises distribution.</p>
 <p>Samples are drawn from a von Mises distribution with specified mode
 (mu) and dispersion (kappa), on the interval [-pi, pi].</p>
@@ -3443,12 +3464,12 @@ probability theory, aerodynamics, fluid mechanics, and philosophy of
 science.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id69"><span class="brackets">1</span></dt>
+<dt class="label" id="id71"><span class="brackets">1</span></dt>
 <dd><p>Abramowitz, M. and Stegun, I. A. (Eds.). “Handbook of
 Mathematical Functions with Formulas, Graphs, and Mathematical
 Tables, 9th printing,” New York: Dover, 1972.</p>
 </dd>
-<dt class="label" id="id70"><span class="brackets">2</span></dt>
+<dt class="label" id="id72"><span class="brackets">2</span></dt>
 <dd><p>von Mises, R., “Mathematical Theory of Probability
 and Statistics”, New York: Academic Press, 1964.</p>
 </dd>
@@ -3473,8 +3494,8 @@ the probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.wald">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">wald</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.wald" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.wald">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">wald</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.wald" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Wald, or inverse Gaussian, distribution.</p>
 <p>As the scale approaches infinity, the distribution becomes more like a
 Gaussian. Some references claim that the Wald is an inverse Gaussian
@@ -3524,16 +3545,16 @@ competitor to the Weibull for use in reliability modeling and
 modeling stock returns and interest rate processes.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id71"><span class="brackets">1</span></dt>
+<dt class="label" id="id73"><span class="brackets">1</span></dt>
 <dd><p>Brighton Webs Ltd., Wald Distribution,
 <a class="reference external" href="https://web.archive.org/web/20090423014010/http://www.brighton-webs.co.uk:80/distributions/wald.asp">https://web.archive.org/web/20090423014010/http://www.brighton-webs.co.uk:80/distributions/wald.asp</a></p>
 </dd>
-<dt class="label" id="id72"><span class="brackets">2</span></dt>
+<dt class="label" id="id74"><span class="brackets">2</span></dt>
 <dd><p>Chhikara, Raj S., and Folks, J. Leroy, “The Inverse Gaussian
 Distribution: Theory : Methodology, and Applications”, CRC Press,
 1988.</p>
 </dd>
-<dt class="label" id="id73"><span class="brackets">3</span></dt>
+<dt class="label" id="id75"><span class="brackets">3</span></dt>
 <dd><p>Wikipedia, “Inverse Gaussian distribution”
 <a class="reference external" href="https://en.wikipedia.org/wiki/Inverse_Gaussian_distribution">https://en.wikipedia.org/wiki/Inverse_Gaussian_distribution</a></p>
 </dd>
@@ -3548,8 +3569,8 @@ Distribution: Theory : Methodology, and Applications”, CRC Press,
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.weibull">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">weibull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.weibull" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.weibull">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">weibull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.weibull" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Weibull distribution.</p>
 <p>Draw samples from a 1-parameter Weibull distribution with the given
 shape parameter <cite>a</cite>.</p>
@@ -3582,7 +3603,7 @@ a single value is returned if <code class="docutils literal notranslate"><span c
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.weibull_max</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.weibull_min</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.genextreme</span></code>, <a class="reference internal" href="#neurotools.spatial.masking.gumbel" title="neurotools.spatial.masking.gumbel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gumbel</span></code></a></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.weibull_max</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.weibull_min</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.genextreme</span></code>, <a class="reference internal" href="#neurotools.stats.grid_search.gumbel" title="neurotools.stats.grid_search.gumbel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gumbel</span></code></a></p>
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">random.Generator.weibull</span></code></dt><dd><p>which should be used for new code.</p>
 </dd>
@@ -3605,18 +3626,18 @@ This class includes the Gumbel and Frechet distributions.</p>
 distribution.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id74"><span class="brackets">1</span></dt>
+<dt class="label" id="id76"><span class="brackets">1</span></dt>
 <dd><p>Waloddi Weibull, Royal Technical University, Stockholm,
 1939 “A Statistical Theory Of The Strength Of Materials”,
 Ingeniorsvetenskapsakademiens Handlingar Nr 151, 1939,
 Generalstabens Litografiska Anstalts Forlag, Stockholm.</p>
 </dd>
-<dt class="label" id="id75"><span class="brackets">2</span></dt>
+<dt class="label" id="id77"><span class="brackets">2</span></dt>
 <dd><p>Waloddi Weibull, “A Statistical Distribution Function of
 Wide Applicability”, Journal Of Applied Mechanics ASME Paper
 1951.</p>
 </dd>
-<dt class="label" id="id76"><span class="brackets">3</span></dt>
+<dt class="label" id="id78"><span class="brackets">3</span></dt>
 <dd><p>Wikipedia, “Weibull distribution”,
 <a class="reference external" href="https://en.wikipedia.org/wiki/Weibull_distribution">https://en.wikipedia.org/wiki/Weibull_distribution</a></p>
 </dd>
@@ -3645,8 +3666,8 @@ the probability density function:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.spatial.masking.zipf">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">zipf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.spatial.masking.zipf" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.zipf">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">zipf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.stats.grid_search.zipf" title="Permalink to this definition"></a></dt>
 <dd><p>Draw samples from a Zipf distribution.</p>
 <p>Samples are drawn from a Zipf distribution with specified parameter
 <cite>a</cite> &gt; 1.</p>
@@ -3696,7 +3717,7 @@ that the frequency of any word in a sample of a language is inversely
 proportional to its rank in the frequency table.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id77"><span class="brackets">1</span></dt>
+<dt class="label" id="id79"><span class="brackets">1</span></dt>
 <dd><p>Zipf, G. K., “Selected Studies of the Principle of Relative
 Frequency in Language,” Cambridge, MA: Harvard Univ. Press,
 1932.</p>
@@ -3739,8 +3760,8 @@ density function:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="neurotools.spatial.kernels.html" class="btn btn-neutral float-left" title="neurotools.spatial.kernels module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="neurotools.spatial.phase.html" class="btn btn-neutral float-right" title="neurotools.spatial.phase module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="neurotools.stats.gmm.html" class="btn btn-neutral float-left" title="neurotools.stats.gmm module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="neurotools.stats.history_basis.html" class="btn btn-neutral float-right" title="neurotools.stats.history_basis module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

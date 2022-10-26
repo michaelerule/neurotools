@@ -15,6 +15,7 @@ Submodules
    neurotools.spatial.kernels
    neurotools.spatial.masking
    neurotools.spatial.phase
+   neurotools.spatial.points
    neurotools.spatial.spatialPSD
    neurotools.spatial.spiking
    neurotools.spatial.triangulation

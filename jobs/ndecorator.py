@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Robust decorators are provided by the decorator package
+    http://pythonhosted.org/decorator/documentation.html
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,19 +11,13 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-'''
-Robust decorators are provided by the decorator package
-    http://pythonhosted.org/decorator/documentation.html
-'''
 
-import sys
-from neurotools.system import *
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
 
-import neurotools.tools
+from neurotools.util.time import current_milli_time
+from collections import defaultdict
 import os, sys
-from   collections import defaultdict
 import inspect, ast, types
 import warnings, traceback, errno
 import pickle, json, base64, zlib
@@ -243,9 +241,9 @@ def timed(f,*args,**kwargs):
     Returns
     -------
     '''
-    t0      = neurotools.tools.current_milli_time()
+    t0      = current_milli_time()
     result  = f(*args,**kwargs)
-    t1      = neurotools.tools.current_milli_time()
+    t1      = current_milli_time()
     return float(t1-t0), result
 
 

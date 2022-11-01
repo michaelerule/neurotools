@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for manipulating multivariate Gaussians.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,22 +10,17 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-'''
-Routines for manipulating multivariate Gaussians.
-'''
 
 import numpy as np
 import scipy
 import scipy.linalg
 import numpy.random
-from   numpy.random import randn
-from   numpy import pi
+from numpy.random import randn
+from numpy import pi
 
 from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_finite_real, logdet
-from neurotools.stats.Gaussian import *
 from neurotools.linalg.matrix import real_eig
+from neurotools.stats.Gaussian import *
 
 def MVG_check(M,C,eps=1e-6):
     '''
@@ -30,6 +28,18 @@ def MVG_check(M,C,eps=1e-6):
     valid multivariate Gaussian distribution. The mean must be finite
     and real-valued. The covariance (or precision) matrix must be
     symmetric positive definite.
+    
+    Parameters
+    ----------
+    M: 1D np.array
+        Mean vector
+    C: 2D np.array
+        Covariance matrix
+
+    
+    Other Parameters
+    ----------------
+    eps: positive float; default 1e-6
     '''
     check_finite_real(M)
     check_covmat(C,len(M),eps=eps)

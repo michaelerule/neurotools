@@ -9,13 +9,11 @@ Submodules
 
    neurotools.signal.coherence
    neurotools.signal.conv
-   neurotools.signal.linenoise
    neurotools.signal.morlet
-   neurotools.signal.morlet_coherence
    neurotools.signal.multitaper
    neurotools.signal.ppc
-   neurotools.signal.resonator
    neurotools.signal.savitskygolay
+   neurotools.signal.sde
 
 Module contents
 ---------------

@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for computing statistics from multielectrode arrays
+that are sensitive to distances between channels.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,12 +11,8 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
 
 '''
-Routines for computing statistics from multielectrode arrays
-that are sensitive to distances between channels.
-
 Test code
 ---------
 
@@ -30,19 +30,18 @@ Test code
 
     cohere_pairs()
 '''
+
 '''
 *X* is a *numSamples* * *numCols* array
-*ij* is a list of tuples.  Each tuple is a pair of indexes into
-the columns of X for which you want to compute coherence.  For
-example, if *X* has 64 columns, and you want to compute all
-nonredundant pairs, define *ij* as::
+*ij* is a list of tuples.  Each tuple is a pair of indexes 
+into the columns of X for which you want to compute 
+coherence. For example, if *X* has 64 columns, and you want 
+to compute all nonredundant pairs, define *ij* as::
+
+... TODO
 '''
 
-# TODO: fix imports
-#from matplotlib.mlab import *
-#from collections import *
-
-def get_electrode_locations(session,area):
+def _get_electrode_locations(session,area):
     assert 0 # not implemented
     warn('returns a dictionary indexed by channel ID (1-indexed)')
     am = get_array_map(session,area)
@@ -50,10 +49,6 @@ def get_electrode_locations(session,area):
 def get_pair_distance(session,area,ch1,ch2):
     warn('using array map, not anatomical overlay')
     warn('channels should be 1-indexed')
-    #locations = get_electrode_locations(session,area)
-    #l1 = locations[ch1]
-    #l2 = locations[ch2]
-    #return abs(l1-l2)
     am = get_array_map(session,area,removebad=False)
     x1,y1 = where(am==ch1)
     x2,y2 = where(am==ch2)

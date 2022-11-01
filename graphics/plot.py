@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Plotting helper routines
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,35 +11,32 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+
 import sys
 if sys.version_info<(3,):
     from itertools import imap as map
-
-#
-from   neurotools.graphics.color   import *
-import os
-import pickle
-import scipy
-import numpy
-import scipy.optimize
-from   scipy.io          import savemat
-from   scipy.optimize    import leastsq
-from   multiprocessing   import Process, Pipe, cpu_count, Pool
-from   scipy.io          import loadmat
-from   scipy.signal      import butter,filtfilt,lfilter
-from   matplotlib.pyplot import *
-import matplotlib.pyplot as plt
-
-from neurotools.tools import find
-#from   matplotlib.pylab  import find
-
-from neurotools.tools import today,now
-
 try: # python 2.x
     from itertools import izip, chain
 except: # python 3
     from itertools import chain
     izip = zip
+
+import os
+import pickle
+import scipy
+import numpy
+import scipy.optimize
+import matplotlib.pyplot as plt
+
+from scipy.io          import savemat, loadmat
+from scipy.optimize    import leastsq
+from scipy.signal      import butter,filtfilt,lfilter
+from multiprocessing   import Process, Pipe, cpu_count, Pool
+
+from neurotools.graphics.color import *
+from neurotools.util.tools  import find
+from neurotools.util.time   import today,now
+from neurotools.util.string import shortscientific
 
 try:
     import statsmodels
@@ -49,9 +50,9 @@ def simpleaxis(ax=None):
     '''
     Only draw the bottom and left axis lines
     
-    Parameters
-    ----------
-    ax : optional, defaults to plt.gca() if None
+    Other Parameters
+    -----------------
+    ax : maplotlib.Axis; default `plt.gca()`
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -67,7 +68,7 @@ def rightaxis(ax=None):
     
     Parameters
     ----------
-    ax : optional, defaults to plt.gca() if None
+    ax : maplotlib.Axis; default `plt.gca()`
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -83,7 +84,7 @@ def simpleraxis(ax=None):
     
     Parameters
     ----------
-    ax : optiona, defaults to plt.gca() if None
+    ax : maplotlib.Axis; default `plt.gca()`
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -99,7 +100,7 @@ def simplerright(ax=None):
     
     Parameters
     ----------
-    ax : optiona, defaults to plt.gca() if None
+    ax : maplotlib.Axis; default `plt.gca()`
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -116,7 +117,7 @@ def noaxis(ax=None):
     
     Parameters
     ----------
-    ax : optiona, defaults to plt.gca() if None
+    ax : maplotlib.Axis; default `plt.gca()`
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -135,7 +136,13 @@ def nicebp(bp,color='k',linewidth=.5):
     Parameters
     ----------
     bp : point to boxplot object returned by matplotlib
-    c : color to set boxes to
+    
+    Other Parameters
+    ----------------
+    c: matplotlib.color; default `'k'`
+        Color to set boxes to
+    linewidth: positive float; default 0.5
+        Width of whisker lines. 
     '''
     for kk in 'boxes whiskers fliers caps'.split():
         setp(bp[kk], color=color)
@@ -143,19 +150,52 @@ def nicebp(bp,color='k',linewidth=.5):
     setp(bp['caps'],     linestyle='solid',linewidth=linewidth)
     #setp(bp['caps'], color=(0,)*4)
 
-def colored_boxplot(data,positions,color,
-                    filled=True,
-                    notch=False,
-                    showfliers=False,
-                    linewidth=2,
-                    whis=[5,95],
-                    bgcolor=WHITE,
-                    mediancolor=None,
-                    **kwargs):
+def colored_boxplot(
+    data,
+    positions,
+    color,
+    filled      = True,
+    notch       = False,
+    showfliers  = False,
+    lw          = 1,
+    whis        = [5,95],
+    bgcolor     = WHITE,
+    mediancolor = None,
+    **kwargs):
     '''
-    Boxplot with nicely colored default style parameterss
+    Boxplot with nicely colored default style parameters
+    
+    Parameters
+    ----------
+    data: NPOINTS × NGROUPS np.float32
+        Data sets to plot
+    positions: NGROUPS iterable of numbers
+        X positions of each data group
+    color: matplotlib.color
+        Color of boxplot   
+    
+    Other Parameters
+    ----------------
+    filled: boolean; default True
+        Whether to fill boxes with color
+    notch: boolean; default False
+        Whether to inset a median notch
+    showfliers: boolean; default False
+        Whether to show outlies as scatter points
+    lw: positive float; default 1.
+        Width of whisker lines
+    which: tuple; default (5,95)
+        Percentile range for whiskers
+    bgcolor: matplotlib.color; default WHITE
+        Background color if `filled=False`
+    mediancolor: matplotlib.color; default None
+        Defaults to BLACK unless color is BLACK, in which
+        case it defaults to WHITE.
+    **kwargs:
+        Additional arguments fowarded to `pyplot.boxplot()`
     '''
-    #try:
+    if 'linewidth' in kwargs:
+        lw = kwargs[linewidth]
     b = matplotlib.colors.to_hex(BLACK)
     if mediancolor is None:
         try:
@@ -168,93 +208,14 @@ def colored_boxplot(data,positions,color,
         showfliers   = showfliers,
         notch        = notch,
         whis         = whis, 
-        medianprops  = {'linewidth':linewidth,'color':mediancolor},
-        whiskerprops = {'linewidth':linewidth,'color':color},
-        flierprops   = {'linewidth':linewidth,'color':color},
-        capprops     = {'linewidth':linewidth,'color':color},
-        boxprops     = {'linewidth':linewidth,'color':color,
+        medianprops  = {'linewidth':lw,'color':mediancolor},
+        whiskerprops = {'linewidth':lw,'color':color},
+        flierprops   = {'linewidth':lw,'color':color},
+        capprops     = {'linewidth':lw,'color':color},
+        boxprops     = {'linewidth':lw,'color':color,
                         'facecolor':color if filled else bgcolor},
         **kwargs);
     return bp
-
-
-########################################################################
-# printing routines
-
-def percent(n,total):
-    '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    return '%0.2g%%'%(n*100.0/total)
-    
-def shortscientific(x,prec=0):
-    '''
-    Parameters
-    ----------
-    x : scalar numeric
-    prec : non-negative integer
-    
-    Returns
-    -------
-    '''
-    return ('%.*e'%(prec,x)).replace('-0','-').replace('+','').replace('e0','e')
-
-def eformat(f, prec, exp_digits):
-    '''
-    Format a float in scientific notation with fewer characters.
-    
-    Parameters
-    ----------
-    f: scalar
-        Number
-    prec:
-        Precision
-    exp_digits: int
-        Number exponent digits
-    
-    Returns
-    -------
-    string : reformatted string
-    '''
-    if not np.isfinite(f):
-        return '%e'%f
-    s = "%.*e"%(prec, f)
-    mantissa, exponent = s.split('e')
-    exponent = int(exponent)
-    s = mantissa + "e%+0*d"%(exp_digits+1, exponent)
-    s = s.replace('+','')
-    return s
-
-def v2str(p):
-    '''
-    Format vector as string in short scientific notation
-    '''
-    return '['+','.join([shortscientific(x) for x in p])+']'
-
-def v2str_long(p):
-    '''
-    Format vector as string with maximum precision
-    '''
-    return '['+','.join([np.longdouble(x).astype(str) for x in p])+']'
-
-def nicetable(data,format='%4.4f',ncols=8,prefix='',sep=' '):
-    '''
-    Format a numeric vector as an evenly-spaced table
-    '''
-    N = len(data)
-    nrows = int(np.ceil(N/ncols))
-    lines = []
-    for r in range(nrows):
-        d = data[r*ncols:(r+1)*ncols]
-        formatted = [format%i for i in d]
-        joined = sep.join(formatted)
-        line = prefix+joined
-        lines += [line]
-    return '\n'.join(lines)
 
 def nicey(**kwargs):
     '''
@@ -1488,8 +1449,26 @@ def sigbar(x1,x2,y,pvalue=None,dy=5,padding=1,fontsize=10,color=BLACK,**kwargs):
     
     Parameters
     ----------
-    x1 : 
-    x2 : 
+    x1: float
+        X position of left of brace
+    x2: float
+        X position of right of brace
+    y: float
+        Y position to start brace
+    
+    Other Parameters
+    ----------------
+    dy: float; default 5
+        Brace height in pixels
+    padding: float; default 1
+        Padding between brace and label, in pixels
+    fontsize: float; default 10
+        Label font size
+    color: matplotlib.color; default BLACK
+        Brace color
+    **kwargs:
+        Forwarded to the `plot()` command that draws the
+        brace.
     '''
     dy = pixels_to_yunits(dy)
     height = y+2*dy
@@ -1502,6 +1481,43 @@ def sigbar(x1,x2,y,pvalue=None,dy=5,padding=1,fontsize=10,color=BLACK,**kwargs):
             pvalue = shortscientific(pvalue)
         text(np.mean([x1,x2]),height+dy*padding,pvalue,
             fontsize=fontsize,horizontalalignment='center')
+
+def hsigbar(y1,y2,x,pvalue=None,dx=5,padding=1,fontsize=10,color=BLACK,**kwargs):
+    '''
+    Draw a significance bar between position y1 and y2 at 
+    horizontal position x.
+    
+    Parameters
+    ----------
+    y1 : float
+    y2 : float
+    x  : float
+    
+    Other Parameters
+    ----------------
+    dx: float; default 5
+        Brace width in pixels
+    padding: float; default 1
+        Padding between brace and label, in pixels
+    fontsize: float; default 10
+        Label font size
+    color: matplotlib.color; default BLACK
+        Brace color
+    **kwargs:
+        Forwarded to the `plot()` command that draws the
+        brace.
+    '''
+    dx = pixels_to_xunits(dx)
+    w = x+2*dx
+    if not 'lw' in kwargs:
+        kwargs['lw']=0.5
+    plot([w-dx,w,w,w-dx],[y1,y1,y2,y2],
+        color=color,clip_on=True,**kwargs)
+    if not pvalue is None:
+        if not type(pvalue) is str:
+            pvalue = shortscientific(pvalue)
+        text(w+dx*padding,np.mean([y1,y2]),pvalue,
+            fontsize=fontsize,ha='left',va='center')
 
 def savefigure(name,stamp=True,**kwargs):
     '''
@@ -2227,5 +2243,411 @@ def plotz(x,z,thr=1e-9,**k):
     if anyi:
         l=k['label']+r'$(\Im)$' if 'label' in k else None
         plot(x,i,**{**k,'linestyle':':','label':l})
+
+
+__SAVE_LIMITS_PRIVATE_STORAGE__ = None
+def save_limits():
+    '''
+    Stash the current ((x0,x1),(y0,y1) axis limits in
+    `__SAVE_LIMITS_PRIVATE_STORAGE__`.
+    These can be restored later via `restore_limits()`
+    '''
+    global __SAVE_LIMITS_PRIVATE_STORAGE__
+    __SAVE_LIMITS_PRIVATE_STORAGE__ = (plt.xlim(),plt.ylim())
+
+
+def restore_limits():
+    '''
+    Restore the ((x0,x1),(y0,y1) limits stored in 
+    `__SAVE_LIMITS_PRIVATE_STORAGE__`
+    '''
+    global __SAVE_LIMITS_PRIVATE_STORAGE__
+    xl,yl = __SAVE_LIMITS_PRIVATE_STORAGE__
+    plt.xlim(*xl)
+    plt.ylim(*yl)
     
 
+def mock_legend(names,colors,s=40,marker='s'):
+    '''
+    For a list of (labels, colors), generate some 
+    square scatter points outside the axis limits
+    with the given labels, so that the `legend()` call
+    will populate a list of labelled, colored squares.
+    
+    Parameters
+    ----------
+    labels: list of str
+        List of labels to create
+    colors: list of matplotlib.color
+        List ofl label colors, same length as labels
+    '''
+    save_limits()
+    x0 = xlim()[0]-100
+    y0 = ylim()[0]-100
+    for n,c in zip(names,colors):
+        scatter(x0,y0,s=s,color=c,marker=marker,label=n)
+    restore_limits()
+    
+def xtickpad(pad=0,ax=None,which='both'):
+    '''
+    Adjust padding of xticks to axis
+    
+    Parameters
+    ----------
+    pad: positive float; default 0
+        Distance between axis and ticks
+        
+    Other Parameters
+    ----------------
+    ax: matplotlib.axis or None; default None
+        If `None`, uses `pyplot.gca()`
+    which: str in {'major','minor','both'}; default 'both'
+        Which set of ticks to apply to
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.tick_params(axis='x', which=which, pad=pad)
+
+def ytickpad(pad=0,ax=None,which='both'):
+    '''
+    Adjust padding of yticks to axis
+    
+    Parameters
+    ----------
+    pad: positive float; default 0
+        Distance between axis and ticks
+        
+    Other Parameters
+    ----------------
+    ax: matplotlib.axis or None; default None
+        If `None`, uses `pyplot.gca()`
+    which: str in {'major','minor','both'}; default 'both'
+        Which set of ticks to apply to
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.tick_params(axis='y', which=which, pad=pad)
+
+def xticklen(l=0, w=0,ax=None,which='both'):
+    '''
+    Set length and width of x ticks.
+    
+    Parameters
+    ----------
+    l: positive float; default 0
+        Length of ticks
+    w: positive float; default 0
+        Width of ticks
+        
+    Other Parameters
+    ----------------
+    ax: matplotlib.axis or None; default None
+        If `None`, uses `pyplot.gca()`
+    which: str in {'major','minor','both'}; default 'both'
+        Which set of ticks to apply to
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.xaxis.set_tick_params(length=l, width=w, which=which)
+
+def yticklen(l=0, w=0,ax=None,which='both'):
+    '''
+    Set length and width of y ticks.
+    
+    Parameters
+    ----------
+    l: positive float; default 0
+        Length of ticks
+    w: positive float; default 0
+        Width of ticks
+        
+    Other Parameters
+    ----------------
+    ax: matplotlib.axis or None; default None
+        If `None`, uses `pyplot.gca()`
+    which: str in {'major','minor','both'}; default 'both'
+        Which set of ticks to apply to
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.yaxis.set_tick_params(length=l, width=w, which=which)
+
+def xin(ax=None,which='both'):
+    '''
+    Make x ticks point inward
+    
+    Other Parameters
+    ----------------
+    ax: matplotlib.axis or None; default None
+        If `None`, uses `pyplot.gca()`
+    which: str in {'major','minor','both'}; default 'both'
+        Which set of ticks to apply to
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.tick_params(axis='x',which=which,direction="in")
+    
+def yin(ax=None,which='both'):
+    '''
+    Make y ticks point inward
+    
+    Other Parameters
+    ----------------
+    ax: matplotlib.axis or None; default None
+        If `None`, uses `pyplot.gca()`
+    which: str in {'major','minor','both'}; default 'both'
+        Which set of ticks to apply to
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.tick_params(axis='y',which=which,direction="in")
+
+def lighten(color,amount):
+    '''
+    Lighten matplotlib color by amount (0=do nothing).
+    Alpha channel is discarded
+    
+    Parameters
+    ----------
+    color: matplotlib.color
+        Color to lighten
+    amount: float in [0,1]
+        Amount to lighten by. 0: do nothing, 1: make white.
+    
+    Returns
+    -------
+    rgb: 
+        Lightened color
+    '''
+    rgb = np.float32(mpl.colors.to_rgb(color))
+    rgb = 1.-(1.-rgb)*(1-amount)
+    return rgb
+
+def darken(color,amount):
+    '''
+    Lighten matplotlib color by amount (0=do nothing).
+    Alpha channel is discarded
+    
+    Parameters
+    ----------
+    color: matplotlib.color
+        Color to lighten
+    amount: float in [0,1]
+        Amount to lighten by. 0: do nothing, 1: make white.
+    
+    Returns
+    -------
+    rgb: 
+        Lightened color
+    '''
+    rgb = np.float32(mpl.colors.to_rgb(color))
+    rgb = rgb*(1-amount)
+    return rgb
+        
+def axvstripe(edges,colors,fade=0.0,**kwargs):
+    '''
+    Shade vertical spans of edges in alternating bands.
+    
+    Parameters
+    ----------
+    edges: list of numbers
+        x coordinates of edges of shaded bands
+    colors: color or list of colors
+        If a single color, will alternated colored/white.
+        If a list of colors, will rotate within list
+    alpha: positive float ∈[0,1]; default 0
+        Amount of white to mix into the colors
+    '''
+    edges  = np.float32(edges).ravel()
+    nbands = len(edges)-1
+    
+    try: 
+        colors = [lighten(colors,fade),None]
+    except:
+        colors = [lighten(c,fade) for c in colors]
+    NCOLORS = len(colors)
+    
+    kw = {'linewidth':0,'edgecolor':(0,)*4,**kwargs}
+    
+    for i in range(nbands):
+        x0 = edges[i]
+        x1 = edges[i+1]
+        c  = colors[i%NCOLORS]
+        if not c is None:
+            plt.axvspan(x0,x1,facecolor=c,**kw)
+
+def widths_to_edges(widths,startat=0):
+    '''
+    Convert a list of widths into a list of edges
+    delimiting consecutive bands of the given width
+    
+    Parameters
+    ----------
+    widths: list of numbers
+        Width of each band
+    startat: number, default 0
+        Starting position of bands
+    '''
+    edges = np.cumsum(np.concatenate([[0],widths]))
+    edges = edges + float(startat)
+    return edges
+
+def centers(edges):
+    '''
+    Get center of histogram bins given as a list of edges.
+    
+    Parameters
+    ----------
+    edges: list of numbers
+        Edges of histogram bins
+        
+    Returns
+    -------
+    list of numbers
+        Center of histogram bins
+    '''
+    edges = np.float32(edges)
+    return (edges[1:]+edges[:-1])*0.5
+
+def widths_to_centers(widths,startat=0):
+    '''
+    Get centers of a consecutive collection of histogram
+    widths. 
+    
+    Parameters
+    ----------
+    widths: list of numbers
+        Width of each band
+    startat: number, default 0
+        Starting position of bands
+    '''
+    edges = widths_to_edges(widths,startat=startat)
+    return centers(edges)
+
+def axvbands(widths,colors=BLACK,fade=0.8,startat=0,**kwargs):
+    '''
+    Wrapper for `axvstripe` that accepts band widths 
+    rather than edges.
+    
+    Parameters
+    ----------
+    widths: list of numbers
+        Width of each band
+    colors: color or list of colors
+        If a single color, will alternated colored/white.
+        If a list of colors, will rotate within list
+    alpha: positive float ∈[0,1]; default 0
+        Amount of white to mix into the colors
+    startat: number, default 0
+        Starting position of bands
+    '''
+    axvstripe(
+        widths_to_edges(widths,startat=startat),
+        colors=colors,fade=fade,**kwargs)
+
+
+def zerohline(color='k',lw=None):
+    '''
+    Draw horizontal line at zero matching axis style.
+    '''
+    if lw is None:
+        lw = matplotlib.rcParams['axes.linewidth']
+    plt.axhline(0,color=color,lw=lw)
+
+
+def zerovline(color='k',lw=None):
+    '''
+    Draw vertical line at zero matching axis style.
+    '''
+    if lw is None:
+        lw = matplotlib.rcParams['axes.linewidth']
+    plt.axvline(0,color=color,lw=lw)
+
+
+import scipy.stats
+import neurotools.stats.pvalues as pvalues
+def boxplot_significance(
+    a1,
+    positionsa,
+    b1=None,
+    positionsb=None,
+    fdr=0.05,
+    dy=5,
+    fontsize=6,
+    label_pvalue=True,
+    significance_mark='∗'):
+    '''
+    Perform Wilcoxon tests on a pair of box-plot sets
+    and add significance brackets.
+        
+    This corrects for multiple comparisons using the
+    Benjamini-Hochberg procedure, using either the 
+    variance for positive dependence or no dependence,
+    whichever is more conservative. 
+        
+    Parameters
+    ----------
+    a1: NGROUPS×NPOINTS np.float32
+        Condition A
+    positionsa: NGROUPS iterable of numbers
+        X positions of each of group A
+        
+    Other Parameters
+    ----------------
+    b1: NGROUPS×NPOINTS np.float32; Default None
+        Condition B
+    positionsb: NGROUPS iterable of numbers; Default None
+        X positions of each of group B
+    fdr: float in (0,1); default 0.05
+        Desired false discovery rate for 
+        Benjamini Hochberg correction
+    dy: positive number; default 5
+        Padding, in pixels, between box and p-value annotation
+    fontsize: postiive float; default 6
+        Font size of p-value, if shown
+    label_pvalue: boolean; default True
+        Only for single-population tests.
+        Whether to draw corrected p-value for significant 
+        boxes.
+    significance_mark: str; default '∗'
+        Only for single-population tests.
+        Marker to use to note significant boxes.    
+        
+    Returns
+    ------
+    pvalues: np.float32
+        List of corrected pvalues for each box or comparison
+        between a pair of boxes
+    is_significant: np.bool
+        List of booleans indicating whether given box or
+        pair of boxes was signfiicant at the specified
+        falst discovery rate threshold after correcting
+        for multiple comparisons.
+    '''
+    if b1 is None:
+        # One dataset: test if different from zero
+        pv = np.float32([scipy.stats.wilcoxon(ai).pvalue for ai in a1]).ravel()
+        pv2, reject = pvalues.correct_pvalues(pv,alpha=fdr,verbose=False)
+        hy = np.array([np.percentile(ai,95) for ai in a1]).ravel()
+        for ip,ir,x,y in zip(pv2,reject,positionsa,hy):
+            if ip<fdr:
+                s = significance_mark
+                if label_pvalue:
+                    s = shortscientific(ip)+'\n'+s
+                text(x,y+px2y(dy),s,fontsize=fontsize,ha='center')
+    else:
+        # Two datasets: test if different
+        # Perform tests
+        pv = np.float32([scipy.stats.wilcoxon(ai,bi).pvalue for ai,bi, in zip(a1,b1)]).ravel()
+        pv2, reject = pvalues.correct_pvalues(pv,alpha=fdr,verbose=False)
+        # Bracket heights
+        hy = np.array([[
+            max(np.percentile(ai,95),np.percentile(bi,95)) 
+            for ai,bi in zip(aa,bb)] 
+            for aa,bb in [(a1,b1)]]).T.ravel()
+        for ip,ir,x1,x2,y in zip(pv2,reject,positionsa,positionsb,hy):
+            if ip<fdr:
+                sigbar(x1,x2,y,pvalue=ip,dy=dy,fontsize=fontsize)
+                
+                
+    return pv2, reject

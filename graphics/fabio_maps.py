@@ -1,5 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Load and register Fabio Crameri's color maps, as well as reversed versions, 
+similarly to the built-in colormaps of matplotlib. 
+
+    Crameri,Fabio. (2020, January 6). 
+    Scientific colour maps (Version 6.0.4). 
+    Zenodo. http://doi.org/10.5281/zenodo.4153113
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -13,18 +21,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import neurotools.graphics.color as ncl
-from neurotools.system import *
 import traceback
-
-
-'''
-Load and register Fabio Crameri's color maps, as well as reversed versions, 
-similarly to the built-in colormaps of matplotlib. 
-
-    Crameri,Fabio. (2020, January 6). 
-    Scientific colour maps (Version 6.0.4). 
-    Zenodo. http://doi.org/10.5281/zenodo.4153113
-'''
 
 acton_cm_data = [
 [.18063,0.12992,0.30024],[.18461,0.13336,0.30378],[.18859,0.13683,0.30733],[.19255,0.14032,0.3109],[.19655,0.14383,0.31444],[.20049,0.14734,0.31801],

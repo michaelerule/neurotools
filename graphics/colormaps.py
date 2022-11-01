@@ -1,5 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+"""
+Additional color maps for use with matplotlib.
+
+Importing the module also loads
+`neurotools.graphics.fabio_maps`.
+"""
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -13,16 +19,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import neurotools.graphics.color as ncl
-from neurotools.system import *
 import traceback
-
-"""
-Additional color maps for use with matplotlib.
-"""
 
 from neurotools.graphics.fabio_maps import *
 
-######################################################################
+############################################################
 # Isoluminance hue wheel color map
 # pip install husl
 # http://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/28790/versions/5/screenshot.jpg

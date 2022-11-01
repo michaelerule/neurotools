@@ -1,17 +1,14 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Parallel tools
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
 
-'''
-Parallel tools
-==============
-'''
-
 from multiprocessing import Process, Pipe, cpu_count
-
 import traceback
 try:
     from multiprocessing import Pool
@@ -19,6 +16,7 @@ except ImportError as ie:
     print('Problem importing multiprocessing.Pool?')
     traceback.print_exc()
 
+import numpy as np
 import traceback, warnings
 import sys
 import signal
@@ -27,9 +25,7 @@ import functools
 import inspect
 import neurotools.jobs.ndecorator
 import neurotools.jobs.closure
-from neurotools.tools import asiterable
-import numpy as np
-
+from neurotools.util.tools import asiterable
 if sys.version_info<(3,0):
     from itertools import imap as map
 

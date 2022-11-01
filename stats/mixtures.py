@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions relating to distributions. Most of this should be available
+in numpy, scipy, and scikits.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,12 +11,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-'''
-Functions relating to distributions. Most of this should be available
-in numpy, scipy, and scikits.
-'''
 
 import numpy as np
 from neurotools.stats.distributions import poisson_logpdf, poisson_pdf

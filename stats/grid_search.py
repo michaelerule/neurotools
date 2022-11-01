@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-
+'''
+Hill-climbing grid search
+'''
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt

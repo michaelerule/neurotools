@@ -1,23 +1,21 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions for generating discrete representations of 
+certain operators, either as matrices or in terms of 
+their discrete Fourier coefficients. 
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import unicode_literals
 from __future__ import print_function
+
 import numpy as np
 import numpy.linalg
 import scipy
-import scipy.linalg
-
-
-from neurotools.functions import sexp
-
-'''
-Functions for generating discrete representations of certain operators. 
-Note: This is partially redundant with `neurotools.spatial.kernels`.
-'''
-
+from neurotools.util.functions import sexp
 
 def adjacency1D(L,circular=True):
     '''

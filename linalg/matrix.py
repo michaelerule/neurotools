@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Collecting matrix-related subroutines
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,15 +11,6 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 import sys
-# more py2/3 compat
-#from neurotools.system import *
-#if sys.version_info<(3,):
-#    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
-
-'''
-Collecting matrix-related subroutines
-'''
 
 import numpy as np
 import scipy
@@ -147,23 +140,44 @@ def check_finite_real(M):
 # need a faster covariance matrix checker
 def check_covmat(C,N=None,eps=1e-6):
     '''
-    Verify that matrix M is a size NxN precision or covariance matirx
+    Verify that matrix C is a size NxN positive definite
+    matrix.
+    
+    Parameters
+    ----------
+    C: object
+        Object we expect to be a square positive definite
+        matrix.
+    
+    Other Parameters
+    ----------------
+    N: int; default is None
+        Expected size of array. If `None`, defaults to
+        `C.shape[0]`
+    eps: positive float; default 1e-6
+        Maximum allowed distance between `C` and its
+        transpose.
+        
+    Returns
+    -------
+    C: NxN np.float64
+        Reconditioned covariance matrix.     
     '''
-    if not type(C)==np.ndarray:
-        raise ValueError("Covariance matrix should be a 2D numpy array")
-    if not len(C.shape)==2:
-        raise ValueError("Covariance matrix should be a 2D numpy array")
+    if not type(C)==np.ndarray: raise ValueError(
+        "Covariance matrix should be a 2D numpy array")
+    if not len(C.shape)==2: raise ValueError(
+        "Covariance matrix should be a 2D numpy array")
     if N is None: 
         N = C.shape[0]
-    if not C.shape==(N,N):
-        raise ValueError("Expected size %d x %d matrix"%(N,N))
-    if np.any(~np.isreal(C)):
-        raise ValueError("Covariance matrices should not contain complex numbers")
+    if not C.shape==(N,N):raise ValueError(
+        "Expected size %d x %d matrix"%(N,N))
+    if np.any(~np.isreal(C)):raise ValueError(
+        "Covariance matrices should not contain complex numbers")
     C = np.real(C)
-    if np.any(~np.isfinite(C)):
-        raise ValueError("Covariance matrix contains NaN or ±inf!")
-    if not np.all(np.abs(C-C.T)<eps):
-        raise ValueError("Covariance matrix is not symmetric up to precision %0.1e"%eps)
+    if np.any(~np.isfinite(C)):raise ValueError(
+        "Covariance matrix contains NaN or ±inf!")
+    if not np.all(np.abs(C-C.T)<eps):raise ValueError(
+        "Covariance matrix is not symmetric up to precision %0.1e"%eps)
     
     # Get just highest eigenvalue
     maxe = np.real(scipy.linalg.decomp.eigh(C,eigvals=(N-1,N-1))[0][0])
@@ -193,7 +207,23 @@ def check_covmat(C,N=None,eps=1e-6):
 # need a faster covariance matrix checker
 def check_covmat_fast(C,N=None,eps=1e-6):
     '''
-    Verify that matrix M is a size NxN precision or covariance matirx
+    Verify that matrix M is a size NxN precision or 
+    covariance matirx.
+    
+    Parameters
+    ----------
+    C: object
+        Object we expect to be a square positive definite
+        matrix.
+    
+    Other Parameters
+    ----------------
+    N: int; default is None
+        Expected size of array. If `None`, defaults to
+        `C.shape[0]`
+    eps: positive float; default 1e-6
+        Maximum allowed distance between `C` and its
+        transpose.
     '''
     if not type(C)==np.ndarray and len(C.shape)==2:
         raise ValueError("Covariance matrix should be a 2D numpy array")

@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for discrete time hidden Markov models
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,24 +11,19 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from neurotools.system              import *
-from neurotools.stats.Gaussian      import *
-from neurotools.functions           import slog
-from neurotools.stats.distributions import poisson_logpdf
-from neurotools.stats.Gaussian      import gaussian_quadrature
-from neurotools.stats.Gaussian      import gaussian_quadrature_logarithmic
-from neurotools.functions           import slog,sexp
-
-'''
-Routines concerning discrete time hidden markov models
-'''
-
 import scipy
 import numpy as np
 import random
 from numpy.linalg   import solve
 from scipy.optimize import minimize
 from math           import factorial as fact
+
+from neurotools.stats.Gaussian      import *
+from neurotools.util.functions      import slog
+from neurotools.util.functions      import slog,sexp
+from neurotools.stats.distributions import poisson_logpdf
+from neurotools.stats.Gaussian      import gaussian_quadrature
+from neurotools.stats.Gaussian      import gaussian_quadrature_logarithmic
 
 def poisson_parameter_guess(X,Y,N):
     '''

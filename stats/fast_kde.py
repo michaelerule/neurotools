@@ -1,5 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+"""
+This is an adaptation of the code found here
+https://gist.github.com/joferkington/d95101a61a02e0ba63e5
+Author: Joe Kington
+"""
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,25 +12,21 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-"""
-This is an adaptation of the code found here
-https://gist.github.com/joferkington/d95101a61a02e0ba63e5
-
-Author: Joe Kington
-"""
 
 import numpy as np
 import scipy.sparse
 import scipy.ndimage
 import scipy.stats
 import scipy.signal
-
 import matplotlib.pyplot as plt
 
-def fast_kde(x, y, gridsize=(400, 400), extents=None, weights=None,
-             sample=False):
+def fast_kde(
+    x, 
+    y, 
+    gridsize=(400, 400), 
+    extents=None, 
+    weights=None,
+    sample=False):
     """
     Performs a gaussian kernel density estimate over a regular grid using a
     convolution of the gaussian kernel with a 2D histogram of the data.

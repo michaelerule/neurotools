@@ -1,5 +1,12 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions for computing the log-PDF of common distributions.
+
+Some of these yield a more digits of precision than their 
+counterparts in `scipy.stats` by computing log-probability 
+values using `np.longdouble`.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,66 +14,100 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-'''
-Functions for computing the log-PDF of common distributions.
-These yield a more digits of precision than their counterparts in
-scipy.stats by computing log-probability values using high precision
-128-bit floats.
-'''
 
 import numpy as np
-from neurotools.functions import log_factorial, slog
 import random
 import scipy
 import scipy.special
-
-def poisson_logpdf(k,l):
-    '''
-    Gives the log-pdf for a poisson distribution with rate l 
-    evaluated at points k. k should be a vector of integers.
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    # k,l = map(np.longdouble,(k,l))
-    return k*slog(l)-l-np.array([scipy.special.gammaln(x+1) for x in k])
-    #return k*slog(l)-l-np.array([log_factorial(x) for x in k])
-
-def poisson_pdf(k,l):
-    '''
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
-    '''
-    return np.exp(poisson_logpdf(k,l))
+from neurotools.util.functions import log_factorial, slog, sexp
 
 # log(sqrt(2*pi)) computed to high precision
 logsqrt2pi = np.longdouble('0.91893853320467274178032973640561763986139747363778341281')
 
-def gaussian_logpdf(mu,sigma,x):
+def poisson_logpdf(k,l):
     '''
-    Non-positive standar deviations will be clipped
+    Evaluate the log-pdf for a poisson distribution with 
+    rate `l` evaluated at points k.
     
     Parameters
     ----------
+    k: np.int32
+        Counts at whih to evaluate the log-pdf
+    l: positive float
+         Poisson rate
     
     Returns
     -------
+    result: np.longdouble
+        Log-probability of each `k` for a Poisson 
+        distribution with rate `l`.
+    '''
+    return k*slog(l)-l-np.array([scipy.special.gammaln(x+1) for x in k])
+
+def poisson_pdf(k,l):
+    '''
+    Evaluate the pdf for a poisson distribution with rate 
+    `l` evaluated at points k.
+    
+    Parameters
+    ----------
+    k: np.int32
+        Counts at whih to evaluate the log-pdf
+    l: positive float
+         Poisson rate
+    
+    Returns
+    -------
+    result: np.longdouble
+        Probability of each `k` for a Poisson 
+        distribution with rate `l`.
+    '''
+    return sexp(poisson_logpdf(k,l))
+
+
+def gaussian_logpdf(mu,sigma,x):
+    '''
+    Evaluate the log-pdf of a `(mu,sigma)` normal 
+    distribution at points `x`.
+    
+    Parameters
+    ----------
+    mu: float
+        Distribution mean
+    sigma: positive float
+        Distribution standard deviation
+    x: np.float32
+        Points at which to evaluate.
+    
+    Returns
+    -------
+    result: np.longdouble
+        log-PDF evaluated ast `x`.
     '''
     mu,sigma,x = map(np.longdouble,(mu,sigma,x))
     x = (x-mu)/sigma
     return -0.5*x*x - slog(sigma) - logsqrt2pi
 
 def gaussian_pdf(mu,sigma,x):
-    return np.exp(gaussian_logpdf(mu,sigma,x))
+    '''
+    Evaluate the pdf of a `(mu,sigma)` normal 
+    distribution at points `x`.
+    
+    Parameters
+    ----------
+    mu: float
+        Distribution mean
+    sigma: positive float
+        Distribution standard deviation
+    x: np.float32
+        Points at which to evaluate.
+    
+    Returns
+    -------
+    result: np.longdouble
+        PDF evaluated ast `x`.
+    '''
+    return sexp(gaussian_logpdf(mu,sigma,x))
     
 def explogpdf(x,dx=1):
     '''

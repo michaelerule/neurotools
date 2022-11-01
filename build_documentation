@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+shopt -s extglob
+
+# Don't let this stuff get in; Remove it if it gets in.
+git rm -r __pycache__
+git rm -r .ipamplynb_checkpoints
+
+# Clean up editor files
+find . -iname "*~" -exec rm {} \;
+
+echo running autodoc
+cd ./docs
+sphinx-apidoc -fe -o . ../
+make clean html
+cd ../
+
+git add .
+git commit -m "rebuilt documentation"
+

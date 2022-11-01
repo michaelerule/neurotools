@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Pairwise-phase-consistency spike-LFP coupling statistics
+and related functions. 
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -12,7 +16,10 @@ try:
     from spectrum.mtm import dpss
 except:
     def dpss(*args):
-        raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
+        raise NotImplementedError(
+            "Please install the spectrum module, e.g."
+            "\n\tpip install spectrum\n"
+            "to use this functionality.")
 
 import types
 import numpy as np
@@ -20,22 +27,22 @@ from numpy.fft import *
 from warnings import warn
 
 __PPC_FP_TYPE__=np.longdouble
+from neurotools.signal import zeromean as nodc
 
-
-def phase_randomize_complex(signal):
+def phase_randomize(signal):
     '''
-    Phase randomizes a signal by rotating frequency components by a random
-    angle. Negative frequencies are rotated in the opposite direction.
-    The nyquist frequency, if present, has it's sign randomly flipped.
+    Phase randomizes a signal by rotating frequency 
+    components by a random angle. Negative frequencies are 
+    rotated in the opposite direction. The nyquist 
+    frequency, if present, has it's sign randomly flipped.
     
-    Returns complex-valued array.
-
     Parameters
     ----------
     signal : 1D array
 
     Returns
     -------
+    phase-randomized sigal
     '''
     assert 1==len(signal.shape)
     N = int(len(signal))
@@ -60,29 +67,28 @@ def phase_randomize_complex(signal):
     ff = np.fft.fft(signal)*randomize
     # take inverse
     randomized = np.fft.ifft(ff)
-    return randomized
+    return randomized.real
 
-def phase_randomize(signal):
-    '''
-    Phase randomizes a signal by rotating frequency components by a random
-    angle. Negative frequencies are rotated in the opposite direction.
-    The nyquist frequency, if present, has it's sign randomly flipped.
-    
-    Casts final result to a real-valued array.
-
-    Parameters
-    ----------
-    signal : 1D array
-
-    Returns
-    -------
-    '''
-    return np.real(phase_randomize_complex(signal))
 
 def fftppc_biased(snippits,Fs=1000,taper=None):
     '''
+    FFT-based pairwise phase consistency **without **
+    corrections for finite-sample-size bias. 
 
-    Retruns
+    Parameters
+    ----------
+    snippits:
+        List of LFP signals extracted in the vicinity of
+        each spike.
+    
+    Other Parameters
+    ----------------
+    Fs: positive int; default 1000
+        Sample rate
+    taper: np.attay
+        Windowing function to apply before taking the FFT        
+
+    Returns
     -------
     freqs: npp.array
         Frequencies at which the PPC has been evaluated
@@ -110,6 +116,32 @@ def fftppc_biased(snippits,Fs=1000,taper=None):
 
 def fftppc(snippits,Fs=1000,taper=None):
     '''
+    FFT-based pairwise phase consistency **with** 
+    corrections for finite-sample-size bias. 
+
+    Parameters
+    ----------
+    snippits:
+        List of LFP signals extracted in the vicinity of
+        each spike.
+    
+    Other Parameters
+    ----------------
+    Fs: positive int; default 1000
+        Sample rate
+    taper: np.attay
+        Windowing function to apply before taking the FFT        
+
+    Returns
+    -------
+    freqs: npp.array
+        Frequencies at which the PPC has been evaluated
+    raw: np.array
+        Raw (biased) value for the PPC at each frequency
+    phases: np.array
+        Phase values associated with each ppc coefficient
+    '''
+    '''
     make sure this is equivalent to the following matlab lines
     raw     = abs(sum(S./abs(S))).^2;
     ppc     = (raw - M)./(M.*(M-1));
@@ -126,6 +158,11 @@ def fftppc(snippits,Fs=1000,taper=None):
 
 def fftppc_biased_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
     '''
+    FFT-based pairwise phase consistency **without** 
+    corrections for finite-sample-size bias, using a
+    multi-taper method with `k` tapers to reduce variance
+    at the expense of bandwidth resolution.  
+    
     Parameters
     ----------
     snippits: Nspikes x Nwindow
@@ -137,6 +174,17 @@ def fftppc_biased_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
         Sampling frequency. Defaults to 1000 Hz
     k: positive integer
         Number of tapers. Defaults to 4.
+    transpose_warning: boolean; default True
+        Warn if any of the input arrays appear transposed.
+
+    Returns
+    -------
+    freqs: npp.array
+        Frequencies at which the PPC has been evaluated
+    raw: np.array
+        Raw (biased) value for the PPC at each frequency
+    phases: np.array
+        Phase values associated with each ppc coefficient
     '''
     # some precision trouble
     # use quad precition
@@ -158,6 +206,33 @@ def fftppc_biased_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
 
 def fftppc_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
     '''
+    FFT-based pairwise phase consistency **with** 
+    corrections for finite-sample-size bias, using a
+    multi-taper method with `k` tapers to reduce variance
+    at the expense of bandwidth resolution.  
+    
+    Parameters
+    ----------
+    snippits: Nspikes x Nwindow
+        Array of spike-triggered samples of the signal trace
+    
+    Other Parameters
+    ----------------
+    Fs: scalar
+        Sampling frequency. Defaults to 1000 Hz
+    k: positive integer
+        Number of tapers. Defaults to 4.
+    transpose_warning: boolean; default True
+        Warn if any of the input arrays appear transposed.
+
+    Returns
+    -------
+    freqs: npp.array
+        Frequencies at which the PPC has been evaluated
+    raw: np.array
+        Raw (biased) value for the PPC at each frequency
+    phases: np.array
+        Phase values associated with each ppc coefficient
     '''
     # some precision trouble
     # use quad precition
@@ -168,10 +243,6 @@ def fftppc_multitaper(snippits,Fs=1000,k=4,transpose_warning=True):
     unbiased = (raw*k*M-1)/(M-1)
     return ff, unbiased, phase
 
-def nodc(x):
-    '''
-    '''
-    return x-mean(x)
 
 def discard_spikes_closer_than_delta(signal,times,delta):
     '''
@@ -185,6 +256,16 @@ def discard_spikes_closer_than_delta(signal,times,delta):
     the code for selecting the subset of spikes for PPC here, so that
     it can be used to ensure that both conditions have a matching number
     of spikes
+
+    Parameters
+    ----------
+    signal:
+    times:
+    delta:
+    
+    
+    Returns
+    -------
     '''
     N = len(signal)
     times = array(times)
@@ -201,7 +282,9 @@ def discard_spikes_closer_than_delta(signal,times,delta):
     #print('%d spikes far enough apart to be usable'%len(usetimes))
     return usetimes
 
-def pairwise_phase_consistancy(signal,times,
+def pairwise_phase_consistancy(
+    signal,
+    times,
     window=50,
     Fs=1000,
     k=4,
@@ -213,21 +296,50 @@ def pairwise_phase_consistancy(signal,times,
 
     Parameters
     ----------
-    signal: 1D real valued signal
-    times:  Times of events relative to signal
-    window: Time around event to examine
-    Fs:     sample rate for computing freqs
-    k:      number of tapers
+    signal: 
+        1D real valued signal
+    times:  
+        Times of events relative to signal
+    
+    Other Parameters
+    ----------------
+    window: positive int; default 50
+        Time around event to examine
+    Fs: positive int; default 1000
+        sample rate for computing freqs
+    k: positive int; default 4
+        number of tapers
         Also accepts lists of signals / times
         returns (freqs, ppc, phase), lfp_segments
+    multitaper: boolean; default True
+    biased: booleanl default False
+    delta: positive int; default 100
+    taper: array; default None
+    
+    Returns
+    -------
+    freqs: npp.array
+        Frequencies at which the PPC has been evaluated
+    raw: np.array
+        Raw (biased) value for the PPC at each frequency
+    phases: np.array
+        Phase values associated with each ppc coefficient
 
     '''
     if multitaper:
-        print("Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!")
-        print("For a fixed number of tapers, the bias is constant, but be careful")
+        print(
+        "Warning: multitaper can introduce a bias into PPC "
+        "that depends on the number of tapers!")
+        print(
+        "For a fixed number of tapers, the bias is "
+        "constant, but be careful")
 
     if not taper is None and multitaper:
-        print("A windowing taper was specified, but multitaper mode was also selected? The taper argument is for providing a windowing function when not using multitaper estimation")
+        print(
+        "A windowing taper was specified, but multitaper "
+        "mode was also selected? The taper argument is for "
+        "providing a windowing function when not using "
+        "multitaper estimation")
         assert 0
     if type(taper) is types.FunctionType:
         taper = taper(window*2+1)
@@ -235,7 +347,9 @@ def pairwise_phase_consistancy(signal,times,
     assert window>0
     if len(shape(signal))==1:
         usetimes = discard_spikes_closer_than_delta(signal,times,delta)
-        snippits = array([nodc(signal[t-window:t+window+1]) for t in usetimes])
+        snippits = array([
+            nodc(signal[t-window:t+window+1]) for t in usetimes
+        ])
     elif len(shape(signal))==2:
         warn('assuming first dimension is trials / repititions')
         signals,alltimes = signal,times
@@ -259,7 +373,25 @@ def pairwise_phase_consistancy(signal,times,
         else:          return fftppc(snippits,Fs,taper=taper),snippits
     assert 0
 
-def estimate_bias_in_uncorrected_ppc(signal,times,window=50,Fs=1000,nrand=100):
+def estimate_bias_in_uncorrected_ppc(
+    signal,times,window=50,Fs=1000,nrand=100):
+    '''
+    Parameters
+    ----------
+    signal:
+    times:
+    
+    Other Parameters
+    ----------------
+    window: positive int; deafult 50
+    Fs: positive int; default 1000
+    nrand: positive int; default 100
+    
+    Returns
+    -------
+    ff:
+    bias:
+    '''
     tried = []
     for i in range(nrand):
         ff,ppc = uncorrectedppc(phase_randomize(signal),times,window,Fs)
@@ -272,8 +404,21 @@ def phase_randomized_bias_correction(signal,times,window=50,Fs=1000,nrand=100):
     Estimates degrees of freedom using phase randomization.
     experimental.
 
-    algebra could be dramaticalyl simplified, but keeping all explicit
-    for clarity for now
+    Parameters
+    ----------
+    signal:
+    times:
+    
+    Other Parameters
+    ----------------
+    window: positive int; deafult 50
+    Fs: positive int; default 1000
+    nrand: positive int; default 100
+    
+    Returns
+    -------
+    ff:
+    unbiased:
     '''
     warn('AS FAR AS WE KNOW THIS DOESNT REALLY WORK')
     ff,bias = estimate_bias_in_uncorrected_ppc(signal,times,window,Fs,nrand)
@@ -286,7 +431,17 @@ def phase_randomized_bias_correction(signal,times,window=50,Fs=1000,nrand=100):
     return ff, unbiased
 
 
-def temp_code_for_exploring_chance_level_delete_later():
+def _temp_code_for_exploring_chance_level_delete_later():
+    '''
+    Parameters
+    ----------
+    
+    Other Parameters
+    ----------------
+    
+    Returns
+    -------
+    '''
     # bias/ariance analysis
     # my understanding is that No. of samples should not change the mean PPC
     # value, but it will affect the variance. Since the PPC is computed as
@@ -313,20 +468,45 @@ def temp_code_for_exploring_chance_level_delete_later():
 
 def ppc_chance_level(nSamples,nrandom,p,nTapers=1):
     '''
-    Don't use this, it underestimates chance level in the presence of
-    Spike trian or LFP autocorrelations
+    **Caution:** This underestimates chance level in the 
+    presence of Spike trian or LFP autocorrelations.
+    
+    Parameters
+    ----------
+    nSamples: 
+    nrandom:
+    p: 
+    
+    Other Parameters
+    ----------------
+    nTapers: positive int; default 1
+    
+    Returns
+    -------
+    samples:
     '''
-    assert 0
+    raise DeprecationWarning(
+        "`ppc_chance_level` underestimates the PPC chance "
+        "level in the presence of spike-train or LFP "
+        "autocorrelations and has been deprecated.")
     simulated = []
     for i in range(nrandom):
-        unbiased = (mean([abs(mean(exp(2j*pi*rand(nSamples)))) for t in range(nTapers)])**2*nSamples-1)/(nSamples-1)
+        unbiased = (
+            mean([abs(mean(exp(2j*pi*rand(nSamples)))) 
+            for t in range(nTapers)])**2*nSamples-1
+            )/(nSamples-1)
         simulated.append(unbiased)
     return sorted(simulated)[int(p*len(simulated))]
 
 
 def ppc_phase_randomize_chance_level_sample(
-    signal,times,window=50,Fs=1000,k=4,multitaper=True,
-    biased=False,delta=100,taper=None):
+    signal,times,
+    window=50,
+    Fs=1000,
+    k=4,multitaper=True,
+    biased=False,
+    delta=100,
+    taper=None):
     '''
     Uses phase randomization to sample from the null hypothesis distribution.
     Returns the actual PPC samples rather than any summary statistics.
@@ -334,12 +514,39 @@ def ppc_phase_randomize_chance_level_sample(
 
     Parameters
     ----------
-    signal: 1D real valued signal
-    times:  Times of events relative to signal
-    window: Time around event to examine
-    Fs:     sample rate for computing freqs
-    k:      number of tapers
-    Also accepts lists of signals / times
+    signal: 
+        1D real valued signal
+    times:  
+        Times of events relative to signal
+    window: 
+        Time around event to examine
+    
+    Other Parameters
+    ----------------
+    window: positive int; default 50
+        Time around event to examine
+    Fs: positive int; default 1000
+        sample rate for computing freqs
+    k: positive int; default 4
+        number of tapers
+        Also accepts lists of signals / times
+        returns (freqs, ppc, phase), lfp_segments
+    multitaper: boolean; default True
+    biased: booleanl default False
+    delta: positive int; default 100
+    taper: array; default None
+    
+    Returns
+    -------
+    freqs: npp.array
+        Frequencies at which the PPC has been evaluated
+        (phase-randomized samples)
+    raw: np.array
+        Raw (biased) value for the PPC at each frequency
+        (phase-randomized samples)
+    phases: np.array
+        Phase values associated with each ppc coefficient
+        (phase-randomized samples)
     '''
     if multitaper:
         print("Warning: multitaper can introduce a bias into PPC that depends on the number of tapers!")

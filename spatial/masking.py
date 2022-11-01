@@ -7,16 +7,13 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-
-
-from numpy import *
+import numpy as np
 
 '''
 Routines related to 2D boolean arrays used as image masks
 depends on neurotools.spatial.geometry
 These routines expect 2D (x,y) points to be encoded as complex z=x+iy numbers.
 '''
-
 
 def as_mask(x):
     '''
@@ -41,9 +38,9 @@ def as_mask(x):
         raise ValueError('x should be a 2D array')
     if not x.dtype==np.bool:
         # Try something sensible
-        x = nan_to_num(float32(x),0.0)
-        values = float32(unique(x))
-        if len(values)!=2 or all(values<=0) or all(values>0):
+        x = np.nan_to_num(np.float32(x),0.0)
+        values = np.float32(unique(x))
+        if len(values)!=2 or np.all(values<=0) or np.all(values>0):
             raise ValueError('x should be np.bool, got %s'%x.dtype)
         x = x>0
     return x
@@ -62,7 +59,7 @@ def mask_to_points(x):
     -------
     z: np.complex64
     '''
-    py,px = where(as_mask(x))
+    py,px = np.where(as_mask(x))
     return px+1j*py
 
 
@@ -81,7 +78,7 @@ def extend_mask(mask,sigma=2,thr=0.5):
     -------
     smoothed mask: 2D np.bool
     '''
-    mask = float32(as_mask(mask))
+    mask = np.float32(as_mask(mask))
     return circular_gaussian_smooth_2D(mask,sigma)>thr
     
 
@@ -103,12 +100,12 @@ def pgrid(W,H=None):
         h = w if H is None else int(H)
     except TypeError:
         W = np.array(W)
-        if not len(shape(W))==2:
+        if not len(np.shape(W))==2:
             raise ValueError('Cannot create 2D grid for shape %s'%W.shape)
         if not H is None:
             raise ValueError('A 2D array was passed, but H was also given')
         w,h = W.shape
-    return arange(w)[:,None] +1j*arange(h)[None,:]
+    return np.arange(w)[:,None] +1j*np.arange(h)[None,:]
 
 
 def nan_mask(mask,nanvalue=False,value=None):
@@ -123,8 +120,8 @@ def nan_mask(mask,nanvalue=False,value=None):
     nanvalue = int(not(not nanvalue))
     if value is None:
         value = [1,0][nanvalue]
-    use = float32([[NaN,value],[value,NaN]])[nanvalue]
-    return use[int32(as_mask(mask))]
+    use = np.float32([[np.NaN,value],[value,np.NaN]])[nanvalue]
+    return use[np.int32(as_mask(mask))]
 
 
 def maskout(x,mask,**kwargs):
@@ -150,8 +147,8 @@ def trim_mask(mask):
     mask: 2D np.bool
     '''
     mask = as_mask(mask)
-    a,b = find(any(mask,1))[[0,-1]]
-    c,d = find(any(mask,0))[[0,-1]]
+    a,b = find(np.any(mask,1))[[0,-1]]
+    c,d = find(np.any(mask,0))[[0,-1]]
     return mask[a:b+1,c:d+1]
 
 
@@ -169,8 +166,8 @@ def mask_crop(x,mask,fill_nan=True):
     '''
     if fill_nan:
         x = maskout(x,mask)
-    a,b = find(any(mask,1))[[0,-1]]
-    c,d = find(any(mask,0))[[0,-1]]
+    a,b = find(np.any(mask,1))[[0,-1]]
+    c,d = find(np.any(mask,0))[[0,-1]]
     return x[a:b+1,c:d+1]
 
 
@@ -186,7 +183,7 @@ def to_image(x,mask):
     '''
     mask = as_mask(mask)
     x = np.array(x)
-    q = zeros(mask.shape,x.dtype)
+    q = np.zeros(mask.shape,x.dtype)
     q[mask] = x
     return q
 

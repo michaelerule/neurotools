@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Helper routines for convolutions, mostly related to padding.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,16 +12,24 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import numpy as np
-import neurotools.getfftw
-
-from scipy.signal         import convolve2d
-from neurotools.functions import npdf
+from scipy.signal import convolve2d
+from neurotools.util.functions import npdf
 
 def reflect2D(data):
     '''
-    Reflects 2D data ... used in the discrete cosine transform.
-    data may have dimensions HxW or HxWxN
-    return 2Hx2W or 2Hx2WxN respectively
+    Reflects 2D data for use with the discrete cosine 
+    transform.
+    
+    Parameters
+    ----------
+    data: np.array
+        `data` may have dimensions (H,W) or (H,W,N)
+        
+    Returns
+    -------
+    result: np.array
+        shape (2H,2W) array if `data` is 2D. 
+        shaoe (2H,2W,N) array if `data` is 3D.
     '''
     h,w = np.shape(data)[:2]
     dtype = data.dtype
@@ -36,9 +47,18 @@ def reflect2D(data):
 
 def reflect2D_1(data):
     '''
-    Reflects 2D data, without doubling the data on the edge
-    data may have dimensions HxW or HxWxN
-    return 2H-2x2W-2 or 2H-2x2W-2xN respectively
+    Reflects 2D data, without doubling the data on the edge.
+    
+    Parameters
+    ----------
+    data: np.array
+        `data` may have dimensions (H,W) or (H,W,N)
+        
+    Returns
+    -------
+    result: np.array
+        shape (2H-2,2W-2) array if `data` is 2D. 
+        shaoe (2H-2,2W-2,N) array if `data` is 3D.
     '''
     h,w = np.shape(data)[:2]
     dtype = data.dtype
@@ -58,6 +78,21 @@ def reflect2D_1(data):
     return result
 
 def mirror2d(x):
+    '''
+    Mirror-pad a 2D signal to implement reflected boundary
+    conditions for 2D convolution.
+    
+    This function is obsolete and superseded by 
+    `reflect2D()`. 
+    
+    Parameters
+    ----------
+    X: 2D np.array
+        Signal to pad
+        
+    Returns
+    -------
+    '''
     h,w = np.shape(x)
     mirrored = np.zeros((h*2,w*2),dtype=x.dtype)
     mirrored[:h,:w]=x
@@ -66,12 +101,45 @@ def mirror2d(x):
     return mirrored
 
 def convolve2dct(x,k):
+    '''
+    
+    Parameters
+    ----------
+        
+    Returns
+    -------
+    '''
     h,w = np.shape(x)
     x = mirror2d(x)
     x = convolve2d(x,k,'same')
     return x[:h,:w]
 
 def separable2d(X,k,k2=None):
+    '''
+    Convolve 2D signal `X` with two one-dimensional
+    convolutions with kernel `k`.
+    
+    This uses reflected boundary padding
+    
+    Parameters
+    ----------
+    X: 2D np.array
+        Signal to convolve
+    k: 1D np.array
+        Convolution kernel
+        
+    Other Parameters
+    ----------------
+    k2: 1D np.array
+        Convolution kernel for the section array 
+        dimension, if `X` is not square or if different
+        horizontal and vertical kernels are desired.
+        
+    Returns
+    -------
+    result: 2D np.array
+        Convolved result
+    '''
     h,w = np.shape(X)
     X = mirror2d(X)
     y = array([convolve(x,k,'same') for x in X])
@@ -80,15 +148,45 @@ def separable2d(X,k,k2=None):
     return y[:h,:w]
 
 def gausskern2d(sigma,size):
+    '''
+    Generate 2D Gaussian kernel
+    
+    Parameters
+    ----------
+    sigma: positive float
+        Kernel standard deviation
+    size: positive int
+        Size of kernel to generate
+        
+    Returns
+    -------
+    kernel: 2D np.float32
+        Gaussian kernel
+    '''
     k = size/2
     x = float32(arange(-k,k+1))
     p = npdf(0,sigma,x)
     kern = outer(p,p)
-    return kern / sum(kern)
+    return np.float32(kern / np.sum(kern))
 
 def gausskern1d(sigma,size):
+    '''
+    Generate 1D Gaussian kernel
+    
+    Parameters
+    ----------
+    sigma: positive float
+        Kernel standard deviation
+    size: positive int
+        Size of kernel to generate
+        
+    Returns
+    -------
+    kernel: 1D np.float32
+        Gaussian kernel
+    '''
     k = size/2
     x = float32(arange(-k,k+1))
     kern = npdf(0,sigma,x)
-    return kern / sum(kern)
+    return np.float32(kern / sum(kern))
 

@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+"""
+Routines for signal processing with spike waveforms
+"""
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,68 +10,47 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-"""TODO: title here
-
-TODO: module description here
-"""
 
 import os, sys, pickle
-from scipy import signal
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from   mpl_toolkits.mplot3d import Axes3D
+
+from scipy import signal
 from neurotools.signal import upsample
 
-'''
-TODO: update code to make these specific imports
-( as-is this is breaking sphinx autodoc / apidoc )
-'''
-'''
-from collections import *
-from itertools   import *
-from pylab       import *
-from scipy.io    import *
-from scipy.stats import *
-from   matplotlib.colors import *
-from neurotools.stats.gmm import *
-'''
 
-def realign(snip):
+def realign(snip,pad='zeros'):
     '''
-    Realign waveforms to peak
+    Realign waveforms to peak.
+    This will rotate the signal contained in `snip` so 
+    that its global maximum lies at `len(snip)//2`.
+    
+    Parameters
+    ----------
+    snip: 1D np.float32
+        Array containing a spike waveform
+        
+    Other Parameters
+    pad: str default 'zero'
+        Padding behavior
+         - `"zero"`: pad edges with zero
+         - `"end"`: pad edges with initial/final values
     '''
     i = np.argmin(snip)
     n = len(snip)
-    m = n/2
+    m = n//2
     shiftback = i-m
     result = np.zeros(snip.shape)
-    if shiftback==0:  result=snip
-    elif shiftback>0: result[0:-shiftback]=snip[shiftback:]
-    else:             result[-shiftback:] =snip[0:shiftback]
-    return result
-
-def realign_special(snip):
-    '''
-    Realign waveforms to peak, pad out missing values
-    '''
-    #expect length 240
-    #min should be set at 87
-    i = np.argmin(snip)
-    n = len(snip)
-    assert n==240
-    m = 87
-    shiftback = i-m
-    result = np.zeros(np.shape(snip))
-    if shiftback==0:  result=snip
-    elif shiftback>0:
-        result[0:-shiftback]=snip[shiftback:]
-        result[-shiftback:] =snip[-1]
-    else:
-        result[-shiftback:] =snip[0:shiftback]
-        result[:-shiftback] =snip[0]
+    if pad=='zero':
+        if shiftback==0:  
+            result=snip
+        elif shiftback>0: 
+            result[0:-shiftback]=snip[shiftback:]
+            if pad=='end': result[-shiftback:] =snip[-1]
+        else:    
+            result[-shiftback:] =snip[0:shiftback]
+            if pad=='end': result[:-shiftback] =snip[0]
     return result
 
 def getFWHM(wf):

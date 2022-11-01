@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Routines for monte-carlo integration
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,11 +10,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-'''
-Routines for monte-carlo integration
-'''
 
 import numpy as np
 import sys

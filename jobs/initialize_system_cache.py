@@ -1,15 +1,5 @@
 #!/user/bin/env python 
-# -*- coding: UTF-8 -*-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-from neurotools.system import *
-import sys
-__PYTHON_2__ = sys.version_info<(3, 0)
-
+# -*- coding: UTF-8 -*-
 '''
 Static initialization routines accompanying `neurotools_cache`.
 These routines were written to set up a caching framework for the Oscar
@@ -17,23 +7,22 @@ high performance computing cluster at Brown University, and have not yet
 been modified for general use. They still contain hard-coded user-specific
 paths, for example.
 '''
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
 
-import os
-import sys
+import os, sys
 IN_SPHINX='sphinx' in sys.modules
 if IN_SPHINX:
     print('Inside Sphinx autodoc; NOT loading scipy and pylab namespaces!')
 else:
     VERBOSE_CACHING = 0
-
 import traceback
-
 import neurotools
-import neurotools.jobs
-import neurotools.tools
-
-#import neurotools.jobs.cache
-
 import neurotools.jobs
 from neurotools.jobs import cache as neurotools_cache
 

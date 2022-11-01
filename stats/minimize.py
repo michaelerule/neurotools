@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Helper functions for minimization and optimization
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -14,33 +17,21 @@ import scipy
 import warnings
 import traceback
 
-import neurotools.functions
-
 from scipy.linalg import lstsq,pinv
 from numpy.linalg.linalg import cholesky as chol
 from numpy.linalg.linalg import LinAlgError
 
-from neurotools.functions import sexp,slog
-#from utilities import *
-#from arguments import *
-#from utilities import current_milli_time
-#from plot      import v2str_long
-
-import datetime
-import time as systime
-def current_milli_time():
-    '''
-    Returns the time in milliseconds
-    '''
-    return int(round(systime.time() * 1000))
+import neurotools.util.functions
+from neurotools.util.functions import sexp,slog
+from neurotools.util.time      import current_milli_time
+from neurotools.util.string    import v2str_long
     
-def v2str_long(p):
-    '''
-    Format vector as string with maximum precision
-    '''
-    return '['+','.join([np.longdouble(x).astype(str) for x in p])+']'
-
 class FailureError(RuntimeError):
+    '''
+    Re-named `RuntimeError` to distinguish error 
+    conditions arising from failure of optimization
+    routines. 
+    '''
     pass
 
 def minimize_retry(objective,initial,jac=None,hess=None,

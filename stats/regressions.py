@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for common regression tasks.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,16 +10,14 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-'''
-Routines to regress spatiotemporal wave shapes to data
-'''
-
-from neurotools.stats.minimize import minimize_retry
 
 import warnings
+import numpy as np
 from scipy.stats import linregress
+from scipy.optimize import minimize
+
+from neurotools.util.functions import npdf
+from neurotools.stats.minimize import minimize_retry
 
 '''
 Regress on the following model for synchrony
@@ -161,10 +162,6 @@ scipy.optimize.minimize(fun, x0, args=(), method=None, jac=None, hess=None,
         description of other attributes.
 
 '''
-
-import numpy as np
-from scipy.optimize import minimize
-from neurotools.functions import npdf
 
 def damped_cosine(X,Y,W):
     '''

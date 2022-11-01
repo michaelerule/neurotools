@@ -14,7 +14,7 @@ from __future__ import print_function
 
 import numpy as np
 from scipy.signal.signaltools import convolve2d
-from neurotools.tools         import warn
+from neurotools.util.tools    import warn
 from neurotools.spatial.dct   import dct_upsample,dct_cut_antialias
 from neurotools.signal        import rewrap
 

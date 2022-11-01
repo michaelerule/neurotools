@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for signal processing.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,34 +11,12 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from neurotools.system import *
-
+import warnings
 import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
-
 from scipy.interpolate import interp1d
-
-#from scipy.fft         import *
-
-# this function is missing
-#from   pylab import find
-import warnings
-
-def find(x):
-    '''
-    Cheap mock-up of pylab's discontinued `find` function for backwards
-    compatibility of some code.
-    
-    Parameters
-    ----------
-    x : 1-dimensionary array-like
-    
-    Returns
-    -------
-    boolean array
-    '''
-    return np.where(x.ravel)[0]
+from neurotools.util.tools import find
 
 def geometric_window(c,w):
     '''
@@ -55,10 +36,10 @@ def geometric_window(c,w):
     fb : float
         high-frequency cutoff
     '''
-    if not c>0:
-        raise ValueError('The center of the window should be positive')
-    if not w>=0:
-        raise ValueError('The window size should be non-negative')
+    if not c>0: raise ValueError(
+        'The center of the window should be positive')
+    if not w>=0:raise ValueError(
+        'The window size should be non-negative')
     lgwindow = (w+np.sqrt(w**2+4*c**2))/(2*c)
     fa       = c/lgwindow
     fb       = c*lgwindow
@@ -66,14 +47,13 @@ def geometric_window(c,w):
 
 def gaussian_kernel(sigma):
     '''
-    generate 1D Guassian kernel for smoothing
-    sigma: standard deviation, >0
+    Generate 1D Guassian kernel for smoothing
     
     Parameters
     ----------
-    sigma : scalar
-        Standard deviation of kernel. Kernel size is automatically 
-        adjusted to ceil(sigma*2)*2+1 (which is a little small but eh)
+    sigma : positive float
+        Standard deviation of kernel. Kernel size is 
+        automatically adjusted to ceil(sigma*2)*2+1 
 
     Returns
     -------
@@ -1016,8 +996,6 @@ def median_block(data,N=100):
     '''
     return stats_block(data,np.median,N)
 
-import neurotools.getfftw
-
 def phase_randomize(signal):
     '''
     Phase randomizes a signal by rotating frequency components by a random
@@ -1816,7 +1794,8 @@ def spaced_derivative(x):
     
     Parameters
     ----------
-    x:
+    x: 1D np.float32
+        Signal to differentiate
     
     Returns
     -------
@@ -1828,5 +1807,268 @@ def spaced_derivative(x):
         np.linspace(0,1,N))
 
 
+def drop_nonfinite(x):
+    '''
+    Flatten array and remove non-finite values
+
+    Parameters
+    ----------
+    x: np.float32
+        Numpy array from which to move non-finite values
+        
+    Returns
+    1D np.float32
+        Flattened array with non-finite values removed.
+    '''
+    x = np.float32(x).ravel()
+    return x[np.isfinite(x)]
 
 
+def split_into_groups(x,group_sizes):
+    '''
+    Split `np.array` `x` into `len(group_sizes)` groups,
+    with the size of the groups specified by `group_sizes`.
+    
+    This operates along the last axis of `x`
+    
+    Parameters
+    ----------
+    x: np.array
+        Numpy array to split; Last axis should have the
+        same length as `sum(group_sizes)`
+    group_sizes: iterable of positive ints
+        Group sizes
+        
+    Returns
+    -------
+    list
+        List of sub-arrays for each group
+    '''
+    x = np.array(x)
+    g = np.int32([*group_sizes])
+    if np.any(g<=0): 
+        raise ValueError(
+            'Group sizes should be positive, got %s'%g)
+    if x.shape[-1]!=sum(g):
+        raise ValueError(
+            'Length of last axis ov `x` shoud match sum of '
+            'group sizes, got %s and %s'%(x.shape,g))
+
+    ngroups = len(g)
+    edges = np.cumsum(np.concatenate([[0],g]))
+        
+    return [
+        x[...,edges[i]:edges[i+1]] for i in range(ngroups)
+    ]
+
+import scipy.stats
+import scipy.interpolate as ip
+
+def uniformize(x,axis=-1,killeps=None):
+    '''
+    Use percentiles to force a timeseries to have a uniform 
+    [0,1] distribution.
+    
+    `uniformize()` was designed to operate on non-negative 
+    data and  has some quirks that have been retained for 
+    archiving and backwards compatibility.
+    
+    Namely, if the `killeps` argument is provided,  
+    `uniformize()` assumes that inputs are non-
+    negative and excludes values less than `killeps`*σ,
+    where σ is the standard-deviation of `x`, from the
+    percentile rankings. The original default for
+    `killeps` was `1e-3`.
+    
+    This was done because in the T-maze experiments, 
+    the mouse often spends quite a bit of time at the
+    beginning of the maze. We don't want most of the [0,1]
+    dynamic range dedicatde to encoding positions or times
+    near the start of trials. So, we estimate the scale
+    of `x` using its standard deviation, and then clip
+    values that are small relative to this scale. 
+    This heuristic works for position/time data from the 
+    Dan-Helen-Ethan experiments, but isn't very general.
+    
+    Parameters
+    ----------
+    x: np.float32:
+        Timeseries
+        
+    Other Parameters
+    ----------------
+    axis: axis specifies; default -1
+        axis argument forwarded to ` scipy.stats.rankdata`
+    killeps: positive float; default None
+        Original value of `killeps` passed to 
+        `uniformize()`
+    '''
+    x_ = np.float32(x)
+    if np.min(x_)<0.0:
+        raise ValueError(
+            '`uniformize` was written for non-negative '
+            'values only and has some quirks that have been'
+            ' retained for backwards compatibility.')
+    if killeps is not None:
+        x_[np.abs(x)<killeps*std(x)] = NaN
+    ranks  = scipy.stats.rankdata(x_,axis=axis)
+    
+    # NaN end up ranked at the end (high ranks)
+    # Detect them and set their rank to zero, since
+    # these correspond to small clipped values.
+    used = np.sum(np.isfinite(x_))
+    ranks[ranks>used] = 0
+    
+    scaled = np.clip(ranks/used,0,1)
+    return scaled
+
+def invert_uniformize(x,p,axis=-1,killeps=None):
+    '''
+    Inverts the `uniformize()` function
+    
+    `uniformize()` was designed to operate on non-negative 
+    data and has some quirks that have been retained for 
+    archiving and backwards compatibility.
+    
+    Namely, if the `killeps` argument is provided,  
+    `uniformize()` assumes that inputs are non-
+    negative and excludes values less than `killeps`*σ,
+    where σ is the standard-deviation of `x`, from the
+    percentile rankings. The original default for
+    `killeps` was `1e-3`.
+    
+    This was done because in the T-maze experiments, 
+    the mouse often spends quite a bit of time at the
+    beginning of the maze. We don't want most of the [0,1]
+    dynamic range dedicate to encoding positions or times
+    near the start of trials. So, we estimate the scale
+    of `x` using its standard deviation, and then clip
+    values that are small relative to this scale. 
+    This heuristic works for position/time data from the 
+    Dan-Helen-Ethan experiments, but isn't very general.
+    
+    Uniformize processing steps
+    
+     - Mark timepoints where abs(x)<killeps*std(x)
+     - Rank data excluding these timepoints
+     - Check how many timepoints were actually included
+     - Normalize ranks to this amount
+    
+    Parameters
+    ----------
+    x: np.float32:
+        Original timeseries passed as argument `x` to
+        `uinformize()`
+    p: np.float32 ∈ [0,1]
+        Values on [0,1] interval to convert back into
+        raw signal values, based on percentiles of 
+        `x`. 
+        
+    Other Parameters
+    ----------------
+    axis: axis specifies; default -1
+        axis argument forwarded to ` scipy.stats.rankdata`
+    killeps: positive float; default None
+        Original value of `killeps` passed to 
+        `uniformize()` (leave blank if you did not specify
+        this argument; It defaults to 1e-3)
+        
+    Returns
+    -------
+    np.float32
+        Recontructed values. 
+        This should be equivalent to the original data
+        with values less than `killeps` times the 
+        standard-deviation "σ" of `original_x` set to
+        σ*killeps
+    '''
+    x_ = np.float32(x)
+    if np.min(x_)<0.0:
+        raise ValueError(
+            '`uniformize` was written for non-negative '
+            'values only and has some quirks that have been'
+             'retained for backwards compatibility.')
+    p = np.float32(p)
+    if np.any(p<0.0) or np.any(p>1.0):
+        raise ValueError(
+            '`p` Should contain values in [0,1], but ranges'
+            ' over %s'%(np.min(p),np.max(p)))
+        
+    if killeps is not None:
+        x_[np.abs(x)<killeps*std(x)] = NaN
+    ranks = scipy.stats.rankdata(x_,axis=axis)
+    
+    # NaN end up ranked at the end (high ranks)
+    # Detect them and set their rank to zero, since
+    # these correspond to small clipped values.
+    used = np.sum(np.isfinite(x_))
+    ranks[ranks>used] = 0
+    
+    scaled = np.clip(ranks/used,0,1)
+
+    return ip.interp1d(
+        scaled,x_,bounds_error=False,fill_value=(0,1)
+    )(p)
+
+
+def virtual_reference_line_noise_removal(lfps,frequency=60,hbw=5):
+    '''
+    Accepts an array of LFP recordings (first dimension should be 
+    channel number, second dimension time ).
+    Sample rate assumed 1000Hz
+    
+    Extracts the mean signal within 2.5 Hz of 60Hz.
+    For each channel, removes the projection of the LFP signal onto this
+    estimated line noise signal.
+    
+    To also want to filter out overtones,
+    see `band_stop_line_noise_removal()`.
+    
+    Parameters
+    ----------
+    lfps:
+        LFP channel data
+    frequency: positive number
+        Line noise frequency, defaults to 60 Hz
+        (USA).  
+    hbw: positive number
+        Half-bandwidth settings; Default is 5
+        
+    Returns
+    -------
+    removed: np.array
+        Band-stop filtered signal
+    '''
+    filtered = [bandfilter(x,frequency-hbw,frequency+hbw) for x in lfps]
+    noise    = mean(filtered,0)
+    scale    = 1./dot(noise,noise)
+    removed  = [x-dot(x,noise)*scale*noise for x in lfps]
+    return removed
+
+def band_stop_line_noise_removal(lfps,frequency=60.):
+    '''
+    Remove line noise using band-stop at 60Hz 
+    and overtones.
+    
+    Parameters
+    ----------
+    lfps:
+        LFP channel data
+    frequency: positive number
+        Line noise frequency, defaults to 60 Hz
+        (USA).  
+    hbw: positive number
+        Half-bandwidth settings; Default is 10
+        
+    Returns
+    -------
+    removed: np.array
+        Band-stop filtered signal
+    '''
+    hbw   = 10
+    freqs = float32([60,120,180,240,300])*frequency/60.
+    lfps = array(lfps)
+    for i,x in enumerate(lfps):
+        for f in freqs:
+            lfps[i,:] = bandfilter(lfps[i,:],f-hbw,f+hbw,bandstop=1)
+    return lfps

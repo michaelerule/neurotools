@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions related to disk caching (memoization)
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,27 +10,16 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-import sys
+
+import os,sys
 __PYTHON_2__ = sys.version_info<(3, 0)
-'''
-Functions related to disk caching (memoization)
-
-We need to replace hash() with hashlib since python
-doesn't acutally hash by value (rather by reference)!
-
-'''
-
-from   collections import defaultdict
 
 import numpy as np
 import scipy.io
 import inspect
 import ast
 import types
-import os
 import time
-import sys
 import subprocess
 import warnings
 import traceback
@@ -38,6 +30,7 @@ import base64
 import zlib
 import hashlib
 
+from collections import defaultdict
 from pickle import UnpicklingError
 
 # TODO: we should use the same pickle library as multiprocessing uses
@@ -47,7 +40,7 @@ try:
 except:
     from pickle import PicklingError
 
-import neurotools.tools
+import neurotools.util.tools
 import neurotools.jobs
 import neurotools.jobs.ndecorator
 from   neurotools.jobs.closure   import verify_function_closure
@@ -682,8 +675,8 @@ def disk_cacher(
     assert method in VALID_METHODS
     cache_location = os.path.abspath(cache_location)+os.sep
     cache_root     = cache_location+CACHE_IDENTIFIER
-    neurotools.tools.ensure_dir(cache_location)
-    neurotools.tools.ensure_dir(cache_root)
+    neurotools.util.tools.ensure_dir(cache_location)
+    neurotools.util.tools.ensure_dir(cache_root)
     
     def cached(f):
         '''
@@ -712,7 +705,7 @@ def disk_cacher(
             This docstring should be overwritten by the docstring of
             the wrapped function.
             '''
-            t0 = neurotools.tools.current_milli_time()
+            t0 = neurotools.util.time.current_milli_time()
 
             # Store parameters; These will be saved in the cached result
             params = (args,tuple(list(kwargs.items())))
@@ -753,7 +746,7 @@ def disk_cacher(
                 # Save Cached output to disk
                 if write_back:
                     savedata = (params,result)
-                    neurotools.tools.ensure_dir(path)
+                    neurotools.util.tools.ensure_dir(path)
                     Path(location).touch()
                     if verbose: print('Writing cache at ',path)
                     try:
@@ -788,7 +781,7 @@ def disk_cacher(
                                 neurotools.jobs.ndecorator.print_signature(sig))
                             st        = os.stat(location)
                             du        = st.st_blocks * st.st_blksize
-                            t1        = neurotools.tools.current_milli_time()
+                            t1        = neurotools.util.time.current_milli_time()
                             overhead  = float(t1-t0) - time
                             io        = float(du)/(1+overhead)
                             recompute = float(du)/(1+time)

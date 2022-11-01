@@ -1,5 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for spike-triggered averagind and coherence
+analysis between spike trains and continuous signals. 
+
+Apologies, most of these functions are not yet documented. 
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,23 +13,11 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
-
-'''
-TODO: fix imports here
-
-Examine spiking correlations. time-domain implementation
-build a correlation matrix out of cross-correlation estimates
-still slow and memory intensive, but not prohibitive
-(see efficient solution in frequency domain)
-'''
 
 import numpy as np
 
 def ccor(i,j,spikes):
     '''
-    TODO: documentation
-    
     Cross correlate spikes
     
     Parameters
@@ -45,8 +39,6 @@ def ccor(i,j,spikes):
 
 def ccm(i,j,k,spikes):
     '''
-    TODO: documentation
-    
     Construct size k cross-correlation matrix.
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
@@ -69,17 +61,18 @@ def ccm(i,j,k,spikes):
 
 def blockccm(k,spikes):
     '''
-    TODO: documentation
-    
-    Generate covariance matrix for linear least squares. It is a block
-    matrix of all pairwise cross-correlation matrices
-    NTrials,NNeurons,NSamples = np.shape(spikes)
+    Generate covariance matrix for linear least squares. 
+    It is a block matrix of all pairwise cross-correlation 
+    matrices NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
+    k:
+    spikes:
     
     Returns
     -------
+    result:
     '''
     NTrials,NNeurons,NSamples = np.shape(spikes)
     result = np.float64(np.zeros((k*NNeurons,)*2))
@@ -100,30 +93,38 @@ def sta(i,spikes,lfp):
     
     Parameters
     ----------
+    i:
+    spikes:
+    lfp:
     
     Returns
     -------
+    result: 
     '''
     A = spikes[:,i,:]
     B = lfp
     A = A-np.mean(A)
     B = B-np.mean(B)
-    x = np.sum([np.convolve(a,b[::-1],'full') for (a,b) in zip(A,B)],0)
+    x = np.sum([
+        np.convolve(a,b[::-1],'full') 
+        for (a,b) in zip(A,B)],0)
     return x
 
 def blocksta(k,spikes,lfp):
     '''
-    TODO: documentation
-    
     Block spike-triggered average vector for time-domain least squares
     filter
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
+    k:
+    spikes:
+    lfp:
     
     Returns
     -------
+    result: 
     '''
     NTrials,NNeurons,NSamples = np.shape(spikes)
     B = np.zeros((k*NNeurons,),dtype=np.float64)
@@ -134,13 +135,14 @@ def blocksta(k,spikes,lfp):
     
 def reconstruct(k,B,spikes):
     '''
-    TODO: documentation
-    
     Reconstructs LFP from spikes
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
+    k:
+    B:
+    spikes:
     
     Returns
     -------
@@ -164,27 +166,33 @@ def cspect(i,j,spikes):
     
     Parameters
     ----------
+    i:
+    j:
+    spikes:
     
     Returns
     -------
+    result:
     '''
     x = ccor(i,j,spikes)
     return np.fft(x)[:len(x)//2+1]
 
 def cspectm(spikes):
     '''
-    TODO: documentation
-    
     Get all pairs cross spectral matrix
     NTrials,NNeurons,NSamples = np.shape(spikes)
-    This is doing much more work than is needed, should change it to
-    frequency domain.
+    
+    TODO: This is doing much more work than is needed, 
+    and needs to be re-written to operate in the frequency
+    domain.
     
     Parameters
     ----------
+    spikes:
     
     Returns
     -------
+    result:
     '''
     NTrials,NNeurons,NSamples = np.shape(spikes)
     window = hanning(NSamples)
@@ -204,16 +212,17 @@ def cspectm(spikes):
 
 def spike_lfp_filters(spikes,lfp):
     '''
-    TODO: documentation
-    
     Cross-spectral densities between spikes and LFP
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
+    spikes:
+    lfp:
     
     Returns
     -------
+    result:
     '''
     NTrials,NNeurons,NSamples = np.shape(spikes)
     # precomute lfp fft
@@ -229,17 +238,23 @@ def spike_lfp_filters(spikes,lfp):
     
 def spectreconstruct(k,B,spikes=None,fftspikes=None):
     '''
-    TODO: documentation
-    
     Reconstructs LFP from spikes using cross-spectral matrix.
     Can optionally pass the fts if they are already available
     NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
+    k:
+    B:
+    
+    Other Parameters
+    ----------------
+    spikes: default None
+    fftspikes: default None
     
     Returns
     -------
+    result:
     '''
     if spikes!=None:
         NTrials,NNeurons,NSamples = np.shape(spikes)
@@ -253,14 +268,19 @@ def spectreconstruct(k,B,spikes=None,fftspikes=None):
 
 def create_spectral_model(spikes,lfp,shrinkage=0):
     '''
-    TODO: documentation
-    
-    
     Parameters
     ----------
+    spikes:
+    lfp:
+    
+    Other Parameters
+    ----------------
+    shrinkage: non-negative float; default 0
+        L2 regularization strenth
     
     Returns
     -------
+    result:
     '''
     XTX = cspectm(spikes)
     XTY = spike_lfp_filters(spikes,lfp)
@@ -280,9 +300,17 @@ def construct_lowpass_operator(fb,k,Fs=1000.0):
     
     Parameters
     ----------
+    fb:
+    k:
+    
+    Other Parameters
+    ----------------
+    Fs: positive float; default 1000.
+        Sampling rate
     
     Returns
     -------
+    result
     
     '''
     ff = np.zeros((k*4),dtype=np.float64)
@@ -301,13 +329,17 @@ def autocorrelation_bayes(s,D=200,prior_var=None):
     
     Parameters
     ----------
-    s : sequence of values
-    D : number of lags to compute, default is 200
-    prior_var : positive scalar or None, default is None
+    s: 
+        sequence of values
+    D: 
+        number of lags to compute, default is 200
+    prior_var: 
+        positive scalar or None, default is None
     
     Returns
     -------
-    xc: autocorrelation over lags D, with zero-lag variance
+    xc: 
+        autocorrelation over lags D, with zero-lag variance
     '''
     xc   = np.zeros(D+1)
     lags = np.arange(0,D+1)

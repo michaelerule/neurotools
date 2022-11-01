@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines for finding the mode of distributions.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,13 +10,13 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
 
 import os,sys,pickle
-from neurotools.stats.density import kdepeak
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+
+from neurotools.stats.density import kdepeak
 
 def modefind(points,burst=10):
     '''

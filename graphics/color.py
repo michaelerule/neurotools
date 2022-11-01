@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Miscellaneous color-related functions.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,48 +11,48 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-'''
-Miscellaneous color-related functions.
-'''
 
-from neurotools.system import *
-from neurotools.signal import gaussian_smooth
-from neurotools.signal import circular_gaussian_smooth
 import math
 import pylab
-from   neurotools import signal
-from   neurotools import tools
-import matplotlib as mpl
+
+from neurotools.signal import gaussian_smooth
+from neurotools.signal import circular_gaussian_smooth
+from neurotools.util import tools
+from neurotools import signal
+
 import numpy as np
+from   numpy import pi
+
 import matplotlib
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from   os.path    import expanduser
-from   matplotlib import cm
-from   numpy      import pi
+
+from os.path    import expanduser
+from matplotlib import cm
 
 # Some custom colors, just for fun! 
-WHITE      = mpl.colors.to_rgb('#f1f0e9')
-RUST       = mpl.colors.to_rgb('#eb7a59')
-OCHRE      = mpl.colors.to_rgb('#eea300')
-AZURE      = mpl.colors.to_rgb('#5aa0df')
-TURQUOISE  = mpl.colors.to_rgb('#00bac9')
-TEAL       = mpl.colors.to_rgb('#00bac9')
-BLACK      = mpl.colors.to_rgb('#44525c')
-YELLOW     = mpl.colors.to_rgb('#efcd2b')
-INDIGO     = mpl.colors.to_rgb('#606ec3')
-VIOLET     = mpl.colors.to_rgb('#8d5ccd')
-MAUVE      = mpl.colors.to_rgb('#b56ab6')
-MAGENTA    = mpl.colors.to_rgb('#cc79a7')
-CHARTREUSE = mpl.colors.to_rgb('#b59f1a')
-MOSS       = mpl.colors.to_rgb('#77ae64')
-VIRIDIAN   = mpl.colors.to_rgb('#11be8d')
-CRIMSON    = mpl.colors.to_rgb('#b41d4d')
-GOLD       = mpl.colors.to_rgb('#ffd92e')
-TAN        = mpl.colors.to_rgb('#765931')
-SALMON     = mpl.colors.to_rgb('#fa8c61')
-GRAY       = mpl.colors.to_rgb('#b3b3b3')
-LICHEN     = mpl.colors.to_rgb('#63c2a3')
+WHITE      = np.float32(mpl.colors.to_rgb('#f1f0e9'))
+RUST       = np.float32(mpl.colors.to_rgb('#eb7a59'))
+OCHRE      = np.float32(mpl.colors.to_rgb('#eea300'))
+AZURE      = np.float32(mpl.colors.to_rgb('#5aa0df'))
+TURQUOISE  = np.float32(mpl.colors.to_rgb('#00bac9'))
+TEAL       = np.float32(mpl.colors.to_rgb('#00bac9'))
+BLACK      = np.float32(mpl.colors.to_rgb('#44525c'))
+YELLOW     = np.float32(mpl.colors.to_rgb('#efcd2b'))
+INDIGO     = np.float32(mpl.colors.to_rgb('#606ec3'))
+VIOLET     = np.float32(mpl.colors.to_rgb('#8d5ccd'))
+MAUVE      = np.float32(mpl.colors.to_rgb('#b56ab6'))
+MAGENTA    = np.float32(mpl.colors.to_rgb('#cc79a7'))
+CHARTREUSE = np.float32(mpl.colors.to_rgb('#b59f1a'))
+MOSS       = np.float32(mpl.colors.to_rgb('#77ae64'))
+VIRIDIAN   = np.float32(mpl.colors.to_rgb('#11be8d'))
+CRIMSON    = np.float32(mpl.colors.to_rgb('#b41d4d'))
+GOLD       = np.float32(mpl.colors.to_rgb('#ffd92e'))
+TAN        = np.float32(mpl.colors.to_rgb('#765931'))
+SALMON     = np.float32(mpl.colors.to_rgb('#fa8c61'))
+GRAY       = np.float32(mpl.colors.to_rgb('#b3b3b3'))
+LICHEN     = np.float32(mpl.colors.to_rgb('#63c2a3'))
 RUTTEN  = [GOLD,TAN,SALMON,GRAY,LICHEN]
 GATHER  = [WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK]
 COLORS  = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]

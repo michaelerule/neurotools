@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+"""
+Statistical routines.
+"""
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,31 +11,35 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-"""
-Routines for computing commonly used summary statistics not otherwise
-available in pylab
-"""
-
 import numpy as np
 import scipy
 import random
-try:
-    from  matplotlib.mlab import find
-except:
-    def find(x):
-        return np.where(np.array(x).ravel())[0]
-
-from   scipy.stats.stats import describe
+import warnings
+from scipy.stats.stats import describe
+from neurotools.util.tools import find
 
 def nrmse(estimate,true,axis=None):
     '''
     Normalized root mean-squared error.
+    
     Parameters
     ----------
     estimate : array-like
         Estimated data values
     true: array-like
         True data values
+        
+    Other Parameters
+    ----------------
+    axis: int; default None
+        Array axis along which to operate.
+    
+    Returns
+    -------
+    result: np.float64
+        Root-mean-squared error between
+        `estiamte` and `true`, normalized by the variance
+        of `true`.
     '''
     X1,X2 = estimate,true
     v1 = np.var(X1,axis=axis)
@@ -44,13 +51,56 @@ def weighted_avg_and_std(values, weights):
     """
     Return the weighted average and standard deviation.
     values, weights -- Numpy ndarrays with the same shape.
+    
+    Parameters
+    ----------
+    values: np.array
+        Array of values for which to compute (μ,σ)
+        weighted summary statistics
+    weights: np.array
+        Weights for each value        
+    
+    Returns
+    -------
+    mean: np.float64
+        Weighted mean
+    sigma: np.float64
+        Weighted standard deviation
     """
     average  = np.average(values, weights=weights)
-    variance = np.average((values-average)**2, weights=weights)  # Fast and numerically precise
-    return (average, np.sqrt(variance))
+    variance = np.average((values-average)**2,weights=weights)
+    return average, np.sqrt(variance)
 
 def partition_data(x,y,NFOLD=3):
-    groups = partition_trials_for_crossvalidation(x.T,NFOLD,shuffle=False)
+    '''
+    Parrition independent variables `x`
+    and dependent variables `y` into `NFOLD` 
+    crossvalidation training/testing datasets.
+    
+    Parameters
+    ----------
+    x: np.array
+        Independent variables
+    y: np.array
+        Dependent variables
+    
+    Other Parameters
+    ----------------
+    NFOLD: int; default 3
+        Number of crossvalidation blocks to partition 
+        data into. 
+    
+    Returns
+    -------
+    result: iterator 
+        Iterator with `NFOLD` items, each element yielding: 
+            xtrain: training data for `x` for this block
+            ytrain: training data for `y` for this block
+            xtest: testing data for `x` for this block
+            ytest: testing data for `y` for this block
+    '''
+    groups = partition_trials_for_crossvalidation(
+        x.T,NFOLD,shuffle=False)
     groups = np.array(groups,dtype='object')
     for i in range(NFOLD):
         train  =  np.int32(np.concatenate(groups[[*({*range(NFOLD)}-{i})]]))
@@ -60,8 +110,6 @@ def partition_data(x,y,NFOLD=3):
         xtest  = x[:,test]
         ytest  = y[:,test]
         yield xtrain,ytrain,xtest,ytest
-
-import neurotools.tools
 
 def partition_trials_for_crossvalidation(x,K,shuffle=False):
     '''
@@ -173,7 +221,6 @@ error_functions = {
     'L2_radians' :lambda x,xh: polar_error(x,xh,mode='L2',units='radians')
 }
 
-import warnings
 def add_constant(data,axis=None):
     '''
     
@@ -728,3 +775,37 @@ class description:
             if stat in abbreviations:
                 result.append('%s:%s '%(abbreviations[stat],shortscientific(value)))
         return ' '.join(result)
+        
+
+try:
+    import statsmodels.api as sm
+    def glmfit(X,Y):
+        '''
+        Wrapper for statsmodels glmfit that prepares a constant 
+        parameter and configuration options for poisson-GLM fitting.
+        Please see the documentation for glmfit in statsmodels for
+        more details. 
+        
+        This method will automatically add a constant colum to the feature
+        matrix Y
+
+        Parameters
+        ----------
+        X : array-like
+            A nobs x k array where `nobs` is the number of observations and `k`
+            is the number of regressors. An intercept is not included by default
+            and should be added by the user (models specified using a formula
+            include an intercept by default). See `statsmodels.tools.add_constant`.
+        Y : array-like
+            1d array of poisson counts.  This array can be 1d or 2d.
+        '''
+        # check for and maybe add constant value to X
+        if not all(X[:,0]==X[0,0]):
+            X = hstack([ ones((shape(X)[0],1),dtype=X.dtype), X])
+
+        poisson_model   = sm.GLM(Y,X,family=sm.families.Poisson())
+        poisson_results = poisson_model.fit()
+        M = poisson_results.params
+        return M
+except:
+    print('could not find statsmodels; glm routines will not work')

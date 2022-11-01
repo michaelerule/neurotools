@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Functions for working with probability densities.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,24 +10,31 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
 
 from scipy.stats import gaussian_kde
 from neurotools.signal import get_edges
+from neurotools.util.tools import find
 
 import numpy as np
-#from   pylab import find
-from neurotools.tools import find
 import scipy
 
 def kdepeak(x, x_grid=None):
     '''
-    
+    Convenience wrapper for
+    `scipy.stats.gaussian_kde`,
+        
     Parameters
     ----------
-    
+    x: 1D np.float32
+        List of samples from distribution 
+        
     Returns
     -------
+    grid: 1D np.float32
+        List of points that the KDE-smoothed density is
+        evaluated at
+    kde: 1D np.float32
+        KDE smoothed density
     '''
     if x_grid==None:
         x_grid = np.linspace(np.min(x),np.max(x),201)

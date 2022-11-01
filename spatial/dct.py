@@ -1,30 +1,26 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+'''
+Discrete cosine transform methods.
+Primarily used with fftzeros code for finding critical
+points in phase gradient maps.
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
-'''
-Discrete cosine transform methods.
 
-Primarily used with fftzeros code for finding critical points in phase gradient maps.
-'''
-
-from neurotools import getfftw as fft
 import numpy as np
-from neurotools.signal.conv import reflect2D
-from neurotools.signal.conv import reflect2D_1
-
-
-from neurotools.tools import find
-#from pylab import find
+from neurotools.util import getfftw as fft
+from neurotools.signal.conv import reflect2D, reflect2D_1
+from neurotools.util.tools import find
 
 def get_mask_antialiased(h_w,aa,spacing,cutoff):
     '''
-    Computes a frequency space mask for (h,w) shaped domain with cutoff
-    frequency and some anti-aliasing factor as specified by aa.
+    Computes a frequency space mask for (h,w) shaped domain 
+    with cutoff frequency and some anti-aliasing factor as
+    specified by `aa`.
 
     Parameters
     ----------

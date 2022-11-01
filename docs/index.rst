@@ -28,11 +28,21 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
 
-   
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 0
    :caption: Contents:
+
+.. toctree::
+   :maxdepth: 0
+   :caption: Subpackages:
+
+   signal <neurotools.signal>
+   stats <neurotools.stats>
+   spatial <neurotools.spatial>
+   spikes <neurotools.spikes>
+   graphics<neurotools.graphics>
+   linalg <neurotools.linalg>
+   jobs <neurotools.jobs>
+   util <neurotools.jobs>
    
-   neurotools

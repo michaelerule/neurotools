@@ -1,13 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import unicode_literals
-from __future__ import print_function
-
 '''
 Code dealing with closures in Python.
 
@@ -26,11 +18,14 @@ The default way that Python handles closures creates problems
 This module defines some decorators that improve safety, hopefully
 automatically detecting functions that are likele to cause trouble.
 '''
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
 
 import inspect
 import types
-
-# Ptrhon 2.x / 3 workaround for the long type
 import sys
 if sys.version_info > (3,): long=int
 

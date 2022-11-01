@@ -84,7 +84,6 @@ from neurotools.spatial.dct              import *
 from neurotools.spatial.array            import *
 from neurotools.spatial.distance         import *
 from neurotools.spatial.fftzeros         import *
-from neurotools.spatial.spatialPSD       import *
 from neurotools.spatial.phase            import *
 from neurotools.spatial.spiking          import *
 from neurotools.spatial.kernels          import *

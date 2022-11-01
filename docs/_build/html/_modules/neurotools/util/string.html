@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.util.string &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>neurotools.util.string</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.util.string</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">`neurotools.util.string`:</span>
+<span class="sd">Helper functions for string formatting</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="hcat"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.hcat">[docs]</a><span class="k">def</span> <span class="nf">hcat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">TABWIDTH</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Horizontally concatenate two string objects that contain newlines</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="n">TABWIDTH</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span><span class="n">s</span><span class="p">)))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">]</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ln</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">L</span><span class="p">)]</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span><span class="n">S</span><span class="p">)))</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="nb">list</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,)</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">-</span><span class="n">h</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">prefix</span><span class="o">+</span><span class="p">(</span><span class="n">suffix</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">prefix</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">S</span><span class="p">)])</span><span class="o">+</span><span class="n">suffix</span></div>
+
+<div class="viewcode-block" id="wordwrap"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.wordwrap">[docs]</a><span class="k">def</span> <span class="nf">wordwrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Wrap text to a fixed columnd width.</span>
+<span class="sd">    </span>
+<span class="sd">    TODO: the implementation of this is a bit weird.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    words : list</span>
+<span class="sd">        a list of words</span>
+<span class="sd">    width : positive int</span>
+<span class="sd">        Width of column to wrap</span>
+<span class="sd">        Optional, default is 80</span>
+<span class="sd">    sep : string</span>
+<span class="sd">        Optional, default is &#39; &#39;</span>
+<span class="sd">        Separator to join words by</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lines : list</span>
+<span class="sd">        List of word-wrapped lines of text</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">&gt;</span><span class="n">width</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">+=</span><span class="p">[</span><span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">)]]</span>
+            <span class="n">line</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="n">t</span><span class="o">+</span><span class="n">sep</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="o">+</span><span class="p">[</span><span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">)]])</span></div>
+
+<div class="viewcode-block" id="incolumns"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.incolumns">[docs]</a><span class="k">def</span> <span class="nf">incolumns</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Collate collection of strings into parallel columns</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">words</span>  <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">words</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">maxlen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">])</span>
+    <span class="n">ncols</span>  <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">))</span><span class="o">//</span><span class="p">(</span><span class="n">maxlen</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">))</span>
+    <span class="n">lists</span>  <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncols</span><span class="p">)]</span>
+    <span class="n">nrows</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">/</span><span class="n">ncols</span><span class="p">))</span>
+    <span class="k">while</span> <span class="n">nrows</span><span class="o">*</span><span class="n">ncols</span><span class="o">&gt;</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+        <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+        <span class="n">lists</span><span class="p">[</span><span class="n">i</span><span class="o">%</span><span class="n">ncols</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="p">(</span><span class="n">maxlen</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">lists</span><span class="p">):</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="o">+</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">+</span><span class="n">suffix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="percent"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.percent">[docs]</a><span class="k">def</span> <span class="nf">percent</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">total</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given `n` observations out of `total`, format</span>
+<span class="sd">    `n/total` as a percentage to two decimal points</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n: int</span>
+<span class="sd">        Number of positive samples</span>
+<span class="sd">    total: int</span>
+<span class="sd">        Size of population</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%0.2g%%</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="mf">100.0</span><span class="o">/</span><span class="n">total</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="shortscientific"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.shortscientific">[docs]</a><span class="k">def</span> <span class="nf">shortscientific</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">prec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Shortest viable string formatting for scientific</span>
+<span class="sd">    notation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: float</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    prec: non-negative integer; default 0</span>
+<span class="sd">        Extra decimals to add.</span>
+<span class="sd">        Value of `0` uses only one significant figure. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%.*e</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-0&#39;</span><span class="p">,</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;e0&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="eformat"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.eformat">[docs]</a><span class="k">def</span> <span class="nf">eformat</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">exp_digits</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Format a float in scientific notation with fewer </span>
+<span class="sd">    characters.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f: scalar</span>
+<span class="sd">        Number</span>
+<span class="sd">    prec:</span>
+<span class="sd">        Precision</span>
+<span class="sd">    exp_digits: int</span>
+<span class="sd">        Number exponent digits</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str:</span>
+<span class="sd">        Formatted string</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%e</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">f</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.*e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">mantissa</span><span class="p">,</span> <span class="n">exponent</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+    <span class="n">exponent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">mantissa</span> <span class="o">+</span> <span class="s2">&quot;e</span><span class="si">%+0*d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">exp_digits</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">exponent</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="v2str"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.v2str">[docs]</a><span class="k">def</span> <span class="nf">v2str</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Format list of numbers as string in short</span>
+<span class="sd">    scientific notation.</span>
+<span class="sd">    (see `shortscientific()`)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p: iterable of floats</span>
+<span class="sd">        Numbers to format</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    sep: str</span>
+<span class="sd">        Item separtor</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;[&#39;</span><span class="o">+</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">shortscientific</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;]&#39;</span></div>
+
+<div class="viewcode-block" id="v2str_long"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.v2str_long">[docs]</a><span class="k">def</span> <span class="nf">v2str_long</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Format list as string with maximum precision.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p: iterable of floats</span>
+<span class="sd">        Numbers to format</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    sep: str</span>
+<span class="sd">        Item separtor</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;[&#39;</span><span class="o">+</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">longdouble</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;]&#39;</span></div>
+
+<div class="viewcode-block" id="nicetable"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.nicetable">[docs]</a><span class="k">def</span> <span class="nf">nicetable</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%4.4f</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">ncols</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Format a numeric vector as an evenly-spaced table</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">nrows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="n">ncols</span><span class="p">))</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrows</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">r</span><span class="o">*</span><span class="n">ncols</span><span class="p">:(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ncols</span><span class="p">]</span>
+        <span class="n">formatted</span> <span class="o">=</span> <span class="p">[</span><span class="nb">format</span><span class="o">%</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span>
+        <span class="n">joined</span>    <span class="o">=</span> <span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
+        <span class="n">line</span>      <span class="o">=</span> <span class="n">prefix</span><span class="o">+</span><span class="n">joined</span>
+        <span class="n">lines</span>    <span class="o">+=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="isInt"><a class="viewcode-back" href="../../../neurotools.util.string.html#neurotools.util.string.isInt">[docs]</a><span class="k">def</span> <span class="nf">isInt</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Check if a string is an integer</span>
+<span class="sd">    </span>
+<span class="sd">    stackoverflow.com/questions/1265665/python-check-if-a-string-represents-an-int-without-using-try-except</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v: str</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">v</span><span class="o">==</span><span class="s1">&#39;0&#39;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">v</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">v</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;-+&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

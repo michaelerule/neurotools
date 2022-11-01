@@ -165,12 +165,6 @@ for retry in range(10):
 
 print('Imported these packages:\n\t'+'\n\t'.join(sorted(allregistered)))
 
-print(signal)
-print(linenoise)
-print(signal.linenoise)
-#import signal.linenoise
-
-#sys.exit('-1')
 
 # due to potential weirdness that may arise with python 
 # environments, it's not clear that the imported version will 

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.linalg.matrix module &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="neurotools.linalg.operators module" href="neurotools.linalg.operators.html" />
+    <link rel="prev" title="neurotools.linalg.arguments module" href="neurotools.linalg.arguments.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="neurotools.linalg.html">linalg</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="neurotools.linalg.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="neurotools.linalg.arguments.html">neurotools.linalg.arguments module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">neurotools.linalg.matrix module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.triu_elements"><code class="docutils literal notranslate"><span class="pre">triu_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.tril_elements"><code class="docutils literal notranslate"><span class="pre">tril_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.column"><code class="docutils literal notranslate"><span class="pre">column()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.row"><code class="docutils literal notranslate"><span class="pre">row()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.rcond"><code class="docutils literal notranslate"><span class="pre">rcond()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.check_finite_real"><code class="docutils literal notranslate"><span class="pre">check_finite_real()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.check_covmat"><code class="docutils literal notranslate"><span class="pre">check_covmat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.check_covmat_fast"><code class="docutils literal notranslate"><span class="pre">check_covmat_fast()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.real_eig"><code class="docutils literal notranslate"><span class="pre">real_eig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.psd_eig"><code class="docutils literal notranslate"><span class="pre">psd_eig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.logdet"><code class="docutils literal notranslate"><span class="pre">logdet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.solt"><code class="docutils literal notranslate"><span class="pre">solt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.rsolt"><code class="docutils literal notranslate"><span class="pre">rsolt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.rsolve"><code class="docutils literal notranslate"><span class="pre">rsolve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.qf"><code class="docutils literal notranslate"><span class="pre">qf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.abserr"><code class="docutils literal notranslate"><span class="pre">abserr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.errmx"><code class="docutils literal notranslate"><span class="pre">errmx()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.cholupdate"><code class="docutils literal notranslate"><span class="pre">cholupdate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.cholupdate_eye"><code class="docutils literal notranslate"><span class="pre">cholupdate_eye()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.cartesian_product"><code class="docutils literal notranslate"><span class="pre">cartesian_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.nearPDHigham"><code class="docutils literal notranslate"><span class="pre">nearPDHigham()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.nearPSDRebonatoJackel"><code class="docutils literal notranslate"><span class="pre">nearPSDRebonatoJackel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.cinv"><code class="docutils literal notranslate"><span class="pre">cinv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.csolve"><code class="docutils literal notranslate"><span class="pre">csolve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.wheremax"><code class="docutils literal notranslate"><span class="pre">wheremax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.wheremin"><code class="docutils literal notranslate"><span class="pre">wheremin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.reglstsq"><code class="docutils literal notranslate"><span class="pre">reglstsq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.Ldistance"><code class="docutils literal notranslate"><span class="pre">Ldistance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.Llasso"><code class="docutils literal notranslate"><span class="pre">Llasso()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.rmatrix"><code class="docutils literal notranslate"><span class="pre">rmatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.ldiv"><code class="docutils literal notranslate"><span class="pre">ldiv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.rdiv"><code class="docutils literal notranslate"><span class="pre">rdiv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.autopredict"><code class="docutils literal notranslate"><span class="pre">autopredict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.kronsum"><code class="docutils literal notranslate"><span class="pre">kronsum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.top_v"><code class="docutils literal notranslate"><span class="pre">top_v()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.normedcovariance"><code class="docutils literal notranslate"><span class="pre">normedcovariance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.maxeig"><code class="docutils literal notranslate"><span class="pre">maxeig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.selector_matrix"><code class="docutils literal notranslate"><span class="pre">selector_matrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.laplace_kernel"><code class="docutils literal notranslate"><span class="pre">laplace_kernel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neurotools.linalg.matrix.match_covariance"><code class="docutils literal notranslate"><span class="pre">match_covariance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.linalg.operators.html">neurotools.linalg.operators module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.linalg.html#module-neurotools.linalg">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="neurotools.linalg.html">neurotools.linalg package</a> &raquo;</li>
+      <li>neurotools.linalg.matrix module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/neurotools.linalg.matrix.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-neurotools.linalg.matrix">
+<span id="neurotools-linalg-matrix-module"></span><h1>neurotools.linalg.matrix module<a class="headerlink" href="#module-neurotools.linalg.matrix" title="Permalink to this heading"></a></h1>
+<p>Collecting matrix-related subroutines</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.triu_elements">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">triu_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#triu_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.triu_elements" title="Permalink to this definition"></a></dt>
+<dd><p>Somewhat like matlab’s “diag” function, but for upper-triangular matrices</p>
+<p>Pack N*(N-1) elements into the upper triangle of an NxN Matrix
+or
+Return the N*(N-1) elements from the upper triangle as an NxN matrix</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">triu_elements</span><span class="p">(</span><span class="n">randn</span><span class="p">(</span><span class="n">D</span><span class="o">*</span><span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<em>Matrix from which to extract triangular elements or</em>) – vector/list of elements to pack into a triangular matrix</p></li>
+<li><p><strong>k</strong> (<em>forward to np.triu_indecies if input is matrix</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.tril_elements">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">tril_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#tril_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.tril_elements" title="Permalink to this definition"></a></dt>
+<dd><p>Somewhat like matlab’s “diag” function, but for lower-triangular matrices</p>
+<p>Pack N*(N-1) elements into the lower triangle of an NxN Matrix
+or
+Return the N*(N-1) elements from the lower triangle as an NxN matrix</p>
+<p>tril_elements(randn(D*(D+1)//2))</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.column">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.column" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that x is a column vector
+if x is multidimensional, x.ravel() will be calle first</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.row">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.row" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure that x is a row vector</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.rcond">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">rcond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#rcond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.rcond" title="Permalink to this definition"></a></dt>
+<dd><p>Reciprocal condition number</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.check_finite_real">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">check_finite_real</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#check_finite_real"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.check_finite_real" title="Permalink to this definition"></a></dt>
+<dd><p>Check that all entries in array M are finite and real-valued</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.check_covmat">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">check_covmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#check_covmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.check_covmat" title="Permalink to this definition"></a></dt>
+<dd><p>Verify that matrix C is a size NxN positive definite
+matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>C</strong> (<em>object</em>) – Object we expect to be a square positive definite
+matrix.</p></li>
+<li><p><strong>N</strong> (<em>int; default is None</em>) – Expected size of array. If <cite>None</cite>, defaults to
+<cite>C.shape[0]</cite></p></li>
+<li><p><strong>eps</strong> (<em>positive float; default 1e-6</em>) – Maximum allowed distance between <cite>C</cite> and its
+transpose.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>C</strong> – Reconditioned covariance matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NxN np.float64</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.check_covmat_fast">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">check_covmat_fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#check_covmat_fast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.check_covmat_fast" title="Permalink to this definition"></a></dt>
+<dd><p>Verify that matrix M is a size NxN precision or
+covariance matirx.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>C</strong> (<em>object</em>) – Object we expect to be a square positive definite
+matrix.</p></li>
+<li><p><strong>N</strong> (<em>int; default is None</em>) – Expected size of array. If <cite>None</cite>, defaults to
+<cite>C.shape[0]</cite></p></li>
+<li><p><strong>eps</strong> (<em>positive float; default 1e-6</em>) – Maximum allowed distance between <cite>C</cite> and its
+transpose.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.real_eig">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">real_eig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#real_eig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.real_eig" title="Permalink to this definition"></a></dt>
+<dd><p>This code expects a real hermetian matrix
+and should throw a ValueError if not.
+This is redundant to the scipy eigh function (use that one instead!)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>w</strong> (<em>eigenvalues</em>)</p></li>
+<li><p><strong>v</strong> (<em>eigenvectors</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.psd_eig">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">psd_eig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#psd_eig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.psd_eig" title="Permalink to this definition"></a></dt>
+<dd><p>This code expects a real hermetian matrix
+and should throw a ValueError if not.
+This is probably redundant to the scipy eigh function.
+Do not use.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.logdet">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">logdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#logdet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.logdet" title="Permalink to this definition"></a></dt>
+<dd><p>Logarithm of the determinant of a matrix
+Works only with real-valued positive definite matrices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.solt">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">solt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#solt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.solt" title="Permalink to this definition"></a></dt>
+<dd><p>wraps solve_triangular
+automatically detects lower vs. upper triangular</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.rsolt">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">rsolt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#rsolt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.rsolt" title="Permalink to this definition"></a></dt>
+<dd><p>wraps solve_triangular, right hand solution
+solves system x A = B for triangular A</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.rsolve">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">rsolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#rsolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.rsolve" title="Permalink to this definition"></a></dt>
+<dd><p>wraps solve, applies to right hand solution
+solves system x A = B</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.qf">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">qf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#qf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.qf" title="Permalink to this definition"></a></dt>
+<dd><p>Matrix quatratic forms A*S*A.T
+If S is none, compute A*A.T</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.abserr">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">abserr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#abserr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.abserr" title="Permalink to this definition"></a></dt>
+<dd><p>Mean absolute element-wise difference between teo matrices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.errmx">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">errmx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stuff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#errmx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.errmx" title="Permalink to this definition"></a></dt>
+<dd><p>Takes a list of objects and prints out a matirx of the pairwise element-wise mean absolute differences.
+All objects mst have the same shape.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.cholupdate">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">cholupdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#cholupdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.cholupdate" title="Permalink to this definition"></a></dt>
+<dd><p>Rank-1 update to a cholesky factorization
+Possibly slower than simply recomputing</p>
+<p>Test
+q  = randn(10,10)
+qq = q.T.dot(q)
+ch = chol(qq)
+x  = randn(10)
+xx = outer(x,x)
+pp = qq+xx
+cp = chol(pp)
+c2 = cholupdate(ch,x.T)
+print(abserr(c2,cp))</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.cholupdate_eye">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">cholupdate_eye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#cholupdate_eye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.cholupdate_eye" title="Permalink to this definition"></a></dt>
+<dd><p>Idenetity matrix update to a cholesky factorization
+Probably slower than simply recomputing</p>
+<p>Test
+q  = randn(10,10)
+qq = q.T.dot(q)
+ch = chol(qq)
+pp = qq+eye(10)
+cp = chol(pp)
+c2 = cholupdate_eye(ch)
+print(abserr(c2,cp))</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.cartesian_product">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">cartesian_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#cartesian_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.cartesian_product" title="Permalink to this definition"></a></dt>
+<dd><p><a class="reference external" href="https://stackoverflow.com/questions/11144513/">https://stackoverflow.com/questions/11144513/</a>
+numpy-cartesian-product-of-x-and-y-array-points-into-single-array-of-2d-points</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.nearPDHigham">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">nearPDHigham</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#nearPDHigham"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.nearPDHigham" title="Permalink to this definition"></a></dt>
+<dd><p>Computes a positive definite matrix “close” to matrix $X$ using
+the algorithm of Higham (2000).</p>
+<p>This is based on a
+[Stackoverflow answer](<a class="reference external" href="https://stackoverflow.com/a/10940283/900749">https://stackoverflow.com/a/10940283/900749</a>),
+and relevant intellectual property rights are retained by user
+[sega sai](<a class="reference external" href="https://stackoverflow.com/users/1269140/sega-sai">https://stackoverflow.com/users/1269140/sega-sai</a>),
+[Stackoverflow](<a class="reference external" href="https://stackoverflow.com">https://stackoverflow.com</a>), or Higham (2000).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>np.array</em>) – Square, real-valued matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Positive semi-definite matrix close to $X$</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.nearPSDRebonatoJackel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">nearPSDRebonatoJackel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#nearPSDRebonatoJackel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.nearPSDRebonatoJackel" title="Permalink to this definition"></a></dt>
+<dd><p>Computes a positive definite matrix “close” to matrix $X$ using
+the algorithm of Rebonato and Jackel (1999).</p>
+<p>This is based on a
+[Stackoverflow answer](<a class="reference external" href="https://stackoverflow.com/a/18542094/900749">https://stackoverflow.com/a/18542094/900749</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – Square, real-valued matrix</p></li>
+<li><p><strong>epsilon</strong> (<em>non-negative scalar</em><em>, </em><em>default 1e-10</em>) – minimum eigenvalue</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Positive semi-definite matrix close to $X$</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.cinv">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">cinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repair</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#cinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.cinv" title="Permalink to this definition"></a></dt>
+<dd><p>Invert positive matrix $X$ using cholesky factorization. The function
+<cite>numpy.linalg.cholesky</cite> is aliased as <cite>chol</cite> in this library, in
+analogy to matlab. <cite>chol</cite> returns a upper-triangular matrix such
+that $L = operatorname{chol}(X)$ and $X = L^T L$. The inverse of
+$X$ is $X^{-1} = (L^T L)^{-1} = L^{-1} L^{-T}$.</p>
+<p>This routine uses [LAPACK dtrtri](<a class="reference external" href="http://www.netlib.org/lapack/explore-html/da/dba/group__double_o_t_h_e_rcomputational_ga97c5ddb103f5f6bc2dc060886aaf2ffc.html#ga97c5ddb103f5f6bc2dc060886aaf2ffc">http://www.netlib.org/lapack/explore-html/da/dba/group__double_o_t_h_e_rcomputational_ga97c5ddb103f5f6bc2dc060886aaf2ffc.html#ga97c5ddb103f5f6bc2dc060886aaf2ffc</a>)
+. See also [scipy.linalg.lapack.dtrtri](<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dtrtri.html#scipy.linalg.lapack.dtrtri">https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dtrtri.html#scipy.linalg.lapack.dtrtri</a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.array</em>) – Square, real-valued, symmetric positive definite matirx</p></li>
+<li><p><strong>repair</strong> (<em>boolean</em><em>, </em><em>default is False</em>) – If true, and if $X$ is not positive definite, then this routine
+will attempt to operate on a new positive matrix close to $X$</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The inverse of $X$ computed using Cholesky factorization</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.csolve">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">csolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#csolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.csolve" title="Permalink to this definition"></a></dt>
+<dd><p>Solve PSD linear system x = H^{-1}J via Cholesky factorization</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.wheremax">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">wheremax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#wheremax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.wheremax" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the indecies of the maximum element in a multi-dimensional
+array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>np.array</em>) – Numpy multi-dimensional array</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of indecies indicating the maximum element</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.wheremin">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">wheremin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#wheremin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.wheremin" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the indecies of the minimum element in a multi-dimensional
+array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>np.array</em>) – Numpy multi-dimensional array</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of indecies indicating the minimum element</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.reglstsq">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">reglstsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#reglstsq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.reglstsq" title="Permalink to this definition"></a></dt>
+<dd><p>Regularized least squares.
+Solves Y=XM for M with L2 regularization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>two-dimensional numpy array</em>) – Matrix of observations of the explanatory/independent variables
+Nsamples x Nfeatures</p></li>
+<li><p><strong>Y</strong> (<em>two-dimensional numpy array</em>) – Matrix of observations of the response/dependent variables
+Nsamples x Nfeatures</p></li>
+<li><p><strong>reg</strong> (<em>positive float</em>) – Small positive L2 regularization, default is 1e-15</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>w</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>weight vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.Ldistance">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">Ldistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#Ldistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.Ldistance" title="Permalink to this definition"></a></dt>
+<dd><p>L-n norm distance between two vectors</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.Llasso">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">Llasso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#Llasso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.Llasso" title="Permalink to this definition"></a></dt>
+<dd><p>Lasso-like distance (I think? need to check this one)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.rmatrix">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">rmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#rmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.rmatrix" title="Permalink to this definition"></a></dt>
+<dd><p>Generate 2D rotation matrix for angle <cite>h</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> (<em>float</em>) – Angle of rotation in radians</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>M</strong> – 2D rotation matrix for <cite>h</cite> radians.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2x2 numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.ldiv">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">ldiv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#ldiv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.ldiv" title="Permalink to this definition"></a></dt>
+<dd><p>Behaves like Matlab AB
+Solve AX=B for X = A^{-1}B
+i.e. find matrix X which when right-multiplied with A is close to B</p>
+<p>A: Nsamples x Nfeatures array of independent variables
+B: Nsamples x Noutputs  array of   dependent variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>X</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Nfeatures x Noutputs vector such that AX≃B</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.rdiv">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">rdiv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#rdiv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.rdiv" title="Permalink to this definition"></a></dt>
+<dd><p>Solves for X=AB^{-1} , i.e. BX = A</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.autopredict">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">autopredict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#autopredict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.autopredict" title="Permalink to this definition"></a></dt>
+<dd><p>Solve mutual prediction problem for
+T x N covariates z
+Approximates z = z Q, where diag(Q) is zero</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.kronsum">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">kronsum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#kronsum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.kronsum" title="Permalink to this definition"></a></dt>
+<dd><p>Kronecker sum</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.top_v">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">top_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#top_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.top_v" title="Permalink to this definition"></a></dt>
+<dd><p>Return the leading eigenvector of a covariance matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.normedcovariance">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">normedcovariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#normedcovariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.normedcovariance" title="Permalink to this definition"></a></dt>
+<dd><p>Divide a covariance matrix by its largest eigenvalue</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.maxeig">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">maxeig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#maxeig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.maxeig" title="Permalink to this definition"></a></dt>
+<dd><p>Get largetst eigenvalue</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.selector_matrix">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">selector_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#selector_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.selector_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Create matrix that extracts a subset of elements.
+Returns selector matrix S such that:</p>
+<p>X[b] = S &#64; X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>boolean vector</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.laplace_kernel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">laplace_kernel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#laplace_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.laplace_kernel" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a 3x3 laplacian kernel that is as radially
+symmetric as possible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>3x3 np.array containing the discrete 2D Laplacian kernel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.matrix.match_covariance">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.matrix.</span></span><span class="sig-name descname"><span class="pre">match_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_deficient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/matrix.html#match_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.matrix.match_covariance" title="Permalink to this definition"></a></dt>
+<dd><p>Adjust data to match target covariance with minimal L2 distortion.</p>
+<p>This uses eigendecomposition-based whitening. The following
+tutorials show that this is a minimum distortion approach:</p>
+<blockquote>
+<div><p>Eldar YC.
+Minimum mean-squared error covariance shaping.
+In 2003 IEEE International Conference on Acoustics, Speech, and Signal Processing, 2003.
+Proceedings.(ICASSP’03). 2003 Apr 6 (Vol. 6, pp. VI-713). IEEE.</p>
+<p>Eldar YC, Oppenheim AV.
+MMSE whitening and subspace whitening.
+IEEE Transactions on Information Theory.
+2003 Jun 25;49(7):1846-51.</p>
+<dl class="simple">
+<dt>&#64;inproceedings{eldar2003minimum,</dt><dd><p>title={Minimum mean-squared error covariance shaping},
+author={Eldar, Yonina C},
+booktitle={2003 IEEE International Conference on Acoustics, Speech, and Signal Processing, 2003. Proceedings.(ICASSP’03).},
+volume={6},
+pages={VI–713},
+year={2003},
+organization={IEEE}</p>
+</dd>
+</dl>
+<p>}</p>
+<dl class="simple">
+<dt>&#64;article{eldar2003mmse,</dt><dd><p>title={MMSE whitening and subspace whitening},
+author={Eldar, Yonina C and Oppenheim, Alan V},
+journal={IEEE Transactions on Information Theory},
+volume={49},
+number={7},
+pages={1846–1851},
+year={2003},
+publisher={IEEE}</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>Test code (relies on from neurotools.nlab import <a href="#id1"><span class="problematic" id="id2">*</span></a>):</p>
+<blockquote>
+<div><p>N = 2    # dimensions
+T = 1000 # Samples</p>
+<p># Target covariance structure
+q = randn(N,N)
+e,v = psd_eig(<a class="reference external" href="mailto:q&#37;&#52;&#48;q&#46;T">q<span>&#64;</span>q<span>&#46;</span>T</a>)
+e = array([1,0.1])
+shuffle(e)
+q = v&#64;diag(e**0.5)
+Q = <a class="reference external" href="mailto:q&#37;&#52;&#48;q&#46;T">q<span>&#64;</span>q<span>&#46;</span>T</a></p>
+<p># Source covariance structure
+w = randn(N,N)
+e,v = psd_eig(<a class="reference external" href="mailto:w&#37;&#52;&#48;w&#46;T">w<span>&#64;</span>w<span>&#46;</span>T</a>)
+e = array([1,0.1])
+shuffle(e)
+w = v&#64;diag(e**0.5)
+W = <a class="reference external" href="mailto:w&#37;&#52;&#48;w&#46;T">w<span>&#64;</span>w<span>&#46;</span>T</a></p>
+<p># Original samples
+x1 = w&#64;randn(N,T)</p>
+<p>x2 = match_covariance(Q,x1,verbose=True,sample_deficient=False)</p>
+<p>subplot(131)
+scatter(x1.ravel(),x2.ravel(),s=1)
+force_aspect()
+simpleaxis()</p>
+<p>subplot(132)
+scatter(<a href="#id3"><span class="problematic" id="id4">*</span></a>x1,s=1)
+scatter(<a href="#id5"><span class="problematic" id="id6">*</span></a>x2,s=1)
+force_aspect()
+simpleaxis()</p>
+<p>subplot(133)
+plot(<a href="#id7"><span class="problematic" id="id8">*</span></a>cat([(xi1,xi2,(NaN,NaN)) for (xi1,xi2) in zip(x1.T,x2.T)]).T,lw=0.1)
+force_aspect()
+simpleaxis()</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – Nfeatures x Nsamples array of data</p></li>
+<li><p><strong>Q</strong> (<em>np.array</em>) – Nfeatures² target covariance matrix</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default false</em>) – Whether to print debugging information</p></li>
+<li><p><strong>sample_deficient</strong> (<em>bool</em><em>, </em><em>default false</em>) – Override sanity checks if number of samples
+is less than the rank of the data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x2</strong> – Samples transformed to approximately match target
+covariance while minimizing mean-squared-error distortion</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>transformed samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="neurotools.linalg.arguments.html" class="btn btn-neutral float-left" title="neurotools.linalg.arguments module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="neurotools.linalg.operators.html" class="btn btn-neutral float-right" title="neurotools.linalg.operators module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

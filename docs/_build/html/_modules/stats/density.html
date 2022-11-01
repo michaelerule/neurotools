@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stats.density &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+          <li><a href="../stats.html">stats</a> &raquo;</li>
+      <li>stats.density</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stats.density</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Functions for working with probability densities.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gaussian_kde</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="kn">import</span> <span class="n">get_edges</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">find</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+
+<div class="viewcode-block" id="kdepeak"><a class="viewcode-back" href="../../stats.density.html#stats.density.kdepeak">[docs]</a><span class="k">def</span> <span class="nf">kdepeak</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_grid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convenience wrapper for</span>
+<span class="sd">    `scipy.stats.gaussian_kde`,</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: 1D np.float32</span>
+<span class="sd">        List of samples from distribution </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grid: 1D np.float32</span>
+<span class="sd">        List of points that the KDE-smoothed density is</span>
+<span class="sd">        evaluated at</span>
+<span class="sd">    kde: 1D np.float32</span>
+<span class="sd">        KDE smoothed density</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">x_grid</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="mi">201</span><span class="p">)</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">gaussian_kde</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_grid</span><span class="p">,</span><span class="n">kde</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="knn_1d_density"><a class="viewcode-back" href="../../stats.density.html#stats.density.knn_1d_density">[docs]</a><span class="k">def</span> <span class="nf">knn_1d_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">pad</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses local K nearest neighbors to estimate a density and center of</span>
+<span class="sd">    mass at each point in a distribution. Returns a local density estimator </span>
+<span class="sd">    in units of 1/input_units. For example, if a sequence</span>
+<span class="sd">    of times in seconds is provided, the result is an estimate of</span>
+<span class="sd">    the continuous time intensity function in units of Hz.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ndarray</span>
+<span class="sd">        List of points to model</span>
+<span class="sd">    k : integer</span>
+<span class="sd">        Number of nearest neighbors to use in local density estimate</span>
+<span class="sd">        Default is 10</span>
+<span class="sd">    eps : number</span>
+<span class="sd">        Small correction factor to avoid division by zero</span>
+<span class="sd">    pad : positive int, default 100</span>
+<span class="sd">        Number of time-points to reflect for padding</span>
+<span class="sd">    final: scalar</span>
+<span class="sd">        Last time-point for which to estimate density. Defaults to none,</span>
+<span class="sd">        in which case the time of the last spike will be used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    centers : ndarray</span>
+<span class="sd">        Point location of density estimates</span>
+<span class="sd">    density :</span>
+<span class="sd">        Density values at locations of centers</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">final</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    
+    <span class="c1"># reflected boundary conditions</span>
+    <span class="n">pad</span>  <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pad</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">pre</span>  <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">pad</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="n">pad</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">x</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">pre</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">post</span><span class="p">])</span>
+    
+    <span class="c1"># Handle duplicates by dithering</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="n">get_edges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="mf">0.</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">duplicates</span><span class="p">[</span><span class="n">duplicates</span><span class="o">&gt;=</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span>
+    <span class="n">duplicates</span><span class="p">[</span><span class="n">duplicates</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">duplicates</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+        <span class="n">q1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">q0</span><span class="p">)</span>
+        <span class="n">q2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">q0</span><span class="p">)</span>
+        <span class="c1">#print(a,b,q0,q1,q2)</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="n">q2</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">centers</span>   <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.5</span>
+    <span class="n">kernel</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">kernel</span>   <span class="o">/=</span><span class="nb">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span><span class="n">kernel</span><span class="p">,</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="p">(</span><span class="n">eps</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">eps</span><span class="o">+</span><span class="n">intervals</span><span class="p">)</span>
+    
+    <span class="n">ok</span> <span class="o">=</span> <span class="p">(</span><span class="n">centers</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">centers</span><span class="o">&lt;=</span><span class="n">final</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">centers</span><span class="p">[</span><span class="n">ok</span><span class="p">],</span><span class="n">density</span><span class="p">[</span><span class="n">ok</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="adaptive_density_grid"><a class="viewcode-back" href="../../stats.density.html#stats.density.adaptive_density_grid">[docs]</a><span class="k">def</span> <span class="nf">adaptive_density_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">fill</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Follow the knn_1d_density estimation with interpolation of the</span>
+<span class="sd">    density on a grid</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid:</span>
+<span class="sd">    x:</span>
+<span class="sd">    k : `int`, default 10</span>
+<span class="sd">    eps : `float`, default 0.01</span>
+<span class="sd">    fill: assign missing values</span>
+<span class="sd">        if not given will fill with the mean rate</span>
+<span class="sd">    kind : `string`, default &#39;linear&#39;</span>
+<span class="sd">        Interpolation method parameter for scipy.interpolate.interp1d</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y : </span>
+<span class="sd">        Probability density on grid</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">centers</span><span class="p">,</span><span class="n">density</span> <span class="o">=</span> <span class="n">knn_1d_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">density</span><span class="p">):</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;something is wrong&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">density</span><span class="p">))</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">density</span><span class="p">))</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">density</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">fill</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+        <span class="n">centers</span><span class="p">,</span><span class="n">density</span><span class="p">,</span>
+        <span class="n">bounds_error</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">fill_value</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span>
+        <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="gridhist"><a class="viewcode-back" href="../../stats.density.html#stats.density.gridhist">[docs]</a><span class="k">def</span> <span class="nf">gridhist</span><span class="p">(</span><span class="n">ngrid</span><span class="p">,</span><span class="n">width</span><span class="p">,</span><span class="n">points</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Please use numpy.histogram2d instead!</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">quantized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">points</span><span class="o">*</span><span class="n">ngrid</span><span class="o">/</span><span class="n">width</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ngrid</span><span class="p">,</span><span class="n">ngrid</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">quantized</span><span class="p">:</span>
+        <span class="n">counts</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">counts</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

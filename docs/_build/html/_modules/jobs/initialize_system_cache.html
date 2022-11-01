@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jobs.initialize_system_cache &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>jobs.initialize_system_cache</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jobs.initialize_system_cache</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/user/bin/env python </span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Static initialization routines accompanying `neurotools_cache`.</span>
+<span class="sd">These routines were written to set up a caching framework for the Oscar</span>
+<span class="sd">high performance computing cluster at Brown University, and have not yet</span>
+<span class="sd">been modified for general use. They still contain hard-coded user-specific</span>
+<span class="sd">paths, for example.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="n">IN_SPHINX</span><span class="o">=</span><span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">IN_SPHINX</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Inside Sphinx autodoc; NOT loading scipy and pylab namespaces!&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">VERBOSE_CACHING</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">neurotools</span>
+<span class="kn">import</span> <span class="nn">neurotools.jobs</span>
+<span class="kn">from</span> <span class="nn">neurotools.jobs</span> <span class="kn">import</span> <span class="n">cache</span> <span class="k">as</span> <span class="n">neurotools_cache</span>
+
+<span class="c1">######################################################################</span>
+<span class="c1"># Setup advanced memoization</span>
+
+<div class="viewcode-block" id="purge_ram_cache"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.purge_ram_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ram_cache</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Deletes the ramdisk cache. USE WITH CAUTION. </span>
+<span class="sd">    </span>
+<span class="sd">    This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY</span>
+<span class="sd">    dangerous. It has been disabled and now raises `NotImplementedError`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache purging is dangerous and has been disabled&#39;</span><span class="p">);</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span> <span class="o">+</span> <span class="n">ramdisk_location</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="purge_ssd_cache"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.purge_ssd_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ssd_cache</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Deletes the SSD drive cache. USE WITH CAUTION.</span>
+<span class="sd">    </span>
+<span class="sd">    This will `rm -rf` the entire  `level2_location` and is EXTREMELY</span>
+<span class="sd">    dangerous. It has been disabled and now raises `NotImplementedError`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache purging is dangerous and has been disabled&#39;</span><span class="p">);</span></div>
+
+<div class="viewcode-block" id="du"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.du">[docs]</a><span class="k">def</span> <span class="nf">du</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the disk usave (`du`) of a file</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    location : string</span>
+<span class="sd">        Path on filesystem</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    du : integer</span>
+<span class="sd">        File size in bytes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+    <span class="n">du</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">st_blocks</span> <span class="o">*</span> <span class="n">st</span><span class="o">.</span><span class="n">st_blksize</span>
+    <span class="k">return</span> <span class="n">du</span></div>
+
+<span class="n">default_ramdisk_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/.neurotools_ramdisk&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="reset_ramdisk"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.reset_ramdisk">[docs]</a><span class="k">def</span> <span class="nf">reset_ramdisk</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">override_ramdisk_location</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This will create a 500GB ramdisk on debian linux. This allows in RAM </span>
+<span class="sd">    inter-process communication using the filesystem metaphore. It should</span>
+<span class="sd">    be considered dangerous. It runs shell commands that</span>
+<span class="sd">    require `sudo` privileges. In some cases, these commands may not </span>
+<span class="sd">    execute automatically (e.g. if called form a Jupyter or IPython </span>
+<span class="sd">    notebook inside a browser). In this case, one must run the commands</span>
+<span class="sd">    by hand. </span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    force : bool</span>
+<span class="sd">        Modifying the configuration of a ramdisk is risky; The function</span>
+<span class="sd">        fails with a warning unless force is set to true.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">default_ramdisk_location</span><span class="p">,</span><span class="n">ramdisk_location</span>
+    <span class="k">try</span><span class="p">:</span>    <span class="n">location_defined</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">ramdisk_location</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">except</span><span class="p">:</span> <span class="n">location_defined</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span>  <span class="n">location_defined</span><span class="p">:</span>
+        <span class="c1"># Ramisk location might not be initialized</span>
+        <span class="n">ramdisk_location</span> <span class="o">=</span>\
+            <span class="n">default_ramdisk_location</span>\
+            <span class="k">if</span> <span class="n">override_ramdisk_location</span> <span class="ow">is</span> <span class="kc">None</span>\
+            <span class="k">else</span> <span class="n">override_ramdisk_location</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s1">&#39;modifying ramdisk is dangerous; use force=True to force&#39;</span><span class="p">);</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initializing public ramdisk at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">ramdisk_location</span><span class="p">)</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;sudo mkdir -p &#39;</span><span class="o">+</span><span class="n">ramdisk_location</span><span class="p">,</span>
+        <span class="s1">&#39;sudo umount </span><span class="si">%s</span><span class="s1">/&#39;</span><span class="o">%</span><span class="n">ramdisk_location</span><span class="p">,</span>
+        <span class="s1">&#39;sudo mount -t tmpfs -o size=500G tmpfs </span><span class="si">%s</span><span class="s1">/&#39;</span><span class="o">%</span><span class="n">ramdisk_location</span><span class="p">,</span>
+        <span class="s1">&#39;sudo chmod -R 777 </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">ramdisk_location</span>
+    <span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;To initialize a ramdisk on linux, run these commands:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">commands</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;... attempting to call these commands from python&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(this will not work in jupyter/ipython notebook)&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+        <span class="n">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
+    <span class="c1"># </span>
+
+<div class="viewcode-block" id="launch_cache_synchronizers"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.launch_cache_synchronizers">[docs]</a><span class="k">def</span> <span class="nf">launch_cache_synchronizers</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Inter-process communication is mediated via shared caches mapped onto</span>
+<span class="sd">    the file-system. If a collection of processes are distributed over</span>
+<span class="sd">    a large filesystem, they may need to share data. </span>
+<span class="sd">    </span>
+<span class="sd">    This solution has been depricated. </span>
+<span class="sd">    It now raises a `NotImplementedError`. </span>
+<span class="sd">    </span>
+<span class="sd">    This solution originally spawned rsync jobs to keep a collection of</span>
+<span class="sd">    locations in the filesystem synchronized. This is bad for the following</span>
+<span class="sd">    reasons. Mis-configuration can lead to loss of data. Not all jobs</span>
+<span class="sd">    may need to share all cache values. It is far better to implement</span>
+<span class="sd">    some sort of lazy protocol. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">ramdisk_location</span><span class="p">,</span><span class="n">level2_location</span><span class="p">,</span><span class="n">level3_location</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache synchronization overwites files; this is dangerous and it has been disabled&#39;</span><span class="p">);</span>
+    <span class="c1"># write_back is disabled for the slow disk caches. To make these</span>
+    <span class="c1"># persistant, we need to run an rsync job to keep them synchronized.</span>
+    <span class="n">disk_cache_hierarchy</span> <span class="o">=</span> <span class="p">(</span><span class="n">ramdisk_location</span><span class="p">,</span><span class="n">level2_location</span><span class="p">,</span><span class="n">level3_location</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">disk_cache_hierarchy</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">source</span>       <span class="o">=</span> <span class="n">disk_cache_hierarchy</span><span class="p">[</span><span class="n">level</span>  <span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span>
+        <span class="n">destination</span>  <span class="o">=</span> <span class="n">disk_cache_hierarchy</span><span class="p">[</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span>
+        <span class="n">destination</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span>
+        <span class="c1"># quiet rsync command in update-archive mode</span>
+        <span class="n">rsync</span> <span class="o">=</span> <span class="s2">&quot;rsync -aqu &#39;</span><span class="si">%s</span><span class="s2">/&#39; &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="n">destination</span><span class="p">)</span>
+        <span class="c1"># Run the synchronization jobs at idle level</span>
+        <span class="n">nice</span>  <span class="o">=</span> <span class="s2">&quot;ionice -c2 -n7 &quot;</span>
+        <span class="c1"># loop every 30 seconds at most</span>
+        <span class="n">watch</span> <span class="o">=</span> <span class="s2">&quot;watch -n60 &quot;</span>
+        <span class="c1"># silence the output and run in background</span>
+        <span class="c1"># job   = &#39; 2&gt;1 1&gt;/dev/null&#39;</span>
+        <span class="c1"># build command</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">watch</span> <span class="o">+</span> <span class="n">nice</span> <span class="o">+</span> <span class="n">rsync</span><span class="c1"># + job</span>
+        <span class="n">FNULL</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">FNULL</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">FNULL</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">FNULL</span><span class="p">,</span> <span class="n">close_fds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="c1">#os.system(command)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Launched background rsync processes&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;You may want this command later:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">sudo ps aux | grep rsync | awk &#39;{print $2}&#39; | xargs kill -9&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="initialize_caches"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.initialize_caches">[docs]</a><span class="k">def</span> <span class="nf">initialize_caches</span><span class="p">(</span><span class="n">level1</span><span class="o">=</span><span class="n">default_ramdisk_location</span><span class="p">,</span><span class="n">level2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Static cache initialization code</span>
+<span class="sd">    This should be run with caution</span>
+<span class="sd">    </span>
+<span class="sd">    Caches can be set up in a hierarchy from fast to slow.</span>
+<span class="sd">    If a cache entry is missing in the fast cache, it can be repopulated</span>
+<span class="sd">    from a slower cache. </span>
+
+<span class="sd">    For example, a cache hierarchy might include</span>
+<span class="sd">    - local RAMdisk for inter-process communication between life processes</span>
+<span class="sd">    - local SSD for frequently used intermediate value</span>
+<span class="sd">    - local HDD for larger working datasets</span>
+<span class="sd">    - network filesystem for large database</span>
+<span class="sd">    </span>
+<span class="sd">    # neurotools.jobs.ndecorator.memoize memoizes within the process memory</span>
+<span class="sd">    # unsafe_disk_cache memoizes within</span>
+<span class="sd">    # memory, ssd, and possible hdd in a hierarchy. </span>
+<span class="sd">    # this patches neurotools.jobs.ndecorator.memoize and replaces it</span>
+<span class="sd">    # with the disk cacher, causing all dependent code to automatically</span>
+<span class="sd">    # implement persistent disk-memoization. </span>
+<span class="sd">    </span>
+<span class="sd">    This function will need to be called *before* importing other</span>
+<span class="sd">    libraries.</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    level1: str</span>
+<span class="sd">        Path to ram disk for caching intermediate results</span>
+<span class="sd">    ssd: str</span>
+<span class="sd">        Path to SSD to provide persistent storage (back the ram disk)</span>
+<span class="sd">    hdd: str</span>
+<span class="sd">        Optional path to a hard disk; larger but slower storage space. </span>
+<span class="sd">    force: boolean, False</span>
+<span class="sd">        The disk caching framework is still experimental and could lead</span>
+<span class="sd">        to loss of data if there is a bug (or worse!). By default, </span>
+<span class="sd">        this routine and its subroutines will not run unless forced. </span>
+<span class="sd">        By requiring the user to set force=true excplitly, we hopefully</span>
+<span class="sd">        enforce caution when using this functionality. </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    This code was originalled called from a function like this, set up</span>
+<span class="sd">    for specific configurations in the Truccolo lab</span>
+<span class="sd">    ::</span>
+<span class="sd">    </span>
+<span class="sd">        myhost = os.uname()[1]</span>
+<span class="sd">        if myhost in (&#39;moonbase&#39;,):</span>
+<span class="sd">            level1_location   = &#39;/media/neurotools_level1&#39;</span>
+<span class="sd">            level2_location = &#39;/ssd_1/mrule&#39;</span>
+<span class="sd">            level3_location = &#39;/ldisk_1/mrule&#39;</span>
+<span class="sd">        elif myhost in (&#39;basecamp&#39;,):</span>
+<span class="sd">            level1_location   = &#39;/media/neurotools_level1&#39;</span>
+<span class="sd">            level2_location = &#39;/home/mrule&#39;</span>
+<span class="sd">        elif myhost in (&#39;RobotFortress&#39;,&#39;petra&#39;):</span>
+<span class="sd">            level1_location   = &#39;/Users/mrule/neurotools_level1&#39;</span>
+<span class="sd">            level2_location = &#39;/Users/mrule&#39;</span>
+<span class="sd">        else:</span>
+<span class="sd">            print(&#39;New System. Cache Locations will need configuring.&#39;)</span>
+<span class="sd">            level1_location = level2_location = level3_location = None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">level1_location</span><span class="p">,</span> <span class="n">level2_location</span><span class="p">,</span> <span class="n">level3_location</span>
+    
+    <span class="n">level1_location</span><span class="p">,</span><span class="n">level2_location</span><span class="p">,</span><span class="n">level3_location</span> <span class="o">=</span> <span class="n">level1</span><span class="p">,</span><span class="n">level2</span><span class="p">,</span><span class="n">level3</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">level1_location</span><span class="p">):</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Level 1 location should be an existing directory&#39;</span><span class="p">)</span>
+    <span class="c1">#    reset_level1(force)</span>
+    
+    <span class="c1"># Add additional cache levels if they are specified </span>
+    <span class="n">hierarchy</span> <span class="o">=</span> <span class="p">(</span><span class="n">level1</span><span class="p">,)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">level2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">hierarchy</span> <span class="o">+=</span> <span class="p">(</span><span class="n">level2</span><span class="p">,)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">level3</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">hierarchy</span> <span class="o">+=</span> <span class="p">(</span><span class="n">level3</span><span class="p">,)</span>
+    
+    <span class="c1"># Define the disk-caching memoization decorator</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">unsafe_disk_cache</span> <span class="o">=</span>\
+        <span class="n">neurotools_cache</span><span class="o">.</span><span class="n">hierarchical_cacher</span><span class="p">(</span>\
+            <span class="n">hierarchy</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
+            <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="n">CACHE_IDENTIFIER</span><span class="p">)</span>
+
+    <span class="c1"># Replace in-memory memoization with disk-cached memoization</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">old_memoize</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">memoize</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">new_memoize</span> <span class="o">=</span> <span class="n">unsafe_disk_cache</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">memoize</span>     <span class="o">=</span> <span class="n">new_memoize</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">memoize</span>                  <span class="o">=</span> <span class="n">new_memoize</span></div>
+
+<div class="viewcode-block" id="cache_test"><a class="viewcode-back" href="../../jobs.initialize_system_cache.html#jobs.initialize_system_cache.cache_test">[docs]</a><span class="k">def</span> <span class="nf">cache_test</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Run a test of the disk cache to see if everything is ok; Called if</span>
+<span class="sd">    this script is run as main. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># test encoding of function arguments as a string</span>
+    <span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ok&#39;</span><span class="p">,),</span><span class="o">*</span><span class="n">vargs</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This docstring should be preserved by the decorator &#39;&#39;&#39;</span>
+        <span class="n">e</span><span class="p">,</span><span class="n">f</span> <span class="o">=</span> <span class="n">vargs</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;k&#39;</span> <span class="ow">in</span> <span class="n">kw</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">State is:&#39;</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="n">new_memoize</span><span class="p">(</span><span class="n">example_function</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Testing argument siganture encoding&#39;</span><span class="p">)</span>
+    <span class="n">f</span>   <span class="o">=</span> <span class="n">example_function</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="p">(((</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;repr&#39;</span><span class="p">,</span><span class="s1">&#39;json&#39;</span><span class="p">,</span><span class="s1">&#39;human&#39;</span><span class="p">]:</span> <span class="c1">#&#39;pickle&#39;,</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">function_signature</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">sig</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fn</span>  <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">signature_to_file_string</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sig</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">fn</span><span class="p">)</span>
+            <span class="n">s2</span>  <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">file_string_to_signature</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">s2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+    <span class="c1"># test hierarchical cache</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Testing hybrid caching&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Caution this is experimental&#39;</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">unsafe_disk_cache</span><span class="p">(</span><span class="n">example_function</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Testing unsafe_disk_cache &#39;</span><span class="p">,</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;gamma&#39;</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="s1">&#39;d&#39;</span><span class="p">})</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">])</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">])</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">],</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="s1">&#39;d&#39;</span><span class="p">})</span>
+    <span class="n">fn</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># Testing code</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">IN_SPHINX</span> <span class="ow">and</span> <span class="p">(</span><span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span> <span class="ow">or</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__MAIN__&#39;</span><span class="p">):</span>
+    <span class="n">cache_test</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.obsolete.gpu.cpu.util &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>neurotools.obsolete.gpu.cpu.util</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.obsolete.gpu.cpu.util</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Helper functions</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="document"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cpu.util.html#neurotools.obsolete.gpu.cpu.util.document">[docs]</a><span class="k">def</span> <span class="nf">document</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">docstring</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function adds in documentation to anonymous (lambda) functions. </span>
+<span class="sd">    Sphinx autodoc will also accept the first triple-quote string folloing </span>
+<span class="sd">    a lambda function declataion as the docstring</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.__doc__=docstring&quot;</span><span class="o">%</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.__name__=name&quot;</span><span class="o">%</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="flat"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cpu.util.html#neurotools.obsolete.gpu.cpu.util.flat">[docs]</a><span class="k">def</span> <span class="nf">flat</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A naive flatten functions : concatenates a list of lists via lots of</span>
+<span class="sd">    copying</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+<span class="n">compose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">f</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Curried function composition operator. Use as compose(f)(g) to make a </span>
+<span class="sd">composed function.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">dot</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="nb">sum</span><span class="p">(</span><span class="n">lmul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">dot = lambda a,b:sum(lmul(a,b))</span>
+<span class="sd">Computes the dot product of two vectors</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">length</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">V</span><span class="p">:</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Computes the magnitude of an array, interpreted as an N-vector</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">idivup</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:(</span><span class="n">a</span><span class="o">/</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="o">/</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)[</span><span class="n">a</span><span class="o">%</span><span class="n">b</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Divides a by b, rounding up to the nearest integer. Eqivalent to ceil(a/b)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">fancy</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span><span class="s1">&#39;$\mathrm{</span><span class="si">%s</span><span class="s1">}$&#39;</span><span class="o">%</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\ &quot;</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This will wap a string into the math markup code for pyplot</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">elem</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Curried function for creating elementwise binary list operators. </span>
+<span class="sd">For example, elem(lambda x,y:x+y)(listA)(listB) will create a third list</span>
+<span class="sd">containing elementwise sum of listA and listB. Equivalently, cmap(lambda x,y:x+y)(zip(listA,listB))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">cmap</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This is a curried verion of the map operator. cmap(f) will create a map version of f. For example, cmap(lambda x:x+1) creates a map of the succesor function. cmap(lambda x:x+1)(list) would return a new list with 1 added to every element of the argument list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mmap</span>   <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">cmap</span><span class="p">)(</span><span class="n">cmap</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">mmap   = lambda f:cmap(cmap(f))</span>
+<span class="sd">This is a curried version of map that operates elementwise over lists of lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">ldif</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise difference of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">lsum</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise sum of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">lmul</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise product of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">ldiv</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">/</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise ratio of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">lpow</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">**</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise exponentiation of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">ldif2</span>  <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise difference from a list of pairs</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">lsum2</span>  <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise sum from a list of pairs</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">lmul2</span>  <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise product from a list of pairs</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">ldiv2</span>  <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">/</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise ratio from a list of pairs</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">lpow2</span>  <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">**</span><span class="n">y</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Element-wise exponentiation from a list of pairs</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">scale</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Curried scalar multiplication operator. E.g. scale(2) produces a function that will double each element in a list passed to it</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">shift</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="n">x</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Curried scalar shift operator. E.g. shift(2) produces a function that will add 2 to each element in a list passed to it</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mu</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="n">var</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">mean</span><span class="p">((</span><span class="k">lambda</span> <span class="n">mu</span><span class="p">:</span><span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)(</span><span class="n">v</span><span class="p">))(</span><span class="n">mu</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Population variance of a list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">svar</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span><span class="n">l</span><span class="o">/</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">))(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">*</span><span class="n">var</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Sample variance of a list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">sigma</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">var</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+<span class="n">mean</span>   <span class="o">=</span> <span class="n">mu</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Population average of a list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">std</span>    <span class="o">=</span> <span class="n">sigma</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Population standard deviation of a list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">sstd</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">svar</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Sample standard deviation of a list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">sem</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:(</span><span class="n">svar</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Standard error of mean for a list</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">norm</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">L</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span><span class="n">cmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">*</span><span class="n">s</span><span class="p">)(</span><span class="n">L</span><span class="p">))(</span><span class="mf">1.0</span><span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Interprets a list as a vector and normalizes its magnitude to 1</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">cov</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">mu</span><span class="p">(</span><span class="n">lmul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span><span class="o">-</span><span class="n">mu</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">mu</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Covariance of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">corr</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">cov</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Pearson&#39;s correlation coefficient of two lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mdif</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">ldif</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Elementwise difference for a matrix (list of lists)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">msum</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">lsum</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Elementwise sum for a matrix (list of lists)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mmul</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">lmul</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Elementwise product for a matrix (list of lists)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mdiv</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">ldiv</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Elementwise ratio for a matrix (list of lists)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mpow</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">lpow</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Elementwise exponentiation for a matrix (list of lists)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mmean</span>  <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Returns the population average of each row of a matrix</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mstd</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Returns the population standard deviation of each row of a matrix</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">mvar</span>   <span class="o">=</span> <span class="n">elem</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Returns the population variance deviation of each row of a matrix</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">rnorm</span>  <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Normalizes each row of a matrix independently</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">cut</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">mat</span><span class="p">,</span><span class="n">rowlen</span><span class="p">:[</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">rowlen</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="p">),</span><span class="n">rowlen</span><span class="p">)]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Cuts any subscriptable object into a list of ranges of that object. This can facilitate creation of a matrix like object form a row major packed list. For instance, if you had a 100x100 GPUArray and wanted to represent it as a list of its rows, cut(array,100) would return a list of 100 size 100 slices of your original object. Cut uses range subscripting and the returned object will most likely point to the same underlying section of memory as the argument array</span>
+<span class="sd">&#39;&#39;&#39;</span>
+    
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

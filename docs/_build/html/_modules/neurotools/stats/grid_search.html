@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.stats.grid_search &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../stats.html">neurotools.stats</a> &raquo;</li>
+      <li>neurotools.stats.grid_search</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.stats.grid_search</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Hill-climbing grid search</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<div class="viewcode-block" id="grid_search"><a class="viewcode-back" href="../../../neurotools.stats.grid_search.html#neurotools.stats.grid_search.grid_search">[docs]</a><span class="k">def</span> <span class="nf">grid_search</span><span class="p">(</span><span class="n">pargrid</span><span class="p">,</span><span class="n">evaluate</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Grid search hyperparameter optimization    </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pargrid: list of arrays</span>
+<span class="sd">        A list; Each element is a list of values for a given </span>
+<span class="sd">        parameter to search over</span>
+<span class="sd">    </span>
+<span class="sd">    evaluate: function</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            Parameters: Tuple</span>
+<span class="sd">                Parameters taken from the parameter search grid</span>
+<span class="sd">            State: List of arrays</span>
+<span class="sd">                Saves initial conditions (optional, default None)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            state: the inferred model fit, in the form of a list </span>
+<span class="sd">                of floating-point numpy arrays, to be re-used as </span>
+<span class="sd">                initial conditions for subsequent parameters.</span>
+<span class="sd">            likelihood: float</span>
+<span class="sd">                Scalar summary of fit quality, higher is better</span>
+<span class="sd">            info: object</span>
+<span class="sd">                Anything else you&#39;d like to save</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    best: </span>
+<span class="sd">        best index into parameter grid</span>
+<span class="sd">    pars: </span>
+<span class="sd">        values of best parameters</span>
+<span class="sd">    results[best]: </span>
+<span class="sd">        (state, likelihood, info) at best parameters.</span>
+<span class="sd">        `info` is determined by the third element in the</span>
+<span class="sd">        3-tuple return-value of the `evaluate` function,</span>
+<span class="sd">        passed by the user. `state` is also user-defined.</span>
+<span class="sd">    allresults: </span>
+<span class="sd">        all other results</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># - Get shape of search grid</span>
+    <span class="c1"># - Prepare an object array to save search results</span>
+    <span class="c1"># - Start the search in the middle of this grid</span>
+    <span class="c1"># - Get the initial parameters </span>
+    <span class="c1"># - Evalute the performance at these parameters    </span>
+    <span class="n">gridshape</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span><span class="n">pargrid</span><span class="p">)]</span>
+    <span class="n">NPARAMS</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gridshape</span><span class="p">)</span>
+    <span class="n">results</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">gridshape</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+    <span class="n">pari</span>      <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">//</span><span class="mi">2</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">gridshape</span><span class="p">]</span>
+    <span class="n">pars</span>      <span class="o">=</span> <span class="p">[</span><span class="n">pr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">pr</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pargrid</span><span class="p">,</span><span class="n">pari</span><span class="p">)]</span>
+    <span class="n">result0</span>   <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span><span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">state0</span><span class="p">,</span> <span class="n">likelihood0</span><span class="p">,</span> <span class="n">info0</span> <span class="o">=</span> <span class="n">result0</span>
+
+    <span class="c1"># Tell me which parameters were the best, so far</span>
+    <span class="k">def</span> <span class="nf">current_best</span><span class="p">():</span>
+        <span class="k">nonlocal</span> <span class="n">results</span>
+        <span class="n">ll</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">inf</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="n">unravel_index</span><span class="p">(</span><span class="n">argmax</span><span class="p">(</span><span class="n">ll</span><span class="p">),</span><span class="n">results</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ll</span><span class="p">)</span>
+
+    <span class="c1"># Bounds test for grid search</span>
+    <span class="n">ingrid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ix</span><span class="p">:</span><span class="nb">all</span><span class="p">([</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">Ni</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">Ni</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span><span class="n">gridshape</span><span class="p">)])</span>
+    
+    <span class="c1"># Recursive grid search function</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">suggested_direction</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">results</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="c1"># Do nothing if we&#39;re outside the grid or already evaluated this index</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ingrid</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="ow">or</span> <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">initial</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">array</span><span class="p">,</span><span class="n">state0</span><span class="p">)]</span>
+        
+        <span class="c1"># Compute result and save</span>
+        <span class="n">pars</span>            <span class="o">=</span> <span class="p">[</span><span class="n">pr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">pr</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pargrid</span><span class="p">,</span><span class="n">index</span><span class="p">)]</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>  <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span><span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">state</span><span class="p">,</span> <span class="n">ll</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">[</span><span class="si">%s</span><span class="s1">](</span><span class="si">%s</span><span class="s1">) loss=</span><span class="si">%e</span><span class="s1">&#39;</span><span class="o">%</span>\
+            <span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">]),</span>
+             <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%0.2e</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">]),</span><span class="n">ll</span><span class="p">),</span>
+              <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="c1"># Figure out where to go next</span>
+        <span class="c1"># - Try continuing in current direction first</span>
+        <span class="c1"># - Recurse along all other directions until better parameters found</span>
+        <span class="n">Δs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NPARAMS</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">Δ</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">NPARAMS</span><span class="p">,</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+                <span class="n">Δ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">d</span>
+                <span class="n">Δs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">Δ</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">suggested_direction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Δ</span> <span class="o">=</span> <span class="n">suggested_direction</span>
+            <span class="k">if</span> <span class="n">current_best</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">index</span><span class="p">:</span>
+                <span class="n">search</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">+</span><span class="n">Δ</span><span class="p">,</span><span class="n">Δ</span><span class="p">)</span>
+                <span class="n">Δs</span> <span class="o">-=</span> <span class="p">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">Δ</span><span class="p">)}</span>
+        <span class="k">for</span> <span class="n">Δ</span> <span class="ow">in</span> <span class="n">Δs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_best</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="n">index</span><span class="p">:</span> <span class="k">break</span>
+            <span class="n">search</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">+</span><span class="n">Δ</span><span class="p">,</span><span class="n">Δ</span><span class="p">)</span>
+        <span class="k">return</span>
+            
+    <span class="n">search</span><span class="p">(</span><span class="n">pari</span><span class="p">)</span>
+    <span class="n">best</span> <span class="o">=</span> <span class="n">current_best</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pars</span> <span class="o">=</span> <span class="p">[</span><span class="n">pr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">pr</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pargrid</span><span class="p">,</span><span class="n">best</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(done)&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">best</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">results</span><span class="p">[</span><span class="n">best</span><span class="p">],</span><span class="n">results</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

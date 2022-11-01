@@ -20,7 +20,6 @@ Submodules
    neurotools.stats.minimize
    neurotools.stats.mixtures
    neurotools.stats.modefind
-   neurotools.stats.mvg
    neurotools.stats.pvalues
    neurotools.stats.regressions
 

@@ -96,7 +96,6 @@ from neurotools.stats.mixtures           import *
 from neurotools.stats.information        import *
 from neurotools.stats.glm                import *
 from neurotools.stats.hmm                import *
-from neurotools.stats.mvg                import *
 from neurotools.stats.modefind           import *
 from neurotools.stats.regressions        import *
 from neurotools.stats.circular           import *

@@ -17,7 +17,6 @@ from numpy import pi
 import scipy.linalg
 import numpy.random
 import random
-from numpy.random import randn
 from neurotools.linalg.matrix import check_covmat, check_covmat_fast, check_finite_real, logdet
 from neurotools.linalg.matrix import real_eig
 from scipy.optimize import minimize

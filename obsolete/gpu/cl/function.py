@@ -14,7 +14,6 @@ try:
 except:
     xrange = range
 
-from neurotools.system import *
 
 '''
 Contains higher order functions to make creation of GPU functions more 

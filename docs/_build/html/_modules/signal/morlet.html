@@ -27,6 +27,7 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../index.html" class="icon icon-home"> Neurotools
+            <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -99,7 +100,7 @@
 <span class="kn">from</span> <span class="nn">neurotools.jobs.ndecorator</span> <span class="kn">import</span> <span class="n">memoize</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">morlet</span>
 
-<div class="viewcode-block" id="normalized_morlet"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.normalized_morlet">[docs]</a><span class="k">def</span> <span class="nf">normalized_morlet</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+<div class="viewcode-block" id="normalized_morlet"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.normalized_morlet">[docs]</a><span class="k">def</span> <span class="nf">normalized_morlet</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See morlet(m,w)</span>
 
@@ -109,7 +110,7 @@
     <span class="n">wl</span> <span class="o">=</span> <span class="n">morlet</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="p">),</span><span class="n">w</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wl</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">wl</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="prepare_wavelet_fft_basis"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.prepare_wavelet_fft_basis">[docs]</a><span class="nd">@memoize</span>
+<div class="viewcode-block" id="prepare_wavelet_fft_basis"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.prepare_wavelet_fft_basis">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">prepare_wavelet_fft_basis</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">nfreqs</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
@@ -168,7 +169,7 @@
         <span class="n">fftwl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">reordered</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">array</span><span class="p">(</span><span class="n">fftwl</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fft_cwt"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.fft_cwt">[docs]</a><span class="k">def</span> <span class="nf">fft_cwt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">nfreqs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<div class="viewcode-block" id="fft_cwt"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.fft_cwt">[docs]</a><span class="k">def</span> <span class="nf">fft_cwt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">nfreqs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Wavelet transform.</span>
 
@@ -208,7 +209,7 @@
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">transpose</span><span class="p">(</span><span class="n">result</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span></div>
     
     
-<div class="viewcode-block" id="logfreqs"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.logfreqs">[docs]</a><span class="k">def</span> <span class="nf">logfreqs</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">nfreq</span><span class="p">):</span>
+<div class="viewcode-block" id="logfreqs"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.logfreqs">[docs]</a><span class="k">def</span> <span class="nf">logfreqs</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">nfreq</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -228,7 +229,7 @@
     <span class="n">freqs</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">fa</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">fb</span><span class="p">),</span><span class="n">nfreq</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">freqs</span></div>
 
-<div class="viewcode-block" id="prepare_wavelet_fft_basis_logspace"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.prepare_wavelet_fft_basis_logspace">[docs]</a><span class="nd">@memoize</span>
+<div class="viewcode-block" id="prepare_wavelet_fft_basis_logspace"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.prepare_wavelet_fft_basis_logspace">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">prepare_wavelet_fft_basis_logspace</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">nfreq</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
@@ -286,7 +287,7 @@
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fftwl</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="population_synchrony_spectrum"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.population_synchrony_spectrum">[docs]</a><span class="k">def</span> <span class="nf">population_synchrony_spectrum</span><span class="p">(</span>
+<div class="viewcode-block" id="population_synchrony_spectrum"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.population_synchrony_spectrum">[docs]</a><span class="k">def</span> <span class="nf">population_synchrony_spectrum</span><span class="p">(</span>
     <span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">nfreqs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
@@ -321,7 +322,7 @@
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">coherence</span></div>
     
     
-<div class="viewcode-block" id="fft_cwt_transposed"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.fft_cwt_transposed">[docs]</a><span class="k">def</span> <span class="nf">fft_cwt_transposed</span><span class="p">(</span>
+<div class="viewcode-block" id="fft_cwt_transposed"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.fft_cwt_transposed">[docs]</a><span class="k">def</span> <span class="nf">fft_cwt_transposed</span><span class="p">(</span>
     <span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span>
     <span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">nfreqs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -362,7 +363,7 @@
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">result</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="fft_cwt_transposed_logspaced"><a class="viewcode-back" href="../../signal.morlet.html#signal.morlet.fft_cwt_transposed_logspaced">[docs]</a><span class="k">def</span> <span class="nf">fft_cwt_transposed_logspaced</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">nfreqs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<div class="viewcode-block" id="fft_cwt_transposed_logspaced"><a class="viewcode-back" href="../../obsolete/signal.morlet.html#signal.morlet.fft_cwt_transposed_logspaced">[docs]</a><span class="k">def</span> <span class="nf">fft_cwt_transposed_logspaced</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">nfreqs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

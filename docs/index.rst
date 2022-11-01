@@ -30,11 +30,7 @@ Indices and tables
 * :ref:`modindex`
 
 .. toctree::
-   :maxdepth: 0
-   :caption: Contents:
-
-.. toctree::
-   :maxdepth: 0
+   :maxdepth: 3
    :caption: Subpackages:
 
    signal <neurotools.signal>

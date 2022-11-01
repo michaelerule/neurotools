@@ -21,6 +21,7 @@ from math           import factorial as fact
 from neurotools.util.functions      import slog
 from neurotools.util.functions      import slog,sexp
 from neurotools.stats.distributions import poisson_logpdf
+from neurotools.stats.gaussian      import Gaussian
 from neurotools.stats.gaussian      import gaussian_quadrature
 from neurotools.stats.gaussian      import gaussian_quadrature_logarithmic
 

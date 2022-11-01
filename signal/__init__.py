@@ -1682,7 +1682,6 @@ def make_lagged(x,NLAGS=5,LAGSPACE=1):
 
 def zgrid(L):
     '''
-    ----------------------------------------------------------------------------
     2D grid coordinates as complex numbers, ranging from -L/2 to L/2
     
     Parameters
@@ -1700,7 +1699,6 @@ def zgrid(L):
 
 def nice_interp(a,b,t):
     '''
-    ----------------------------------------------------------------------------
     numpy.interp1d with nice defaults
     
     Parameters
@@ -1739,7 +1737,6 @@ def fftacorr1d(x):
     
 def fftsta(spikes,x):
     '''
-    ----------------------------------------------------------------------------
     Spike triggerd average (STA) via FFT
     Signal `x` is z-scored befor calculating the spike-triggered average
     (a.k.a. reverse correlation).
@@ -1764,7 +1761,6 @@ def fftsta(spikes,x):
 
 def interpmax1d(x):
     '''
-    ----------------------------------------------------------------------------
     Locate a peak in a 1D array by interpolation; see
     dspguru.com/dsp/howtos/how-to-interpolate-fft-peak
     
@@ -1786,7 +1782,6 @@ def interpmax1d(x):
     
 def spaced_derivative(x):
     '''
-    ----------------------------------------------------------------------------
     Differentiate a 1D timeseries returning a new vector with the same
     number of samples. This smoothly interpolates between a forward
     difference at the start of the signal and a backward difference at

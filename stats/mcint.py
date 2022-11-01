@@ -24,7 +24,7 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     This uses the standard error of the mean to check for convergence. 
     It converges slowly at 1/sqrt(n)
 
-    Example:
+    ### Example
     
         def f():
             x = randn(2)+array([9,-9])

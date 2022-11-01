@@ -67,7 +67,6 @@ def addpath(p):
 addpath('../')
 addpath('../../')
 
-'''
 # Awful hack?
 import neurotools
 from neurotools import *
@@ -79,11 +78,8 @@ import neurotools.signal as signal
 import neurotools.stats as stats
 import neurotools.linalg as linalg
 import neurotools.jobs as jobs
-import neurotools.models as models
 import neurotools.spatial as spatial
-import neurotools.encoding as encoding
 import neurotools.graphics as graphics
-'''
 
 import imp, traceback
 

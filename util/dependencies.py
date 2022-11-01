@@ -167,7 +167,7 @@ for entry in DEPENDENCIES:
     else:
         loaded_version = map(int,loaded_version.split('\n')[0].split('.'))
         sys.stdout.write('\tVersion '+str(loaded_version ))
-        if loaded_version < version:
+        if tuple([*loaded_version]) < tuple([*version]):
             sys.stdout.write('\tLoaded version older than expected '+str(version))
 
     sys.stdout.write('\n')

@@ -98,7 +98,6 @@ from neurotools.stats.glm                import *
 from neurotools.stats.hmm                import *
 from neurotools.stats.modefind           import *
 from neurotools.stats.regressions        import *
-from neurotools.stats.circular           import *
 from neurotools.signal.morlet            import *
 
 # Depends on the spectrum package and will not import if this is missing

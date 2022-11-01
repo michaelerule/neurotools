@@ -74,7 +74,6 @@ from nlab import *
 import neurotools.signal as signal
 import neurotools.stats as stats
 import neurotools.linalg as linalg
-import neurotools.gpu as gpu
 import neurotools.jobs as jobs
 import neurotools.models as models
 import neurotools.spatial as spatial

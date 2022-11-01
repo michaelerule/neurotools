@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.obsolete.gpu.cu.function &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Neurotools
+            <img src="../../../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>neurotools.obsolete.gpu.cu.function</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.obsolete.gpu.cu.function</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">xrange</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">xrange</span> <span class="o">=</span> <span class="nb">range</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Contains higher order functions to make creation of GPU functions more </span>
+<span class="sd">succinct and compact. Also contains generic routines for manipulating CUDA </span>
+<span class="sd">source objects.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pycuda.gpuarray</span> <span class="k">as</span> <span class="nn">gpuarray</span>
+    <span class="kn">import</span> <span class="nn">pycuda.cumath</span> <span class="k">as</span> <span class="nn">cumath</span>
+    <span class="kn">from</span> <span class="nn">pycuda.elementwise</span> <span class="kn">import</span> <span class="n">ElementwiseKernel</span>
+    <span class="kn">from</span> <span class="nn">pycuda.compiler</span> <span class="kn">import</span> <span class="n">SourceModule</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">def</span> <span class="nf">missing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please locate and install the pycuda GPU library&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please locate and install pycuda GPU library&#39;</span><span class="p">)</span>
+    <span class="c1"># TODO: shadow missing function with the above, which raises an error?</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pytools</span> <span class="kn">import</span> <span class="n">memoize</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please install the pytools module&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting fallback to neurotools&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">neurotools.jobs.ndecorator</span> <span class="kn">import</span> <span class="n">memoize</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+
+<span class="kn">from</span> <span class="nn">neurotools.obsolete.gpu.cpu.util</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.obsolete.gpu.cu.device</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1">##############################################################################</span>
+<span class="c1"># Source Code Utility Functions</span>
+<span class="c1">##############################################################################</span>
+
+<div class="viewcode-block" id="format"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.format">[docs]</a><span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is a kernel source auto-formatter. It mostly just does auto-indent</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([^@\n]*)@([\n]*)\n&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@\2\n\1\n&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//([^\n]*)\n&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/*\1*/\n&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\n\t ]+&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;[\n\t ]*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;; &#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;+&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[ ]*else[ ]*\{[ ]*\}[ ]*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> {</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;for[ ]*\(([^;]*)\n*;\n*([^;]*)\n*;\n*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;for(\1;\2;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\*/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/\*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[ \t]*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//([^\n]*)\n&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">newcode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">indents</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">code</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+        <span class="n">indents</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">indents</span><span class="p">):</span>
+            <span class="n">newcode</span> <span class="o">+=</span> <span class="s1">&#39;    &#39;</span>
+        <span class="n">indents</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+        <span class="n">newcode</span> <span class="o">+=</span> <span class="n">line</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">newcode</span></div>
+
+<div class="viewcode-block" id="printKernel"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.printKernel">[docs]</a><span class="k">def</span> <span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This prints out a kernel source with line numbers</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">labeldigits</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">))</span><span class="o">/</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">formatstring</span> <span class="o">=</span> <span class="s2">&quot;%0&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">labeldigits</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d </span><span class="si">%s</span><span class="s2">&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">formatstring</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">line</span><span class="p">))</span></div>
+
+<span class="c1">##############################################################################</span>
+<span class="c1"># GPU function generting metafunctions</span>
+<span class="c1">##############################################################################</span>
+        
+<div class="viewcode-block" id="gpubin"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpubin">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">gpubin</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This is a small wrapper to simplify calling binary r = a op b kernels. It automates creation of the result array&#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">ll</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">r</span><span class="o">=</span><span class="n">gpuarray</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">fun</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">ll</span></div>
+
+<span class="n">gpuscalar</span><span class="o">=</span><span class="n">gpubin</span>
+    
+<div class="viewcode-block" id="gpumap"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpumap">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">gpumap</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is a small wrapper to simplify creation of b[i] = f(a[i]) map </span>
+<span class="sd">    kernels. The map function is passed in as a string representing a CUDA </span>
+<span class="sd">    expression. The dollar sign $ should denote the argument variable. A </span>
+<span class="sd">    return array is automatically constructed. For example, `gpumap(&#39;$&#39;)` </span>
+<span class="sd">    creates a clone or idenitiy kernel, so `A=gpumap(&#39;$&#39;)(B)` will assign a </span>
+<span class="sd">    copy of B to A. As a nontrivial example, a nonlinear map might function </span>
+<span class="sd">    could be created as `gpumap(&#39;1/(1+exp(-$))&#39;)`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="s2">&quot;z[i]=&quot;</span><span class="o">+</span><span class="n">expsub</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+    <span class="n">map_kern</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span><span class="n">ElementwiseKernel</span><span class="p">(</span><span class="s2">&quot;float *x, float *z&quot;</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="s2">&quot;map_kern&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="n">r</span><span class="o">=</span><span class="n">gpuarray</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">map_kern</span><span class="p">()(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+<div class="viewcode-block" id="gpuintmap"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpuintmap">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">gpuintmap</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This is the same thing as gpumap except for integer datatypes&#39;&#39;&#39;</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="s2">&quot;z[i]=&quot;</span><span class="o">+</span><span class="n">expsub</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+    <span class="n">map_kern</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span><span class="n">ElementwiseKernel</span><span class="p">(</span><span class="s2">&quot;int *x, int *z&quot;</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="s2">&quot;map_kern&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="n">r</span><span class="o">=</span><span class="n">gpuarray</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">map_kern</span><span class="p">()(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+    
+<span class="n">expsub</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">exp</span><span class="p">:</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\$&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;x[i]&#39;</span><span class="p">,</span><span class="n">exp</span><span class="p">)</span>  
+
+<div class="viewcode-block" id="gpumapeq"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpumapeq">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">gpumapeq</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This is a small wrapper to simplify creation of a[i] = f(a[i]) map </span>
+<span class="sd">    kernels. The map function is passed in as a string representing a CUDA </span>
+<span class="sd">    expression. The dollar sign $ should denote the argument variable. The</span>
+<span class="sd">    result is assigned into the original array, so no new memory is </span>
+<span class="sd">    allocated. For example, gpumap(&#39;$&#39;) </span>
+<span class="sd">    creates a clone or idenitiy kernel, so A = gpumap(&#39;$&#39;)(B) will assign a </span>
+<span class="sd">    copy of B to A. As a nontrivial example, a nonlinear map might function </span>
+<span class="sd">    could be created as gpumap(&#39;1/(1+exp(-$))&#39;)&#39;&#39;&#39;</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">expsub</span><span class="p">(</span><span class="s2">&quot;$=&quot;</span><span class="o">+</span><span class="n">exp</span><span class="p">)</span>
+    <span class="n">map_kern</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span><span class="n">ElementwiseKernel</span><span class="p">(</span><span class="s2">&quot;float *x&quot;</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="s2">&quot;map_kern&quot;</span><span class="p">)</span>  
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="n">map_kern</span><span class="p">()(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">@memoize</span>
+<span class="sd">def gpuparametermap(exp):</span>
+<span class="sd">    &#39;&#39;&#39;Similar to gpumap, except that the resulting obect accepts an </span>
+<span class="sd">    additional parameter list. I had to do this because I found I was</span>
+<span class="sd">    implementing maps with parameters, like log(x+c) with the parameter hard</span>
+<span class="sd">    compiled in, which was somewhat inefficient. At this point you may be </span>
+<span class="sd">    wondering why I&#39;m not just using ElementWiseKernel. Anyway, </span>
+<span class="sd">    gpuparametermap(expression) returns a curried function that first</span>
+<span class="sd">    accepts a parameter list, then the data. The map expession should </span>
+<span class="sd">    indic&#39;&#39;&#39;</span>
+<span class="sd">    exp = expsub(&quot;$=&quot;+exp)</span>
+<span class="sd">    print(exp)</span>
+<span class="sd">    map_kern = lambda:ElementwiseKernel(&quot;float *x&quot;,exp,&quot;map_kern&quot;)  </span>
+<span class="sd">    def f(v):</span>
+<span class="sd">        map_kern()(v)</span>
+<span class="sd">        return v</span>
+<span class="sd">    return f</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="gpubinaryeq"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpubinaryeq">[docs]</a><span class="nd">@memoize</span>  
+<span class="k">def</span> <span class="nf">gpubinaryeq</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This wrapper simplified the creation of kernels executing operators</span>
+<span class="sd">    like `{&#39;+=&#39;,&#39;-=&#39;,&#39;*=&#39;,&#39;/=&#39;}`. That is, binary operators that assign the</span>
+<span class="sd">    result to the left operator. This is to suppliment the functionality of</span>
+<span class="sd">    PyCUDA GPUArrays, which support binary operations but always allocate a </span>
+<span class="sd">    new array to hold the result. This wrapper allows you to efficiently </span>
+<span class="sd">    execute binary operations that assign the result to one of the argument</span>
+<span class="sd">    arrays. For example, implement the GPU equivalent of `+=` as </span>
+<span class="sd">    `gpubinaryeq(&#39;$x+$y&#39;)(x,y)`. The result will automatically be assigned to</span>
+<span class="sd">    the first argument, x.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="s2">&quot;$x=&quot;</span><span class="o">+</span><span class="n">exp</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">exp</span><span class="p">:</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\$x&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;x[i]&#39;</span><span class="p">,</span><span class="n">exp</span><span class="p">))(</span><span class="n">exp</span><span class="p">)</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">exp</span><span class="p">:</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\$y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;y[i]&#39;</span><span class="p">,</span><span class="n">exp</span><span class="p">))(</span><span class="n">exp</span><span class="p">)</span>
+    <span class="n">map_kern</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span><span class="n">ElementwiseKernel</span><span class="p">(</span><span class="s2">&quot;float *x, float *y&quot;</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="s2">&quot;map_kern&quot;</span><span class="p">)</span>  
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+        <span class="n">map_kern</span><span class="p">()(</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+    
+    
+<div class="viewcode-block" id="guessGPUType"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.guessGPUType">[docs]</a><span class="k">def</span> <span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;At the moment, this returns numpy.float32 for Python floats and </span>
+<span class="sd">    numpy.int32 for python integers, and is otherwise undefined&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span></div>
+    
+    
+<span class="n">toGPUType</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span><span class="n">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">)(</span><span class="n">arg</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;A little wrapper to auto-cast floats/ints to respective numpy datatypes</span>
+<span class="sd">for use on the GPU. This functionality probably exists elsewhere&#39;&#39;&#39;</span>
+        
+<div class="viewcode-block" id="ezkern"><a class="viewcode-back" href="../../../../../obsolete/neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.ezkern">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">ezkern</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is my easy kernel wrapper. This function accepts a header ( the</span>
+<span class="sd">    list of arguments ), a body ( the core of the loop ), and optionally</span>
+<span class="sd">    a block of helper function code. The core loop should reference &quot;tid&quot; as</span>
+<span class="sd">    the thread index variable. The distribution of threads on the GPU is </span>
+<span class="sd">    automatically managed.</span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    __global__ void fun(</span><span class="si">%(header)s</span><span class="s2">, int ezkernelements, int ezkernstride) {</span>
+<span class="s2">        const int istart = (blockIdx.x*blockDim.x+blockIdx.y)*blockDim.y+threadIdx.x;</span>
+<span class="s2">        for (int tid=istart; tid&lt;ezkernelements; tid+=ezkernstride) {</span>
+<span class="s2">            </span><span class="si">%(code)s</span><span class="s2">;</span>
+<span class="s2">        }</span>
+<span class="s2">    }&quot;&quot;&quot;</span><span class="o">%</span><span class="p">{</span><span class="s1">&#39;header&#39;</span><span class="p">:</span><span class="n">header</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span><span class="n">code</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">other</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">other</span><span class="o">+</span><span class="n">source</span>
+    <span class="n">printKernel</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">myModule</span> <span class="o">=</span> <span class="n">SourceModule</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">mykernel</span> <span class="o">=</span> <span class="n">myModule</span><span class="o">.</span><span class="n">get_function</span><span class="p">(</span><span class="s1">&#39;fun&#39;</span><span class="p">)</span>
+    <span class="n">estimateThreadsPerBlock</span><span class="p">(</span><span class="n">myModule</span><span class="p">)</span>
+    <span class="nd">@memoize</span>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">n_units</span><span class="p">):</span>
+        <span class="n">blocks</span>      <span class="o">=</span> <span class="n">estimateBlocks</span><span class="p">(</span><span class="n">myModule</span><span class="p">,</span><span class="n">n_units</span><span class="p">)</span>
+        <span class="n">myblock</span>     <span class="o">=</span> <span class="p">(</span><span class="n">myModule</span><span class="o">.</span><span class="n">threads_per_block</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mygrid</span>      <span class="o">=</span> <span class="p">(</span><span class="n">myModule</span><span class="o">.</span><span class="n">blocks</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">otherargs</span>   <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">n_units</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">myModule</span><span class="o">.</span><span class="n">threads_per_block</span><span class="o">*</span><span class="n">myModule</span><span class="o">.</span><span class="n">blocks</span><span class="p">)]</span>
+        <span class="n">otherkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;block&#39;</span><span class="p">:</span><span class="n">myblock</span><span class="p">,</span> <span class="s1">&#39;grid&#39;</span><span class="p">:</span><span class="n">mygrid</span><span class="p">}</span>
+        <span class="k">def</span> <span class="nf">execkern</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="n">toGPUType</span><span class="p">)(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">otherargs</span><span class="p">)</span>
+            <span class="n">mykernel</span><span class="p">(</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="o">**</span><span class="n">otherkwargs</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">execkern</span>
+    <span class="k">return</span> <span class="n">init</span></div>
+    
+<span class="n">kernel</span>     <span class="o">=</span> <span class="n">ezkern</span>
+
+
+<span class="n">gpupointer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">gpuarr</span><span class="p">:</span><span class="n">gpuarr</span><span class="o">.</span><span class="n">gpudata</span>
+<span class="sd">&#39;&#39;&#39;Returns the starting memory location of a GPUArray&#39;&#39;&#39;</span>
+
+<span class="n">cpu</span>        <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> 
+<span class="sd">&#39;&#39;&#39;Casts a gpu array to respective numpy array type&#39;&#39;&#39;</span>
+
+
+<span class="n">gpufloat</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">gpuarray</span><span class="o">.</span><span class="n">to_gpu</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;Casts a python list to a float array on the gpu&#39;&#39;&#39;</span>
+
+<span class="n">gpufloatmat</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">M</span><span class="p">:</span><span class="n">gpu</span><span class="p">(</span><span class="n">flat</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;Moves a python list of lists of floats to a GPU row major packed integer matric simply by flattening the python datastructure and copying&#39;&#39;&#39;</span>
+
+<span class="n">gpufloatred</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">fun</span><span class="p">:</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="nb">float</span><span class="p">((</span><span class="n">fun</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+<span class="sd">&#39;&#39;&#39;Wraps a GPUArray reduction function into a succint form operating on float arrays&#39;&#39;&#39;</span>
+
+<span class="n">gpuint</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">M</span><span class="p">:</span><span class="n">gpuarray</span><span class="o">.</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+<span class="sd">&#39;&#39;&#39;Casts a python list to an integer array on the GPU&#39;&#39;&#39;</span>
+<span class="n">gpuintmat</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">M</span><span class="p">:</span><span class="n">gpuint</span><span class="p">(</span><span class="n">flat</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+
+<span class="sd">&#39;&#39;&#39;Moves a python list of lists of integers to a GPU row major packed integer matric simply by flattening the python datastructure and copying&#39;&#39;&#39;</span>
+
+<span class="n">gpuintred</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">fun</span><span class="p">:</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="nb">float</span><span class="p">((</span><span class="n">fun</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+<span class="sd">&#39;&#39;&#39;Wraps a GPUArray reduction function into a succint form operating on int arrays&#39;&#39;&#39;</span>
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

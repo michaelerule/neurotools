@@ -77,8 +77,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="neurotools-obsolete-gpu-cu-gpufun-module">
-<h1>neurotools.obsolete.gpu.cu.gpufun module<a class="headerlink" href="#neurotools-obsolete-gpu-cu-gpufun-module" title="Permalink to this heading"></a></h1>
+  <section id="module-neurotools.obsolete.gpu.cu.gpufun">
+<span id="neurotools-obsolete-gpu-cu-gpufun-module"></span><h1>neurotools.obsolete.gpu.cu.gpufun module<a class="headerlink" href="#module-neurotools.obsolete.gpu.cu.gpufun" title="Permalink to this heading"></a></h1>
+<p>This module contains generically useful GPU clones of several simple functions. Most of these use the orix.function utility library to succinctly wrap GPU functions into python wrapped kernel calls. Note that elementwise c=a op b for op in {+,-,*,/,^} are supported as
+overloaded operators for gpuarrays and are not duplicated here. Much of this is somewhat useless wrapping of GPUArray and pycuda.cumath into other syntax without adding new functionality.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpulcomb">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpulcomb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpulcomb" title="Permalink to this definition"></a></dt>
+<dd><p>Wraps a linear combination operator.
+gpulcomb(weight1,weight2,data1,data2) will return the elementwise linear
+combination weight1*data1[i]+weight2*data2[i]. Succesive calls do not
+cause recompiliation of the kernel</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpumean">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpumean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpumean" title="Permalink to this definition"></a></dt>
+<dd><p>Average of GPU array</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpunpdf">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpunpdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpunpdf" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a normal distribution PDF elementwise evaluator. E.g.
+gpupdf(0,1) will create a zero-mean, unit standard deviation normal
+distribution. gpupdf(0,1)(data) will evaluate the PDF at all elements of
+data and return the results in a new array. New calls to gpupdf do cause
+compiliation of new kernel code, but kernels are memoized so a give
+(mean,standard_deviation) kernel will only be compiled once</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpulogpdf">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpulogpdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpulogpdf" title="Permalink to this definition"></a></dt>
+<dd><p>This creates an element-wise kernel evaluating the natural log of the
+PDF of a normal distribtion. E.g. gpulogpdf(0,1) creates an element-wise
+operator that evaluates the log of the probability for a zero-mean unit
+standard deviation normal distribution.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpuhill">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpuhill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpuhill" title="Permalink to this definition"></a></dt>
+<dd><p>Hill equation for noncooperative binding : f(x)=x/(x+c)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpurandf">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpurandf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpurandf" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper for pycuda.curandom.rand(n)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpuuniform">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpuuniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpuuniform" title="Permalink to this definition"></a></dt>
+<dd><p>Curried GPU uniform random number generator. For example,
+gpuuniform(0,1) will create a function that returns uniform random
+numbers over [0,1). gpuuniform(0,1)(100) would create a GPU array of 100
+draws from a uniform [0,1) distribution</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cu.gpufun.gpurandexp">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cu.gpufun.</span></span><span class="sig-name descname"><span class="pre">gpurandexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cu.gpufun.gpurandexp" title="Permalink to this definition"></a></dt>
+<dd><p>Generates exponentially distributed random numbers on the GPU</p>
+</dd></dl>
+
 </section>
 
 

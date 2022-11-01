@@ -1,4 +1,3 @@
-'''Very rarely, I will want to accelerate a computation for plotting'''
 
 try:
     from pycuda.elementwise import ElementwiseKernel

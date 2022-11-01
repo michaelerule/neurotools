@@ -4,7 +4,7 @@ Iverson's convention, but with floats, such that 0.0f = false, 1.0f=true.
 Nevertheless I have found these little functions quite useful in their
 present form in some circumstances'''
 
-from neurotools.gpu.cu.function import *
+from neurotools.obsolete.gpu.cu.function import *
 
 gpult    = lambda x:gpumap("$<%f?1:0"%x)
 '''lambda x:gpumap("$<%f?1:0"%x)'''

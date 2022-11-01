@@ -7,8 +7,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-# more py2/3 compat
-from neurotools.system import *
 
 
 '''
@@ -21,8 +19,7 @@ Under development, intended to be used with internal lab archive format
 from collections import defaultdict
 import numpy as np
 
-
-from neurotools.functions import slog, sexp, g, f, f1, f2
+from neurotools.util.functions import slog, sexp, g, f, f1, f2
 
 def bar_f(x):
     '''

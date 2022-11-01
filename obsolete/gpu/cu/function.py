@@ -38,14 +38,14 @@ try:
 except:
     print('Please install the pytools module')
     print('Attempting fallback to neurotools')
-    from neurotools.tools import memoize
+    from neurotools.jobs.ndecorator import memoize
 
 from math import log
 import re
 import numpy as np 
 
-from neurotools.gpu.cpu.util import *
-from neurotools.gpu.cu.device import *
+from neurotools.obsolete.gpu.cpu.util import *
+from neurotools.obsolete.gpu.cu.device import *
 
 ##############################################################################
 # Source Code Utility Functions

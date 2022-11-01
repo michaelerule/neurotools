@@ -16,9 +16,8 @@ except:
             raise ValueError('Please locate and install pycuda GPU library')
     # TODO: shadow missing function with the above, which raises an error?
 
-from neurotools.gpu.cu.function import *
-from neurotools.gpu.cpu.util import *
-
+from neurotools.obsolete.gpu.cu.function import *
+from neurotools.obsolete.gpu.cpu.util import *
 import numpy as np 
 
 ##############################################################################

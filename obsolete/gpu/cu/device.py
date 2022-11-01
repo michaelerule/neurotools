@@ -7,7 +7,6 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
 
 '''Module orix.device contains functions that deal with things associated with
 the physical graphics card device that I usually don't want to think about.'''
@@ -25,7 +24,7 @@ except:
     # TODO: shadow missing function with the above, which raises an error?
     
   
-from neurotools.gpu.cpu.util import *
+from neurotools.obsolete.gpu.cpu.util import *
 
 def estimateThreadsPerBlock(cudamodule):
     '''

@@ -7,16 +7,14 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-# more py2/3 compat
-from neurotools.system import *
 
-import neurotools.models.rbm.rbm as rb
+import neurotools.obsolete.rbm.rbm as rb
 from collections import defaultdict
 from scipy.stats import entropy
 from neurotools.jobs.ndecorator import memoize
 import numpy as np
 
-from neurotools.functions import slog, sexp, g, f, f1, f2
+from neurotools.util.functions import slog, sexp, g, f, f1, f2
 
 def conditional_map(k,v):
     '''

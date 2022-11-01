@@ -1,5 +1,4 @@
-'''Some day we might implement a full features Matrix library, but I hope
-someone else does it first.
+'''
 
 This class collects routines that operate on lists of lists. Typically,
 arguments are in the form of a row-major ordered matrix, as well as 
@@ -12,9 +11,7 @@ In interest of fixing convention, GPU matricies shall be accepted as a
 tuple of (data,cols). The number of rows is inferred from the length
 of the data. 
 
-TODO : check correlation matrix funcions, look wrong
 '''
-
 
 from neurotools.gpu.cpu.util import *
 from neurotools.gpu.cu.function import *

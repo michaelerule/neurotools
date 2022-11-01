@@ -18,12 +18,11 @@ from numpy.linalg   import solve
 from scipy.optimize import minimize
 from math           import factorial as fact
 
-from neurotools.stats.Gaussian      import *
 from neurotools.util.functions      import slog
 from neurotools.util.functions      import slog,sexp
 from neurotools.stats.distributions import poisson_logpdf
-from neurotools.stats.Gaussian      import gaussian_quadrature
-from neurotools.stats.Gaussian      import gaussian_quadrature_logarithmic
+from neurotools.stats.gaussian      import gaussian_quadrature
+from neurotools.stats.gaussian      import gaussian_quadrature_logarithmic
 
 def poisson_parameter_guess(X,Y,N):
     '''

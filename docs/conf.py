@@ -8,6 +8,9 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+
+html_logo = 'logo1.svg'
+
 # Neurotools documentation build configuration file, created by
 # sphinx-quickstart on Sun Jul  9 15:44:41 2017.
 #

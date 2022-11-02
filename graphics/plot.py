@@ -33,7 +33,7 @@ from scipy.signal      import butter,filtfilt,lfilter
 from multiprocessing   import Process, Pipe, cpu_count, Pool
 
 from neurotools.graphics.color import *
-from neurotools.util.tools  import find
+from neurotools.util.array  import find
 from neurotools.util.time   import today,now
 from neurotools.util.string import shortscientific
 

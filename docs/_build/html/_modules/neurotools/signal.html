@@ -97,6 +97,12 @@
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 <span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">find</span>
 
+<span class="c1"># Inverse of standard normal cumulative distribution function</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">ndtri</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">rankdata</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">ip</span>
+
 <div class="viewcode-block" id="geometric_window"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.geometric_window">[docs]</a><span class="k">def</span> <span class="nf">geometric_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Gemoetrically center a frequency window</span>
@@ -146,17 +152,21 @@
     <span class="n">K</span> <span class="o">*=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">K</span></div>
 
-<div class="viewcode-block" id="gaussian_smooth"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span><span class="c1">#,axis=0):</span>
+<div class="viewcode-block" id="gaussian_smooth"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Smooth signal x with gaussian of standard deviation sigma.</span>
-
-<span class="sd">    sigma: standard deviation</span>
-<span class="sd">    x: 1D array-like signal</span>
+<span class="sd">    Smooth signal x with gaussian of standard deviation </span>
+<span class="sd">    sigma, using edge-clamped boundary conditions.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    sigma: positive float</span>
+<span class="sd">        Standard deviation of Gaussian smoothing kernel.</span>
+<span class="sd">    x: 1D np.array</span>
+<span class="sd">        Signal to filter. </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    smoothed signal</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1">#x = concatenate([x::-1],x,x[::-1])</span>
     <span class="n">K</span> <span class="o">=</span> <span class="n">gaussian_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
@@ -1318,65 +1328,6 @@
     <span class="n">i</span>     <span class="o">=</span> <span class="n">peaks</span><span class="p">[</span><span class="n">argmax</span><span class="p">(</span><span class="n">cc</span><span class="p">[</span><span class="n">peaks</span><span class="p">])]</span>
     <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">freqs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
-
-<div class="viewcode-block" id="take_axis_slice"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.take_axis_slice">[docs]</a><span class="k">def</span> <span class="nf">take_axis_slice</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
-    <span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">axis</span><span class="o">&gt;=</span><span class="n">ndims</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;axis </span><span class="si">%d</span><span class="s1"> invalid for shape </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">shape</span><span class="p">))</span>
-    <span class="n">before</span> <span class="o">=</span> <span class="n">axis</span>
-    <span class="n">after</span>  <span class="o">=</span> <span class="n">ndims</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">axis</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">before</span> <span class="o">+</span> <span class="p">(</span><span class="n">index</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">after</span></div>
-
-
-<div class="viewcode-block" id="take_axis"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.take_axis">[docs]</a><span class="k">def</span> <span class="nf">take_axis</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">take_axis_slice</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">)]</span></div>
-
-    
-<div class="viewcode-block" id="ndargmax"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.ndargmax">[docs]</a><span class="k">def</span> <span class="nf">ndargmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get coordinates of largest value in a multidimensional array</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x: np.array</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmax</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
-    
- 
-<div class="viewcode-block" id="complex_to_nan"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.complex_to_nan">[docs]</a><span class="k">def</span> <span class="nf">complex_to_nan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Replce complex entries with NaN or othe value</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">real</span></div>
-
-
-<div class="viewcode-block" id="make_rebroadcast_slice"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.make_rebroadcast_slice">[docs]</a><span class="k">def</span> <span class="nf">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Generate correct slice object for broadcasting stastistics averaged</span>
-<span class="sd">    over the given axis back to the original shape.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">naxes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;x.shape=&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;naxes=&#39;</span><span class="p">,</span><span class="n">naxes</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">axis</span><span class="o">=</span><span class="n">naxes</span><span class="o">+</span><span class="n">axis</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="bp">Ellipsis</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">axis</span><span class="o">==</span><span class="n">naxes</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">axis</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">naxes</span> <span class="o">-</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">b</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis=&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">theslice</span></div>
-
 <div class="viewcode-block" id="zeromean"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.zeromean">[docs]</a><span class="k">def</span> <span class="nf">zeromean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Remove the mean trend from data</span>
@@ -1427,9 +1378,6 @@
     <span class="n">ss</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">+</span><span class="n">regularization</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">/</span><span class="n">ss</span><span class="p">[</span><span class="n">theslice</span><span class="p">]</span></div>
 
-<span class="c1"># Inverse of standar normal cumulative distribution function</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">ndtri</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">rankdata</span>
 <div class="viewcode-block" id="gaussianize"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.gaussianize">[docs]</a><span class="k">def</span> <span class="nf">gaussianize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Use percentiles to force a timeseries to have a normal distribution.</span>
@@ -1935,8 +1883,6 @@
         <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">edges</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">edges</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngroups</span><span class="p">)</span>
     <span class="p">]</span></div>
 
-<span class="kn">import</span> <span class="nn">scipy.stats</span>
-<span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">ip</span>
 
 <div class="viewcode-block" id="uniformize"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.uniformize">[docs]</a><span class="k">def</span> <span class="nf">uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -2084,7 +2030,6 @@
         <span class="n">scaled</span><span class="p">,</span><span class="n">x_</span><span class="p">,</span><span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="p">)(</span><span class="n">p</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="virtual_reference_line_noise_removal"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.virtual_reference_line_noise_removal">[docs]</a><span class="k">def</span> <span class="nf">virtual_reference_line_noise_removal</span><span class="p">(</span><span class="n">lfps</span><span class="p">,</span><span class="n">frequency</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span><span class="n">hbw</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Accepts an array of LFP recordings (first dimension should be </span>
@@ -2146,6 +2091,83 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">freqs</span><span class="p">:</span>
             <span class="n">lfps</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfps</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">f</span><span class="o">-</span><span class="n">hbw</span><span class="p">,</span><span class="n">f</span><span class="o">+</span><span class="n">hbw</span><span class="p">,</span><span class="n">bandstop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lfps</span></div>
+
+
+
+
+<span class="c1">############################################################</span>
+<span class="c1"># Array helpers (may eventually migrate to new modeule)</span>
+
+<span class="k">def</span> <span class="nf">_take_axis_slice</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+    <span class="c1"># Redundant to existing numpy functions TODO remove</span>
+    <span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">axis</span><span class="o">&gt;=</span><span class="n">ndims</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;axis </span><span class="si">%d</span><span class="s1"> invalid for shape </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">before</span> <span class="o">=</span> <span class="n">axis</span>
+    <span class="n">after</span>  <span class="o">=</span> <span class="n">ndims</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">axis</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">before</span> <span class="o">+</span> <span class="p">(</span><span class="n">index</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">after</span>
+
+<span class="k">def</span> <span class="nf">_take_axis</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+    <span class="c1"># Redundant to existing numpy functions TODO remove</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">_take_axis_slice</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">)]</span>
+    
+<div class="viewcode-block" id="ndargmax"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.ndargmax">[docs]</a><span class="k">def</span> <span class="nf">ndargmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get coordinates of largest value in a multidimensional </span>
+<span class="sd">    array</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmax</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="complex_to_nan"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.complex_to_nan">[docs]</a><span class="k">def</span> <span class="nf">complex_to_nan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Replce complex entries with NaN or other value</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    value: float; default `np.NaN`</span>
+<span class="sd">        Value to replace complex entries with</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">real</span></div>
+
+<div class="viewcode-block" id="make_rebroadcast_slice"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.make_rebroadcast_slice">[docs]</a><span class="k">def</span> <span class="nf">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generate correct slice object for broadcasting </span>
+<span class="sd">    stastistics averaged over the given axis back to the</span>
+<span class="sd">    original shape.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">naxes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;x.shape=&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;naxes=&#39;</span><span class="p">,</span><span class="n">naxes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">=</span><span class="n">naxes</span><span class="o">+</span><span class="n">axis</span>
+    <span class="k">if</span> <span class="n">axis</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="bp">Ellipsis</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">axis</span><span class="o">==</span><span class="n">naxes</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">axis</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">naxes</span> <span class="o">-</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">b</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis=&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">theslice</span></div>
 </pre></div>
 
            </div>

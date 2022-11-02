@@ -302,7 +302,17 @@
 
 <div class="viewcode-block" id="add_constant"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.add_constant">[docs]</a><span class="k">def</span> <span class="nf">add_constant</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    **Appends** a constant feature to a multi-dimensional</span>
+<span class="sd">    array of dependent variables. </span>
 <span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data: np.array</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    axis: int or (default) None</span>
+<span class="sd">        Axis along which to append the constant feature</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="c1"># if Nsamples&lt;Nfeatures:</span>
@@ -481,26 +491,51 @@
         <span class="n">testA</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">,:</span>  <span class="p">]</span>
         <span class="k">yield</span> <span class="n">trainA</span><span class="p">,</span><span class="n">trainB</span><span class="p">,</span><span class="n">testA</span><span class="p">,</span><span class="n">testB</span></div>
 
-<div class="viewcode-block" id="block_shuffle"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.block_shuffle">[docs]</a><span class="k">def</span> <span class="nf">block_shuffle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">BLOCKSIZE</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="block_shuffle"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.block_shuffle">[docs]</a><span class="k">def</span> <span class="nf">block_shuffle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">blocksize</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Shuffle a 2D array in blocks along axis 0</span>
 <span class="sd">    For example, if you provide a NTIMES × NFEATURES array,</span>
-<span class="sd">    this will shuffle all features similarly in blocks along the time axis</span>
+<span class="sd">    this will shuffle all features similarly in blocks along</span>
+<span class="sd">    the time axis.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">        First dimension should be time or samples; This </span>
+<span class="sd">        dimension will be shuffled in blocks of size</span>
+<span class="sd">        `blocksize`.</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    blocksize: int or (default) None</span>
+<span class="sd">        If `None`, defaults to `max(10,x.shape[0]//100)`</span>
+<span class="sd">        i.e. chooses a size to divide `x` into 100 blocks.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result: np.array</span>
+<span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">BLOCKSIZE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">BLOCKSIZE</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">T</span><span class="o">//</span><span class="mi">100</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">blocksize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">T</span><span class="o">//</span><span class="mi">100</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">BLOCKSIZE</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">BLOCKSIZE</span><span class="p">))</span>
-    <span class="n">nblocks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="n">BLOCKSIZE</span><span class="p">))</span>
-    <span class="n">PAD</span> <span class="o">=</span> <span class="n">nblocks</span><span class="o">*</span><span class="n">BLOCKSIZE</span><span class="o">-</span><span class="n">T</span>
+        <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">blocksize</span><span class="p">))</span>
+    <span class="n">nblocks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="n">blocksize</span><span class="p">))</span>
+    <span class="n">PAD</span> <span class="o">=</span> <span class="n">nblocks</span><span class="o">*</span><span class="n">blocksize</span><span class="o">-</span><span class="n">T</span>
     <span class="k">if</span> <span class="n">PAD</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nblocks</span><span class="o">*</span><span class="n">BLOCKSIZE</span><span class="p">,)</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="n">x2</span><span class="p">[:</span><span class="n">T</span><span class="p">,</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">x2</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nblocks</span><span class="p">,</span><span class="n">BLOCKSIZE</span><span class="p">)</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="c1"># The needs to be fixed, the current</span>
+        <span class="c1"># handling shuffles zero into some values</span>
+        <span class="c1"># in the middle. Not right.</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
+            <span class="s1">&#39;Block size </span><span class="si">%d</span><span class="s1"> does not evenly divide </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">%</span>
+            <span class="p">(</span><span class="n">blocksize</span><span class="p">,</span><span class="n">T</span><span class="p">))</span>
+        <span class="c1">#x2 = np.zeros((nblocks*blocksize,)+x.shape[1:])</span>
+        <span class="c1">#x2[:T,...] = x</span>
+        <span class="c1">#x = x2</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nblocks</span><span class="p">,</span><span class="n">blocksize</span><span class="p">)</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">nblocks</span><span class="p">),</span><span class="o">...</span><span class="p">]</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nblocks</span><span class="o">*</span><span class="n">BLOCKSIZE</span><span class="p">,)</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nblocks</span><span class="o">*</span><span class="n">blocksize</span><span class="p">,)</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     <span class="k">return</span> <span class="n">R</span><span class="p">[:</span><span class="n">T</span><span class="p">,</span><span class="o">...</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="crossvalidated_least_squares"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.crossvalidated_least_squares">[docs]</a><span class="k">def</span> <span class="nf">crossvalidated_least_squares</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">regress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span><span class="n">blockshuffle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -600,10 +635,15 @@
 <div class="viewcode-block" id="print_stats"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.print_stats">[docs]</a><span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    computes, prints, and returns</span>
-<span class="sd">    mean</span>
-<span class="sd">    median</span>
-<span class="sd">    minimum</span>
-<span class="sd">    maximum</span>
+<span class="sd">        mean</span>
+<span class="sd">        median</span>
+<span class="sd">        minimum</span>
+<span class="sd">        maximum</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    g: 1D np.array</span>
+<span class="sd">        List of samples</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1">#mode = modefind.modefind(g,0)</span>
     <span class="n">mn</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
@@ -782,20 +822,16 @@
     
             
 
-<div class="viewcode-block" id="description"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.description">[docs]</a><span class="k">class</span> <span class="nc">description</span><span class="p">:</span>
+<div class="viewcode-block" id="Description"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.Description">[docs]</a><span class="k">class</span> <span class="nc">Description</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    quick statistical description</span>
-<span class="sd">    </span>
-<span class="sd">    TODO: move this to stats</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
+<span class="sd">        data: np.array</span>
+<span class="sd">            List of samples to analyze</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">skewness</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">kurtosis</span> <span class="o">=</span> <span class="n">describe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -817,25 +853,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">p99</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">99</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">stat</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">%s</span><span class="s1">=</span><span class="si">%0.2f</span><span class="s1"> &#39;</span><span class="o">%</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-<div class="viewcode-block" id="description.short"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.description.short">[docs]</a>    <span class="k">def</span> <span class="nf">short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Description.short"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.Description.short">[docs]</a>    <span class="k">def</span> <span class="nf">short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Abbreviated statistical summary</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -860,23 +885,27 @@
     <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
 <div class="viewcode-block" id="glmfit"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.glmfit">[docs]</a>    <span class="k">def</span> <span class="nf">glmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Wrapper for statsmodels glmfit that prepares a constant </span>
-<span class="sd">        parameter and configuration options for poisson-GLM fitting.</span>
-<span class="sd">        Please see the documentation for glmfit in statsmodels for</span>
-<span class="sd">        more details. </span>
+<span class="sd">        Wrapper for statsmodels glmfit that prepares a </span>
+<span class="sd">        constant parameter and configuration options for </span>
+<span class="sd">        poisson-GLM fitting. Please see the documentation </span>
+<span class="sd">        for glmfit in statsmodels for more details. </span>
 <span class="sd">        </span>
-<span class="sd">        This method will automatically add a constant colum to the feature</span>
-<span class="sd">        matrix Y</span>
+<span class="sd">        This method will automatically add a constant colum </span>
+<span class="sd">        to the feature matrix Y.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        X : array-like</span>
-<span class="sd">            A nobs x k array where `nobs` is the number of observations and `k`</span>
-<span class="sd">            is the number of regressors. An intercept is not included by default</span>
-<span class="sd">            and should be added by the user (models specified using a formula</span>
-<span class="sd">            include an intercept by default). See `statsmodels.tools.add_constant`.</span>
+<span class="sd">            A NOBSERVATIONS × K array where `NOBSERVATIONS` </span>
+<span class="sd">            is the number of observations and `k` is the </span>
+<span class="sd">            number of regressors. An intercept is not </span>
+<span class="sd">            included by default and should be added by the </span>
+<span class="sd">            user (models specified using a formula include </span>
+<span class="sd">            an intercept by default).</span>
+<span class="sd">            See `statsmodels.tools.add_constant`.</span>
 <span class="sd">        Y : array-like</span>
-<span class="sd">            1d array of poisson counts.  This array can be 1d or 2d.</span>
+<span class="sd">            1d array of poisson counts.  </span>
+<span class="sd">            This array can be 1d or 2d.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># check for and maybe add constant value to X</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
@@ -887,7 +916,60 @@
         <span class="n">M</span> <span class="o">=</span> <span class="n">poisson_results</span><span class="o">.</span><span class="n">params</span>
         <span class="k">return</span> <span class="n">M</span></div>
 <span class="k">except</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find statsmodels; glm routines will not work&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find statsmodels; &#39;</span>
+          <span class="s1">&#39;Some glm routines will not work&#39;</span><span class="p">)</span>
+    
+
+<div class="viewcode-block" id="auc_to_g2"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.auc_to_g2">[docs]</a><span class="k">def</span> <span class="nf">auc_to_g2</span><span class="p">(</span><span class="n">auc</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert AUC measure to sign-preserving squared Gini </span>
+<span class="sd">    impurity index. (Comparable scale to normalized r²)</span>
+<span class="sd">    </span>
+<span class="sd">        return g²*sign(g) where g = AUC×2-1</span>
+<span class="sd">    </span>
+<span class="sd">    Parmeters</span>
+<span class="sd">    ---------</span>
+<span class="sd">    auc: np.array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ---------</span>
+<span class="sd">    g²: np.array</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">g2</span> <span class="o">=</span> <span class="p">(</span><span class="n">auc</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span>
+    <span class="n">g2</span> <span class="o">=</span> <span class="p">(</span><span class="n">g2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">sign</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g2</span></div>
+
+
+<div class="viewcode-block" id="fraction_explained_deviance"><a class="viewcode-back" href="../../obsolete/neurotools.stats.html#neurotools.stats.fraction_explained_deviance">[docs]</a><span class="k">def</span> <span class="nf">fraction_explained_deviance</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">L0</span><span class="p">,</span><span class="n">Ls</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculate the fraction explained deviance, which is</span>
+<span class="sd">    the analogue of the linear-Gaussian r² for </span>
+<span class="sd">    Generalized Linear Models (GLMs)</span>
+<span class="sd">    </span>
+<span class="sd">    Parmeters</span>
+<span class="sd">    ---------</span>
+<span class="sd">    L: np.float32</span>
+<span class="sd">        Model likelihood(s) evaluated on held-out test data.</span>
+<span class="sd">    L0: np.float32</span>
+<span class="sd">        Baseline likelihood, calculated by using the </span>
+<span class="sd">        test-data&#39;s mean-rate as a prediction.</span>
+<span class="sd">    Ls: np.float32</span>
+<span class="sd">        Saturated model likelihood(s) calculated by using</span>
+<span class="sd">        the true labels as the estimated values</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r²: normalized explained deviance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Ls</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="n">L0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
+        <span class="s1">&#39;Expected Ls and L0 to have the same shape, &#39;</span>
+        <span class="s1">&#39;got </span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">, respectively.&#39;</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">Ls</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">L0</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">L</span><span class="o">.</span><span class="n">shape</span><span class="o">&lt;=</span><span class="n">L0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="n">L0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Ls</span><span class="o">-</span><span class="n">L0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">spare</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">L0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">theslice</span> <span class="o">=</span> <span class="n">L0</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span><span class="o">*</span><span class="n">spare</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="n">L0</span><span class="p">[</span><span class="n">theslice</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">Ls</span><span class="o">-</span><span class="n">L0</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
 </pre></div>
 
            </div>

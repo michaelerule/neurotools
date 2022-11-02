@@ -82,7 +82,6 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Plotting helper routines</span>
 <span class="sd">&#39;&#39;&#39;</span>
-
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
@@ -116,6 +115,8 @@
 <span class="kn">from</span> <span class="nn">neurotools.util.tools</span>  <span class="kn">import</span> <span class="n">find</span>
 <span class="kn">from</span> <span class="nn">neurotools.util.time</span>   <span class="kn">import</span> <span class="n">today</span><span class="p">,</span><span class="n">now</span>
 <span class="kn">from</span> <span class="nn">neurotools.util.string</span> <span class="kn">import</span> <span class="n">shortscientific</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">statsmodels</span>
@@ -281,7 +282,7 @@
             <span class="n">mediancolor</span> <span class="o">=</span> <span class="p">[</span><span class="n">BLACK</span> <span class="k">if</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">!=</span><span class="n">b</span> <span class="k">else</span> <span class="n">WHITE</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">color</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">mediancolor</span> <span class="o">=</span> <span class="n">BLACK</span> <span class="k">if</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">color</span><span class="p">)</span><span class="o">!=</span><span class="n">b</span> <span class="k">else</span> <span class="n">WHITE</span>
-    <span class="n">bp</span> <span class="o">=</span> <span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">bp</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
         <span class="n">positions</span>    <span class="o">=</span> <span class="n">positions</span><span class="p">,</span>
         <span class="n">patch_artist</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">showfliers</span>   <span class="o">=</span> <span class="n">showfliers</span><span class="p">,</span>
@@ -2703,9 +2704,15 @@
 <span class="sd">        falst discovery rate threshold after correcting</span>
 <span class="sd">        for multiple comparisons.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">wilcoxon</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">pvalue</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+    
     <span class="k">if</span> <span class="n">b1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># One dataset: test if different from zero</span>
-        <span class="n">pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">wilcoxon</span><span class="p">(</span><span class="n">ai</span><span class="p">)</span><span class="o">.</span><span class="n">pvalue</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">a1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">test</span><span class="p">(</span><span class="n">ai</span><span class="p">)</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">a1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">pv2</span><span class="p">,</span> <span class="n">reject</span> <span class="o">=</span> <span class="n">pvalues</span><span class="o">.</span><span class="n">correct_pvalues</span><span class="p">(</span><span class="n">pv</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">fdr</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">hy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="mi">95</span><span class="p">)</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">a1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">ip</span><span class="p">,</span><span class="n">ir</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pv2</span><span class="p">,</span><span class="n">reject</span><span class="p">,</span><span class="n">positionsa</span><span class="p">,</span><span class="n">hy</span><span class="p">):</span>
@@ -2717,7 +2724,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Two datasets: test if different</span>
         <span class="c1"># Perform tests</span>
-        <span class="n">pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">wilcoxon</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">bi</span><span class="p">)</span><span class="o">.</span><span class="n">pvalue</span> <span class="k">for</span> <span class="n">ai</span><span class="p">,</span><span class="n">bi</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">)])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">test</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">bi</span><span class="p">)</span> <span class="k">for</span> <span class="n">ai</span><span class="p">,</span><span class="n">bi</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">)])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">pv2</span><span class="p">,</span> <span class="n">reject</span> <span class="o">=</span> <span class="n">pvalues</span><span class="o">.</span><span class="n">correct_pvalues</span><span class="p">(</span><span class="n">pv</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">fdr</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Bracket heights</span>
         <span class="n">hy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>
@@ -2727,9 +2734,25 @@
         <span class="k">for</span> <span class="n">ip</span><span class="p">,</span><span class="n">ir</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pv2</span><span class="p">,</span><span class="n">reject</span><span class="p">,</span><span class="n">positionsa</span><span class="p">,</span><span class="n">positionsb</span><span class="p">,</span><span class="n">hy</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">ip</span><span class="o">&lt;</span><span class="n">fdr</span><span class="p">:</span>
                 <span class="n">sigbar</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">pvalue</span><span class="o">=</span><span class="n">ip</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
-                
-                
     <span class="k">return</span> <span class="n">pv2</span><span class="p">,</span> <span class="n">reject</span></div>
+
+
+<div class="viewcode-block" id="pikeplot"><a class="viewcode-back" href="../../obsolete/graphics.plot.html#graphics.plot.pikeplot">[docs]</a><span class="k">def</span> <span class="nf">pikeplot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Plot timeseries as verical lines dropped to y=0.</span>
+<span class="sd">    Keyword arguments are forwarded to `pyplot.plot()`.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: 1D np.array</span>
+<span class="sd">        X Location of bars</span>
+<span class="sd">    y: 1D np.array</span>
+<span class="sd">        Y position of bars</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">y</span><span class="o">*</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="o">*</span><span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="o">*</span><span class="n">x</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

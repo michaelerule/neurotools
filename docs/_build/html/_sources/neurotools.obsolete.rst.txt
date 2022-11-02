@@ -10,7 +10,6 @@ Subpackages
    neurotools.obsolete.encoding
    neurotools.obsolete.gpu
    neurotools.obsolete.models
-   neurotools.obsolete.rbm
 
 Submodules
 ----------

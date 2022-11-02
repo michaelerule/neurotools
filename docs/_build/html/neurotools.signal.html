@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="neurotools.signal.coherence module" href="neurotools.signal.coherence.html" />
-    <link rel="prev" title="Welcome to Neurotools’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Neurotools" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -113,11 +113,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.killSpikes"><code class="docutils literal notranslate"><span class="pre">killSpikes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.peak_within"><code class="docutils literal notranslate"><span class="pre">peak_within()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.local_peak_within"><code class="docutils literal notranslate"><span class="pre">local_peak_within()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.take_axis_slice"><code class="docutils literal notranslate"><span class="pre">take_axis_slice()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.take_axis"><code class="docutils literal notranslate"><span class="pre">take_axis()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.ndargmax"><code class="docutils literal notranslate"><span class="pre">ndargmax()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.complex_to_nan"><code class="docutils literal notranslate"><span class="pre">complex_to_nan()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.make_rebroadcast_slice"><code class="docutils literal notranslate"><span class="pre">make_rebroadcast_slice()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zeromean"><code class="docutils literal notranslate"><span class="pre">zeromean()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zscore"><code class="docutils literal notranslate"><span class="pre">zscore()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.gaussianize"><code class="docutils literal notranslate"><span class="pre">gaussianize()</span></code></a></li>
@@ -141,6 +136,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.invert_uniformize"><code class="docutils literal notranslate"><span class="pre">invert_uniformize()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.virtual_reference_line_noise_removal"><code class="docutils literal notranslate"><span class="pre">virtual_reference_line_noise_removal()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.band_stop_line_noise_removal"><code class="docutils literal notranslate"><span class="pre">band_stop_line_noise_removal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.ndargmax"><code class="docutils literal notranslate"><span class="pre">ndargmax()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.complex_to_nan"><code class="docutils literal notranslate"><span class="pre">complex_to_nan()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.make_rebroadcast_slice"><code class="docutils literal notranslate"><span class="pre">make_rebroadcast_slice()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -297,9 +295,19 @@ automatically adjusted to ceil(sigma*2)*2+1</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.gaussian_smooth">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">gaussian_smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#gaussian_smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.gaussian_smooth" title="Permalink to this definition"></a></dt>
-<dd><p>Smooth signal x with gaussian of standard deviation sigma.</p>
-<p>sigma: standard deviation
-x: 1D array-like signal</p>
+<dd><p>Smooth signal x with gaussian of standard deviation
+sigma, using edge-clamped boundary conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sigma</strong> (<em>positive float</em>) – Standard deviation of Gaussian smoothing kernel.</p></li>
+<li><p><strong>x</strong> (<em>1D np.array</em>) – Signal to filter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>smoothed signal</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -987,40 +995,6 @@ range [fa,fb].</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.take_axis_slice">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">take_axis_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#take_axis_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.take_axis_slice" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.take_axis">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">take_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#take_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.take_axis" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.ndargmax">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">ndargmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#ndargmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.ndargmax" title="Permalink to this definition"></a></dt>
-<dd><p>Get coordinates of largest value in a multidimensional array</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.complex_to_nan">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">complex_to_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#complex_to_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.complex_to_nan" title="Permalink to this definition"></a></dt>
-<dd><p>Replce complex entries with NaN or othe value</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.make_rebroadcast_slice">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">make_rebroadcast_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#make_rebroadcast_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.make_rebroadcast_slice" title="Permalink to this definition"></a></dt>
-<dd><p>Generate correct slice object for broadcasting stastistics averaged
-over the given axis back to the original shape.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.zeromean">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">zeromean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#zeromean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.zeromean" title="Permalink to this definition"></a></dt>
 <dd><p>Remove the mean trend from data</p>
@@ -1529,6 +1503,45 @@ and overtones.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.ndargmax">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">ndargmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#ndargmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.ndargmax" title="Permalink to this definition"></a></dt>
+<dd><p>Get coordinates of largest value in a multidimensional
+array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.complex_to_nan">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">complex_to_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#complex_to_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.complex_to_nan" title="Permalink to this definition"></a></dt>
+<dd><p>Replce complex entries with NaN or other value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>value</strong> (float; default <cite>np.NaN</cite>) – Value to replace complex entries with</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.make_rebroadcast_slice">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">make_rebroadcast_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#make_rebroadcast_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.make_rebroadcast_slice" title="Permalink to this definition"></a></dt>
+<dd><p>Generate correct slice object for broadcasting
+stastistics averaged over the given axis back to the
+original shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -1536,7 +1549,7 @@ and overtones.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Neurotools’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Neurotools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="neurotools.signal.coherence.html" class="btn btn-neutral float-right" title="neurotools.signal.coherence module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

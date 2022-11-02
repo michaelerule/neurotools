@@ -3,11 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Neurotools's documentation!
-======================================
+Neurotools
+==========
 
-This is a collection of python modules developed for exploratory analysis and statistical modeling in computational neuroscience. Most of the code and documentation is of "research" (i.e. poor) quality and unstable, but some of the modules are stable and useful. Please refer to specific modules 
-(see Module Index) for further documentation.
+Collected python modules developed for exploratory analysis and statistical modeling in computational neuroscience. Most of the code and documentation is of "research" (i.e. poor) quality and unstable, but some of the modules are stable and useful. 
+
+Refer to specific modules for further documentation.
 
 This project depends on several scientific Python packages including `numpy
 <http://www.numpy.org/>`_, `scipy
@@ -30,7 +31,7 @@ Indices and tables
 * :ref:`modindex`
 
 .. toctree::
-   :maxdepth: 0
+   :maxdepth: 1
    :caption: Subpackages:
 
    signal <neurotools.signal>

@@ -383,7 +383,17 @@ wrapping the circular variable appropriately.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.add_constant">
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">add_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#add_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.add_constant" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p><strong>Appends</strong> a constant feature to a multi-dimensional
+array of dependent variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>(</em><em>default</em><em>) </em><em>None</em>) – Axis along which to append the constant feature</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.trial_crossvalidated_least_squares">
@@ -449,10 +459,28 @@ or number of samples, etc.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.block_shuffle">
-<span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">block_shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCKSIZE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#block_shuffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.block_shuffle" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">block_shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#block_shuffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.block_shuffle" title="Permalink to this definition"></a></dt>
 <dd><p>Shuffle a 2D array in blocks along axis 0
 For example, if you provide a NTIMES × NFEATURES array,
-this will shuffle all features similarly in blocks along the time axis</p>
+this will shuffle all features similarly in blocks along
+the time axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – First dimension should be time or samples; This
+dimension will be shuffled in blocks of size
+<cite>blocksize</cite>.</p></li>
+<li><p><strong>blocksize</strong> (<em>int</em><em> or </em><em>(</em><em>default</em><em>) </em><em>None</em>) – If <cite>None</cite>, defaults to <cite>max(10,x.shape[0]//100)</cite>
+i.e. chooses a size to divide <cite>x</cite> into 100 blocks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -491,11 +519,18 @@ breaking it into cross-validation blocks.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.print_stats">
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">print_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#print_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.print_stats" title="Permalink to this definition"></a></dt>
-<dd><p>computes, prints, and returns
-mean
+<dd><dl class="simple">
+<dt>computes, prints, and returns</dt><dd><p>mean
 median
 minimum
 maximum</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>g</strong> (<em>1D np.array</em>) – List of samples</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -597,14 +632,13 @@ covariace.</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="neurotools.stats.description">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.description" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.Description">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">Description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#Description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.Description" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>quick statistical description</p>
-<p>TODO: move this to stats</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="neurotools.stats.description.short">
-<span class="sig-name descname"><span class="pre">short</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#description.short"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.description.short" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.stats.Description.short">
+<span class="sig-name descname"><span class="pre">short</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#Description.short"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.Description.short" title="Permalink to this definition"></a></dt>
 <dd><p>Abbreviated statistical summary</p>
 </dd></dl>
 
@@ -613,21 +647,70 @@ covariace.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.glmfit">
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">glmfit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#glmfit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.glmfit" title="Permalink to this definition"></a></dt>
-<dd><p>Wrapper for statsmodels glmfit that prepares a constant
-parameter and configuration options for poisson-GLM fitting.
-Please see the documentation for glmfit in statsmodels for
-more details.</p>
-<p>This method will automatically add a constant colum to the feature
-matrix Y</p>
+<dd><p>Wrapper for statsmodels glmfit that prepares a
+constant parameter and configuration options for
+poisson-GLM fitting. Please see the documentation
+for glmfit in statsmodels for more details.</p>
+<p>This method will automatically add a constant colum
+to the feature matrix Y.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em>) – A nobs x k array where <cite>nobs</cite> is the number of observations and <cite>k</cite>
-is the number of regressors. An intercept is not included by default
-and should be added by the user (models specified using a formula
-include an intercept by default). See <cite>statsmodels.tools.add_constant</cite>.</p></li>
-<li><p><strong>Y</strong> (<em>array-like</em>) – 1d array of poisson counts.  This array can be 1d or 2d.</p></li>
+<li><p><strong>X</strong> (<em>array-like</em>) – A NOBSERVATIONS × K array where <cite>NOBSERVATIONS</cite>
+is the number of observations and <cite>k</cite> is the
+number of regressors. An intercept is not
+included by default and should be added by the
+user (models specified using a formula include
+an intercept by default).
+See <cite>statsmodels.tools.add_constant</cite>.</p></li>
+<li><p><strong>Y</strong> (<em>array-like</em>) – 1d array of poisson counts.
+This array can be 1d or 2d.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.auc_to_g2">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">auc_to_g2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#auc_to_g2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.auc_to_g2" title="Permalink to this definition"></a></dt>
+<dd><p>Convert AUC measure to sign-preserving squared Gini
+impurity index. (Comparable scale to normalized r²)</p>
+<blockquote>
+<div><p>return g²*sign(g) where g = AUC×2-1</p>
+</div></blockquote>
+<p>auc: np.array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>g²</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.fraction_explained_deviance">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.</span></span><span class="sig-name descname"><span class="pre">fraction_explained_deviance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats.html#fraction_explained_deviance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.fraction_explained_deviance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the fraction explained deviance, which is
+the analogue of the linear-Gaussian r² for
+Generalized Linear Models (GLMs)</p>
+<dl class="simple">
+<dt>L: np.float32</dt><dd><p>Model likelihood(s) evaluated on held-out test data.</p>
+</dd>
+<dt>L0: np.float32</dt><dd><p>Baseline likelihood, calculated by using the
+test-data’s mean-rate as a prediction.</p>
+</dd>
+<dt>Ls: np.float32</dt><dd><p>Saturated model likelihood(s) calculated by using
+the true labels as the estimated values</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>r²</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>normalized explained deviance</p>
 </dd>
 </dl>
 </dd></dl>

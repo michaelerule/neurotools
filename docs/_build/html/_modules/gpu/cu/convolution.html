@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gpu.cu.convolution &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>gpu.cu.convolution &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,8 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -40,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
@@ -65,9 +62,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>gpu.cu.convolution</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gpu.cu.convolution</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -79,20 +76,20 @@
   <h1>Source code for gpu.cu.convolution</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Utilities for performing certain Naive convolutions in PyCuda. Sadly I </span>
 <span class="sd">have not accelerated anything using the FT yet</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="gpuboxconv_core"><a class="viewcode-back" href="../../../obsolete/gpu.cu.convolution.html#gpu.cu.convolution.gpuboxconv_core">[docs]</a><span class="k">def</span> <span class="nf">gpuboxconv_core</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+<div class="viewcode-block" id="gpuboxconv_core"><a class="viewcode-back" href="../../../_obsolete/gpu.cu.convolution.html#gpu.cu.convolution.gpuboxconv_core">[docs]</a><span class="k">def</span> <span class="nf">gpuboxconv_core</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>

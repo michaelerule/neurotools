@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>stats.regressions &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>stats.regressions &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -26,8 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../index.html" class="icon icon-home"> Neurotools<img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -40,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neurotools.stats.html">stats</a></li>
@@ -65,9 +62,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>stats.regressions</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stats.regressions</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -82,21 +79,21 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Routines for common regression tasks.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">linregress</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.util.functions</span> <span class="kn">import</span> <span class="n">npdf</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.minimize</span> <span class="kn">import</span> <span class="n">minimize_retry</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.functions</span> <span class="k">import</span> <span class="n">npdf</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.minimize</span> <span class="k">import</span> <span class="n">minimize_retry</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Regress on the following model for synchrony</span>
@@ -242,7 +239,7 @@
 
 <span class="sd">&#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="damped_cosine"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.damped_cosine">[docs]</a><span class="k">def</span> <span class="nf">damped_cosine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+<div class="viewcode-block" id="damped_cosine"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.damped_cosine">[docs]</a><span class="k">def</span> <span class="nf">damped_cosine</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Regress a damped cosine impulse response to point data `X` and `Y` </span>
 <span class="sd">    using weighting `W`.</span>
@@ -299,7 +296,7 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Optimization failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="weighted_least_squares"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.weighted_least_squares">[docs]</a><span class="k">def</span> <span class="nf">weighted_least_squares</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+<div class="viewcode-block" id="weighted_least_squares"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.weighted_least_squares">[docs]</a><span class="k">def</span> <span class="nf">weighted_least_squares</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Initialize power law fit</span>
 <span class="sd">    EPS = 1e-10</span>
@@ -331,7 +328,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="power_law"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.power_law">[docs]</a><span class="k">def</span> <span class="nf">power_law</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+<div class="viewcode-block" id="power_law"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.power_law">[docs]</a><span class="k">def</span> <span class="nf">power_law</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fit a power law, but with error terms computed by r^2 in</span>
 <span class="sd">    the original space.</span>
@@ -380,7 +377,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">a</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="gaussian_function"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.gaussian_function">[docs]</a><span class="k">def</span> <span class="nf">gaussian_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian_function"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.gaussian_function">[docs]</a><span class="k">def</span> <span class="nf">gaussian_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -405,7 +402,7 @@
     <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="half_gaussian_function"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.half_gaussian_function">[docs]</a><span class="k">def</span> <span class="nf">half_gaussian_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="half_gaussian_function"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.half_gaussian_function">[docs]</a><span class="k">def</span> <span class="nf">half_gaussian_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -430,7 +427,7 @@
     <span class="n">sigma</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
     <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span></div>
 
-<div class="viewcode-block" id="exponential_decay"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.exponential_decay">[docs]</a><span class="k">def</span> <span class="nf">exponential_decay</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="exponential_decay"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.exponential_decay">[docs]</a><span class="k">def</span> <span class="nf">exponential_decay</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fit exponential decay from an initial value to a final value with </span>
 <span class="sd">    some time (or length, etc) constant.</span>
@@ -466,7 +463,7 @@
     <span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span> <span class="o">=</span> <span class="n">result</span>
     <span class="k">return</span> <span class="n">lamb</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">dc</span></div>
     
-<div class="viewcode-block" id="robust_line"><a class="viewcode-back" href="../../obsolete/stats.regressions.html#stats.regressions.robust_line">[docs]</a><span class="k">def</span> <span class="nf">robust_line</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="robust_line"><a class="viewcode-back" href="../../_obsolete/stats.regressions.html#stats.regressions.robust_line">[docs]</a><span class="k">def</span> <span class="nf">robust_line</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    2-variable linear regression with L1 penalty</span>
 <span class="sd">    returns the tuple (m,b) for line in y = mx+b format</span>

@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.stats.glm &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>neurotools.stats.glm &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,8 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -40,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
@@ -65,10 +62,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-          <li><a href="../stats.html">neurotools.stats</a> &raquo;</li>
-      <li>neurotools.stats.glm</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.glm</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -90,13 +87,13 @@
 <span class="sd"> - [sklearn](http://scikit-learn.org/stable/install.html)</span>
 <span class="sd"> - [statsmodels](http://statsmodels.sourceforge.net/devel/install.html)</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="c1">#############################################################################</span>
 <span class="c1"># Imports</span>
@@ -108,21 +105,21 @@
 
 <span class="c1"># get GLM solver from statsmodels</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">statsmodels.genmod.generalized_linear_model</span> <span class="kn">import</span> <span class="n">GLM</span>
-    <span class="kn">from</span> <span class="nn">statsmodels.genmod.families</span> <span class="kn">import</span> <span class="n">Poisson</span>
+    <span class="kn">from</span> <span class="nn">statsmodels.genmod.generalized_linear_model</span> <span class="k">import</span> <span class="n">GLM</span>
+    <span class="kn">from</span> <span class="nn">statsmodels.genmod.families</span> <span class="k">import</span> <span class="n">Poisson</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find statsmodels; glm routines will not work&#39;</span><span class="p">)</span>
 
 <span class="c1"># get ROC curve code from sklearn</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># This AUC algorithm is not the best, but it will do</span>
-    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span> <span class="k">as</span> <span class="n">auc</span>
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">roc_auc_score</span> <span class="k">as</span> <span class="n">auc</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find sklearn; ROC curve routines missing&#39;</span><span class="p">)</span>
 
 <span class="c1"># the function minimize wraps a large number of function optimizers</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find scipy; glm routines will not work&#39;</span><span class="p">)</span>
 
@@ -130,7 +127,7 @@
 
 <span class="c1">#############################################################################</span>
 
-<div class="viewcode-block" id="GLMPenaltyPoisson"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyPoisson">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyPoisson</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="GLMPenaltyPoisson"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyPoisson">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyPoisson</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates objective, gradient, and hessian functions for the Poisson </span>
 <span class="sd">    GLM for design matrix X and spike observations Y.</span>
@@ -172,7 +169,7 @@
         <span class="k">return</span> <span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
     <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span></div>
 
-<div class="viewcode-block" id="sexp"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.sexp">[docs]</a><span class="k">def</span> <span class="nf">sexp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="sexp"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.sexp">[docs]</a><span class="k">def</span> <span class="nf">sexp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Exponential function avoiding overflow and underflow, for evaluating the</span>
 <span class="sd">    logistic sigmoid function</span>
@@ -180,7 +177,7 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="mi">708</span><span class="p">,</span><span class="mi">708</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="sigmoid"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.sigmoid">[docs]</a><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="sigmoid"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.sigmoid">[docs]</a><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Logistic sigmoid function</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -192,7 +189,7 @@
             <span class="n">s</span><span class="o">=</span><span class="mi">0</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
-<div class="viewcode-block" id="GLMPenaltyBernoulli"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyBernoulli">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyBernoulli</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<div class="viewcode-block" id="GLMPenaltyBernoulli"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyBernoulli">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyBernoulli</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates objective, gradient, and hessian functions for the Bernoulli </span>
 <span class="sd">    GLM for design matrix X and spike observations Y.</span>
@@ -233,7 +230,7 @@
         <span class="k">return</span> <span class="o">-</span><span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
     <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span></div>
 
-<div class="viewcode-block" id="GLMPenaltyL2"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyL2">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GLMPenaltyL2"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.GLMPenaltyL2">[docs]</a><span class="k">def</span> <span class="nf">GLMPenaltyL2</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates objective, gradient, and hessian functions for the penalized</span>
 <span class="sd">    L2 regularized poisson GLM for design matrix X and spike observations Y.</span>
@@ -309,7 +306,7 @@
         <span class="k">return</span> <span class="n">hess</span><span class="o">*</span><span class="n">scale</span>
     <span class="k">return</span> <span class="n">objective</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">hessian</span></div>
 
-<div class="viewcode-block" id="ppglmfit"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.ppglmfit">[docs]</a><span class="k">def</span> <span class="nf">ppglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ppglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.ppglmfit">[docs]</a><span class="k">def</span> <span class="nf">ppglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The GLM solver in statsmodels is very general. It accepts any link</span>
 <span class="sd">    function and expects that, if you want a constant term in your model,</span>
@@ -340,7 +337,7 @@
     <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
 
 
-<div class="viewcode-block" id="fitGLM"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.fitGLM">[docs]</a><span class="k">def</span> <span class="nf">fitGLM</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">mu0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">B0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="fitGLM"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.fitGLM">[docs]</a><span class="k">def</span> <span class="nf">fitGLM</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">mu0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">B0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fit the model using gradient descent with hessian</span>
 <span class="sd">    </span>
@@ -380,7 +377,7 @@
     <span class="n">mu</span><span class="p">,</span><span class="n">B</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="k">return</span> <span class="n">mu</span><span class="p">,</span><span class="n">B</span></div>
 
-<div class="viewcode-block" id="crossvalidatedAUC"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.crossvalidatedAUC">[docs]</a><span class="k">def</span> <span class="nf">crossvalidatedAUC</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">NXVAL</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="crossvalidatedAUC"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.crossvalidatedAUC">[docs]</a><span class="k">def</span> <span class="nf">crossvalidatedAUC</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">NXVAL</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Crossvalidated area under the ROC curve calculation. This routine</span>
 <span class="sd">    uses the non-regularized GLMPenaltyL2 to fit a GLM point-process </span>
@@ -420,7 +417,7 @@
         <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mu</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">,:]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">auc</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">concatenate</span><span class="p">(</span><span class="n">predicted</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="gradientglmfit"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.gradientglmfit">[docs]</a><span class="k">def</span> <span class="nf">gradientglmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">L2Penalty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    mu_hat, B_hat = gradientglmfit(X,Y,L2Penalty=0.0)</span>
 <span class="sd">    </span>
@@ -442,7 +439,7 @@
     <span class="n">mu_hat</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="k">return</span> <span class="n">mu_hat</span><span class="p">,</span> <span class="n">B_hat</span></div>
     
-<div class="viewcode-block" id="cosine_kernel"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.cosine_kernel">[docs]</a><span class="k">def</span> <span class="nf">cosine_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="cosine_kernel"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.cosine_kernel">[docs]</a><span class="k">def</span> <span class="nf">cosine_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Raised cosine basis kernel, normalized such that it integrates to 1</span>
 <span class="sd">    centered at zero. Time is rescaled so that the kernel spans from</span>
@@ -460,7 +457,7 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">piecewise</span><span class="p">(</span><span class="n">x</span><span class="p">,[</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">],[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="log_cosine_basis"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.log_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">log_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="log_cosine_basis"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.log_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">log_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate overlapping log-cosine basis elements</span>
 <span class="sd">    </span>
@@ -486,7 +483,7 @@
         <span class="n">kernels</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">offset</span><span class="o">+</span><span class="n">t</span><span class="p">)</span> <span class="c1"># correction for change of variables, kernels integrate to 1 now</span>
     <span class="k">return</span> <span class="n">kernels</span></div>
 
-<div class="viewcode-block" id="make_cosine_basis"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.make_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">make_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">min_interval</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="make_cosine_basis"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.make_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">make_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">min_interval</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Build N logarightmically spaced cosine basis functions</span>
 <span class="sd">    spanning L samples, with a peak resolution of min_interval</span>
@@ -519,9 +516,9 @@
     <span class="k">return</span> <span class="n">B</span></div>
 
 <span class="c1"># Argument cleaning: tolerate some sloppiness in return types</span>
-<span class="kn">from</span> <span class="nn">neurotools.linalg.arguments</span> <span class="kn">import</span> <span class="n">scalar</span><span class="p">,</span><span class="n">asvector</span>
+<span class="kn">from</span> <span class="nn">neurotools.linalg.arguments</span> <span class="k">import</span> <span class="n">scalar</span><span class="p">,</span><span class="n">asvector</span>
 
-<div class="viewcode-block" id="numeric_grad"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.numeric_grad">[docs]</a><span class="k">def</span> <span class="nf">numeric_grad</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
+<div class="viewcode-block" id="numeric_grad"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.numeric_grad">[docs]</a><span class="k">def</span> <span class="nf">numeric_grad</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Numerically estimate the gradient of an objective function</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -537,7 +534,7 @@
     <span class="k">return</span> <span class="n">g</span></div>
 
 
-<div class="viewcode-block" id="numeric_hess"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.glm.html#neurotools.stats.glm.numeric_hess">[docs]</a><span class="k">def</span> <span class="nf">numeric_hess</span><span class="p">(</span><span class="n">jac</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
+<div class="viewcode-block" id="numeric_hess"><a class="viewcode-back" href="../../../neurotools.stats.glm.html#neurotools.stats.glm.numeric_hess">[docs]</a><span class="k">def</span> <span class="nf">numeric_hess</span><span class="p">(</span><span class="n">jac</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Numerically estimate the hessian given a gradient function</span>
 <span class="sd">    &#39;&#39;&#39;</span>

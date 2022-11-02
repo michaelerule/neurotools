@@ -5,10 +5,10 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    neurotools.stats.circular
    neurotools.stats.convolutional
+   neurotools.stats.covalign
    neurotools.stats.density
    neurotools.stats.distributions
    neurotools.stats.fast_kde
@@ -17,6 +17,7 @@ Submodules
    neurotools.stats.grid_search
    neurotools.stats.hmm
    neurotools.stats.information
+   neurotools.stats.kalman
    neurotools.stats.mcint
    neurotools.stats.minimize
    neurotools.stats.mixtures
@@ -28,6 +29,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.stats
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:

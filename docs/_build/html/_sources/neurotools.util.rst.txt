@@ -5,9 +5,8 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
-   neurotools.util.dependencies
+   neurotools.util.array
    neurotools.util.functions
    neurotools.util.getfftw
    neurotools.util.hdfmat
@@ -20,6 +19,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.util
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatial.fftzeros &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>spatial.fftzeros &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -26,8 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../index.html" class="icon icon-home"> Neurotools<img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -40,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neurotools.stats.html">stats</a></li>
@@ -65,10 +62,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-          <li><a href="../spatial.html">spatial</a> &raquo;</li>
-      <li>spatial.fftzeros</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../spatial.html">spatial</a></li>
+      <li class="breadcrumb-item active">spatial.fftzeros</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -83,24 +80,25 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Code for identifying critical points in phase gradient maps.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">convolve2d</span>
-<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="kn">import</span> <span class="n">rewrap</span>
-<span class="kn">from</span> <span class="nn">neurotools.graphics.plot</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.spatial.triangulation</span> <span class="kn">import</span> <span class="n">mergeNearby</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">zeroslike</span><span class="p">,</span><span class="n">find</span><span class="p">,</span><span class="n">c2p</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">convolve2d</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="k">import</span> <span class="n">rewrap</span>
+<span class="kn">from</span> <span class="nn">neurotools.graphics.plot</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.spatial.triangulation</span> <span class="k">import</span> <span class="n">mergeNearby</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="k">import</span> <span class="n">zeroslike</span><span class="p">,</span><span class="n">find</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="k">import</span> <span class="n">c2p</span>
 
-<div class="viewcode-block" id="plot_phase_gradient"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_phase_gradient">[docs]</a><span class="k">def</span> <span class="nf">plot_phase_gradient</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hsv&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_phase_gradient"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_phase_gradient">[docs]</a><span class="k">def</span> <span class="nf">plot_phase_gradient</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hsv&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Plot a phase-gradient map using a hue wheel to show direction</span>
 <span class="sd">    and local flow lines to indicate magnitude</span>
@@ -124,7 +122,7 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="plot_phase_direction"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_phase_direction">[docs]</a><span class="k">def</span> <span class="nf">plot_phase_direction</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hsv&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_phase_direction"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_phase_direction">[docs]</a><span class="k">def</span> <span class="nf">plot_phase_direction</span><span class="p">(</span><span class="n">dz</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hsv&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Plot a phase-gradient map using a hue wheel to show direction</span>
 <span class="sd">    and compass needles. Gradient magnitude is not shown.</span>
@@ -157,7 +155,7 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="dPhidx"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.dPhidx">[docs]</a><span class="k">def</span> <span class="nf">dPhidx</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
+<div class="viewcode-block" id="dPhidx"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.dPhidx">[docs]</a><span class="k">def</span> <span class="nf">dPhidx</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Phase derivative in the x direction. </span>
 <span class="sd">    The returned array is smaller than the input array by one row and </span>
@@ -177,7 +175,7 @@
     <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dx</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">dx</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">dx</span></div>
 
-<div class="viewcode-block" id="dPhidy"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.dPhidy">[docs]</a><span class="k">def</span> <span class="nf">dPhidy</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
+<div class="viewcode-block" id="dPhidy"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.dPhidy">[docs]</a><span class="k">def</span> <span class="nf">dPhidy</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Phase derivative in the y direction. </span>
 <span class="sd">    The returned array is smaller than the input array by one row and </span>
@@ -197,7 +195,7 @@
     <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">dy</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:]</span><span class="o">+</span><span class="n">dy</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span><span class="o">*</span><span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">dy</span></div>
 
-<div class="viewcode-block" id="get_phase_gradient_as_complex"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.get_phase_gradient_as_complex">[docs]</a><span class="k">def</span> <span class="nf">get_phase_gradient_as_complex</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="get_phase_gradient_as_complex"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.get_phase_gradient_as_complex">[docs]</a><span class="k">def</span> <span class="nf">get_phase_gradient_as_complex</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Computes the phase gradient across an array and stores it in a complex</span>
 <span class="sd">    number, in analogy to the complex-valued analytic signal. The complex</span>
@@ -224,7 +222,7 @@
     <span class="n">dz</span>    <span class="o">=</span> <span class="n">dy</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">dx</span>
     <span class="k">return</span> <span class="n">dx</span><span class="p">,</span><span class="n">dy</span><span class="p">,</span><span class="n">dz</span></div>
 
-<div class="viewcode-block" id="getpeaks2d"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.getpeaks2d">[docs]</a><span class="k">def</span> <span class="nf">getpeaks2d</span><span class="p">(</span><span class="n">pp</span><span class="p">):</span>
+<div class="viewcode-block" id="getpeaks2d"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.getpeaks2d">[docs]</a><span class="k">def</span> <span class="nf">getpeaks2d</span><span class="p">(</span><span class="n">pp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This function differentiates the array pp in the x and y direction</span>
 <span class="sd">    and then looks for zero crossings. It returns an array the</span>
@@ -249,7 +247,7 @@
     <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxima</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="coalesce"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.coalesce">[docs]</a><span class="k">def</span> <span class="nf">coalesce</span><span class="p">(</span><span class="n">pp</span><span class="p">,</span><span class="n">s1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">s2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="coalesce"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.coalesce">[docs]</a><span class="k">def</span> <span class="nf">coalesce</span><span class="p">(</span><span class="n">pp</span><span class="p">,</span><span class="n">s1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">s2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Merge nearby peaks using Gaussian smoothing.</span>
 <span class="sd">    </span>
@@ -279,7 +277,7 @@
     <span class="n">pk</span> <span class="o">=</span> <span class="n">getpeaks2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pk</span></div>
 
-<div class="viewcode-block" id="coalesce_points"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.coalesce_points">[docs]</a><span class="k">def</span> <span class="nf">coalesce_points</span><span class="p">(</span><span class="n">pp</span><span class="p">,</span><span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="coalesce_points"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.coalesce_points">[docs]</a><span class="k">def</span> <span class="nf">coalesce_points</span><span class="p">(</span><span class="n">pp</span><span class="p">,</span><span class="n">radius</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Merge nearby peaks using nearest-neighbords</span>
 <span class="sd">    </span>
@@ -304,7 +302,7 @@
     <span class="n">pk</span> <span class="o">=</span> <span class="n">getpeaks2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pk</span></div>
 
-<div class="viewcode-block" id="find_critical_points"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.find_critical_points">[docs]</a><span class="k">def</span> <span class="nf">find_critical_points</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">docoalesce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">edgeavoid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="find_critical_points"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.find_critical_points">[docs]</a><span class="k">def</span> <span class="nf">find_critical_points</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">docoalesce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">edgeavoid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -394,7 +392,7 @@
         
     <span class="k">return</span> <span class="n">clockwise</span><span class="p">,</span> <span class="n">anticlockwise</span><span class="p">,</span> <span class="n">saddles</span><span class="p">,</span> <span class="n">peaks</span><span class="p">,</span> <span class="n">maxima</span><span class="p">,</span> <span class="n">minima</span></div>
 
-<div class="viewcode-block" id="plot_critical_points"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_critical_points">[docs]</a><span class="k">def</span> <span class="nf">plot_critical_points</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+<div class="viewcode-block" id="plot_critical_points"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_critical_points">[docs]</a><span class="k">def</span> <span class="nf">plot_critical_points</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
     <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">ss</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
     <span class="n">skip</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
@@ -455,7 +453,7 @@
     <span class="n">nice_legend</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="find_critical_potential_points"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.find_critical_potential_points">[docs]</a><span class="k">def</span> <span class="nf">find_critical_potential_points</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="find_critical_potential_points"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.find_critical_potential_points">[docs]</a><span class="k">def</span> <span class="nf">find_critical_potential_points</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Critical points in a potential field (no centers / curl)</span>
 
@@ -485,7 +483,7 @@
     <span class="k">return</span> <span class="n">saddles</span><span class="p">,</span> <span class="n">peaks</span><span class="p">,</span> <span class="n">maxima</span><span class="p">,</span> <span class="n">minima</span></div>
 
 
-<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.grad">[docs]</a><span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.grad">[docs]</a><span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -506,7 +504,7 @@
     <span class="n">resulty</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*=</span> <span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">resultx</span><span class="p">,</span><span class="n">resulty</span></div>
 
-<div class="viewcode-block" id="quickgrad"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.quickgrad">[docs]</a><span class="k">def</span> <span class="nf">quickgrad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="quickgrad"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.quickgrad">[docs]</a><span class="k">def</span> <span class="nf">quickgrad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -520,7 +518,7 @@
     <span class="k">return</span> <span class="n">dx</span><span class="p">,</span><span class="n">dy</span></div>
 
 
-<div class="viewcode-block" id="getp"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.getp">[docs]</a><span class="k">def</span> <span class="nf">getp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="getp"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.getp">[docs]</a><span class="k">def</span> <span class="nf">getp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -533,7 +531,7 @@
     <span class="k">return</span> <span class="n">unwrap_indecies</span><span class="p">(</span><span class="n">coalesce</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="get_critical_spectra"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.get_critical_spectra">[docs]</a><span class="k">def</span> <span class="nf">get_critical_spectra</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span><span class="n">wt</span><span class="p">):</span>
+<div class="viewcode-block" id="get_critical_spectra"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.get_critical_spectra">[docs]</a><span class="k">def</span> <span class="nf">get_critical_spectra</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span><span class="n">wt</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    smt and smf are time and frequency smoothing scales</span>
 <span class="sd">    in units of pixels</span>
@@ -560,7 +558,7 @@
     <span class="k">return</span> <span class="n">mins</span><span class="p">,</span><span class="n">maxs</span></div>
 
 
-<div class="viewcode-block" id="plot_critical_spectra"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_critical_spectra">[docs]</a><span class="k">def</span> <span class="nf">plot_critical_spectra</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span><span class="n">wt</span><span class="p">,</span><span class="n">ss</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_critical_spectra"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.plot_critical_spectra">[docs]</a><span class="k">def</span> <span class="nf">plot_critical_spectra</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span><span class="n">wt</span><span class="p">,</span><span class="n">ss</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    smt and smf are time and frequency smoothing scales</span>
 <span class="sd">    in units of pixels</span>
@@ -593,7 +591,7 @@
     <span class="k">return</span> <span class="n">aminima</span><span class="p">,</span><span class="n">amaxima</span></div>
 
 
-<div class="viewcode-block" id="cut_array_data"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.cut_array_data">[docs]</a><span class="k">def</span> <span class="nf">cut_array_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">arrayMap</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<div class="viewcode-block" id="cut_array_data"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.cut_array_data">[docs]</a><span class="k">def</span> <span class="nf">cut_array_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">arrayMap</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    data should be a NChannel x Ntimes array</span>
 <span class="sd">    arrayMap should be an L x K array of channel IDs,</span>
@@ -609,7 +607,7 @@
     <span class="k">return</span> <span class="n">dctCut</span><span class="p">(</span><span class="n">packed</span><span class="p">,</span><span class="n">cutoff</span><span class="p">,</span><span class="n">spacing</span><span class="p">)</span></div>
     
     
-<div class="viewcode-block" id="mirror2D"><a class="viewcode-back" href="../../obsolete/spatial.fftzeros.html#spatial.fftzeros.mirror2D">[docs]</a><span class="k">def</span> <span class="nf">mirror2D</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+<div class="viewcode-block" id="mirror2D"><a class="viewcode-back" href="../../_obsolete/spatial.fftzeros.html#spatial.fftzeros.mirror2D">[docs]</a><span class="k">def</span> <span class="nf">mirror2D</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>

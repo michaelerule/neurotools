@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.stats.pvalues &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>neurotools.stats.pvalues &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,8 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -40,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
@@ -65,10 +62,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-          <li><a href="../stats.html">neurotools.stats</a> &raquo;</li>
-      <li>neurotools.stats.pvalues</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.pvalues</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -86,20 +83,20 @@
 <span class="sd">This module collects useful routines for </span>
 <span class="sd">working with p-values. </span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">statsmodels</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">find</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">random</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="k">import</span> <span class="n">find</span>
 
-<div class="viewcode-block" id="benjamini_hochberg_positive_correlations"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.benjamini_hochberg_positive_correlations">[docs]</a><span class="k">def</span> <span class="nf">benjamini_hochberg_positive_correlations</span><span class="p">(</span><span class="n">pvalues</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
+<div class="viewcode-block" id="benjamini_hochberg_positive_correlations"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.benjamini_hochberg_positive_correlations">[docs]</a><span class="k">def</span> <span class="nf">benjamini_hochberg_positive_correlations</span><span class="p">(</span><span class="n">pvalues</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Derived from the following matlab code from Wilson Truccolo</span>
 <span class="sd">    </span>
@@ -161,7 +158,7 @@
     <span class="n">pN</span>  <span class="o">=</span> <span class="n">pvalues</span><span class="p">[</span><span class="n">pN</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pN</span> <span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="c1">#pvalues[0]</span>
     <span class="k">return</span> <span class="n">pID</span><span class="p">,</span> <span class="n">pN</span></div>
 
-<div class="viewcode-block" id="correct_pvalues_positive_dependent"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.correct_pvalues_positive_dependent">[docs]</a><span class="k">def</span> <span class="nf">correct_pvalues_positive_dependent</span><span class="p">(</span><span class="n">pvalue_dictionary</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_pvalues_positive_dependent"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.correct_pvalues_positive_dependent">[docs]</a><span class="k">def</span> <span class="nf">correct_pvalues_positive_dependent</span><span class="p">(</span><span class="n">pvalue_dictionary</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Benjamini-Hochberg multiple-comparison correction</span>
 <span class="sd">    assuming positive dependence.</span>
@@ -190,7 +187,7 @@
     <span class="n">corrected</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="nb">zip</span><span class="p">(</span><span class="n">pvals</span><span class="p">,</span><span class="n">reject</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">corrected</span></div>
 
-<div class="viewcode-block" id="correct_pvalues"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.correct_pvalues">[docs]</a><span class="k">def</span> <span class="nf">correct_pvalues</span><span class="p">(</span><span class="n">pvalue_dictionary</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_pvalues"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.correct_pvalues">[docs]</a><span class="k">def</span> <span class="nf">correct_pvalues</span><span class="p">(</span><span class="n">pvalue_dictionary</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This corrects for multiple comparisons using the</span>
 <span class="sd">    Benjamini-Hochberg procedure, using either the </span>
@@ -230,7 +227,7 @@
     
     
 
-<div class="viewcode-block" id="bootstrap_statistic_two_sided"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_statistic_two_sided">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_statistic_two_sided</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_statistic_two_sided"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_statistic_two_sided">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_statistic_two_sided</span><span class="p">(</span>
     <span class="n">statistic</span><span class="p">,</span> 
     <span class="n">test_population</span><span class="p">,</span> 
     <span class="n">null_population</span><span class="p">,</span> 
@@ -281,7 +278,7 @@
     <span class="k">return</span> <span class="n">pvalue</span></div>
 
 
-<div class="viewcode-block" id="bootstrap_median"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_median">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_median</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_median"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_median">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_median</span><span class="p">(</span>
     <span class="n">test_population</span><span class="p">,</span> <span class="n">null_population</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue for difference in medians using bootstrapping</span>
@@ -307,7 +304,7 @@
         <span class="n">median</span><span class="p">,</span> <span class="n">test_population</span><span class="p">,</span> <span class="n">null_population</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="bootstrap_mean"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_mean">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_mean</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_mean"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_mean">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_mean</span><span class="p">(</span>
     <span class="n">test_population</span><span class="p">,</span> <span class="n">null_population</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue for difference in means using </span>
@@ -333,7 +330,7 @@
     <span class="k">return</span> <span class="n">bootstrap_statistic_two_sided</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">test_population</span><span class="p">,</span> <span class="n">null_population</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="bootstrap_compare_statistic_two_sided"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_statistic_two_sided</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_compare_statistic_two_sided"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_statistic_two_sided</span><span class="p">(</span>
     <span class="n">statistic</span><span class="p">,</span> <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue using bootstrapping</span>
@@ -424,7 +421,7 @@
     <span class="k">return</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span>
 
 
-<div class="viewcode-block" id="bootstrap_compare_statistic_two_sided_parallel"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided_parallel">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_statistic_two_sided_parallel</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_compare_statistic_two_sided_parallel"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided_parallel">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_statistic_two_sided_parallel</span><span class="p">(</span>
     <span class="n">statistic</span><span class="p">,</span> <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> 
     <span class="n">NA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -473,7 +470,7 @@
     <span class="k">return</span> <span class="n">delta</span><span class="p">,</span><span class="n">pvalue</span></div>
 
 
-<div class="viewcode-block" id="bootstrap_compare_median"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_median">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_median</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_compare_median"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_median">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_median</span><span class="p">(</span>
     <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> 
     <span class="n">NA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -509,7 +506,7 @@
         <span class="n">median</span><span class="p">,</span> <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> <span class="n">NA</span><span class="p">,</span> <span class="n">NB</span><span class="p">,</span> <span class="n">ntrials</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="bootstrap_compare_mean"><a class="viewcode-back" href="../../../obsolete/neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_mean">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_mean</span><span class="p">(</span>
+<div class="viewcode-block" id="bootstrap_compare_mean"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_mean">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_mean</span><span class="p">(</span>
     <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> 
     <span class="n">NA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

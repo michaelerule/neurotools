@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.signal &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>neurotools.signal &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -26,8 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../index.html" class="icon icon-home"> Neurotools<img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -40,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neurotools.stats.html">stats</a></li>
@@ -65,9 +62,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>neurotools.signal</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">neurotools.signal</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -82,28 +79,30 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Routines for signal processing.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.signal.signaltools</span> <span class="kn">import</span> <span class="n">fftconvolve</span><span class="p">,</span><span class="n">hilbert</span>
-<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">filtfilt</span><span class="p">,</span> <span class="n">lfilter</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">find</span>
+<span class="kn">from</span> <span class="nn">scipy.signal.signaltools</span> <span class="k">import</span> <span class="n">fftconvolve</span><span class="p">,</span><span class="n">hilbert</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">filtfilt</span><span class="p">,</span> <span class="n">lfilter</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="k">import</span> <span class="n">find</span>
+
+<span class="kn">import</span> <span class="nn">neurotools.util.array</span> <span class="k">as</span> <span class="nn">narray</span> <span class="c1"># make_rebroadcast_slice</span>
 
 <span class="c1"># Inverse of standard normal cumulative distribution function</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">ndtri</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">rankdata</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">ndtri</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">rankdata</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
 <span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">ip</span>
 
-<div class="viewcode-block" id="geometric_window"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.geometric_window">[docs]</a><span class="k">def</span> <span class="nf">geometric_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+<div class="viewcode-block" id="geometric_window"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.geometric_window">[docs]</a><span class="k">def</span> <span class="nf">geometric_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Gemoetrically center a frequency window</span>
 <span class="sd">    </span>
@@ -130,7 +129,7 @@
     <span class="n">fb</span>       <span class="o">=</span> <span class="n">c</span><span class="o">*</span><span class="n">lgwindow</span>
     <span class="k">return</span> <span class="n">fa</span><span class="p">,</span><span class="n">fb</span></div>
 
-<div class="viewcode-block" id="gaussian_kernel"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.gaussian_kernel">[docs]</a><span class="k">def</span> <span class="nf">gaussian_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian_kernel"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.gaussian_kernel">[docs]</a><span class="k">def</span> <span class="nf">gaussian_kernel</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate 1D Guassian kernel for smoothing</span>
 <span class="sd">    </span>
@@ -152,7 +151,7 @@
     <span class="n">K</span> <span class="o">*=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">K</span></div>
 
-<div class="viewcode-block" id="gaussian_smooth"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian_smooth"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth signal x with gaussian of standard deviation </span>
 <span class="sd">    sigma, using edge-clamped boundary conditions.</span>
@@ -177,7 +176,7 @@
     <span class="c1">#axes = tuple(sorted(list(set(range(len(x.shape)))-axis)))</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="o">-</span><span class="n">n</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="circular_gaussian_smooth"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.circular_gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">circular_gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="circular_gaussian_smooth"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.circular_gaussian_smooth">[docs]</a><span class="k">def</span> <span class="nf">circular_gaussian_smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth signal x with gaussian of standard deviation sigma</span>
 <span class="sd">    Circularly wrapped using Fourier transform</span>
@@ -197,7 +196,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="circular_gaussian_smooth_2D"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.circular_gaussian_smooth_2D">[docs]</a><span class="k">def</span> <span class="nf">circular_gaussian_smooth_2D</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="circular_gaussian_smooth_2D"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.circular_gaussian_smooth_2D">[docs]</a><span class="k">def</span> <span class="nf">circular_gaussian_smooth_2D</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth signal x with gaussian of standard deviation sigma</span>
 <span class="sd">    Circularly wrapped using Fourier transform</span>
@@ -228,7 +227,7 @@
     <span class="c1"># convolution via 2D FFT</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">real</span></div>
 
-<div class="viewcode-block" id="linear_cosine_basis"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.linear_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">linear_cosine_basis</span><span class="p">(</span><span class="n">TIMERES</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">NBASIS</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="linear_cosine_basis"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.linear_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">linear_cosine_basis</span><span class="p">(</span><span class="n">TIMERES</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">NBASIS</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cosine basis tiling unit interval</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -242,7 +241,7 @@
         <span class="n">B</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">B</span></div>
     
-<div class="viewcode-block" id="circular_cosine_basis"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.circular_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">circular_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+<div class="viewcode-block" id="circular_cosine_basis"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.circular_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">circular_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -259,7 +258,7 @@
     <span class="n">phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">h</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">phases</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span><span class="o">%</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wl</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">wl</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="unitscale"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.unitscale">[docs]</a><span class="k">def</span> <span class="nf">unitscale</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="unitscale"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unitscale">[docs]</a><span class="k">def</span> <span class="nf">unitscale</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Rescales `signal` so that its minimum is 0 and its maximum is 1.</span>
 
@@ -279,12 +278,12 @@
         <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">signal</span>
     <span class="c1"># New behavior</span>
-    <span class="n">theslice</span> <span class="o">=</span> <span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
     <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
     <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">signal</span></div>
 
-<div class="viewcode-block" id="topercentiles"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.topercentiles">[docs]</a><span class="k">def</span> <span class="nf">topercentiles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="topercentiles"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.topercentiles">[docs]</a><span class="k">def</span> <span class="nf">topercentiles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="sd">    Parameters</span>
@@ -298,7 +297,7 @@
     <span class="n">ranks</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">ranks</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span></div>
 
-<div class="viewcode-block" id="local_maxima"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.local_maxima">[docs]</a><span class="k">def</span> <span class="nf">local_maxima</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="local_maxima"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.local_maxima">[docs]</a><span class="k">def</span> <span class="nf">local_maxima</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns signal index and values at those indecies</span>
 
@@ -310,7 +309,7 @@
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
     <span class="k">return</span> <span class="n">t</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="local_minima"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.local_minima">[docs]</a><span class="k">def</span> <span class="nf">local_minima</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="local_minima"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.local_minima">[docs]</a><span class="k">def</span> <span class="nf">local_minima</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns signal index and values at those indecies for all local minima.</span>
 <span class="sd">    See local_maxima</span>
@@ -323,7 +322,7 @@
     <span class="n">t</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">t</span><span class="p">,</span><span class="o">-</span><span class="n">x</span></div>
 
-<div class="viewcode-block" id="amp"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.amp">[docs]</a><span class="k">def</span> <span class="nf">amp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="amp"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.amp">[docs]</a><span class="k">def</span> <span class="nf">amp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extracts amplitude envelope using Hilbert transform. X must be narrow</span>
 <span class="sd">    band. No padding is performed so watch out for boundary effects</span>
@@ -339,7 +338,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="get_snips"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.get_snips">[docs]</a><span class="k">def</span> <span class="nf">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
+<div class="viewcode-block" id="get_snips"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.get_snips">[docs]</a><span class="k">def</span> <span class="nf">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extract snippits of a time series surronding a list of times. Typically</span>
 <span class="sd">    used for spike-triggered statistics</span>
@@ -354,7 +353,7 @@
     <span class="n">snips</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">snips</span></div>
 
-<div class="viewcode-block" id="triggered_average"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.triggered_average">[docs]</a><span class="k">def</span> <span class="nf">triggered_average</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
+<div class="viewcode-block" id="triggered_average"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.triggered_average">[docs]</a><span class="k">def</span> <span class="nf">triggered_average</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -364,10 +363,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_triggered_stats"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.get_triggered_stats">[docs]</a><span class="k">def</span> <span class="nf">get_triggered_stats</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
+<div class="viewcode-block" id="get_triggered_stats"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.get_triggered_stats">[docs]</a><span class="k">def</span> <span class="nf">get_triggered_stats</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get a statistical summary of data in length window around time point</span>
-<span class="sd">    times.</span>
+<span class="sd">    Get a statistical summary of data in length window </span>
+<span class="sd">    around time points.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -392,7 +391,7 @@
     <span class="n">s</span> <span class="o">=</span> <span class="n">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span><span class="o">*</span><span class="mf">1.96</span></div>
 
-<div class="viewcode-block" id="padout"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.padout">[docs]</a><span class="k">def</span> <span class="nf">padout</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="padout"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.padout">[docs]</a><span class="k">def</span> <span class="nf">padout</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates a reflected version of a 1-dimensional signal. This can be</span>
 <span class="sd">    handy for achieving reflected boundary conditions in algorithms that</span>
@@ -414,7 +413,7 @@
     <span class="n">padded</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">:</span>     <span class="p">]</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">padded</span></div>
 
-<div class="viewcode-block" id="padin"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.padin">[docs]</a><span class="k">def</span> <span class="nf">padin</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="padin"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.padin">[docs]</a><span class="k">def</span> <span class="nf">padin</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Removes padding added by the `padout` function; </span>
 <span class="sd">    `padin` and `padout` together are used to control the</span>
@@ -435,7 +434,7 @@
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span>
     <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="nonnegative_bandpass_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.nonnegative_bandpass_filter">[docs]</a><span class="k">def</span> <span class="nf">nonnegative_bandpass_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="nonnegative_bandpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.nonnegative_bandpass_filter">[docs]</a><span class="k">def</span> <span class="nf">nonnegative_bandpass_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">Fs</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">zerophase</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">bandstop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">offset</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -481,7 +480,7 @@
         <span class="n">bandstop</span><span class="o">=</span><span class="n">bandstop</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="pad_signal"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.pad_signal">[docs]</a><span class="k">def</span> <span class="nf">pad_signal</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="pad_signal"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.pad_signal">[docs]</a><span class="k">def</span> <span class="nf">pad_signal</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">padded</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span>  <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
@@ -489,7 +488,7 @@
     <span class="n">padded</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">:</span>     <span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span> <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">padded</span></div>
 
-<div class="viewcode-block" id="bandpass_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.bandpass_filter">[docs]</a><span class="k">def</span> <span class="nf">bandpass_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="bandpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.bandpass_filter">[docs]</a><span class="k">def</span> <span class="nf">bandpass_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">Fs</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">zerophase</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">bandstop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    IF fa is None, assumes lowpass with cutoff fb</span>
@@ -548,7 +547,7 @@
 <span class="c1">#&#39;&#39;&#39;</span>
 <span class="c1">#bandfilter = bandpass_filter</span>
 
-<div class="viewcode-block" id="box_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.box_filter">[docs]</a><span class="k">def</span> <span class="nf">box_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">smoothat</span><span class="p">,</span><span class="n">padmode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="box_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.box_filter">[docs]</a><span class="k">def</span> <span class="nf">box_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">smoothat</span><span class="p">,</span><span class="n">padmode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooths data by convolving with a size smoothat box</span>
 <span class="sd">    provide smoothat in units of frames i.e. samples (not ms or seconds)</span>
@@ -584,7 +583,7 @@
     <span class="n">smoothed</span> <span class="o">=</span> <span class="n">fftconvolve</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">smoothat</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">smoothat</span><span class="p">),</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">smoothed</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="median_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.median_filter">[docs]</a><span class="k">def</span> <span class="nf">median_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="median_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.median_filter">[docs]</a><span class="k">def</span> <span class="nf">median_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    median_filter(x,window=100,mode=&#39;same&#39;)</span>
 <span class="sd">    Filters a signal by calculating the median in a sliding window of</span>
@@ -624,7 +623,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="percentile_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.percentile_filter">[docs]</a><span class="k">def</span> <span class="nf">percentile_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">pct</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="percentile_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.percentile_filter">[docs]</a><span class="k">def</span> <span class="nf">percentile_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">pct</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    percentile_filter(x,pct,window=100,mode=&#39;same&#39;)</span>
 <span class="sd">    Filters a signal by calculating the median in a sliding window of</span>
@@ -666,7 +665,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="variance_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.variance_filter">[docs]</a><span class="k">def</span> <span class="nf">variance_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="variance_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.variance_filter">[docs]</a><span class="k">def</span> <span class="nf">variance_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extracts signal variance in a sliding window</span>
 
@@ -704,7 +703,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="rewrap"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.rewrap">[docs]</a><span class="k">def</span> <span class="nf">rewrap</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="rewrap"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.rewrap">[docs]</a><span class="k">def</span> <span class="nf">rewrap</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Used to handle wraparound when getting phase derivatives.</span>
 <span class="sd">    See pdiff.</span>
@@ -717,7 +716,7 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
 
-<div class="viewcode-block" id="pdiff"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.pdiff">[docs]</a><span class="k">def</span> <span class="nf">pdiff</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="pdiff"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.pdiff">[docs]</a><span class="k">def</span> <span class="nf">pdiff</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Take the derivative of a sequence of phases.</span>
 <span class="sd">    Times when this derivative wraps around form 0 to 2*np.pi are correctly</span>
@@ -732,7 +731,7 @@
     <span class="k">return</span> <span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
     <span class="c1">#return rewrap(spaced_derivative(x))</span>
 
-<div class="viewcode-block" id="pghilbert"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.pghilbert">[docs]</a><span class="k">def</span> <span class="nf">pghilbert</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="pghilbert"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.pghilbert">[docs]</a><span class="k">def</span> <span class="nf">pghilbert</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extract phase gradient using the hilbert transform. See also pdiff.</span>
 <span class="sd">    </span>
@@ -744,7 +743,7 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pdiff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="fudge_derivative"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.fudge_derivative">[docs]</a><span class="k">def</span> <span class="nf">fudge_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="fudge_derivative"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fudge_derivative">[docs]</a><span class="k">def</span> <span class="nf">fudge_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Discretely differentiating a signal reduces its signal by one sample.</span>
 <span class="sd">    In some cases, this may be undesirable. It also creates ambiguity as</span>
@@ -766,7 +765,7 @@
     <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="ifreq"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.ifreq">[docs]</a><span class="k">def</span> <span class="nf">ifreq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;pad&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="ifreq"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.ifreq">[docs]</a><span class="k">def</span> <span class="nf">ifreq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;pad&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extract the instantaneous frequency from a narrow-band signal using</span>
 <span class="sd">    the Hilbert transform.</span>
@@ -788,7 +787,7 @@
         <span class="k">return</span> <span class="n">fudge_derivative</span><span class="p">(</span><span class="n">pg</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.unwrap">[docs]</a><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+<div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unwrap">[docs]</a><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Unwraps a sequences of phase measurements so that rather than</span>
 <span class="sd">    ranging from 0 to 2*np.pi, the values increase (or decrease) continuously.</span>
@@ -801,7 +800,7 @@
     <span class="n">d</span> <span class="o">=</span> <span class="n">fudgeDerivative</span><span class="p">(</span><span class="n">pdiff</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ang"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.ang">[docs]</a><span class="k">def</span> <span class="nf">ang</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ang"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.ang">[docs]</a><span class="k">def</span> <span class="nf">ang</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Uses the Hilbert transform to extract the phase of x. X should be</span>
 <span class="sd">    narrow-band. The signal is not padded, so be wary of boundary effects.</span>
@@ -813,7 +812,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="randband"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.randband">[docs]</a><span class="k">def</span> <span class="nf">randband</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<div class="viewcode-block" id="randband"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.randband">[docs]</a><span class="k">def</span> <span class="nf">randband</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns Gaussian random noise band-pass filtered between fa and fb.</span>
 <span class="sd">    </span>
@@ -824,7 +823,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">zscore</span><span class="p">(</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span><span class="n">fa</span><span class="o">=</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">))[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="arenear"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.arenear">[docs]</a><span class="k">def</span> <span class="nf">arenear</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="arenear"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.arenear">[docs]</a><span class="k">def</span> <span class="nf">arenear</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Expand a boolean/binary sequence by K samples in each direction.</span>
 <span class="sd">    See &quot;aresafe&quot;</span>
@@ -840,7 +839,7 @@
         <span class="n">b</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">|=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
     <span class="k">return</span> <span class="n">b</span></div>
 
-<div class="viewcode-block" id="aresafe"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.aresafe">[docs]</a><span class="k">def</span> <span class="nf">aresafe</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="aresafe"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.aresafe">[docs]</a><span class="k">def</span> <span class="nf">aresafe</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Contract a boolean/binary sequence by K samples in each direction.</span>
 <span class="sd">    For example, you may want to test for a condition, but avoid samples</span>
@@ -857,7 +856,7 @@
         <span class="n">b</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
     <span class="k">return</span> <span class="n">b</span></div>
 
-<div class="viewcode-block" id="get_edges"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.get_edges">[docs]</a><span class="k">def</span> <span class="nf">get_edges</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">pad_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="get_edges"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.get_edges">[docs]</a><span class="k">def</span> <span class="nf">get_edges</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">pad_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Assuming a binary signal, get the start and stop times of each</span>
 <span class="sd">    treatch of &quot;1s&quot;</span>
@@ -893,7 +892,7 @@
         <span class="k">if</span> <span class="n">signal</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="n">starts</span> <span class="o">=</span> <span class="n">starts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">starts</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">stops</span><span class="p">)])</span></div>
 
-<div class="viewcode-block" id="set_edges"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.set_edges">[docs]</a><span class="k">def</span> <span class="nf">set_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="set_edges"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.set_edges">[docs]</a><span class="k">def</span> <span class="nf">set_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts list of start, stop times over time period N into a [0,1]</span>
 <span class="sd">    array which is 1 for any time between a [start,stop)</span>
@@ -909,7 +908,7 @@
         <span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="remove_gaps"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.remove_gaps">[docs]</a><span class="k">def</span> <span class="nf">remove_gaps</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">cutoff</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_gaps"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.remove_gaps">[docs]</a><span class="k">def</span> <span class="nf">remove_gaps</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">cutoff</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Removes gaps (streaches of zeros bordered by ones) from </span>
 <span class="sd">    binary signal `w` that are shorter than `cutoff` in duration.</span>
@@ -932,7 +931,7 @@
     <span class="n">newgaps</span> <span class="o">=</span> <span class="n">set_edges</span><span class="p">(</span><span class="n">keep</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">-</span><span class="n">newgaps</span></div>
     
-<div class="viewcode-block" id="remove_short"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.remove_short">[docs]</a><span class="k">def</span> <span class="nf">remove_short</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">cutoff</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_short"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.remove_short">[docs]</a><span class="k">def</span> <span class="nf">remove_short</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">cutoff</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Removes spans of ones bordered by zeros from </span>
 <span class="sd">    binary signal `w` that are shorter than `cutoff` in duration.</span>
@@ -955,7 +954,7 @@
     <span class="n">newgaps</span> <span class="o">=</span> <span class="n">set_edges</span><span class="p">(</span><span class="n">keep</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">newgaps</span></div>
 
-<div class="viewcode-block" id="phase_rotate"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.phase_rotate">[docs]</a><span class="k">def</span> <span class="nf">phase_rotate</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.</span><span class="p">):</span>
+<div class="viewcode-block" id="phase_rotate"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.phase_rotate">[docs]</a><span class="k">def</span> <span class="nf">phase_rotate</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Only the phase advancement portion of a resonator.</span>
 <span class="sd">    See resonantDrive</span>
@@ -969,7 +968,7 @@
     <span class="n">s</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
-<div class="viewcode-block" id="fm_mod"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.fm_mod">[docs]</a><span class="k">def</span> <span class="nf">fm_mod</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
+<div class="viewcode-block" id="fm_mod"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fm_mod">[docs]</a><span class="k">def</span> <span class="nf">fm_mod</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -983,7 +982,7 @@
         <span class="n">signal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phaseRotate</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span></div>
 
-<div class="viewcode-block" id="pieces"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.pieces">[docs]</a><span class="k">def</span> <span class="nf">pieces</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">thr</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="pieces"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.pieces">[docs]</a><span class="k">def</span> <span class="nf">pieces</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">thr</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -1001,7 +1000,7 @@
         <span class="n">ps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span><span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">ps</span></div>
 
-<div class="viewcode-block" id="stats_block"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.stats_block">[docs]</a><span class="k">def</span> <span class="nf">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">statfunction</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">sample_match</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="stats_block"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.stats_block">[docs]</a><span class="k">def</span> <span class="nf">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">statfunction</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">sample_match</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Compute function of signal in blocks of size $N$ over the last axis</span>
 <span class="sd">    of the data</span>
@@ -1045,7 +1044,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="n">keep</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">statfunction</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="mean_block"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.mean_block">[docs]</a><span class="k">def</span> <span class="nf">mean_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">sample_match</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="mean_block"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.mean_block">[docs]</a><span class="k">def</span> <span class="nf">mean_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">sample_match</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calls stats_block using np.mean. See documentation of stats_block for</span>
 <span class="sd">    details.</span>
@@ -1061,7 +1060,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sample_match</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="var_block"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.var_block">[docs]</a><span class="k">def</span> <span class="nf">var_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="var_block"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.var_block">[docs]</a><span class="k">def</span> <span class="nf">var_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calls stats_block using np.var. See documentation of stats_block for</span>
 <span class="sd">    details.</span>
@@ -1073,7 +1072,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="median_block"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.median_block">[docs]</a><span class="k">def</span> <span class="nf">median_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="median_block"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.median_block">[docs]</a><span class="k">def</span> <span class="nf">median_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calls stats_block using np.median. See documentation of stats_block for</span>
 <span class="sd">    details.</span>
@@ -1085,7 +1084,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="phase_randomize"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.phase_randomize">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+<div class="viewcode-block" id="phase_randomize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.phase_randomize">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Phase randomizes a signal by rotating frequency components by a random</span>
 <span class="sd">    angle. Negative frequencies are rotated in the opposite direction.</span>
@@ -1124,7 +1123,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="phase_randomize_from_amplitudes"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.phase_randomize_from_amplitudes">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">):</span>
+<div class="viewcode-block" id="phase_randomize_from_amplitudes"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.phase_randomize_from_amplitudes">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    phase_randomize_from_amplitudes(amplitudes)</span>
 <span class="sd">    treats input amplitudes as amplitudes of fourier components</span>
@@ -1146,7 +1145,7 @@
     <span class="n">x</span> <span class="o">*=</span> <span class="n">rephase</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="estimate_padding"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.estimate_padding">[docs]</a><span class="k">def</span> <span class="nf">estimate_padding</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<div class="viewcode-block" id="estimate_padding"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.estimate_padding">[docs]</a><span class="k">def</span> <span class="nf">estimate_padding</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate the amount of padding needed to address boundary conditions</span>
 <span class="sd">    when filtering. Takes into account the filter bandwidth, which is</span>
@@ -1163,7 +1162,7 @@
     <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">padding</span></div>
 
-<div class="viewcode-block" id="lowpass_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.lowpass_filter">[docs]</a><span class="k">def</span> <span class="nf">lowpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="lowpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.lowpass_filter">[docs]</a><span class="k">def</span> <span class="nf">lowpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Execute a butterworth low pass Filter at frequency &quot;cut&quot;</span>
 <span class="sd">    Defaults to order=4 and Fs=1000</span>
@@ -1175,7 +1174,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">bandpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="highpass_filter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.highpass_filter">[docs]</a><span class="k">def</span> <span class="nf">highpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="highpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.highpass_filter">[docs]</a><span class="k">def</span> <span class="nf">highpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Execute a butterworth high pass Filter at frequency &quot;cut&quot;</span>
 <span class="sd">    Defaults to order=4 and Fs=1000</span>
@@ -1187,7 +1186,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">bandpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fdiff"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.fdiff">[docs]</a><span class="k">def</span> <span class="nf">fdiff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">240.</span><span class="p">):</span>
+<div class="viewcode-block" id="fdiff"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fdiff">[docs]</a><span class="k">def</span> <span class="nf">fdiff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">240.</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Take the discrete derivative of a signal, correcting result for</span>
 <span class="sd">    sample rate. This procedure returns a singnal two samples shorter than</span>
@@ -1198,9 +1197,9 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">-</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">Fs</span><span class="o">*</span><span class="mf">.5</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">-</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">Fs</span><span class="o">*.</span><span class="mi">5</span></div>
 
-<div class="viewcode-block" id="interpolate_NaN"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.interpolate_NaN">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="interpolate_NaN"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.interpolate_NaN">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fill in NaN (missing) data in a one-dimensional timeseries via linear</span>
 <span class="sd">    interpolation.</span>
@@ -1215,7 +1214,7 @@
     <span class="k">return</span> <span class="n">u</span></div>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
-<div class="viewcode-block" id="interpolate_NaN_quadratic"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.interpolate_NaN_quadratic">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN_quadratic</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="interpolate_NaN_quadratic"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.interpolate_NaN_quadratic">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN_quadratic</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fill in NaN (missing) data in a one-dimensional timeseries via quadratic</span>
 <span class="sd">    interpolation.</span>
@@ -1245,7 +1244,7 @@
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">u</span></div>
 
-<div class="viewcode-block" id="killSpikes"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.killSpikes">[docs]</a><span class="k">def</span> <span class="nf">killSpikes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="killSpikes"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.killSpikes">[docs]</a><span class="k">def</span> <span class="nf">killSpikes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Remove times when the signal exceeds a given threshold of the</span>
 <span class="sd">    standard deviation of the underlying signal. Removed data are</span>
@@ -1269,7 +1268,7 @@
         <span class="n">x</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">e</span><span class="o">-</span><span class="n">s</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="peak_within"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.peak_within">[docs]</a><span class="k">def</span> <span class="nf">peak_within</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">spectrum</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+<div class="viewcode-block" id="peak_within"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.peak_within">[docs]</a><span class="k">def</span> <span class="nf">peak_within</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">spectrum</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find maximum within a band</span>
 <span class="sd">    </span>
@@ -1295,7 +1294,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span> <span class="o">+</span> <span class="n">start</span>
     <span class="k">return</span> <span class="n">freqs</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="local_peak_within"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.local_peak_within">[docs]</a><span class="k">def</span> <span class="nf">local_peak_within</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">cc</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+<div class="viewcode-block" id="local_peak_within"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.local_peak_within">[docs]</a><span class="k">def</span> <span class="nf">local_peak_within</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">cc</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    For a spectrum, identify the largest local maximum in the frequency</span>
 <span class="sd">    range [fa,fb].</span>
@@ -1328,7 +1327,7 @@
     <span class="n">i</span>     <span class="o">=</span> <span class="n">peaks</span><span class="p">[</span><span class="n">argmax</span><span class="p">(</span><span class="n">cc</span><span class="p">[</span><span class="n">peaks</span><span class="p">])]</span>
     <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">freqs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="zeromean"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.zeromean">[docs]</a><span class="k">def</span> <span class="nf">zeromean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="zeromean"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zeromean">[docs]</a><span class="k">def</span> <span class="nf">zeromean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Remove the mean trend from data</span>
 <span class="sd">    </span>
@@ -1349,10 +1348,10 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
-    <span class="n">theslice</span> <span class="o">=</span> <span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="zscore"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.zscore">[docs]</a><span class="k">def</span> <span class="nf">zscore</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="zscore"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zscore">[docs]</a><span class="k">def</span> <span class="nf">zscore</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Z-scores data, defaults to the first axis.</span>
 <span class="sd">    A regularization factor is added to the standard deviation to preven</span>
@@ -1374,11 +1373,11 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">zeromean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="n">ignore_nan</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
-    <span class="n">theslice</span> <span class="o">=</span> <span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="n">ss</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">+</span><span class="n">regularization</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">/</span><span class="n">ss</span><span class="p">[</span><span class="n">theslice</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="gaussianize"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.gaussianize">[docs]</a><span class="k">def</span> <span class="nf">gaussianize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussianize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.gaussianize">[docs]</a><span class="k">def</span> <span class="nf">gaussianize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Use percentiles to force a timeseries to have a normal distribution.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -1386,7 +1385,7 @@
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
     <span class="k">return</span> <span class="n">ndtri</span><span class="p">((</span><span class="n">rankdata</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="deltaovermean"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.deltaovermean">[docs]</a><span class="k">def</span> <span class="nf">deltaovermean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="deltaovermean"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.deltaovermean">[docs]</a><span class="k">def</span> <span class="nf">deltaovermean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Subtracts, then divides by, the mean.</span>
 <span class="sd">    </span>
@@ -1404,11 +1403,11 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
-    <span class="n">theslice</span> <span class="o">=</span> <span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="n">mx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">mx</span><span class="p">)</span><span class="o">/</span><span class="n">mx</span></div>
 
-<div class="viewcode-block" id="unit_length"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.unit_length">[docs]</a><span class="k">def</span> <span class="nf">unit_length</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="unit_length"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unit_length">[docs]</a><span class="k">def</span> <span class="nf">unit_length</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Interpret given axis of multidimensional array as vectors,</span>
 <span class="sd">    and normalize them to unit length.</span>
@@ -1427,10 +1426,10 @@
 <span class="sd">        vectors in `x` normalized to unit length</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">theslice</span> <span class="o">=</span> <span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">**-</span><span class="mf">.5</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">**-.</span><span class="mi">5</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="sign_preserving_amplitude_demodulate"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.sign_preserving_amplitude_demodulate">[docs]</a><span class="k">def</span> <span class="nf">sign_preserving_amplitude_demodulate</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="sign_preserving_amplitude_demodulate"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.sign_preserving_amplitude_demodulate">[docs]</a><span class="k">def</span> <span class="nf">sign_preserving_amplitude_demodulate</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extracts an amplitude-modulated component from an analytic signal,</span>
 <span class="sd">    Correctly flipping the sign of the signal when it crosses zero,</span>
@@ -1516,7 +1515,7 @@
     <span class="k">return</span> <span class="n">demodulated</span></div>
 
 
-<div class="viewcode-block" id="autocorrelation"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.autocorrelation">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="autocorrelation"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.autocorrelation">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Computes the normalized autocorrelation over the specified</span>
 <span class="sd">    time-lags using convolution. Autocorrelation is normalized</span>
@@ -1582,7 +1581,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
     <span class="c1">#assert 0</span>
 
-<div class="viewcode-block" id="upsample"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.upsample">[docs]</a><span class="k">def</span> <span class="nf">upsample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="upsample"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.upsample">[docs]</a><span class="k">def</span> <span class="nf">upsample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Uses fourier transform to upsample x by some factor.</span>
 
@@ -1638,7 +1637,7 @@
     <span class="n">x</span> <span class="o">+=</span> <span class="n">dc</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="linfilter"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.linfilter">[docs]</a><span class="k">def</span> <span class="nf">linfilter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="linfilter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.linfilter">[docs]</a><span class="k">def</span> <span class="nf">linfilter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Linear response filter on data $x$ for system</span>
 <span class="sd">    </span>
@@ -1674,7 +1673,7 @@
         <span class="n">filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="span"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.span">[docs]</a><span class="k">def</span> <span class="nf">span</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="span"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.span">[docs]</a><span class="k">def</span> <span class="nf">span</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get the range of values (min,max) spanned by a dataset</span>
 <span class="sd">    </span>
@@ -1691,15 +1690,26 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="make_lagged"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.make_lagged">[docs]</a><span class="k">def</span> <span class="nf">make_lagged</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">NLAGS</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">LAGSPACE</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="make_lagged"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.make_lagged">[docs]</a><span class="k">def</span> <span class="nf">make_lagged</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">NLAGS</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">LAGSPACE</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Create shifted/lagged copies of a 1D signal.</span>
 <span class="sd">    These are retrospective (causal) features. </span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    x: 1D np.array length `T`</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    NLAGS: positive int; default 5</span>
+<span class="sd">    LAGSPACE: positive int; default 1</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result: NLAGS×T np.array</span>
+<span class="sd">         The first element is the original unshifted signal.</span>
+<span class="sd">         Later elements are shifts progressively further </span>
+<span class="sd">         back in time.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Signal should be one-dimensional&#39;</span><span class="p">)</span>
@@ -1707,7 +1717,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">LAG</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">LAG</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NLAGS</span><span class="p">)</span><span class="o">*</span><span class="n">LAGSPACE</span><span class="p">])</span></div>
   
 
-<div class="viewcode-block" id="zgrid"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.zgrid">[docs]</a><span class="k">def</span> <span class="nf">zgrid</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+<div class="viewcode-block" id="zgrid"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zgrid">[docs]</a><span class="k">def</span> <span class="nf">zgrid</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    2D grid coordinates as complex numbers, ranging from -L/2 to L/2</span>
 <span class="sd">    </span>
@@ -1724,7 +1734,7 @@
     <span class="k">return</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">c</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="kc">None</span><span class="p">,:]</span></div>
 
 
-<div class="viewcode-block" id="nice_interp"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.nice_interp">[docs]</a><span class="k">def</span> <span class="nf">nice_interp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="nice_interp"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.nice_interp">[docs]</a><span class="k">def</span> <span class="nf">nice_interp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    numpy.interp1d with nice defaults</span>
 <span class="sd">    </span>
@@ -1742,7 +1752,7 @@
         <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span><span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span></div>
     
     
-<div class="viewcode-block" id="fftacorr1d"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.fftacorr1d">[docs]</a><span class="k">def</span> <span class="nf">fftacorr1d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="fftacorr1d"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fftacorr1d">[docs]</a><span class="k">def</span> <span class="nf">fftacorr1d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Autocorrelogram via FFT.</span>
 <span class="sd">    </span>
@@ -1762,7 +1772,7 @@
     <span class="k">return</span> <span class="n">a</span></div>
     
     
-<div class="viewcode-block" id="fftsta"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.fftsta">[docs]</a><span class="k">def</span> <span class="nf">fftsta</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="fftsta"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fftsta">[docs]</a><span class="k">def</span> <span class="nf">fftsta</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Spike triggerd average (STA) via FFT</span>
 <span class="sd">    Signal `x` is z-scored befor calculating the spike-triggered average</span>
@@ -1786,7 +1796,7 @@
     <span class="k">return</span> <span class="n">sta</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sta</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="interpmax1d"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.interpmax1d">[docs]</a><span class="k">def</span> <span class="nf">interpmax1d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="interpmax1d"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.interpmax1d">[docs]</a><span class="k">def</span> <span class="nf">interpmax1d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Locate a peak in a 1D array by interpolation; see</span>
 <span class="sd">    dspguru.com/dsp/howtos/how-to-interpolate-fft-peak</span>
@@ -1807,7 +1817,7 @@
         <span class="k">return</span> <span class="n">i</span></div>
     
     
-<div class="viewcode-block" id="spaced_derivative"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.spaced_derivative">[docs]</a><span class="k">def</span> <span class="nf">spaced_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="spaced_derivative"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.spaced_derivative">[docs]</a><span class="k">def</span> <span class="nf">spaced_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Differentiate a 1D timeseries returning a new vector with the same</span>
 <span class="sd">    number of samples. This smoothly interpolates between a forward</span>
@@ -1829,7 +1839,7 @@
         <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="drop_nonfinite"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.drop_nonfinite">[docs]</a><span class="k">def</span> <span class="nf">drop_nonfinite</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="drop_nonfinite"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.drop_nonfinite">[docs]</a><span class="k">def</span> <span class="nf">drop_nonfinite</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Flatten array and remove non-finite values</span>
 
@@ -1846,7 +1856,7 @@
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="split_into_groups"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.split_into_groups">[docs]</a><span class="k">def</span> <span class="nf">split_into_groups</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">group_sizes</span><span class="p">):</span>
+<div class="viewcode-block" id="split_into_groups"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.split_into_groups">[docs]</a><span class="k">def</span> <span class="nf">split_into_groups</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">group_sizes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Split `np.array` `x` into `len(group_sizes)` groups,</span>
 <span class="sd">    with the size of the groups specified by `group_sizes`.</span>
@@ -1884,7 +1894,7 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="uniformize"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.uniformize">[docs]</a><span class="k">def</span> <span class="nf">uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="uniformize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.uniformize">[docs]</a><span class="k">def</span> <span class="nf">uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Use percentiles to force a timeseries to have a uniform </span>
 <span class="sd">    [0,1] distribution.</span>
@@ -1942,7 +1952,7 @@
     <span class="n">scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">ranks</span><span class="o">/</span><span class="n">used</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">scaled</span></div>
 
-<div class="viewcode-block" id="invert_uniformize"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.invert_uniformize">[docs]</a><span class="k">def</span> <span class="nf">invert_uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="invert_uniformize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.invert_uniformize">[docs]</a><span class="k">def</span> <span class="nf">invert_uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Inverts the `uniformize()` function</span>
 <span class="sd">    </span>
@@ -2030,7 +2040,7 @@
         <span class="n">scaled</span><span class="p">,</span><span class="n">x_</span><span class="p">,</span><span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="p">)(</span><span class="n">p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="virtual_reference_line_noise_removal"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.virtual_reference_line_noise_removal">[docs]</a><span class="k">def</span> <span class="nf">virtual_reference_line_noise_removal</span><span class="p">(</span><span class="n">lfps</span><span class="p">,</span><span class="n">frequency</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span><span class="n">hbw</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="virtual_reference_line_noise_removal"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.virtual_reference_line_noise_removal">[docs]</a><span class="k">def</span> <span class="nf">virtual_reference_line_noise_removal</span><span class="p">(</span><span class="n">lfps</span><span class="p">,</span><span class="n">frequency</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span><span class="n">hbw</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Accepts an array of LFP recordings (first dimension should be </span>
 <span class="sd">    channel number, second dimension time ).</span>
@@ -2064,7 +2074,7 @@
     <span class="n">removed</span>  <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">noise</span><span class="p">)</span><span class="o">*</span><span class="n">scale</span><span class="o">*</span><span class="n">noise</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lfps</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">removed</span></div>
 
-<div class="viewcode-block" id="band_stop_line_noise_removal"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.band_stop_line_noise_removal">[docs]</a><span class="k">def</span> <span class="nf">band_stop_line_noise_removal</span><span class="p">(</span><span class="n">lfps</span><span class="p">,</span><span class="n">frequency</span><span class="o">=</span><span class="mf">60.</span><span class="p">):</span>
+<div class="viewcode-block" id="band_stop_line_noise_removal"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.band_stop_line_noise_removal">[docs]</a><span class="k">def</span> <span class="nf">band_stop_line_noise_removal</span><span class="p">(</span><span class="n">lfps</span><span class="p">,</span><span class="n">frequency</span><span class="o">=</span><span class="mf">60.</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Remove line noise using band-stop at 60Hz </span>
 <span class="sd">    and overtones.</span>
@@ -2095,79 +2105,13 @@
 
 
 
+
+
+
+
 <span class="c1">############################################################</span>
 <span class="c1"># Array helpers (may eventually migrate to new modeule)</span>
 
-<span class="k">def</span> <span class="nf">_take_axis_slice</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
-    <span class="c1"># Redundant to existing numpy functions TODO remove</span>
-    <span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">axis</span><span class="o">&gt;=</span><span class="n">ndims</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;axis </span><span class="si">%d</span><span class="s1"> invalid for shape </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">shape</span><span class="p">))</span>
-    <span class="n">before</span> <span class="o">=</span> <span class="n">axis</span>
-    <span class="n">after</span>  <span class="o">=</span> <span class="n">ndims</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">axis</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">before</span> <span class="o">+</span> <span class="p">(</span><span class="n">index</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">after</span>
-
-<span class="k">def</span> <span class="nf">_take_axis</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
-    <span class="c1"># Redundant to existing numpy functions TODO remove</span>
-    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">_take_axis_slice</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">)]</span>
-    
-<div class="viewcode-block" id="ndargmax"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.ndargmax">[docs]</a><span class="k">def</span> <span class="nf">ndargmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get coordinates of largest value in a multidimensional </span>
-<span class="sd">    array</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x: np.array</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmax</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
-    
-<div class="viewcode-block" id="complex_to_nan"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.complex_to_nan">[docs]</a><span class="k">def</span> <span class="nf">complex_to_nan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Replce complex entries with NaN or other value</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x: np.array</span>
-<span class="sd">    </span>
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    value: float; default `np.NaN`</span>
-<span class="sd">        Value to replace complex entries with</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">real</span></div>
-
-<div class="viewcode-block" id="make_rebroadcast_slice"><a class="viewcode-back" href="../../obsolete/neurotools.signal.html#neurotools.signal.make_rebroadcast_slice">[docs]</a><span class="k">def</span> <span class="nf">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Generate correct slice object for broadcasting </span>
-<span class="sd">    stastistics averaged over the given axis back to the</span>
-<span class="sd">    original shape.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x: np.array</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">naxes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;x.shape=&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;naxes=&#39;</span><span class="p">,</span><span class="n">naxes</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">axis</span><span class="o">=</span><span class="n">naxes</span><span class="o">+</span><span class="n">axis</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="bp">Ellipsis</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">axis</span><span class="o">==</span><span class="n">naxes</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">axis</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">naxes</span> <span class="o">-</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">b</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis=&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">theslice</span></div>
 </pre></div>
 
            </div>

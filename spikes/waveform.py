@@ -140,7 +140,7 @@ def minmax(wf):
     return wf
 
 def normalized_waveform(wf):
-    wf = sig.(zscore(wf),5)
+    wf = sig.upsample(sig.zscore(wf),5)
     wf = realign_special(wf)
     wf = (wf-np.mean(wf[40:200]))/np.std(wf[40:200])
     return wf

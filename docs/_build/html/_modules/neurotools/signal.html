@@ -246,50 +246,6 @@
 
 
 
-<span class="c1">############################################################</span>
-<span class="c1"># Functions for adjusting/scaling timeseries</span>
-
-<div class="viewcode-block" id="unitscale"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unitscale">[docs]</a><span class="k">def</span> <span class="nf">unitscale</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Rescales `signal` so that its minimum is 0 and its </span>
-<span class="sd">    maximum is 1.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    signal: np.array</span>
-<span class="sd">        Array-like real-valued signal</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    signalL np.array</span>
-<span class="sd">        Rescaled </span>
-<span class="sd">        `signal-min(signal)/(max(signal)-min(signal))`</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Old behavior</span>
-        <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-        <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">signal</span>
-    <span class="c1"># New behavior</span>
-    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
-    <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
-    <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">signal</span></div>
-
-<div class="viewcode-block" id="topercentiles"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.topercentiles">[docs]</a><span class="k">def</span> <span class="nf">topercentiles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
-    <span class="n">ranks</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">ranks</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span></div>
 
 
 
@@ -1796,6 +1752,49 @@
 
 <span class="c1">############################################################</span>
 <span class="c1"># 1D signal adjusting</span>
+
+
+<div class="viewcode-block" id="unitscale"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unitscale">[docs]</a><span class="k">def</span> <span class="nf">unitscale</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rescales `signal` so that its minimum is 0 and its </span>
+<span class="sd">    maximum is 1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal: np.array</span>
+<span class="sd">        Array-like real-valued signal</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    signalL np.array</span>
+<span class="sd">        Rescaled </span>
+<span class="sd">        `signal-min(signal)/(max(signal)-min(signal))`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">axis</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Old behavior</span>
+        <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">signal</span>
+    <span class="c1"># New behavior</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="n">signal</span><span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
+    <span class="n">signal</span><span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">signal</span></div>
+
+<div class="viewcode-block" id="topercentiles"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.topercentiles">[docs]</a><span class="k">def</span> <span class="nf">topercentiles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ranks</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span></div>
 
 <div class="viewcode-block" id="zeromean"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zeromean">[docs]</a><span class="k">def</span> <span class="nf">zeromean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

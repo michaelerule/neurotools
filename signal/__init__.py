@@ -167,50 +167,6 @@ def circular_gaussian_smooth_2D(x,sigma):
 
 
 
-############################################################
-# Functions for adjusting/scaling timeseries
-
-def unitscale(signal,axis=None):
-    '''
-    Rescales `signal` so that its minimum is 0 and its 
-    maximum is 1.
-
-    Parameters
-    ----------
-    signal: np.array
-        Array-like real-valued signal
-    
-    Returns
-    -------
-    signalL np.array
-        Rescaled 
-        `signal-min(signal)/(max(signal)-min(signal))`
-    '''
-    signal = np.float64(np.array(signal))
-    if axis==None:
-        # Old behavior
-        signal-= np.nanmin(signal)
-        signal/= np.nanmax(signal)
-        return signal
-    # New behavior
-    theslice = narray.make_rebroadcast_slice(signal, axis)
-    signal-= np.nanmin(signal,axis=axis)[theslice]
-    signal/= np.nanmax(signal,axis=axis)[theslice]
-    return signal
-
-def topercentiles(x):
-    '''
-
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    n = len(x)
-    x = np.array(x)
-    order = x.argsort()
-    ranks = order.argsort()
-    return ranks/(len(x)-1)*100
 
 
 
@@ -1718,6 +1674,49 @@ def interpmax1d(x):
 ############################################################
 # 1D signal adjusting
 
+
+def unitscale(signal,axis=None):
+    '''
+    Rescales `signal` so that its minimum is 0 and its 
+    maximum is 1.
+
+    Parameters
+    ----------
+    signal: np.array
+        Array-like real-valued signal
+    
+    Returns
+    -------
+    signalL np.array
+        Rescaled 
+        `signal-min(signal)/(max(signal)-min(signal))`
+    '''
+    signal = np.float64(np.array(signal))
+    if axis==None:
+        # Old behavior
+        signal-= np.nanmin(signal)
+        signal/= np.nanmax(signal)
+        return signal
+    # New behavior
+    theslice = narray.make_rebroadcast_slice(signal, axis)
+    signal-= np.nanmin(signal,axis=axis)[theslice]
+    signal/= np.nanmax(signal,axis=axis)[theslice]
+    return signal
+
+def topercentiles(x):
+    '''
+
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    n = len(x)
+    x = np.array(x)
+    order = x.argsort()
+    ranks = order.argsort()
+    return ranks/(len(x)-1)*100
+
 def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     '''
     Remove the mean trend from data
@@ -1735,6 +1734,8 @@ def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     
     Returns
     -------
+    x: np.array
+        Copy of x shifted so that mean is zero.
     '''
     x = np.array(x)
     if np.prod(x.shape)==0:

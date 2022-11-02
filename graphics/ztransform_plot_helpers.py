@@ -19,7 +19,7 @@ from neurotools.graphics.color import hcl2rgb,hsv2rgb
 
 # Configure matplotlib defaults
 def configure_matplotlib():
-    globals TEXTWIDTH,SMALL_SIZE,MEDIUM_SIZE,BIGGER_SIZE
+    global TEXTWIDTH,SMALL_SIZE,MEDIUM_SIZE,BIGGER_SIZE
     matplotlib.rcParams['figure.dpi']=300
     TEXTWIDTH = 5.62708
     matplotlib.rcParams['figure.figsize'] = (TEXTWIDTH, TEXTWIDTH/sqrt(2))

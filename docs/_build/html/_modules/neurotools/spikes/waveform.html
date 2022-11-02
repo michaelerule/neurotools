@@ -93,7 +93,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">signal</span>
-<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="k">import</span> <span class="n">upsample</span>
+<span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
 
 
 <div class="viewcode-block" id="realign"><a class="viewcode-back" href="../../../neurotools.spikes.waveform.html#neurotools.spikes.waveform.realign">[docs]</a><span class="k">def</span> <span class="nf">realign</span><span class="p">(</span><span class="n">snip</span><span class="p">,</span><span class="n">pad</span><span class="o">=</span><span class="s1">&#39;zeros&#39;</span><span class="p">):</span>
@@ -216,7 +216,7 @@
     <span class="k">return</span> <span class="n">wf</span></div>
 
 <div class="viewcode-block" id="normalized_waveform"><a class="viewcode-back" href="../../../neurotools.spikes.waveform.html#neurotools.spikes.waveform.normalized_waveform">[docs]</a><span class="k">def</span> <span class="nf">normalized_waveform</span><span class="p">(</span><span class="n">wf</span><span class="p">):</span>
-    <span class="n">wf</span> <span class="o">=</span> <span class="n">upsample</span><span class="p">(</span><span class="n">zscore</span><span class="p">(</span><span class="n">wf</span><span class="p">),</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">upsample</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">wf</span><span class="p">),</span><span class="mi">5</span><span class="p">)</span>
     <span class="n">wf</span> <span class="o">=</span> <span class="n">realign_special</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span>
     <span class="n">wf</span> <span class="o">=</span> <span class="p">(</span><span class="n">wf</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">wf</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">200</span><span class="p">]))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">wf</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">200</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">wf</span></div>

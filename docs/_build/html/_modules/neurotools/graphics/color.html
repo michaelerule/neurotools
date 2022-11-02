@@ -93,7 +93,6 @@
 
 <span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="k">import</span> <span class="n">gaussian_smooth</span>
 <span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="k">import</span> <span class="n">circular_gaussian_smooth</span>
-<span class="kn">from</span> <span class="nn">neurotools.util</span> <span class="k">import</span> <span class="n">tools</span>
 <span class="kn">from</span> <span class="nn">neurotools</span> <span class="k">import</span> <span class="n">signal</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -687,17 +686,17 @@
 
 <div class="viewcode-block" id="enumerate_fast_colors"><a class="viewcode-back" href="../../../neurotools.graphics.color.html#neurotools.graphics.color.enumerate_fast_colors">[docs]</a><span class="k">def</span> <span class="nf">enumerate_fast_colors</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is for the Arduino TFT touch screen shield from Adafruit.</span>
+<span class="sd">    </span>
 <span class="sd">    Enumerates colors that can be rendered over a 16 bit bus</span>
 <span class="sd">    using two identical bytes, skipping the lowest two bits of</span>
 <span class="sd">    each byte, and reserving the fourth bit for mask storage.</span>
 <span class="sd">    This is intended for development of optimized color pallets for</span>
 <span class="sd">    mictrocontroller driven display interfaces.</span>
 <span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    colors:</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nb">bytes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="o">&amp;</span><span class="mb">0b11110100</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">256</span><span class="p">)])))</span>
     <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">bit16_RGB_to_tuple</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="mi">256</span><span class="o">|</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="p">]</span>
@@ -714,6 +713,7 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    RGB:</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">B</span> <span class="o">=</span> <span class="n">c</span>
     <span class="n">R</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="mb">0b11111</span><span class="p">)</span>

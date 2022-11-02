@@ -93,8 +93,180 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="neurotools-spatial-masking-module">
-<h1>neurotools.spatial.masking module<a class="headerlink" href="#neurotools-spatial-masking-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.spatial.masking">
+<span id="neurotools-spatial-masking-module"></span><h1>neurotools.spatial.masking module<a class="headerlink" href="#module-neurotools.spatial.masking" title="Permalink to this headline">¶</a></h1>
+<p>Routines related to 2D boolean arrays used as image masks
+depends on neurotools.spatial.geometry
+These routines expect 2D (x,y) points to be encoded as complex z=x+iy numbers.</p>
+<dl class="function">
+<dt id="neurotools.spatial.masking.as_mask">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">as_mask</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#as_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.as_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify that x is a 2D np.bool array, or attempt to convert it to one if
+not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>2D np.array</em>) – This routine understands np.bool, as well as numeric arrays that contain
+only two distinct values, and use a positive value for True and any
+other value for False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.mask_to_points">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">mask_to_points</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#mask_to_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.mask_to_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get locations of all <cite>True</cite> pixels in a 2D boolean array encoded as
+z = column + i*row.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>2D np.bool</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>z</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.complex64</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.extend_mask">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">extend_mask</code><span class="sig-paren">(</span><em>mask</em>, <em>sigma=2</em>, <em>thr=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#extend_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.extend_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend 2D image mask by blurring and thresholding.
+Note: this uses circular convolution; Pad accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mask</strong> (<em>2D np.bool</em>) – Image mask to extend.</li>
+<li><strong>sigma</strong> (<em>float</em><em>, </em><em>default 3</em>) – Gaussian blur radius.</li>
+<li><strong>thr</strong> – (float, default .5): Threshold for new mask.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>smoothed mask</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2D np.bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.pgrid">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">pgrid</code><span class="sig-paren">(</span><em>W</em>, <em>H=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#pgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.pgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a (W,H) = (Nrows,Ncols) coordinate grid where each cell
+is z = irow + 1j * icol</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>W</strong> (<em>int</em><em> or </em><em>2D np.array</em>) – If <cite>int</cite>: the number of columns in the grid.
+if <cite>np.array</cite>: Take (H,W) from the array’s shape</li>
+<li><strong>H</strong> (<em>int</em>) – Number of rows in grid; Defaults to H=W if H=None.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.nan_mask">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">nan_mask</code><span class="sig-paren">(</span><em>mask</em>, <em>nanvalue=False</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#nan_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.nan_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a (W,H) = (Nrows,Ncols) coordinate grid where each cell
+is z = irow + 1j * icol</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mask</strong> (<em>2D np.bool</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.maskout">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">maskout</code><span class="sig-paren">(</span><em>x</em>, <em>mask</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#maskout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.maskout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set pixels in x where mask is False to NaN</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>2D np.float32</em>) – </li>
+<li><strong>mask</strong> (<em>2D np.bool</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.trim_mask">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">trim_mask</code><span class="sig-paren">(</span><em>mask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#trim_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.trim_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove empty edges of boolean mask.
+See <cite>mask_crop(array,mask)</cite> to use a mask to trim another array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mask</strong> (<em>2D np.bool</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.mask_crop">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">mask_crop</code><span class="sig-paren">(</span><em>x</em>, <em>mask</em>, <em>fill_nan=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#mask_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.mask_crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set pixels in x where mask is False to NaN,
+and then remove empty rows and columns.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>2D np.float32</em>) – </li>
+<li><strong>mask</strong> (<em>2D np.bool</em>) – </li>
+<li><strong>fill_nan</strong> (<em>bool</em>) – Whether to fill “false” values with NaN; default is true</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.spatial.masking.to_image">
+<code class="descclassname">neurotools.spatial.masking.</code><code class="descname">to_image</code><span class="sig-paren">(</span><em>x</em>, <em>mask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#to_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.spatial.masking.to_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign list of values <cite>x</cite> to locations in <cite>mask</cite> that are True,
+in row-major order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>1D np.array</em>) – </li>
+<li><strong>mask</strong> (<em>2D np.bool</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

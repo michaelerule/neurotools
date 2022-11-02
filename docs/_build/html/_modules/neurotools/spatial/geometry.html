@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.spatial.geometry &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../spatial.html">neurotools.spatial</a></li>
+      <li class="breadcrumb-item active">neurotools.spatial.geometry</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.spatial.geometry</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Collected functions from 2018--2023 concerning analyses of 2D data.</span>
+
+<span class="sd">These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">neurotools.util.tools</span> <span class="k">as</span> <span class="nn">ntools</span>
+<span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">ConvexHull</span>
+<span class="kn">import</span> <span class="nn">neurotools.spatial.masking</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="p2z"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.p2z">[docs]</a><span class="k">def</span> <span class="nf">p2z</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Ensure that a numpy array contains (x,y) points encoded as z = x+iy,</span>
+<span class="sd">    or convert two arrays (x,y) int z = x+iy format.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    px: np.array</span>
+<span class="sd">        x coordinate or points, or, if py is None</span>
+<span class="sd">         - complex z=x + iy array (in which case this function is a noop)</span>
+<span class="sd">         - array with on dimension length 2 containing (px,py)</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    py: np.array</span>
+<span class="sd">        y coordinate of points</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.complex64</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">px</span><span class="p">)</span>
+    <span class="c1"># Do nothing if already in the right format</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">px</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">py</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;px is already complex but py is specified&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">px</span>
+    <span class="c1"># Interpret px as 2D points if py missing</span>
+    <span class="n">px</span> <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">px</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">py</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Try to interpret px as points</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;px doesn</span><span class="se">\&#39;</span><span class="s1">t seem to contain 2d points&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;more than one axis of &#39;</span>
+            <span class="s1">&#39;px.shape=</span><span class="si">%s</span><span class="s1"> is length 2; (x,y) axis is ambiguous&#39;</span><span class="o">%</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">xyaxis</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">take_along_axis</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">xyaxis</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">take_along_axis</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">xyaxis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">y</span>
+    <span class="c1"># combine as z = px + i py</span>
+    <span class="n">py</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">py</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">py</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="n">px</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;px and py must have the same shape&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">py</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument py already contains z = x + iy points&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">px</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">py</span><span class="p">)</span></div>
+
+<span class="c1"># Operator abuse;</span>
+<span class="nd">@ntools</span><span class="o">.</span><span class="n">piper</span>
+<span class="k">def</span> <span class="nf">z2p</span><span class="p">(</span><span class="n">pz</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert complex points to 2D (x,y) points</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">pz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">pz</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pz does not seem to contain complex x+iy points&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">float32</span><span class="p">([</span><span class="n">pz</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">pz</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="polar_smooth_contour"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.polar_smooth_contour">[docs]</a><span class="k">def</span> <span class="nf">polar_smooth_contour</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Smooth the radial and angular components of a closed, circular,</span>
+<span class="sd">    non-self-intersecting contour `z` in the complex plane. </span>
+<span class="sd">    </span>
+<span class="sd">    To avoid coodinate singularity, `z` should not intersect its own centroid.</span>
+<span class="sd">    </span>
+<span class="sd">    Smoothing is accomplished in terms of adjacent samples, and the kernel</span>
+<span class="sd">    standard deviation has units of samples. See `resample_convex_hull` to</span>
+<span class="sd">    convert a convex shape with irregular angular sampling to one with regular</span>
+<span class="sd">    angular sampling for better results.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    px: 1D complex64 z=x+iy points</span>
+<span class="sd">    sigma: positive float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">p2z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="n">c</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">ct</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">circular_gaussian_smooth</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sigma</span><span class="p">)</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">circular_gaussian_smooth</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">sigma</span><span class="p">)</span>
+    <span class="n">h</span>  <span class="o">=</span> <span class="n">angle</span><span class="p">((</span><span class="n">ct</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">st</span><span class="p">))</span>
+    <span class="n">r</span>  <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">circular_gaussian_smooth</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span></div>
+
+
+
+<div class="viewcode-block" id="convex_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull">[docs]</a><span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A wrapper for scipy.spatial.ConvexHull that returns points as z=x+iy</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">p2z</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">z2p</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">hull</span>   <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">verts</span>  <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span><span class="n">hull</span><span class="o">.</span><span class="n">vertices</span><span class="p">[:</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">points</span><span class="p">[</span><span class="n">verts</span><span class="p">]</span><span class="o">@</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="n">j</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="convex_hull_from_mask"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull_from_mask">[docs]</a><span class="k">def</span> <span class="nf">convex_hull_from_mask</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extract convex hull containing all pixels in a 2D boolean array that are </span>
+<span class="sd">    True. The array x is interpreted as a (rows,cols) matrix where row number </span>
+<span class="sd">    is the y coordinate and col number is the x coordinate. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: 2D np.bool</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    Ntheta: positive int</span>
+<span class="sd">        If not None, the resulting hull will be resampled at Ntheta uniform</span>
+<span class="sd">        angular intervals around the centroid</span>
+<span class="sd">    sigma: positive float</span>
+<span class="sd">        If not None, resulting hull will be smoothed in polar coordinates</span>
+<span class="sd">        by a circular Gaussian kernel with standard deviation sigma, where</span>
+<span class="sd">        sigma is expressed in DEGRESS</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    z: np.complex64</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">convex_hull</span><span class="p">(</span><span class="n">neurotools</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">masking</span><span class="o">.</span><span class="n">mask_to_points</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Ntheta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">resample_convex_hull</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">Ntheta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sigma</span><span class="o">&lt;=</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">sigma</span><span class="o">&gt;</span><span class="mi">360</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Angular smoothing σ=</span><span class="si">%f</span><span class="s1"> &#39;</span>
+            <span class="s1">&#39;should be between 0 and 360 degrees&#39;</span><span class="p">)</span><span class="o">%</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Ntheta</span><span class="o">&lt;</span><span class="mi">30</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Angular smoothing σ=</span><span class="si">%f</span><span class="s1"> degrees specified, &#39;</span>
+            <span class="s1">&#39;but Ntheta=</span><span class="si">%d</span><span class="s1"> is too few to provide suitable resolution&#39;</span>
+            <span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span><span class="n">Ntheta</span><span class="p">))</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">polar_smooth_contour</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">sigma</span><span class="o">/</span><span class="mi">360</span><span class="o">*</span><span class="n">Ntheta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">q</span></div>
+
+
+<div class="viewcode-block" id="resample_convex_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.resample_convex_hull">[docs]</a><span class="k">def</span> <span class="nf">resample_convex_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Resample a convex shape at uniform angular intervals around its centroid</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    Ntheta: positive int; default 60</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">Ntheta</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;# angles to sample should be &gt;4; got </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">Ntheta</span><span class="p">)</span>
+    
+    <span class="n">z</span> <span class="o">=</span> <span class="n">convex_hull</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="n">c</span>    
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">argsort</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">z</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">order</span><span class="p">],</span><span class="n">w</span><span class="p">[</span><span class="n">order</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="n">order</span><span class="p">],</span><span class="n">h</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+    
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rpad</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([[</span><span class="n">r</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span><span class="n">r</span><span class="p">,[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]]])</span>
+    <span class="n">hpad</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([[</span><span class="n">h</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">],</span><span class="n">h</span><span class="p">,[</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">]])</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span><span class="n">hpad</span><span class="p">,</span><span class="n">rpad</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">c</span> <span class="o">+</span> <span class="n">r1</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">angles</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="in_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.in_hull">[docs]</a><span class="k">def</span> <span class="nf">in_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">hull</span><span class="p">):</span> 
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Determine if the list of points P lies inside a convex hull</span>
+<span class="sd">    credit: https://stackoverflow.com/a/52405173/900749</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z: z=x+iy points to test</span>
+<span class="sd">    hull: ConvexHull, or points to form one with</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">p2z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hull</span><span class="p">,</span><span class="n">ConvexHull</span><span class="p">):</span>
+        <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">z2p</span><span class="p">(</span><span class="n">hull</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">hull</span><span class="o">.</span><span class="n">equations</span><span class="p">[:,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># half-plane directions</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">hull</span><span class="o">.</span><span class="n">equations</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># half-plane thresholds</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">m</span><span class="nd">@z2p</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">b</span><span class="p">[:,</span><span class="kc">None</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -90,8 +90,8 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">neurotools.graphics.plot</span> <span class="k">import</span> <span class="n">force_aspect</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">neurotools.graphics.plot</span> <span class="k">as</span> <span class="nn">nplt</span>
 
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
@@ -211,19 +211,27 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    is:</span>
+<span class="sd">    edges:</span>
+<span class="sd">    **kwargs:</span>
+<span class="sd">        Forward to `plot()`</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">edgelist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">edges</span><span class="p">[:,:</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="n">iz</span><span class="p">[</span><span class="n">edges</span><span class="p">]],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">z2xy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">edgelist</span><span class="p">)),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">force_aspect</span><span class="p">()</span></div>
+    <span class="n">nplt</span><span class="o">.</span><span class="n">force_aspect</span><span class="p">()</span></div>
     
 <div class="viewcode-block" id="plot_triangles"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.plot_triangles">[docs]</a><span class="k">def</span> <span class="nf">plot_triangles</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">triangles</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    iz:</span>
+<span class="sd">    triangles:</span>
+<span class="sd">    **kwargs:</span>
+<span class="sd">        Forward to `plot()`</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -231,7 +239,7 @@
     <span class="n">edges</span> <span class="o">=</span> <span class="n">trianglesToEdges</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span>
     <span class="n">edgelist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">edges</span><span class="p">[:,:</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="n">iz</span><span class="p">[</span><span class="n">edges</span><span class="p">]],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">z2xy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">edgelist</span><span class="p">)),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">force_aspect</span><span class="p">()</span></div>
+    <span class="n">nplt</span><span class="o">.</span><span class="n">force_aspect</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="mergeNearby"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.mergeNearby">[docs]</a><span class="k">def</span> <span class="nf">mergeNearby</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">radius</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -239,6 +247,9 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">    y:</span>
+<span class="sd">    radius:</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

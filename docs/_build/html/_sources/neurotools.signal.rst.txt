@@ -10,7 +10,6 @@ Submodules
    neurotools.signal.conv
    neurotools.signal.morlet
    neurotools.signal.multitaper
-   neurotools.signal.ppc
    neurotools.signal.savitskygolay
    neurotools.signal.sde
 

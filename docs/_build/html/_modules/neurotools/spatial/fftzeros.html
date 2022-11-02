@@ -92,7 +92,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">convolve2d</span>
-<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="k">import</span> <span class="n">rewrap</span>
+<span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
 <span class="kn">from</span> <span class="nn">neurotools.graphics.plot</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">neurotools.spatial.triangulation</span> <span class="k">import</span> <span class="n">mergeNearby</span>
 <span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="k">import</span> <span class="n">zeroslike</span><span class="p">,</span><span class="n">find</span>
@@ -171,7 +171,7 @@
 <span class="sd">    np.array</span>
 <span class="sd">        phases differentiated along the x-axis (first dimension)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dx</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">dx</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">dx</span></div>
 
@@ -191,7 +191,7 @@
 <span class="sd">    np.array</span>
 <span class="sd">        phases differentiated along the y-axis (second dimension)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">dy</span> <span class="o">=</span> <span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">dy</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:]</span><span class="o">+</span><span class="n">dy</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span><span class="o">*</span><span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">dy</span></div>
 

@@ -17,7 +17,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from scipy import signal
-from neurotools.signal import upsample
+import neurotools.signal as sig
 
 
 def realign(snip,pad='zeros'):
@@ -140,7 +140,7 @@ def minmax(wf):
     return wf
 
 def normalized_waveform(wf):
-    wf = upsample(zscore(wf),5)
+    wf = sig.(zscore(wf),5)
     wf = realign_special(wf)
     wf = (wf-np.mean(wf[40:200]))/np.std(wf[40:200])
     return wf

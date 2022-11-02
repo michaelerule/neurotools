@@ -15,7 +15,12 @@ from __future__ import print_function
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
 
-from neurotools.util.time import current_milli_time
+import neurotools.util
+
+
+#from neurotools.util.time import current_milli_time
+
+
 from collections import defaultdict
 import os, sys
 import inspect, ast, types
@@ -241,9 +246,9 @@ def timed(f,*args,**kwargs):
     Returns
     -------
     '''
-    t0      = current_milli_time()
+    t0      = neurotools.util.time.current_milli_time()
     result  = f(*args,**kwargs)
-    t1      = current_milli_time()
+    t1      = neurotools.util.time.current_milli_time()
     return float(t1-t0), result
 
 

@@ -11,10 +11,16 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+# Suppress warnings from numpy/spectrum
+import warnings
+
 import numpy as np
 import neurotools.util.getfftw as fft
-from neurotools.signal import zscore
 from neurotools.jobs.ndecorator import memoize
+from neurotools.jobs import parallel
+
+import neurotools.signal as sig
+import scipy.linalg
 
 try:
     from spectrum.mtm import dpss
@@ -22,8 +28,6 @@ except:
     def dpss(*args):
         raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
 
-# Suppress warnings from numpy/spectrum
-import warnings
 
 @memoize
 def dpss_cached(length,half_bandwidth_parameter):
@@ -118,9 +122,6 @@ def sliding_multitaper_spectrum(x,window=500,step=100,Fs=1000,BW=5):
     raise NotImplementedError("This function is not yet implemented")
 
 
-from neurotools.signal import zscore, bandpass_filter
-import scipy.linalg
-
 def _tapered_cross_specra_helper(params):
     '''
     '''
@@ -133,7 +134,6 @@ def _tapered_cross_specra_helper(params):
     result = (pxx,pyy,pxy)
     return i,result
 
-from neurotools.jobs import parallel
 
 def multitaper_population_eigencoherence(
     x,y,FS,
@@ -165,8 +165,8 @@ def multitaper_population_eigencoherence(
         highf = FS*0.49
 
     # Z-score and band-limit signals
-    x = np.array([zscore(bandpass_filter(z,lowf,None,FS)) for z in x])
-    y = np.array([zscore(bandpass_filter(z,lowf,None,FS)) for z in y])
+    x = np.array([sig.zscore(sig.bandpass_filter(z,lowf,None,FS)) for z in x])
+    y = np.array([sig.zscore(sig.bandpass_filter(z,lowf,None,FS)) for z in y])
 
     tapers,taper_evals = dpss_cached(T,(1/2-1e-9)*NTAPER)
 

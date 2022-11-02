@@ -11,6 +11,8 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import numpy as np
+
 def lmap(function,*args):
     '''
     Map, collecting results immediately in a list.

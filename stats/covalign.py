@@ -22,7 +22,7 @@ from scipy.linalg           import solve,lstsq
 from sklearn.decomposition  import FactorAnalysis
 from sklearn                import manifold
 from neurotools.util.hdfmat import printmatHDF5, hdf2dict, getHDF
-from neurotools.util.tools  import progress_bar
+from neurotools.util.time   import progress_bar
 
 NPERMUTATION = 10
 

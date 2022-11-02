@@ -72,7 +72,7 @@ def phase_randomize(signal):
 
 def fftppc_biased(snippits,Fs=1000,taper=None):
     '''
-    FFT-based pairwise phase consistency **without **
+    FFT-based pairwise phase consistency *without*
     corrections for finite-sample-size bias. 
 
     Parameters

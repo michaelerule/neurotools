@@ -1,6 +1,15 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Routines specific to working with Optogenetics datasets from
+the Donoghue lab. These routines have yet to be ported to make 
+them general. This module refers to and depends on 
+unpublished data. 
+
+You'll need to set the `opto_dataset` path variable to the
+location of 
+`TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001.mat`.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,21 +17,10 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
+
 import sys
 __PYTHON_2__ = sys.version_info<(3, 0)
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
-
-'''
-Routines specific to working with Optogenetics datasets from
-the Donoghue lab. These routines need to be ported to make 
-them general. This module refers to and depends on 
-unpublished data. 
-
-You'll need to set the `opto_dataset` path variable to the
-location of `TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001.mat`.
-'''
 
 opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001';
 

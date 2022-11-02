@@ -77,15 +77,6 @@
   <h1>Source code for neurotools.spatial.points</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-
-
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Collected functions from 2018--2023 concerning analyses of 2D data.</span>
 
@@ -94,10 +85,15 @@
 <span class="sd">These routines are completely untested and may duplicate functionality</span>
 <span class="sd">found elsehwere. </span>
 <span class="sd">&#39;&#39;&#39;</span>
-
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="o">*</span>
-
 
 <div class="viewcode-block" id="p2c"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.p2c">[docs]</a><span class="k">def</span> <span class="nf">p2c</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -115,18 +111,23 @@
 
 <div class="viewcode-block" id="c2p"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.c2p">[docs]</a><span class="k">def</span> <span class="nf">c2p</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; </span>
-<span class="sd">    Convert complex point to tuple</span>
+<span class="sd">    Convert complex-valued np.array with (shape) into a 2×(shape)</span>
+<span class="sd">    np.float32 array.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z: np.complex64 or np.complex128</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="to_xypoint"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.to_xypoint">[docs]</a><span class="k">def</span> <span class="nf">to_xypoint</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert possible complex (x,y) point intoformation</span>
 <span class="sd">    into float32 (x,y) points.</span>
 <span class="sd">    </span>
-<span class="sd">    Parameter</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">    z: np.complex64</span>
 <span class="sd">        Array of (x,y) points encoded as x+iy complex64</span>
 <span class="sd">        </span>

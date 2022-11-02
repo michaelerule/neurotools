@@ -30,8 +30,6 @@ from . import modefind
 from . import pvalues
 from . import regressions
 
-
-
 import numpy as np
 import scipy
 import random
@@ -39,7 +37,6 @@ import warnings
 from scipy.stats.stats import describe
 from neurotools.util.array import find
 from sklearn.decomposition import FactorAnalysis
-
 
 def nrmse(estimate,true,axis=None):
     '''
@@ -870,8 +867,8 @@ def fraction_explained_deviance(L,L0,Ls):
     the analogue of the linear-Gaussian r² for 
     Generalized Linear Models (GLMs)
     
-    Parmeters
-    ---------
+    Parameters
+    ----------
     L: np.float32
         Model likelihood(s) evaluated on held-out test data.
     L0: np.float32

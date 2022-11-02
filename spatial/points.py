@@ -1,14 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
-
 '''
 Collected functions from 2018--2023 concerning analyses of 2D data.
 
@@ -17,10 +8,15 @@ These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.
 These routines are completely untested and may duplicate functionality
 found elsehwere. 
 '''
-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
 
 from numpy import *
-
 
 def p2c(p):
     '''
@@ -38,18 +34,23 @@ def p2c(p):
 
 def c2p(z):
     ''' 
-    Convert complex point to tuple
+    Convert complex-valued np.array with (shape) into a 2×(shape)
+    np.float32 array.
+    
+    Parameters
+    ----------
+    z: np.complex64 or np.complex128
     '''
     z = np.array(z)
-    return np.array([z.real,z.imag])
+    return np.float32([z.real,z.imag])
 
 def to_xypoint(z):
     '''
     Convert possible complex (x,y) point intoformation
     into float32 (x,y) points.
     
-    Parameter
-    ---------
+    Parameters
+    ----------
     z: np.complex64
         Array of (x,y) points encoded as x+iy complex64
         

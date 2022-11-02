@@ -13,3 +13,12 @@ from __future__ import print_function
 Package collecting otherwise unrelated utility functions.
 """
 
+
+import neurotools.util.array as array
+import neurotools.util.functions as functions
+import neurotools.util.getfftw as getfftw
+import neurotools.util.hdfmat as hdfmat
+import neurotools.util.string as string
+import neurotools.util.system as system
+import neurotools.util.time as time
+import neurotools.util.tools as tools

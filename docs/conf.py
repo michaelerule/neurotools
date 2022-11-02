@@ -271,7 +271,7 @@ html_theme = "sphinx_rtd_theme"
 #
 # https://stackoverflow.com/questions/27669376/show-entire-toctree-in-read-the-docs-sidebar
 html_theme_options = {
-    'navigation_depth': 5,
+    'navigation_depth': 3,
 }
 
 

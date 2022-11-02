@@ -11,6 +11,16 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from . import coherence
+from . import conv
+from . import morlet
+from . import multitaper
+from . import ppc
+from . import savitskygolay
+from . import sde
+
+
+
 import warnings
 import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert

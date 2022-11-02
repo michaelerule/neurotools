@@ -8,6 +8,18 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from . import array
+from . import dct
+from . import distance
+from . import fftzeros
+from . import geometry
+from . import kernels
+from . import masking
+from . import phase
+from . import points
+from . import spiking
+from . import triangulation
+
 
 def brute_force_local_2d_maxima(x,R=5):
     '''

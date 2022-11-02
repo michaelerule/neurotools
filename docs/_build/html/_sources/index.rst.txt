@@ -6,8 +6,9 @@
 Neurotools
 ==========
 
-Python modules for statistical modeling in computational neuroscience. Much of the package is research code and unstable. (Refer to specific modules for further documentation.)  This project is not to be confused with the `Neurotools project for neural simulation
-<http://neuralensemble.org/NeuroTools/>`_.
+Python modules for statistical modeling in computational neuroscience. Much of the package is research code and unstable. Refer to specific modules for further documentation.
+The project source can be browsed or downloaded from `github
+<https://github.com/michaelerule/neurotools>`_.
 
 This project depends on `numpy
 <http://www.numpy.org/>`_, `scipy
@@ -16,10 +17,10 @@ This project depends on `numpy
 <http://pandas.pydata.org/>`_, and `nipy
 <http://nipy.org/nitime/>`_. 
 
-The project source can be browsed or downloaded from `github
-<https://github.com/michaelerule/neurotools>`_.
 
-This project has not been reviewed or prepared for use by the general public. When not otherwise specified this project and associated content is licensed under the `Creative Commons Attribution Non Commercial Share Alike 3.0 license
+This project is not to be confused with the `Neurotools project for neural simulation
+<http://neuralensemble.org/NeuroTools/>`_.
+When not otherwise specified this project and associated content is licensed under the `Creative Commons Attribution Non Commercial Share Alike 3.0 license
 <https://creativecommons.org/licenses/by-nc-sa/3.0/>`_ `(full license)
 <https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode>`_. 
 

@@ -166,7 +166,7 @@ rcParams['figure.dpi']=120
 plt.rcParams['image.cmap'] = 'parula'
 from cycler import cycler
 
-from neurotools.graphics.color import *
+from neurotools.graphics.color import BLACK
 mpl.rcParams['axes.prop_cycle'] = cycler(color=[BLACK,RUST,TURQUOISE,OCHRE,AZURE])
 
 

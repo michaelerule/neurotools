@@ -15,9 +15,7 @@ from __future__ import print_function
 import math
 import pylab
 
-from neurotools.signal import gaussian_smooth
-from neurotools.signal import circular_gaussian_smooth
-from neurotools import signal
+import neurotools.signal as sig
 
 import numpy as np
 from   numpy import pi
@@ -354,9 +352,9 @@ def circularly_smooth_colormap(cm,s):
     cm = np.array(cm)
     N = cm.shape[0]
     R,G,B = cm.T
-    R = circular_gaussian_smooth(R,s)
-    G = circular_gaussian_smooth(G,s)
-    B = circular_gaussian_smooth(B,s)
+    R = sig.circular_gaussian_smooth(R,s)
+    G = sig.circular_gaussian_smooth(G,s)
+    B = sig.circular_gaussian_smooth(B,s)
     RGB = np.array([R,G,B]).T
     #return np.array([np.fft.fftshift(c) for c in RGB.T]).T
     return RGB

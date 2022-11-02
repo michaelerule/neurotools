@@ -16,7 +16,7 @@ import numpy as np
 from scipy.signal.signaltools import convolve2d
 from neurotools.util.tools    import warn
 from neurotools.spatial.dct   import dct_upsample,dct_cut_antialias
-from neurotools.signal        import rewrap
+import neurotools.signal as sig    
 
 def array_average_amplitude(frames):
     '''
@@ -512,7 +512,7 @@ def array_speed_pgd_threshold(frame,thresh=0.5,FS=1000.0):
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phasegradient_pgd_threshold(frame,thresh) #cycles / mm
-    df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
+    df = np.median(np.ravel(sig.rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     f  = df*FS # radians / s
     g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s
@@ -544,7 +544,7 @@ def array_speed_local(frame,FS=1000.0):
     if len(frame.shape)<2:
         raise ValueError('Array data should be packed as (x,y,time)')
     pg = array_phasegradient_local(frame) #cycles / mm
-    df = np.median(np.ravel(rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
+    df = np.median(np.ravel(sig.rewrap(np.diff(np.angle(frame),1,2)))) #radians/sample
     f  = df*FS # radians / s
     g  = f /(2*np.pi) # cycles / s
     return g/pg # mm /s

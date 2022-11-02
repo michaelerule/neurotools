@@ -223,7 +223,17 @@ error_functions = {
 
 def add_constant(data,axis=None):
     '''
+    **Appends** a constant feature to a multi-dimensional
+    array of dependent variables. 
     
+    Parameters
+    ----------
+    data: np.array
+    
+    Other Parameters
+    ----------------
+    axis: int or (default) None
+        Axis along which to append the constant feature
     '''
     data = np.array(data)
     # if Nsamples<Nfeatures:
@@ -402,26 +412,51 @@ def partition_data_for_crossvalidation(a,b,K):
         testA = a[start:stop,:  ]
         yield trainA,trainB,testA,testB
 
-def block_shuffle(x,BLOCKSIZE=None):
+def block_shuffle(x,blocksize=None):
     '''
     Shuffle a 2D array in blocks along axis 0
     For example, if you provide a NTIMES × NFEATURES array,
-    this will shuffle all features similarly in blocks along the time axis
+    this will shuffle all features similarly in blocks along
+    the time axis.
+    
+    Parameters
+    ----------
+    x: np.array
+        First dimension should be time or samples; This 
+        dimension will be shuffled in blocks of size
+        `blocksize`.
+    
+    Other Parameters
+    ----------------
+    blocksize: int or (default) None
+        If `None`, defaults to `max(10,x.shape[0]//100)`
+        i.e. chooses a size to divide `x` into 100 blocks.
+        
+    Returns
+    -------
+    result: np.array
+        
     '''
     T = x.shape[0]
-    if BLOCKSIZE is None:
-        BLOCKSIZE = max(10,T//100)
+    if blocksize is None:
+        blocksize = max(10,T//100)
     else:
-        BLOCKSIZE = int(round(BLOCKSIZE))
-    nblocks = int(np.ceil(T/BLOCKSIZE))
-    PAD = nblocks*BLOCKSIZE-T
+        blocksize = int(round(blocksize))
+    nblocks = int(np.ceil(T/blocksize))
+    PAD = nblocks*blocksize-T
     if PAD>0:
-        x2 = np.zeros((nblocks*BLOCKSIZE,)+x.shape[1:])
-        x2[:T,...] = x
-        x = x2
-    R = x.reshape((nblocks,BLOCKSIZE)+x.shape[1:])
+        # The needs to be fixed, the current
+        # handling shuffles zero into some values
+        # in the middle. Not right.
+        raise ValueError((
+            'Block size %d does not evenly divide %d')%
+            (blocksize,T))
+        #x2 = np.zeros((nblocks*blocksize,)+x.shape[1:])
+        #x2[:T,...] = x
+        #x = x2
+    R = x.reshape((nblocks,blocksize)+x.shape[1:])
     R = R[np.random.permutation(nblocks),...]
-    R = R.reshape((nblocks*BLOCKSIZE,)+x.shape[1:])
+    R = R.reshape((nblocks*blocksize,)+x.shape[1:])
     return R[:T,...]
 
 def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None):
@@ -521,10 +556,15 @@ def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None)
 def print_stats(g,name='',prefix=''):
     '''
     computes, prints, and returns
-    mean
-    median
-    minimum
-    maximum
+        mean
+        median
+        minimum
+        maximum
+        
+    Parameters
+    ----------
+    g: 1D np.array
+        List of samples
     '''
     #mode = modefind.modefind(g,0)
     mn   = np.mean(g)
@@ -703,20 +743,16 @@ def covariance(x,y=None,sample_deficient=False,reg=0.0,centered=True):
     
             
 
-class description:
+class Description:
     '''
     quick statistical description
-    
-    TODO: move this to stats
     '''
     def __init__(self,data):
         '''
-        
         Parameters
         ----------
-        
-        Returns
-        -------
+        data: np.array
+            List of samples to analyze
         '''
         self.N, (self.min, self.max),self.mean,self.variance,self.skewness,self.kurtosis = describe(data)
         self.median = np.median(data)
@@ -738,14 +774,6 @@ class description:
         self.p99  = np.percentile(data,99)
 
     def __str__(self):
-        '''
-        
-        Parameters
-        ----------
-        
-        Returns
-        -------
-        '''
         result = ''
         for stat,value in self.__dict__.iteritems():
             result += ' %s=%0.2f '%(stat,value)
@@ -754,9 +782,6 @@ class description:
     def short(self):
         '''
         Abbreviated statistical summary
-        
-        Parameters
-        ----------
         
         Returns
         -------
@@ -781,23 +806,27 @@ try:
     import statsmodels.api as sm
     def glmfit(X,Y):
         '''
-        Wrapper for statsmodels glmfit that prepares a constant 
-        parameter and configuration options for poisson-GLM fitting.
-        Please see the documentation for glmfit in statsmodels for
-        more details. 
+        Wrapper for statsmodels glmfit that prepares a 
+        constant parameter and configuration options for 
+        poisson-GLM fitting. Please see the documentation 
+        for glmfit in statsmodels for more details. 
         
-        This method will automatically add a constant colum to the feature
-        matrix Y
+        This method will automatically add a constant colum 
+        to the feature matrix Y.
 
         Parameters
         ----------
         X : array-like
-            A nobs x k array where `nobs` is the number of observations and `k`
-            is the number of regressors. An intercept is not included by default
-            and should be added by the user (models specified using a formula
-            include an intercept by default). See `statsmodels.tools.add_constant`.
+            A NOBSERVATIONS × K array where `NOBSERVATIONS` 
+            is the number of observations and `k` is the 
+            number of regressors. An intercept is not 
+            included by default and should be added by the 
+            user (models specified using a formula include 
+            an intercept by default).
+            See `statsmodels.tools.add_constant`.
         Y : array-like
-            1d array of poisson counts.  This array can be 1d or 2d.
+            1d array of poisson counts.  
+            This array can be 1d or 2d.
         '''
         # check for and maybe add constant value to X
         if not all(X[:,0]==X[0,0]):
@@ -808,4 +837,57 @@ try:
         M = poisson_results.params
         return M
 except:
-    print('could not find statsmodels; glm routines will not work')
+    print('could not find statsmodels; '
+          'Some glm routines will not work')
+    
+
+def auc_to_g2(auc):
+    '''
+    Convert AUC measure to sign-preserving squared Gini 
+    impurity index. (Comparable scale to normalized r²)
+    
+        return g²*sign(g) where g = AUC×2-1
+    
+    Parmeters
+    ---------
+    auc: np.array
+
+    Returns
+    ---------
+    g²: np.array
+    '''
+    g2 = (auc-0.5)*2
+    g2 = (g2)**2*sign(g2)
+    return g2
+
+
+def fraction_explained_deviance(L,L0,Ls):
+    '''
+    Calculate the fraction explained deviance, which is
+    the analogue of the linear-Gaussian r² for 
+    Generalized Linear Models (GLMs)
+    
+    Parmeters
+    ---------
+    L: np.float32
+        Model likelihood(s) evaluated on held-out test data.
+    L0: np.float32
+        Baseline likelihood, calculated by using the 
+        test-data's mean-rate as a prediction.
+    Ls: np.float32
+        Saturated model likelihood(s) calculated by using
+        the true labels as the estimated values
+        
+    Returns
+    -------
+    r²: normalized explained deviance
+    '''
+    if not Ls.shape==L0.shape: raise ValueError((
+        'Expected Ls and L0 to have the same shape, '
+        'got %s and %s, respectively.')%(Ls.shape,L0.shape))
+    if L.shape<=L0.shape:
+        return (L-L0)/(Ls-L0)
+    else:
+        spare = len(L.shape)-len(L0.shape)
+        theslice = L0.shape + (None,)*spare
+        return (L-L0[theslice])/(Ls-L0)[theslice]

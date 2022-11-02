@@ -18,6 +18,12 @@ from scipy.signal import butter, filtfilt, lfilter
 from scipy.interpolate import interp1d
 from neurotools.util.tools import find
 
+# Inverse of standard normal cumulative distribution function
+from scipy.special import ndtri
+from scipy.stats import rankdata
+import scipy.stats
+import scipy.interpolate as ip
+
 def geometric_window(c,w):
     '''
     Gemoetrically center a frequency window
@@ -67,17 +73,21 @@ def gaussian_kernel(sigma):
     K *= 1./np.sum(K)
     return K
 
-def gaussian_smooth(x,sigma,mode='same'):#,axis=0):
+def gaussian_smooth(x,sigma,mode='same'):
     '''
-    Smooth signal x with gaussian of standard deviation sigma.
-
-    sigma: standard deviation
-    x: 1D array-like signal
+    Smooth signal x with gaussian of standard deviation 
+    sigma, using edge-clamped boundary conditions.
     
     Parameters
     ----------
+    sigma: positive float
+        Standard deviation of Gaussian smoothing kernel.
+    x: 1D np.array
+        Signal to filter. 
+
     Returns
     -------
+    smoothed signal
     '''
     #x = concatenate([x::-1],x,x[::-1])
     K = gaussian_kernel(sigma)
@@ -1239,65 +1249,6 @@ def local_peak_within(freqs,cc,fa,fb):
     i     = peaks[argmax(cc[peaks])]
     return i, freqs[i], cc[i]
 
-
-def take_axis_slice(shape,axis,index):
-    ndims = len(shape)
-    if axis<0 or axis>=ndims:
-        raise ValueError('axis %d invalid for shape %s'%(axis,shape))
-    before = axis
-    after  = ndims-1-axis
-    return (np.s_[:],)*before + (index,) + (np.s_[:],)*after
-
-
-def take_axis(x,axis,index):
-    return x[take_axis_slice(x.shape,axis,index)]
-
-    
-def ndargmax(x):
-    '''
-    Get coordinates of largest value in a multidimensional array
-    
-    Parameters
-    ----------
-    x: np.array
-    '''
-    x = np.array(x)
-    return np.unravel_index(np.nanargmax(x),x.shape)
-    
- 
-def complex_to_nan(x,value=np.NaN):
-    '''
-    Replce complex entries with NaN or othe value
-    '''
-    x = np.array(x)
-    x[np.iscomplex(x)]=value
-    return x.real
-
-
-def make_rebroadcast_slice(x,axis=0,verbose=False):
-    '''
-    Generate correct slice object for broadcasting stastistics averaged
-    over the given axis back to the original shape.
-    '''
-    x = np.array(x)
-    naxes = len(np.shape(x))
-    if verbose:
-        print('x.shape=',np.shape(x))
-        print('naxes=',naxes)
-    if axis<0:
-        axis=naxes+axis
-    if axis==0:
-        theslice = (None,Ellipsis)
-    elif axis==naxes-1:
-        theslice = (Ellipsis,None)
-    else:
-        a = axis
-        b = naxes - a - 1
-        theslice = (np.s_[:],)*a + (None,) + (np.s_[:],)*b
-    if verbose:
-        print('axis=',axis)
-    return theslice
-
 def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     '''
     Remove the mean trend from data
@@ -1348,9 +1299,6 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]
 
-# Inverse of standar normal cumulative distribution function
-from scipy.special import ndtri
-from scipy.stats import rankdata
 def gaussianize(x,axis=-1,verbose=False):
     '''
     Use percentiles to force a timeseries to have a normal distribution.
@@ -1856,8 +1804,6 @@ def split_into_groups(x,group_sizes):
         x[...,edges[i]:edges[i+1]] for i in range(ngroups)
     ]
 
-import scipy.stats
-import scipy.interpolate as ip
 
 def uniformize(x,axis=-1,killeps=None):
     '''
@@ -2005,7 +1951,6 @@ def invert_uniformize(x,p,axis=-1,killeps=None):
         scaled,x_,bounds_error=False,fill_value=(0,1)
     )(p)
 
-
 def virtual_reference_line_noise_removal(lfps,frequency=60,hbw=5):
     '''
     Accepts an array of LFP recordings (first dimension should be 
@@ -2067,3 +2012,80 @@ def band_stop_line_noise_removal(lfps,frequency=60.):
         for f in freqs:
             lfps[i,:] = bandfilter(lfps[i,:],f-hbw,f+hbw,bandstop=1)
     return lfps
+
+
+
+
+############################################################
+# Array helpers (may eventually migrate to new modeule)
+
+def _take_axis_slice(shape,axis,index):
+    # Redundant to existing numpy functions TODO remove
+    ndims = len(shape)
+    if axis<0 or axis>=ndims:
+        raise ValueError('axis %d invalid for shape %s'%(axis,shape))
+    before = axis
+    after  = ndims-1-axis
+    return (np.s_[:],)*before + (index,) + (np.s_[:],)*after
+
+def _take_axis(x,axis,index):
+    # Redundant to existing numpy functions TODO remove
+    return x[_take_axis_slice(x.shape,axis,index)]
+    
+def ndargmax(x):
+    '''
+    Get coordinates of largest value in a multidimensional 
+    array
+    
+    Parameters
+    ----------
+    x: np.array
+    '''
+    x = np.array(x)
+    return np.unravel_index(np.nanargmax(x),x.shape)
+    
+def complex_to_nan(x,value=np.NaN):
+    '''
+    Replce complex entries with NaN or other value
+    
+    Parameters
+    ----------
+    x: np.array
+    
+    Other Parameters
+    ----------------
+    value: float; default `np.NaN`
+        Value to replace complex entries with
+    '''
+    x = np.array(x)
+    x[np.iscomplex(x)]=value
+    return x.real
+
+def make_rebroadcast_slice(x,axis=0,verbose=False):
+    '''
+    Generate correct slice object for broadcasting 
+    stastistics averaged over the given axis back to the
+    original shape.
+    
+    Parameters
+    ----------
+    x: np.array
+    '''
+    x = np.array(x)
+    naxes = len(np.shape(x))
+    if verbose:
+        print('x.shape=',np.shape(x))
+        print('naxes=',naxes)
+    if axis<0:
+        axis=naxes+axis
+    if axis==0:
+        theslice = (None,Ellipsis)
+    elif axis==naxes-1:
+        theslice = (Ellipsis,None)
+    else:
+        a = axis
+        b = naxes - a - 1
+        theslice = (np.s_[:],)*a + (None,) + (np.s_[:],)*b
+    if verbose:
+        print('axis=',axis)
+    return theslice

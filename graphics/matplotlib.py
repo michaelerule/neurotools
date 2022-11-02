@@ -1,10 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import print_function
-
 '''
 Collected utilities for direct pixel rendering via matplotlib
 
@@ -15,13 +10,20 @@ At the cost of reverse-engineering how to access pixels in a
 Matplotlib plot, you have Matplotlib handle all th Tk/Qt/Agg 
 backend stuff, so you get a common interface for multiple platforms.
 '''
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
 def hide_toolbar(fig):
-    # Command to hide toolabr changes across versions and backends.
-    # Without introspecting, try to hide toolbar
+    '''
+    Command to hide toolabr changes across versions and 
+    backends. This uses try/catch to hide the toolbar.
+    '''
     try:
         fig.canvas.toolbar.setVisible(False)
     except AttributeError:
@@ -67,6 +69,9 @@ def start(w,h,title='untitled'):
     return fig,img
 
 def draw_array(screen,rgbdata):
+    '''
+    
+    '''
     fig,img = screen
     # prepare image data 
     # clip bytes to 0..255 range

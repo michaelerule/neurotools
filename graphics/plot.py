@@ -3,7 +3,6 @@
 '''
 Plotting helper routines
 '''
-
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -37,6 +36,8 @@ from neurotools.graphics.color import *
 from neurotools.util.tools  import find
 from neurotools.util.time   import today,now
 from neurotools.util.string import shortscientific
+
+from matplotlib.pyplot import *
 
 try:
     import statsmodels
@@ -202,7 +203,7 @@ def colored_boxplot(
             mediancolor = [BLACK if matplotlib.colors.to_hex(c)!=b else WHITE for c in color]
         except:
             mediancolor = BLACK if matplotlib.colors.to_hex(color)!=b else WHITE
-    bp = boxplot(data,
+    bp = plt.boxplot(data,
         positions    = positions,
         patch_artist = True,
         showfliers   = showfliers,
@@ -2624,9 +2625,15 @@ def boxplot_significance(
         falst discovery rate threshold after correcting
         for multiple comparisons.
     '''
+    def test(*args):
+        try: 
+            return scipy.stats.wilcoxon(*args).pvalue
+        except ValueError:
+            return np.NaN
+    
     if b1 is None:
         # One dataset: test if different from zero
-        pv = np.float32([scipy.stats.wilcoxon(ai).pvalue for ai in a1]).ravel()
+        pv = np.float32([test(ai) for ai in a1]).ravel()
         pv2, reject = pvalues.correct_pvalues(pv,alpha=fdr,verbose=False)
         hy = np.array([np.percentile(ai,95) for ai in a1]).ravel()
         for ip,ir,x,y in zip(pv2,reject,positionsa,hy):
@@ -2638,7 +2645,7 @@ def boxplot_significance(
     else:
         # Two datasets: test if different
         # Perform tests
-        pv = np.float32([scipy.stats.wilcoxon(ai,bi).pvalue for ai,bi, in zip(a1,b1)]).ravel()
+        pv = np.float32([test(ai,bi) for ai,bi, in zip(a1,b1)]).ravel()
         pv2, reject = pvalues.correct_pvalues(pv,alpha=fdr,verbose=False)
         # Bracket heights
         hy = np.array([[
@@ -2648,6 +2655,22 @@ def boxplot_significance(
         for ip,ir,x1,x2,y in zip(pv2,reject,positionsa,positionsb,hy):
             if ip<fdr:
                 sigbar(x1,x2,y,pvalue=ip,dy=dy,fontsize=fontsize)
-                
-                
     return pv2, reject
+
+
+def pikeplot(x,y,**kwargs):
+    '''
+    Plot timeseries as verical lines dropped to y=0.
+    Keyword arguments are forwarded to `pyplot.plot()`.
+    
+    Parameters
+    ----------
+    x: 1D np.array
+        X Location of bars
+    y: 1D np.array
+        Y position of bars
+    '''
+    y = np.array(y)
+    y = np.array([y*0,y,np.NaN*y]).T.ravel()
+    x = np.array([x,x,np.NaN*x]).T.ravel()
+    plt.plot(x,y,**kwargs)

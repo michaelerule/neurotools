@@ -25,18 +25,21 @@ chol = scipy.linalg.cholesky
 
 def triu_elements(M,k=0):
     '''
-    Somewhat like matlab's "diag" function, but for upper-triangular matrices
+    Similar to Matlab's "diag" function, but for 
+    upper-triangular matrices
 
-    Pack N*(N-1) elements into the upper triangle of an NxN Matrix
+    Pack N*(N-1) elements into the upper triangle of an NxN 
+    Matrix
     or
-    Return the N*(N-1) elements from the upper triangle as an NxN matrix
+    Return the N*(N-1) elements from the upper triangle as 
+    an NxN matrix
 
     >>> triu_elements(randn(D*(D+1)//2))
     
     Parameters
     ----------
     M: Matrix from which to extract triangular elements or
-        vector/list of elements to pack into a triangular matrix
+        List of elements to pack into a triangular matrix
     k: forward to np.triu_indecies if input is matrix
     '''
     if len(M.shape)==2:

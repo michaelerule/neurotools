@@ -18,17 +18,14 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import sys
+import sys, os
 __PYTHON_2__ = sys.version_info<(3, 0)
 
+import numpy as np
+import neurotools
+from neurotools.util.tools import metaloadmat,globalize
 
 opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001';
-
-import sys, os
-sys.path.insert(1,os.path.expanduser('~/Dropbox/bin'))
-import neurotools
-from neurotools.tools import metaloadmat,globalize
-import numpy as np
 
 @memoize
 def opto_get_events_passive(opto_dataset):

@@ -15,7 +15,7 @@ from __future__ import print_function
 
 import numpy as np
 
-from neurotools.util.tools import find
+from neurotools.util.array import find
 import neurotools.signal as sig
 
 

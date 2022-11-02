@@ -6,7 +6,7 @@
 Neurotools
 ==========
 
-Python modules for statistical modeling in computational neuroscience. Much of the package is "research" (i.e. poor) quality and unstable, but some of the modules are stable and useful. (Refer to specific modules for further documentation.)  This project is not to be confused with the `Neurotools project for neural simulation
+Python modules for statistical modeling in computational neuroscience. Much of the package is research code and unstable. (Refer to specific modules for further documentation.)  This project is not to be confused with the `Neurotools project for neural simulation
 <http://neuralensemble.org/NeuroTools/>`_.
 
 This project depends on `numpy

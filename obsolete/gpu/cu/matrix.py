@@ -30,14 +30,14 @@ except:
     print('Attempting fallback to neurotools')
     from neurotools.tools import memoize
 
-gputranspose = lambda(rows,cols):gpumap('x[(i%'+str(rows)+')*'+str(cols)+'+(i/'+str(rows)+')]')
+gputranspose = lambda rows,cols:gpumap('x[(i%'+str(rows)+')*'+str(cols)+'+(i/'+str(rows)+')]')
 '''
 Prepares a map kernel that transposed a row-major packed float matrix
 Eg: `gputranspose(rows,cols)(data)` will transpose data. 
 Creates a new, memoized, kernel for each array dimension
 '''
 
-transpose = lambda m:(lambda (a,b):cut(cpu(gputranspose(b,a)(gpufloatmat(m))),b))(len(m[0]),len(m))
+transpose = lambda m:(lambda a,b:cut(cpu(gputranspose(b,a)(gpufloatmat(m))),b))(len(m[0]),len(m))
 '''This is a list datatype wrapper to gputranspose. It accepts a matrix as a list of lists, and returns the same form'''
 
 class GPUMatrix:

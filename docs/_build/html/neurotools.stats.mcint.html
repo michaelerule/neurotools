@@ -106,74 +106,78 @@
 <dl class="function">
 <dt id="neurotools.stats.mcint.monte_carlo_expectation">
 <code class="descclassname">neurotools.stats.mcint.</code><code class="descname">monte_carlo_expectation</code><span class="sig-paren">(</span><em>f</em>, <em>maxiter=1000000</em>, <em>converge=0.01</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/mcint.html#monte_carlo_expectation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.mcint.monte_carlo_expectation" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>x = monte_carlo_expectation(f,maxiter,converge)</p>
+<dd><p>x = monte_carlo_expectation(f,maxiter,converge)</p>
 <p>Evaluate expectation of f using Monte-Carlo integration.
 For simplicit (for now), this casts the return value of f() to a float64 array
 Ensure the return value is compatible with this datatype.
 This uses the standard error of the mean to check for convergence.
 It converges slowly at 1/sqrt(n)</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">9</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">x</span>
 <span class="n">Ex</span> <span class="o">=</span> <span class="n">monte_carlo_moments</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span><span class="n">converge</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ex:</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Ex:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">Ex</span><span class="p">)</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p>‘,Ex)</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>f :</dt>
-<dd>function that returns array_like.</dd>
-<dt>maxiter :</dt>
-<dd>maximum number of samples to draw</dd>
-<dt>converge :</dt>
-<dd>maximum absolute error tolerated</dd>
-</dl>
-<dl class="docutils">
-<dt>number or array-like:</dt>
-<dd>Estimate of the mean of f</dd>
-</dl>
-</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> – function that returns array_like.</li>
+<li><strong>maxiter</strong> – maximum number of samples to draw</li>
+<li><strong>converge</strong> – maximum absolute error tolerated</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Estimate of the mean of f</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">number or array-like</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="neurotools.stats.mcint.monte_carlo_moments">
 <code class="descclassname">neurotools.stats.mcint.</code><code class="descname">monte_carlo_moments</code><span class="sig-paren">(</span><em>f</em>, <em>maxiter=1000000</em>, <em>converge=0.01</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/mcint.html#monte_carlo_moments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.mcint.monte_carlo_moments" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>x = monte_carlo_expectation(f,maxiter,converge)</p>
+<dd><p>x = monte_carlo_expectation(f,maxiter,converge)</p>
 <p>Evaluate expectation of f using Monte-Carlo integration.
 For simplicit (for now), this casts the return value of f() to a float64 array
 Ensure the return value is compatible with this datatype.
 This uses the standard error of the mean to check for convergence.
 It converges very slowly (1/sqrt(n)), so don’t ask for too much precision.</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">9</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">x</span>
 <span class="n">Ex</span><span class="p">,</span><span class="n">Exx</span> <span class="o">=</span> <span class="n">monte_carlo_moments</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span><span class="n">converge</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ex:</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Ex:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">Ex</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Exx:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">Exx</span><span class="p">)</span>
 </pre></div>
 </div>
-</div></blockquote>
-<dl class="docutils">
-<dt>‘,Ex)</dt>
-<dd>print(‘Exx:</dd>
-</dl>
-<p>‘,Exx)</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>f :</dt>
-<dd>function that returns array_like.</dd>
-<dt>maxiter :</dt>
-<dd>maximum number of samples to draw</dd>
-<dt>converge :</dt>
-<dd>maximum absolute error tolerated</dd>
-</dl>
-<p>Estimate of the mean and second moment of f</p>
-</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> – function that returns array_like.</li>
+<li><strong>maxiter</strong> – maximum number of samples to draw</li>
+<li><strong>converge</strong> – maximum absolute error tolerated</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Estimate of the mean and second moment of f</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

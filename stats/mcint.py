@@ -24,21 +24,23 @@ def monte_carlo_expectation(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     This uses the standard error of the mean to check for convergence. 
     It converges slowly at 1/sqrt(n)
 
-    Example::
+    Example:
+    
+    .. code-block:: python
     
         def f():
             x = randn(2)+array([9,-9])
             return x
         Ex = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)
-        print('Ex:\n',Ex)
+        print('Ex:\\n',Ex)
     
     Parameters
     ----------
-    f : 
+    f: 
         function that returns array_like.
-    maxiter : 
+    maxiter: 
         maximum number of samples to draw
-    converge : 
+    converge: 
         maximum absolute error tolerated
     
     Returns
@@ -94,14 +96,16 @@ def monte_carlo_moments(f,maxiter=int(1e6),converge=1e-2,verbose=False):
     This uses the standard error of the mean to check for convergence. 
     It converges very slowly (1/sqrt(n)), so don't ask for too much precision.
 
-    Example::
+    Example:
+    
+    .. code-block:: python
     
         def f():
             x = randn(2)+array([9,-9])
             return x
         Ex,Exx = monte_carlo_moments(f,verbose=1,maxiter=100000,converge=1e-2)
-        print('Ex:\n',Ex)
-        print('Exx:\n',Exx)
+        print('Ex:\\n',Ex)
+        print('Exx:\\n',Exx)
     
     Parameters
     ----------

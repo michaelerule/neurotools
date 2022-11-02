@@ -64,7 +64,7 @@ def opto_get_lfp(opto_dataset,channel):
     opto_dataset : string
         path or string identifier for a dataset
     channel:
-        1-indexed channel ID or None to return a NTimes x NChannel array
+        1-indexed channel ID or None to return a `NTIMES×NCHANNEL` array
         of all LFP data
     '''
     if channel is None:
@@ -87,7 +87,7 @@ def opto_get_lfp_filtered(opto_dataset,channel,fa,fb,order=4):
     opto_dataset : string
         path or string identifier for a dataset
     channel:
-        1-indexed channel ID or None to return a NTimes x NChannel array
+        1-indexed channel ID or None to return a `NTimes×NChannel` array
         of all LFP data
     fa:
         low frequency of band-pass, or 'None' to use a low-pass filter.
@@ -170,7 +170,7 @@ def opto_get_lfp_analytic(opto_dataset,channel,fa,fb,order=4):
     opto_dataset : string
         path or string identifier for a dataset
     channel:
-        1-indexed channel ID or None to return a NTimes x NChannel array
+        1-indexed channel ID or None to return a `NTIMES×NCHANNEL` array
         of all LFP data
     fa:
         low frequency of band-pass, or 'None' to use a low-pass filter.

@@ -10,7 +10,8 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.system import *
+
+from numpy import *
 
 def resonantDrive(s,f,tau,x,Fs=1000):
     '''

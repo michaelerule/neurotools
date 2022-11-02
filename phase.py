@@ -11,8 +11,8 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-
-
+import numpy as np
+from scipy.signal import hilbert
 
 ############################################################
 # Phase routines

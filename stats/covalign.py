@@ -3,7 +3,6 @@
 '''
 Covariance alignment routines related to 
 '''
-
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -11,40 +10,18 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-from neurotools.nlab import *
+
 import os,sys,traceback,h5py
 
-# helper functions for reading the HDF5 Matlab format
-
-#import os,sys
-#neurotools_location = os.path.expanduser('~/Downloads')
-#sys.path.append(neurotools_location)
-from neurotools.hdfmat import printmatHDF5, hdf2dict, getHDF
-
-#import sklearn
-from sklearn.decomposition import FactorAnalysis
-# Linear system solvers (exact vs. least-squares)
-from scipy.linalg import solve,lstsq
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from sklearn  import manifold
-from ppc_util import *
-import ppc_trial
-from neurotools.nlab import *
-import os,sys,traceback,h5py
-from scipy.linalg          import solve,lstsq
-from sklearn.decomposition import FactorAnalysis
-from sklearn               import manifold
-sys.path.insert(0,os.path.abspath("../"))
-import ppc_data_loader
-#ppc_data_loader.path = '/home/mrule/Workspace2/PPC_data/'
-from ppc_data_loader import *
-from ppc_trial       import *
-from ppc_plot        import *
-from neurotools.hdfmat import printmatHDF5, hdf2dict, getHDF
-from scipy.sparse import *
-from neurotools.stats.mvg import *
+
+from sklearn                import manifold
+from scipy.linalg           import solve,lstsq
+from sklearn.decomposition  import FactorAnalysis
+from sklearn                import manifold
+from neurotools.util.hdfmat import printmatHDF5, hdf2dict, getHDF
 
 NPERMUTATION = 10
 

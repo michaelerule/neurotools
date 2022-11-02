@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.stats.grid_search module &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Neurotools
+            <img src="../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>neurotools.stats.grid_search module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_obsolete/neurotools.stats.grid_search.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-neurotools.stats.grid_search">
+<span id="neurotools-stats-grid-search-module"></span><h1>neurotools.stats.grid_search module<a class="headerlink" href="#module-neurotools.stats.grid_search" title="Permalink to this heading"></a></h1>
+<p>Hill-climbing grid search</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.grid_search.grid_search">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.grid_search.</span></span><span class="sig-name descname"><span class="pre">grid_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pargrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/stats/grid_search.html#grid_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.grid_search.grid_search" title="Permalink to this definition"></a></dt>
+<dd><p>Grid search hyperparameter optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pargrid</strong> (<em>list</em><em> of </em><em>arrays</em>) – A list; Each element is a list of values for a given
+parameter to search over</p></li>
+<li><p><strong>evaluate</strong> (<em>function</em>) – <dl class="simple">
+<dt>Arguments:</dt><dd><dl class="simple">
+<dt>Parameters: Tuple</dt><dd><p>Parameters taken from the parameter search grid</p>
+</dd>
+<dt>State: List of arrays</dt><dd><p>Saves initial conditions (optional, default None)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>state: the inferred model fit, in the form of a list</dt><dd><p>of floating-point numpy arrays, to be re-used as
+initial conditions for subsequent parameters.</p>
+</dd>
+<dt>likelihood: float</dt><dd><p>Scalar summary of fit quality, higher is better</p>
+</dd>
+<dt>info: object</dt><dd><p>Anything else you’d like to save</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>best</em> – best index into parameter grid</p></li>
+<li><p><em>pars</em> – values of best parameters</p></li>
+<li><p><em>results[best]</em> – (state, likelihood, info) at best parameters.
+<cite>info</cite> is determined by the third element in the
+3-tuple return-value of the <cite>evaluate</cite> function,
+passed by the user. <cite>state</cite> is also user-defined.</p></li>
+<li><p><em>allresults</em> – all other results</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.spikes.waveform module &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Neurotools
+            <img src="../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>neurotools.spikes.waveform module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_obsolete/neurotools.spikes.waveform.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-neurotools.spikes.waveform">
+<span id="neurotools-spikes-waveform-module"></span><h1>neurotools.spikes.waveform module<a class="headerlink" href="#module-neurotools.spikes.waveform" title="Permalink to this heading"></a></h1>
+<p>Routines for signal processing with spike waveforms</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.realign">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">realign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zeros'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#realign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.realign" title="Permalink to this definition"></a></dt>
+<dd><p>Realign waveforms to peak.
+This will rotate the signal contained in <cite>snip</cite> so
+that its global maximum lies at <cite>len(snip)//2</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>snip</strong> (<em>1D np.float32</em>) – Array containing a spike waveform</p></li>
+<li><p><strong>Parameters</strong> (<em>Other</em>) – </p></li>
+<li><p><strong>pad</strong> (<em>str default 'zero'</em>) – <dl class="simple">
+<dt>Padding behavior</dt><dd><ul>
+<li><p><cite>”zero”</cite>: pad edges with zero</p></li>
+<li><p><cite>”end”</cite>: pad edges with initial/final values</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.getFWHM">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">getFWHM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#getFWHM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.getFWHM" title="Permalink to this definition"></a></dt>
+<dd><p>Full width half maximum</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.getPVT">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">getPVT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#getPVT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.getPVT" title="Permalink to this definition"></a></dt>
+<dd><p>peak to valley time</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.getWAHP">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">getWAHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#getWAHP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.getWAHP" title="Permalink to this definition"></a></dt>
+<dd><p>Width at half peak</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.getPT">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">getPT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#getPT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.getPT" title="Permalink to this definition"></a></dt>
+<dd><p>Peak-trough duration</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.getPTHW">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">getPTHW</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#getPTHW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.getPTHW" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.getPHP">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">getPHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#getPHP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.getPHP" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.minmax">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">minmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#minmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.minmax" title="Permalink to this definition"></a></dt>
+<dd><p>Normalize waveform based on extrema</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.normalized_waveform">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">normalized_waveform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#normalized_waveform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.normalized_waveform" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.is_thin">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">is_thin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">123</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#is_thin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.is_thin" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether a mean-waveform is a thin spike.
+Uses amplituce 300 μs post-spike.
+This procedure was trained on well-isolated cells.
+See the 20160802_waveform_segmentation notebook for how
+threshold was derived</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.is_thin_pvt">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">is_thin_pvt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">52.0349055393</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#is_thin_pvt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.is_thin_pvt" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether a mean-waveform is a thin spike.
+Uses peak-to-valley time</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.waveform.process">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.waveform.</span></span><span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i_f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neurotools/spikes/waveform.html#process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.waveform.process" title="Permalink to this definition"></a></dt>
+<dd><p>Get high-dimensional feature description of data.
+TODO: remove; how did this even get here?</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

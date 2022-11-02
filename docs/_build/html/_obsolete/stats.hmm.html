@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stats.hmm module &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Neurotools
+            <img src="../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>stats.hmm module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_obsolete/stats.hmm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-stats.hmm">
+<span id="stats-hmm-module"></span><h1>stats.hmm module<a class="headerlink" href="#module-stats.hmm" title="Permalink to this heading"></a></h1>
+<p>Routines for discrete time hidden Markov models</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.poisson_parameter_guess">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">poisson_parameter_guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#poisson_parameter_guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.poisson_parameter_guess" title="Permalink to this definition"></a></dt>
+<dd><p>Based on a sequence of inferred states X, estimate the log of
+the transition matrix A, the prior vector P, and the state
+probability matrix B.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarary</em>) – 1D integer array of hidden states with values in 0..N-1</p></li>
+<li><p><strong>Y</strong> (<em>ndarary</em>) – 1D integer array of observations</p></li>
+<li><p><strong>N</strong> (<em>positive integer</em>) – Number of states</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>logP</strong> (<em>log Prior for state at first observation</em>)</p></li>
+<li><p><strong>logA</strong> (<em>log State transition array</em>)</p></li>
+<li><p><strong>logB</strong> (<em>log Poisson process rates</em>)</p></li>
+<li><p><strong>params</strong> (<em>p1,p01,p10,mu0,mu1</em>) – p1  = np.mean(X)
+p01 = np.sum(np.diff(X)== 1)/(1+np.sum(X==0))
+p10 = np.sum(np.diff(X)==-1)/(1+np.sum(X==1))
+mu0 = np.mean(Y[X==0])
+mu1 = np.mean(Y[X==1])</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.poisson_baum_welch">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">poisson_baum_welch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#poisson_baum_welch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.poisson_baum_welch" title="Permalink to this definition"></a></dt>
+<dd><p>Fit Hidden Markov Model using Expectation Maximization. For now
+it is limited to two latent states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> (<em>ndarray</em>) – One dimension array of integer count-process observations
+Must have states ranging form 0 to N</p></li>
+<li><p><strong>initial</strong> (<em>ndarray</em>) – Optional parameter initializing the guess for the hidden
+states. If none is provided, we will use a 2 distribution
+Poisson mixture model fit with EM. Please note that this
+procedure fails when the frequency of latent states is
+asymmetric, so you may want to provide different initial
+conditions.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.viterbi">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">viterbi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#viterbi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.viterbi" title="Permalink to this definition"></a></dt>
+<dd><p>See <a class="reference external" href="https://en.wikipedia.org/wiki/Viterbi_algorithm">https://en.wikipedia.org/wiki/Viterbi_algorithm</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> (<em>1D array</em>) – Observations (integer states)</p></li>
+<li><p><strong>P</strong> (<em>array shape =</em><em> (</em><em>nStates</em><em> ,</em><em>)</em>) – 1D array of priors for initial state</p></li>
+<li><p><strong>A</strong> (<em>array</em><em> (</em><em>nStates</em><em>,</em><em>nStates</em><em>)</em>) – State transition matrix</p></li>
+<li><p><strong>B</strong> (<em>ndarray K x N</em>) – conditional probability matrix (emission/observation)
+probabilty of each observation given each state</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional array of most likely states</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.viterbi_log">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">viterbi_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#viterbi_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.viterbi_log" title="Permalink to this definition"></a></dt>
+<dd><p>See <a class="reference external" href="https://en.wikipedia.org/wiki/Viterbi_algorithm">https://en.wikipedia.org/wiki/Viterbi_algorithm</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> (<em>1D array</em>) – Observations (integer states)</p></li>
+<li><p><strong>logP</strong> (<em>array shape =</em><em> (</em><em>nStates</em><em> ,</em><em>)</em>) – 1D array of priors for initial state
+given in log probability</p></li>
+<li><p><strong>logA</strong> (<em>array</em><em> (</em><em>nStates</em><em>,</em><em>nStates</em><em>)</em>) – State transition matrix given in log probability</p></li>
+<li><p><strong>logB</strong> (<em>ndarray K x N</em>) – conditional probability matrix
+log probabilty of each observation given each state</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional array of most likely states</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.hasNaN">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">hasNaN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#hasNaN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.hasNaN" title="Permalink to this definition"></a></dt>
+<dd><p>Faster way to test if array contains NaN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether <cite>x</cite> contains not-a-number.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.poisson_viterbi_state_infer">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">poisson_viterbi_state_infer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#poisson_viterbi_state_infer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.poisson_viterbi_state_infer" title="Permalink to this definition"></a></dt>
+<dd><p>Fit Hidden Markov Model using np.expectation Maximization. For now
+it is limited to two latent states. The Viterbi algorithm is
+used to assign the most likely overall trajectory in the
+np.expectation maximization. This is different from the Baum-Welch
+algorithm which uses the forward-backward algoirthm to infer
+distributions over states rather than the single most likely
+trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> (<em>ndarray</em>) – One dimension array of integer count-process observations
+Must have states ranging form 0 to N</p></li>
+<li><p><strong>initial</strong> (<em>ndarray</em>) – Optional parameter initializing the guess for the hidden
+states. If none is provided, we will use a 2 distribution
+Poisson mixture model fit with EM. Please note that this
+procedure fails when the frequency of latent states is
+asymmetric, so you may want to provide different initial
+conditions.</p></li>
+<li><p><strong>maxiter</strong> (<em>int</em><em>, </em><em>default 1000</em>) – Maximum number of iterations when fitting the model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>inferred states</em>)</p></li>
+<li><p><strong>params</strong> (<em>inferred model parameters</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.forward_backward">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">forward_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#forward_backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.forward_backward" title="Permalink to this definition"></a></dt>
+<dd><p>Compute distribution of hidden states conditioned on all time
+points using the forward-backward algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>ndarray</em>) – An n_timepoints long vector of state observations</p></li>
+<li><p><strong>x_0</strong> (<em>ndarray</em>) – An n_hidden_states long vector of initial state prior</p></li>
+<li><p><strong>T</strong> (<em>ndarray</em>) – An n_hidden_states x n_hidden_states transition matrix</p></li>
+<li><p><strong>B</strong> – An n_hidden_states x n_observable_stated observation
+(emission) matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>iterable f</em> – forward inference results</p></li>
+<li><p><em>iterable b</em> – backward inference results</p></li>
+<li><p><em>iterable pr</em> – posterior inference results (forward * backward)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize model</span>
+<span class="n">n_states</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">])</span>
+<span class="n">T</span>   <span class="o">=</span> <span class="n">array</span><span class="p">([</span>
+       <span class="p">[</span> <span class="mf">0.69</span><span class="p">,</span>  <span class="mf">0.3</span> <span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.4</span> <span class="p">,</span>  <span class="mf">0.59</span><span class="p">]])</span>
+<span class="n">B</span>   <span class="o">=</span> <span class="n">array</span><span class="p">([</span>
+       <span class="p">[</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="mf">0.3</span><span class="p">,</span>  <span class="mf">0.6</span><span class="p">]])</span>
+<span class="c1"># Initialize example states</span>
+<span class="n">y</span>  <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">fwd</span><span class="p">,</span> <span class="n">bwd</span><span class="p">,</span> <span class="n">posterior</span> <span class="o">=</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x_0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+<span class="c1"># Verify that it works with a large number of observations</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n_states</span><span class="p">,(</span><span class="mi">10000</span><span class="p">,))</span>
+<span class="n">fwd</span><span class="p">,</span> <span class="n">bwd</span><span class="p">,</span> <span class="n">posterior</span> <span class="o">=</span> <span class="n">forward_backward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x_0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.jump">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">jump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pobabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#jump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.jump" title="Permalink to this definition"></a></dt>
+<dd><p>Markov jump function: pick a state according to probabilities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>probabilities</strong> (<em>vector</em><em> of </em><em>probabilities</em><em>, </em><em>must sum to 1.</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.sample">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.sample" title="Permalink to this definition"></a></dt>
+<dd><p>x,y = sample(L,T,B,x0)
+Sample from a discrete hidden markov model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>number</em><em> of </em><em>samples to draw</em>) – </p></li>
+<li><p><strong>T</strong> (<em>state transition matrix</em>) – </p></li>
+<li><p><strong>B</strong> (<em>observation</em><em> (</em><em>emission</em><em>) </em><em>matrix</em>) – </p></li>
+<li><p><strong>x0</strong> (<em>initial conditions</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>np.array</strong> (<em>x</em>) – Latent states sampled</p></li>
+<li><p><strong>np.array</strong> (<em>y</em>) – Observed states sampled</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.log_likelihood">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.log_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>Likelihood of hidden (x) and observed (y) state sequence for
+hidden markov model with hidden-state transition probabilities T
+and emission probabilities B, and initial state x0.</p>
+<p>Returns the log likelihood, which is more numerically stable
+and avoids overflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>y</strong> – </p></li>
+<li><p><strong>T</strong> – </p></li>
+<li><p><strong>B</strong> – </p></li>
+<li><p><strong>x0</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.baum_welch">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">baum_welch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_hid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miniter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#baum_welch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.baum_welch" title="Permalink to this definition"></a></dt>
+<dd><p>That,Bhat,X0hat,f,b,p,llikelihood = baum_welch(y,n_hid,convergence = 1e-6, eps = 1e-4)</p>
+<p>Baum-Welch algorithm</p>
+<p>Use np.expectation maximization to find locally optimal parameters for
+a discrete hidden markov model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – 1D array of state observations</p></li>
+<li><p><strong>n_hid</strong> – number of hidden statees</p></li>
+<li><p><strong>convergence</strong> (<em>float</em><em>, </em><em>default 1e-6</em>) – stop when the largest change in tranisition
+or emission matrix parameters is less than this value</p></li>
+<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>default 1e-8</em>) – small uniform probability for regularization,
+to avoid probability of any state or transition going to zero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>That</strong> (<em>estimated transition matrix</em>)</p></li>
+<li><p><strong>Bhat</strong> (<em>estimated observation matrix</em>)</p></li>
+<li><p><strong>X0hat</strong> (<em>estimated initial state</em>)</p></li>
+<li><p><strong>f</strong> (<em>forward filter of observations with estimated model</em>)</p></li>
+<li><p><strong>b</strong> (<em>backward filter of observations with estimated model</em>)</p></li>
+<li><p><strong>p</strong> (<em>smoothing estimation of latent state using estimated model</em>)</p></li>
+<li><p><strong>llikelihood</strong> (<em>likelihood of data given model</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.forward_abstract">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">forward_abstract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#forward_abstract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.forward_abstract" title="Permalink to this definition"></a></dt>
+<dd><p>Abstracted form of forward filtering algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>iterable</em><em> of </em><em>observations</em>) – sequence of observations</p></li>
+<li><p><strong>B</strong> (<em>y→</em><em>(</em><em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
+should accept and observation, and return a function from
+prior distribution to posterior distribution.</p></li>
+<li><p><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – initial state estimate (distribution)</p></li>
+<li><p><strong>T.fwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the forward pass;
+should be a function that accepts and returns a distribution</p></li>
+<li><p><strong>T.bwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the backward pass
+should be a function that accepts and returns a distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.backward_abstract">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">backward_abstract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#backward_abstract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.backward_abstract" title="Permalink to this definition"></a></dt>
+<dd><p>Abstracted form of backward filtering algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>iterable</em><em> of </em><em>observations</em>) – sequence of observations</p></li>
+<li><p><strong>B</strong> (<em>y→</em><em>(</em><em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>)</em><em>,</em>) – observation model conditioning on observations P(x|y(t))
+should accept and observation, and return a function from
+prior distribution to posterior distribution.</p></li>
+<li><p><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – initial state estimate (distribution)</p></li>
+<li><p><strong>T.fwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the forward pass;
+should be a function that accepts and returns a distribution</p></li>
+<li><p><strong>T.bwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>;</em>) – linear operator for the backward pass
+should be a function that accepts and returns a distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.forward_backward_abstract">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">forward_backward_abstract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#forward_backward_abstract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.forward_backward_abstract" title="Permalink to this definition"></a></dt>
+<dd><p>Abstracted form of forward-backward algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>iterable</em>) – sequence of observations</p></li>
+<li><p><strong>x0</strong> (<em>P</em><em>(</em><em>x</em><em>)</em>) – Initial condition</p></li>
+<li><p><strong>T.fwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em>) – Operator for the forward  pass</p></li>
+<li><p><strong>T.bwd</strong> (<em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em>) – Operator for the backward pass</p></li>
+<li><p><strong>B</strong> (<em>y→</em><em>(</em><em>P</em><em>(</em><em>x</em><em>)</em><em>→P</em><em>(</em><em>x</em><em>)</em><em>)</em><em>,</em>) – conditioning on observations P(x|y(t))</p></li>
+<li><p><strong>prior</strong> (<em>Optional</em><em>, </em><em>P</em><em>(</em><em>x</em><em>)</em>) – Prior to be multiplied with the latent state on every time-step</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.DiffusionGaussian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">DiffusionGaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#DiffusionGaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.DiffusionGaussian" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Diffusion operator to use in abstracted forward-backward
+Operates on Gaussian densities</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.DiffusionGaussian.fwd">
+<span class="sig-name descname"><span class="pre">fwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#DiffusionGaussian.fwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.DiffusionGaussian.fwd" title="Permalink to this definition"></a></dt>
+<dd><p>Forward (and backward) operator of a Gaussian diffusion process
+(Wiener process).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<em>Gaussian object</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>new gaussian object reflecting diffusion</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.DiffusionGaussian.bwd">
+<span class="sig-name descname"><span class="pre">bwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#stats.hmm.DiffusionGaussian.bwd" title="Permalink to this definition"></a></dt>
+<dd><p>Forward (and backward) operator of a Gaussian diffusion process
+(Wiener process).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<em>Gaussian object</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>new gaussian object reflecting diffusion</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.LogGaussianCoxApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">LogGaussianCoxApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#LogGaussianCoxApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.LogGaussianCoxApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>Approximate Gaussian distribution to use in abstracted forward-
+backward. Used to condition Gaussian states on Poisson
+observations. Uses 1D integration (quadrature) to estimate
+posterior moments. Assumes log λ = a*x+b.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>log-rate gain parameter</em>) – </p></li>
+<li><p><strong>b</strong> (<em>log-rate bias parameter</em>) – </p></li>
+<li><p><strong>y</strong> (<em>The observed count</em><em> (</em><em>non-negative integer</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.LogGaussianCoxModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">LogGaussianCoxModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#LogGaussianCoxModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.LogGaussianCoxModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Poisson observation model
+Returns a density that, when multiplied by a Gaussian,
+returns a numeric approximation of the posterior as a Gaussian
+see: LogGaussianCoxApproximator</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.GaussianCoxApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">GaussianCoxApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#GaussianCoxApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.GaussianCoxApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>One-dimensional Gaussian Cox-process observation model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>rate gain parameter</em>) – </p></li>
+<li><p><strong>b</strong> (<em>rate bias parameter</em>) – </p></li>
+<li><p><strong>y</strong> (<em>The observed count</em><em> (</em><em>non-negative integer</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.GaussianCoxModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">GaussianCoxModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#GaussianCoxModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.GaussianCoxModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>One-dimensional Gaussian Cox-process observation model
+see: GaussianCoxApproximator</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.ChisquareCoxApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">ChisquareCoxApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#ChisquareCoxApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.ChisquareCoxApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>One-dimensional Chi-squared Cox-process observation model</p>
+<p>rate = (s.a*x+s.b)**2
+rate = a²x²+2abx+b²</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>log-rate gain parameter</em>) – </p></li>
+<li><p><strong>b</strong> (<em>log-rate bias parameter</em>) – </p></li>
+<li><p><strong>y</strong> (<em>The observed count</em><em> (</em><em>non-negative integer</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.ChisquareCoxModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">ChisquareCoxModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#ChisquareCoxModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.ChisquareCoxModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>One-dimensional Chi-squared Cox-process observation model
+see: GaussianCoxApproximator</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.BernoulliObservationApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">BernoulliObservationApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#BernoulliObservationApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.BernoulliObservationApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>Approximate Gaussian distribution to use in abstracted forward-
+backward. Used to condition Gaussian states on Bernoulli
+observations</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.BernoulliObservationModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">BernoulliObservationModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#BernoulliObservationModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.BernoulliObservationModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Bernoulli observation model
+Returns a density that, when multiplied by a Gaussian,
+returns a numeric approximation of the posterior as a Gaussian
+see: BernoulliObservationApproximator</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.TruncatedLogGaussianCoxApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">TruncatedLogGaussianCoxApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#TruncatedLogGaussianCoxApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.TruncatedLogGaussianCoxApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>Approximate Gaussian distribution to use in abstracted forward-
+backward. Used to condition Gaussian states on Poisson
+observations</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.TruncatedLogGaussianCoxModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">TruncatedLogGaussianCoxModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#TruncatedLogGaussianCoxModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.TruncatedLogGaussianCoxModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Poisson observation model
+Returns a density that, when multiplied by a Gaussian,
+returns a numeric approximation of the posterior as a Gaussian
+see: LogGaussianCoxApproximator</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.MVGaussian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">MVGaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGaussian" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Multivariate Gaussian model to use in abstracted forward-backward</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.MVGUpdate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">MVGUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGUpdate" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A: linear system transition matrix. Means evolve as X = AX
+sigma: linear system covariance transition. it is a matrix.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.MVGUpdate.fwd">
+<span class="sig-name descname"><span class="pre">fwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGUpdate.fwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGUpdate.fwd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.MVGUpdate.bwd">
+<span class="sig-name descname"><span class="pre">bwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGUpdate.bwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGUpdate.bwd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stats.hmm.lgcp_observation_minimizer">
+<span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">lgcp_observation_minimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#lgcp_observation_minimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.lgcp_observation_minimizer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.MVLogGaussianCox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">MVLogGaussianCox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVLogGaussianCox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVLogGaussianCox" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>y: binary observations
+B: projection vector from multivariate system to log-rate</p>
+<p>Uses Laplace approximation for covariance</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.MVLogGaussianCox.MVPoissonApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MVPoissonApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVLogGaussianCox.MVPoissonApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVLogGaussianCox.MVPoissonApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.OUGaussian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">OUGaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#OUGaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.OUGaussian" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.OUGaussian.fwd">
+<span class="sig-name descname"><span class="pre">fwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#OUGaussian.fwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.OUGaussian.fwd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.OUGaussian.bwd">
+<span class="sig-name descname"><span class="pre">bwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#OUGaussian.bwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.OUGaussian.bwd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.MVGOUUpdate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">MVGOUUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGOUUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGOUUpdate" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A: linear system transition matrix. Means evolve as X = AX
+sigma: linear system covariance transition. it is a matrix.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.MVGOUUpdate.fwd">
+<span class="sig-name descname"><span class="pre">fwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGOUUpdate.fwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGOUUpdate.fwd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stats.hmm.MVGOUUpdate.bwd">
+<span class="sig-name descname"><span class="pre">bwd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#MVGOUUpdate.bwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.MVGOUUpdate.bwd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.PoissonObservationApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">PoissonObservationApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#PoissonObservationApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.PoissonObservationApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>Approximate Gaussian distribution to use in abstracted forward-
+backward. Used to condition Gaussian states on Poisson
+observations. Uses 1D integration (quadrature) to estimate
+posterior moments. Assumes log λ = a*x+b.</p>
+<p>a: log-rate gain parameter
+b: log-rate bias parameter
+y: The observed count (non-negative integer)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.PoissonObservationModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">PoissonObservationModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#PoissonObservationModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.PoissonObservationModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Poisson observation model
+Returns a density that, when multiplied by a Gaussian,
+returns a numeric approximation of the posterior as a Gaussian
+see: PoissonObservationApproximator</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.TruncatedPoissonObservationApproximator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">TruncatedPoissonObservationApproximator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#TruncatedPoissonObservationApproximator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.TruncatedPoissonObservationApproximator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../neurotools.stats.gaussian.html#neurotools.stats.gaussian.Gaussian" title="neurotools.stats.gaussian.Gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span></code></a></p>
+<p>Approximate Gaussian distribution to use in abstracted forward-
+backward. Used to condition Gaussian states on Poisson
+observations</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stats.hmm.TruncatedPoissonObservationModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stats.hmm.</span></span><span class="sig-name descname"><span class="pre">TruncatedPoissonObservationModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stats/hmm.html#TruncatedPoissonObservationModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stats.hmm.TruncatedPoissonObservationModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Poisson observation model
+Returns a density that, when multiplied by a Gaussian,
+returns a numeric approximation of the posterior as a Gaussian
+see: PoissonObservationApproximator</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -69,6 +69,7 @@ print matplotlib.pyplot.get_backend()
 '''
 
 from neurotools.spikes                   import *
+from neurotools.spikes.sta               import *
 from neurotools.spikes.waveform          import *
 from neurotools.util.tools               import *
 from neurotools.util.time                import *

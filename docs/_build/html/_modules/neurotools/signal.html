@@ -675,113 +675,6 @@
 
 
 
-
-
-
-<span class="c1">############################################################</span>
-<span class="c1"># STA routines TODO move to spikes subpackage</span>
-
-<div class="viewcode-block" id="get_snips"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.get_snips">[docs]</a><span class="k">def</span> <span class="nf">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Extract snippits of a time series surronding a list of </span>
-<span class="sd">    times. Typically used for spike-triggered statistics</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    signal: 1D np.array</span>
-<span class="sd">        Timseries to extract snips from.</span>
-<span class="sd">    times: 1D np.int32</span>
-<span class="sd">        Indecies of spiking events (samples) in `signal`</span>
-<span class="sd">    window: positive int</span>
-<span class="sd">        A region of size `2*window+1` will be extracted</span>
-<span class="sd">        around each spike time.</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    snips: NSPIKES×(2*window+1) np.array</span>
-<span class="sd">        Extracted spike-triggered signal snippits.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&gt;</span><span class="n">window</span><span class="p">]</span>
-    <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">times</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">-</span><span class="n">window</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">snips</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-        <span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">snips</span></div>
-
-<div class="viewcode-block" id="triggered_average"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.triggered_average">[docs]</a><span class="k">def</span> <span class="nf">triggered_average</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Calculate spike-triggered average of a signal.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    signal: 1D np.array</span>
-<span class="sd">        Timseries to extract snips from.</span>
-<span class="sd">    times: 1D np.int32</span>
-<span class="sd">        Indecies of spiking events (samples) in `signal`</span>
-<span class="sd">    window: positive int</span>
-<span class="sd">        A region of size `2*window+1` will be extracted</span>
-<span class="sd">        around each spike time.</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    STA: length 2*window+1 np.array</span>
-<span class="sd">        Spike-triggered average of `signal`.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="get_triggered_stats"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.get_triggered_stats">[docs]</a><span class="k">def</span> <span class="nf">get_triggered_stats</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get a statistical summary of data in length window </span>
-<span class="sd">    around time points.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    signal: 1D np.array</span>
-<span class="sd">        Timseries to extract snips from.</span>
-<span class="sd">    times: 1D np.int32</span>
-<span class="sd">        Indecies of spiking events (samples) in `signal`</span>
-<span class="sd">    window: positive int</span>
-<span class="sd">        A region of size `2*window+1` will be extracted</span>
-<span class="sd">        around each spike time.</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    means : </span>
-<span class="sd">        Means of `signal` for all time-windows </span>
-<span class="sd">        specified in `times`.</span>
-<span class="sd">    standard-deviations : </span>
-<span class="sd">        Standard deviation of `signal` for all time-windows </span>
-<span class="sd">        specified in `times`.</span>
-<span class="sd">    standard-erros : </span>
-<span class="sd">        Standard errors of the mean of `signal` for all </span>
-<span class="sd">        time-windows specified in `times`.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">get_snips</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span><span class="o">*</span><span class="mf">1.96</span></div>
-    
-    
-<div class="viewcode-block" id="fftsta"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fftsta">[docs]</a><span class="k">def</span> <span class="nf">fftsta</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Spike triggerd average (STA) via FFT</span>
-<span class="sd">    Signal `x` is z-scored befor calculating the spike-triggered average</span>
-<span class="sd">    (a.k.a. reverse correlation).</span>
-<span class="sd">    The returned STA is normalized so that the maximum magnitude is 1.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    spikes: np.array</span>
-<span class="sd">        1D spike count vector</span>
-<span class="sd">    x: np.array</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    np.float32 : normalized spike-triggered average</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="n">spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
-    <span class="n">sta</span>    <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">ifft</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span>\
-                    <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)),</span><span class="n">axes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-    <span class="k">return</span> <span class="n">sta</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sta</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span></div>
-    
     
     
     
@@ -1127,13 +1020,13 @@
 <span class="sd">    data: 1D np.array</span>
 <span class="sd">        Signal to filter</span>
 <span class="sd">    N: positive integer, default 100</span>
-<span class="sd">        Block size in which to break data. If data cannot be split </span>
-<span class="sd">        evenly into blocks of size $N$, then data are truncated to the </span>
-<span class="sd">        largest integer multiple of N. </span>
+<span class="sd">        Block size in which to break data. If data cannot be </span>
+<span class="sd">        split evenly into blocks of size $N$, then data are </span>
+<span class="sd">        truncated to the largest integer multiple of N. </span>
 <span class="sd">    sample_match: positive integer, default None</span>
-<span class="sd">        If not None, then blocks will be sub-sampled to contain</span>
-<span class="sd">        `sample_match` samples. `sample_match` should not exceed</span>
-<span class="sd">        data.shape[-1]//N</span>
+<span class="sd">        If not None, then blocks will be sub-sampled to </span>
+<span class="sd">        contain `sample_match` samples. `sample_match` </span>
+<span class="sd">        should not exceed data.shape[-1]//N</span>
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1144,8 +1037,8 @@
 
 <div class="viewcode-block" id="var_block"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.var_block">[docs]</a><span class="k">def</span> <span class="nf">var_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Calls stats_block using np.var. See documentation of stats_block for</span>
-<span class="sd">    details.</span>
+<span class="sd">    Calls stats_block using `np.var`. </span>
+<span class="sd">    See documentation of `stats_block` for details.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1187,7 +1080,6 @@
 <span class="sd">        `stats_block(data,np.median,N)`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">stats_block</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span><span class="n">N</span><span class="p">)</span></div>
-    
 
 <div class="viewcode-block" id="linfilter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.linfilter">[docs]</a><span class="k">def</span> <span class="nf">linfilter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -1270,6 +1162,65 @@
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span>
     <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="estimate_padding"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.estimate_padding">[docs]</a><span class="k">def</span> <span class="nf">estimate_padding</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Estimate the amount of padding needed to address boundary conditions</span>
+<span class="sd">    when filtering. Takes into account the filter bandwidth, which is</span>
+<span class="sd">    related to the time-locality of the filter, and therefore the amount</span>
+<span class="sd">    of padding needed to prevent artifacts at the edge.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">bandwidth</span>  <span class="o">=</span> <span class="n">fb</span> <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fa</span> <span class="k">if</span> <span class="n">fb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">bandwidth</span>
+    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">padding</span></div>
+
+<div class="viewcode-block" id="lowpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.lowpass_filter">[docs]</a><span class="k">def</span> <span class="nf">lowpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Execute a butterworth low pass Filter at frequency &quot;cut&quot;</span>
+<span class="sd">    Defaults to order=4 and Fs=1000</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">bandpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="highpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.highpass_filter">[docs]</a><span class="k">def</span> <span class="nf">highpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Execute a butterworth high pass Filter at frequency &quot;cut&quot;</span>
+<span class="sd">    Defaults to order=4 and Fs=1000</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">bandpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="fdiff"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fdiff">[docs]</a><span class="k">def</span> <span class="nf">fdiff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">240.</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Take the discrete derivative of a signal, correcting </span>
+<span class="sd">    result for sample rate. This procedure returns a singnal</span>
+<span class="sd">    two samples shorter than the original.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: 1D np.array</span>
+<span class="sd">        Signal to differentiate</span>
+<span class="sd">    Fs: positive number; </span>
+<span class="sd">        Sampling rate of x</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">-</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">Fs</span><span class="o">*</span><span class="mf">.5</span></div>
 
 
 
@@ -1490,65 +1441,6 @@
     <span class="k">return</span> <span class="n">ps</span></div>
     
 
-<div class="viewcode-block" id="estimate_padding"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.estimate_padding">[docs]</a><span class="k">def</span> <span class="nf">estimate_padding</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Estimate the amount of padding needed to address boundary conditions</span>
-<span class="sd">    when filtering. Takes into account the filter bandwidth, which is</span>
-<span class="sd">    related to the time-locality of the filter, and therefore the amount</span>
-<span class="sd">    of padding needed to prevent artifacts at the edge.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">bandwidth</span>  <span class="o">=</span> <span class="n">fb</span> <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fa</span> <span class="k">if</span> <span class="n">fb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
-    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">bandwidth</span>
-    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">padding</span></div>
-
-<div class="viewcode-block" id="lowpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.lowpass_filter">[docs]</a><span class="k">def</span> <span class="nf">lowpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Execute a butterworth low pass Filter at frequency &quot;cut&quot;</span>
-<span class="sd">    Defaults to order=4 and Fs=1000</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">bandpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="highpass_filter"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.highpass_filter">[docs]</a><span class="k">def</span> <span class="nf">highpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Execute a butterworth high pass Filter at frequency &quot;cut&quot;</span>
-<span class="sd">    Defaults to order=4 and Fs=1000</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">bandpass_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="fdiff"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.fdiff">[docs]</a><span class="k">def</span> <span class="nf">fdiff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">240.</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Take the discrete derivative of a signal, correcting </span>
-<span class="sd">    result for sample rate. This procedure returns a singnal</span>
-<span class="sd">    two samples shorter than the original.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x: 1D np.array</span>
-<span class="sd">        Signal to differentiate</span>
-<span class="sd">    Fs: positive number; </span>
-<span class="sd">        Sampling rate of x</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">-</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">Fs</span><span class="o">*</span><span class="mf">.5</span></div>
-
 
 
 
@@ -1575,15 +1467,19 @@
 
 <div class="viewcode-block" id="interpolate_NaN"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.interpolate_NaN">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Fill in NaN (missing) data in a one-dimensional timeseries via linear</span>
-<span class="sd">    interpolation.</span>
+<span class="sd">    Fill in NaN (missing) data in a one-dimensional </span>
+<span class="sd">    timeseries via linear interpolation.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u:</span>
+<span class="sd">    u: np.array</span>
+<span class="sd">        Signal in which to interpolate NaN values</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    u: np.array</span>
+<span class="sd">        Copy of `u` with NaN values filled in via linear</span>
+<span class="sd">        interpolation.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">get_edges</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">u</span><span class="p">)))):</span>
@@ -1596,8 +1492,8 @@
 
 <div class="viewcode-block" id="interpolate_NaN_quadratic"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.interpolate_NaN_quadratic">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN_quadratic</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Fill in NaN (missing) data in a one-dimensional timeseries via quadratic</span>
-<span class="sd">    interpolation.</span>
+<span class="sd">    Fill in NaN (missing) data in a one-dimensional </span>
+<span class="sd">    timeseries via quadratic interpolation.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

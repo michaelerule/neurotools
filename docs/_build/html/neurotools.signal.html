@@ -75,10 +75,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.phase_randomize"><code class="docutils literal notranslate"><span class="pre">phase_randomize()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.phase_randomize_from_amplitudes"><code class="docutils literal notranslate"><span class="pre">phase_randomize_from_amplitudes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.sign_preserving_amplitude_demodulate"><code class="docutils literal notranslate"><span class="pre">sign_preserving_amplitude_demodulate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.get_snips"><code class="docutils literal notranslate"><span class="pre">get_snips()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.triggered_average"><code class="docutils literal notranslate"><span class="pre">triggered_average()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.get_triggered_stats"><code class="docutils literal notranslate"><span class="pre">get_triggered_stats()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.fftsta"><code class="docutils literal notranslate"><span class="pre">fftsta()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.nonnegative_bandpass_filter"><code class="docutils literal notranslate"><span class="pre">nonnegative_bandpass_filter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.bandpass_filter"><code class="docutils literal notranslate"><span class="pre">bandpass_filter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.box_filter"><code class="docutils literal notranslate"><span class="pre">box_filter()</span></code></a></li>
@@ -92,6 +88,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.linfilter"><code class="docutils literal notranslate"><span class="pre">linfilter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.padout"><code class="docutils literal notranslate"><span class="pre">padout()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.padin"><code class="docutils literal notranslate"><span class="pre">padin()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.estimate_padding"><code class="docutils literal notranslate"><span class="pre">estimate_padding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.lowpass_filter"><code class="docutils literal notranslate"><span class="pre">lowpass_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.highpass_filter"><code class="docutils literal notranslate"><span class="pre">highpass_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.fdiff"><code class="docutils literal notranslate"><span class="pre">fdiff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.arenear"><code class="docutils literal notranslate"><span class="pre">arenear()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.aresafe"><code class="docutils literal notranslate"><span class="pre">aresafe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.get_edges"><code class="docutils literal notranslate"><span class="pre">get_edges()</span></code></a></li>
@@ -99,10 +99,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.remove_gaps"><code class="docutils literal notranslate"><span class="pre">remove_gaps()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.remove_short"><code class="docutils literal notranslate"><span class="pre">remove_short()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.pieces"><code class="docutils literal notranslate"><span class="pre">pieces()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.estimate_padding"><code class="docutils literal notranslate"><span class="pre">estimate_padding()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.lowpass_filter"><code class="docutils literal notranslate"><span class="pre">lowpass_filter()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.highpass_filter"><code class="docutils literal notranslate"><span class="pre">highpass_filter()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.fdiff"><code class="docutils literal notranslate"><span class="pre">fdiff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.interpolate_NaN"><code class="docutils literal notranslate"><span class="pre">interpolate_NaN()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.interpolate_NaN_quadratic"><code class="docutils literal notranslate"><span class="pre">interpolate_NaN_quadratic()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.killSpikes"><code class="docutils literal notranslate"><span class="pre">killSpikes()</span></code></a></li>
@@ -583,102 +579,6 @@ larger than np.pi/2, that is also a local extremum in phase velocity</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.get_snips">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">get_snips</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#get_snips"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.get_snips" title="Permalink to this definition"></a></dt>
-<dd><p>Extract snippits of a time series surronding a list of
-times. Typically used for spike-triggered statistics</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>1D np.array</em>) – Timseries to extract snips from.</p></li>
-<li><p><strong>times</strong> (<em>1D np.int32</em>) – Indecies of spiking events (samples) in <cite>signal</cite></p></li>
-<li><p><strong>window</strong> (<em>positive int</em>) – A region of size <cite>2*window+1</cite> will be extracted
-around each spike time.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>snips</strong> – Extracted spike-triggered signal snippits.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>NSPIKES×(2*window+1) np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.triggered_average">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">triggered_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#triggered_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.triggered_average" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate spike-triggered average of a signal.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>1D np.array</em>) – Timseries to extract snips from.</p></li>
-<li><p><strong>times</strong> (<em>1D np.int32</em>) – Indecies of spiking events (samples) in <cite>signal</cite></p></li>
-<li><p><strong>window</strong> (<em>positive int</em>) – A region of size <cite>2*window+1</cite> will be extracted
-around each spike time.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>STA</strong> – Spike-triggered average of <cite>signal</cite>.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>length 2*window+1 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.get_triggered_stats">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">get_triggered_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#get_triggered_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.get_triggered_stats" title="Permalink to this definition"></a></dt>
-<dd><p>Get a statistical summary of data in length window
-around time points.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>1D np.array</em>) – Timseries to extract snips from.</p></li>
-<li><p><strong>times</strong> (<em>1D np.int32</em>) – Indecies of spiking events (samples) in <cite>signal</cite></p></li>
-<li><p><strong>window</strong> (<em>positive int</em>) – A region of size <cite>2*window+1</cite> will be extracted
-around each spike time.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>means</em> – Means of <cite>signal</cite> for all time-windows
-specified in <cite>times</cite>.</p></li>
-<li><p><em>standard-deviations</em> – Standard deviation of <cite>signal</cite> for all time-windows
-specified in <cite>times</cite>.</p></li>
-<li><p><em>standard-erros</em> – Standard errors of the mean of <cite>signal</cite> for all
-time-windows specified in <cite>times</cite>.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.fftsta">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fftsta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spikes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fftsta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fftsta" title="Permalink to this definition"></a></dt>
-<dd><p>Spike triggerd average (STA) via FFT
-Signal <cite>x</cite> is z-scored befor calculating the spike-triggered average
-(a.k.a. reverse correlation).
-The returned STA is normalized so that the maximum magnitude is 1.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spikes</strong> (<em>np.array</em>) – 1D spike count vector</p></li>
-<li><p><strong>x</strong> (<em>np.array</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>np.float32</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>normalized spike-triggered average</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.nonnegative_bandpass_filter">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">nonnegative_bandpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zerophase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandstop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#nonnegative_bandpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.nonnegative_bandpass_filter" title="Permalink to this definition"></a></dt>
 <dd><p>For filtering data that must remain non-negative. Due to
@@ -889,12 +789,12 @@ details.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>1D np.array</em>) – Signal to filter</p></li>
-<li><p><strong>N</strong> (<em>positive integer</em><em>, </em><em>default 100</em>) – Block size in which to break data. If data cannot be split
-evenly into blocks of size $N$, then data are truncated to the
-largest integer multiple of N.</p></li>
-<li><p><strong>sample_match</strong> (<em>positive integer</em><em>, </em><em>default None</em>) – If not None, then blocks will be sub-sampled to contain
-<cite>sample_match</cite> samples. <cite>sample_match</cite> should not exceed
-data.shape[-1]//N</p></li>
+<li><p><strong>N</strong> (<em>positive integer</em><em>, </em><em>default 100</em>) – Block size in which to break data. If data cannot be
+split evenly into blocks of size $N$, then data are
+truncated to the largest integer multiple of N.</p></li>
+<li><p><strong>sample_match</strong> (<em>positive integer</em><em>, </em><em>default None</em>) – If not None, then blocks will be sub-sampled to
+contain <cite>sample_match</cite> samples. <cite>sample_match</cite>
+should not exceed data.shape[-1]//N</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -909,8 +809,8 @@ data.shape[-1]//N</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.var_block">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">var_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#var_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.var_block" title="Permalink to this definition"></a></dt>
-<dd><p>Calls stats_block using np.var. See documentation of stats_block for
-details.</p>
+<dd><p>Calls stats_block using <cite>np.var</cite>.
+See documentation of <cite>stats_block</cite> for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1017,6 +917,45 @@ for padout for details.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.estimate_padding">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">estimate_padding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#estimate_padding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.estimate_padding" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the amount of padding needed to address boundary conditions
+when filtering. Takes into account the filter bandwidth, which is
+related to the time-locality of the filter, and therefore the amount
+of padding needed to prevent artifacts at the edge.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.lowpass_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">lowpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#lowpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.lowpass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a butterworth low pass Filter at frequency “cut”
+Defaults to order=4 and Fs=1000</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.highpass_filter">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">highpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#highpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.highpass_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a butterworth high pass Filter at frequency “cut”
+Defaults to order=4 and Fs=1000</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.fdiff">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fdiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">240.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fdiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fdiff" title="Permalink to this definition"></a></dt>
+<dd><p>Take the discrete derivative of a signal, correcting
+result for sample rate. This procedure returns a singnal
+two samples shorter than the original.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1D np.array</em>) – Signal to differentiate</p></li>
+<li><p><strong>Fs</strong> (<em>positive number;</em>) – Sampling rate of x</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1160,52 +1099,20 @@ than <cite>thr</cite></p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.estimate_padding">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">estimate_padding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#estimate_padding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.estimate_padding" title="Permalink to this definition"></a></dt>
-<dd><p>Estimate the amount of padding needed to address boundary conditions
-when filtering. Takes into account the filter bandwidth, which is
-related to the time-locality of the filter, and therefore the amount
-of padding needed to prevent artifacts at the edge.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.lowpass_filter">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">lowpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#lowpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.lowpass_filter" title="Permalink to this definition"></a></dt>
-<dd><p>Execute a butterworth low pass Filter at frequency “cut”
-Defaults to order=4 and Fs=1000</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.highpass_filter">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">highpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#highpass_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.highpass_filter" title="Permalink to this definition"></a></dt>
-<dd><p>Execute a butterworth high pass Filter at frequency “cut”
-Defaults to order=4 and Fs=1000</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.fdiff">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">fdiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">240.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#fdiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.fdiff" title="Permalink to this definition"></a></dt>
-<dd><p>Take the discrete derivative of a signal, correcting
-result for sample rate. This procedure returns a singnal
-two samples shorter than the original.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>1D np.array</em>) – Signal to differentiate</p></li>
-<li><p><strong>Fs</strong> (<em>positive number;</em>) – Sampling rate of x</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.interpolate_NaN">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">interpolate_NaN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpolate_NaN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.interpolate_NaN" title="Permalink to this definition"></a></dt>
-<dd><p>Fill in NaN (missing) data in a one-dimensional timeseries via linear
-interpolation.</p>
+<dd><p>Fill in NaN (missing) data in a one-dimensional
+timeseries via linear interpolation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>u</strong> – </p>
+<dd class="field-odd"><p><strong>u</strong> (<em>np.array</em>) – Signal in which to interpolate NaN values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u</strong> – Copy of <cite>u</cite> with NaN values filled in via linear
+interpolation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1213,8 +1120,8 @@ interpolation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.interpolate_NaN_quadratic">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">interpolate_NaN_quadratic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpolate_NaN_quadratic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.interpolate_NaN_quadratic" title="Permalink to this definition"></a></dt>
-<dd><p>Fill in NaN (missing) data in a one-dimensional timeseries via quadratic
-interpolation.</p>
+<dd><p>Fill in NaN (missing) data in a one-dimensional
+timeseries via quadratic interpolation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>u</strong> (<em>1D np.array</em>) – </p>

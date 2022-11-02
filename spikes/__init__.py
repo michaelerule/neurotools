@@ -13,6 +13,7 @@ from __future__ import print_function
 
 from . import waveform
 from . import ppc
+from . import sta
 
 import numpy as np
 import matplotlib.mlab as ml
@@ -118,6 +119,13 @@ def txcorr(t1,t2,maxlag,
     return y
 
 def pack_cross_correlation_matrix(xc):
+    '''
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     assert len(xc.shape)==1
     k = xc.shape[0]
     assert k%2==1
@@ -131,12 +139,26 @@ def cut_spikes(s,cut):
     '''
     downsampling spike raster by factor cut
     just sums up the bins (can generate counts >1)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     return np.array([
         np.sum(s[i:i+cut])
         for i in np.arange(0,len(s),cut)])
 
 def times_to_raster(spikes,duration=1000):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     result = np.zeros((1000,),dtype=np.float32)
     if len(spikes)>0:
         result[spikes]=1
@@ -145,6 +167,12 @@ def times_to_raster(spikes,duration=1000):
 def bin_spikes_raster(train,binsize=5):
     '''
     Important! This accepts a spike raster, not spike times!
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     bins = int(np.ceil(len(train)/float(binsize)))
     return np.histogram(ml.find(train),bins,(0,bins*binsize))[0]
@@ -152,6 +180,12 @@ def bin_spikes_raster(train,binsize=5):
 def bin_spike_times(times,binsize=5):
     '''
     Important! This accepts spike times, not a raster
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     bins = np.ceil(np.max(times)/binsize)
     return np.histogram(times,bins,(0,bins*binsize))[0]

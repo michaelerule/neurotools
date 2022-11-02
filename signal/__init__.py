@@ -596,113 +596,6 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
 
 
 
-
-
-
-############################################################
-# STA routines TODO move to spikes subpackage
-
-def get_snips(signal,times,window):
-    '''
-    Extract snippits of a time series surronding a list of 
-    times. Typically used for spike-triggered statistics
-    
-    Parameters
-    ----------
-    signal: 1D np.array
-        Timseries to extract snips from.
-    times: 1D np.int32
-        Indecies of spiking events (samples) in `signal`
-    window: positive int
-        A region of size `2*window+1` will be extracted
-        around each spike time.
-    
-    Returns
-    -------
-    snips: NSPIKES×(2*window+1) np.array
-        Extracted spike-triggered signal snippits.
-    '''
-    times = times[times>window]
-    times = times[times<len(signal)-window-1]
-    snips = np.array([
-        signal[t-window:t+window+1] for t in times])
-    return snips
-
-def triggered_average(signal,times,window):
-    '''
-    Calculate spike-triggered average of a signal.
-    
-    Parameters
-    ----------
-    signal: 1D np.array
-        Timseries to extract snips from.
-    times: 1D np.int32
-        Indecies of spiking events (samples) in `signal`
-    window: positive int
-        A region of size `2*window+1` will be extracted
-        around each spike time.
-    
-    Returns
-    -------
-    STA: length 2*window+1 np.array
-        Spike-triggered average of `signal`.
-    '''
-    return np.mean(get_snips(signal,times,window),0)
-
-def get_triggered_stats(signal,times,window):
-    '''
-    Get a statistical summary of data in length window 
-    around time points.
-    
-    Parameters
-    ----------
-    signal: 1D np.array
-        Timseries to extract snips from.
-    times: 1D np.int32
-        Indecies of spiking events (samples) in `signal`
-    window: positive int
-        A region of size `2*window+1` will be extracted
-        around each spike time.
-        
-    Returns
-    -------
-    means : 
-        Means of `signal` for all time-windows 
-        specified in `times`.
-    standard-deviations : 
-        Standard deviation of `signal` for all time-windows 
-        specified in `times`.
-    standard-erros : 
-        Standard errors of the mean of `signal` for all 
-        time-windows specified in `times`.
-    '''
-    s = get_snips(signal,times,window)
-    return np.mean(s,0),np.std(s,0),np.std(s,0)/np.sqrt(len(times))*1.96
-    
-    
-def fftsta(spikes,x):
-    '''
-    Spike triggerd average (STA) via FFT
-    Signal `x` is z-scored befor calculating the spike-triggered average
-    (a.k.a. reverse correlation).
-    The returned STA is normalized so that the maximum magnitude is 1.
-    
-    Parameters
-    ----------
-    spikes: np.array
-        1D spike count vector
-    x: np.array
-        
-    Returns
-    -------
-    np.float32 : normalized spike-triggered average
-    '''
-    signal = np.float32((x-np.mean(x))/np.std(x))
-    spikes = np.float32(spikes)
-    sta    = fftshift(ifft(fft(spikes,axis=1)*\
-                    np.conj(fft(x),dtype=np.complex64)),axes=1).real
-    return sta/np.max(abs(sta),axis=1)[:,None]
-    
     
     
     
@@ -1048,13 +941,13 @@ def mean_block(data,N=100,sample_match=None):
     data: 1D np.array
         Signal to filter
     N: positive integer, default 100
-        Block size in which to break data. If data cannot be split 
-        evenly into blocks of size $N$, then data are truncated to the 
-        largest integer multiple of N. 
+        Block size in which to break data. If data cannot be 
+        split evenly into blocks of size $N$, then data are 
+        truncated to the largest integer multiple of N. 
     sample_match: positive integer, default None
-        If not None, then blocks will be sub-sampled to contain
-        `sample_match` samples. `sample_match` should not exceed
-        data.shape[-1]//N
+        If not None, then blocks will be sub-sampled to 
+        contain `sample_match` samples. `sample_match` 
+        should not exceed data.shape[-1]//N
         
     Returns
     -------
@@ -1065,8 +958,8 @@ def mean_block(data,N=100,sample_match=None):
 
 def var_block(data,N=100):
     '''
-    Calls stats_block using np.var. See documentation of stats_block for
-    details.
+    Calls stats_block using `np.var`. 
+    See documentation of `stats_block` for details.
     
     Parameters
     ----------
@@ -1108,7 +1001,6 @@ def median_block(data,N=100):
         `stats_block(data,np.median,N)`
     '''
     return stats_block(data,np.median,N)
-    
 
 def linfilter(A,C,x,initial=None):
     '''
@@ -1191,6 +1083,65 @@ def padin(data):
     N = len(data)
     assert len(data.shape)==1
     return data[N//2:N//2+N]
+
+def estimate_padding(fa,fb,Fs=1000):
+    '''
+    Estimate the amount of padding needed to address boundary conditions
+    when filtering. Takes into account the filter bandwidth, which is
+    related to the time-locality of the filter, and therefore the amount
+    of padding needed to prevent artifacts at the edge.
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    bandwidth  = fb if fa is None else fa if fb is None else min(fa,fb)
+    wavelength = Fs/bandwidth
+    padding    = int(np.ceil(2.5*wavelength))
+    return padding
+
+def lowpass_filter(x, cut=10, Fs=1000, order=4):
+    '''
+    Execute a butterworth low pass Filter at frequency "cut"
+    Defaults to order=4 and Fs=1000
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    return bandpass_filter(x,fb=cut,Fs=Fs,order=order)
+
+def highpass_filter(x, cut=40, Fs=1000, order=4):
+    '''
+    Execute a butterworth high pass Filter at frequency "cut"
+    Defaults to order=4 and Fs=1000
+    
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
+    return bandpass_filter(x,fa=cut,Fs=Fs,order=order)
+
+def fdiff(x,Fs=240.):
+    '''
+    Take the discrete derivative of a signal, correcting 
+    result for sample rate. This procedure returns a singnal
+    two samples shorter than the original.
+    
+    Parameters
+    ----------
+    x: 1D np.array
+        Signal to differentiate
+    Fs: positive number; 
+        Sampling rate of x
+
+    Returns
+    -------
+    '''
+    return (x[2:]-x[:-2])*Fs*.5
 
 
 
@@ -1411,65 +1362,6 @@ def pieces(x,thr=4):
     return ps
     
 
-def estimate_padding(fa,fb,Fs=1000):
-    '''
-    Estimate the amount of padding needed to address boundary conditions
-    when filtering. Takes into account the filter bandwidth, which is
-    related to the time-locality of the filter, and therefore the amount
-    of padding needed to prevent artifacts at the edge.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    bandwidth  = fb if fa is None else fa if fb is None else min(fa,fb)
-    wavelength = Fs/bandwidth
-    padding    = int(np.ceil(2.5*wavelength))
-    return padding
-
-def lowpass_filter(x, cut=10, Fs=1000, order=4):
-    '''
-    Execute a butterworth low pass Filter at frequency "cut"
-    Defaults to order=4 and Fs=1000
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    return bandpass_filter(x,fb=cut,Fs=Fs,order=order)
-
-def highpass_filter(x, cut=40, Fs=1000, order=4):
-    '''
-    Execute a butterworth high pass Filter at frequency "cut"
-    Defaults to order=4 and Fs=1000
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    return bandpass_filter(x,fa=cut,Fs=Fs,order=order)
-
-def fdiff(x,Fs=240.):
-    '''
-    Take the discrete derivative of a signal, correcting 
-    result for sample rate. This procedure returns a singnal
-    two samples shorter than the original.
-    
-    Parameters
-    ----------
-    x: 1D np.array
-        Signal to differentiate
-    Fs: positive number; 
-        Sampling rate of x
-
-    Returns
-    -------
-    '''
-    return (x[2:]-x[:-2])*Fs*.5
-
 
 
 
@@ -1496,15 +1388,19 @@ def fdiff(x,Fs=240.):
 
 def interpolate_NaN(u):
     '''
-    Fill in NaN (missing) data in a one-dimensional timeseries via linear
-    interpolation.
+    Fill in NaN (missing) data in a one-dimensional 
+    timeseries via linear interpolation.
     
     Parameters
     ----------
-    u:
+    u: np.array
+        Signal in which to interpolate NaN values
     
     Returns
     -------
+    u: np.array
+        Copy of `u` with NaN values filled in via linear
+        interpolation.
     '''
     u = np.array(u)
     for s,e in list(zip(*get_edges(~np.isfinite(u)))):
@@ -1517,8 +1413,8 @@ def interpolate_NaN(u):
 
 def interpolate_NaN_quadratic(u):
     '''
-    Fill in NaN (missing) data in a one-dimensional timeseries via quadratic
-    interpolation.
+    Fill in NaN (missing) data in a one-dimensional 
+    timeseries via quadratic interpolation.
     
     Parameters
     ----------

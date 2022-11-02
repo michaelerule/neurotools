@@ -12,3 +12,11 @@ import neurotools
 from   neurotools import *
 
 
+from . import graphics
+from . import jobs
+from . import linalg
+from . import signal
+from . import spatial
+from . import spikes
+from . import stats
+from . import util

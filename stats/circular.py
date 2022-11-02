@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 '''
-Explore log-polar gaussian distributions for representing analytic
-signal across the population.
+A couple functions for circular statistics.
 '''
 from __future__ import absolute_import
 from __future__ import with_statement

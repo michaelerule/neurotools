@@ -7,6 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   neurotools.stats.circular
    neurotools.stats.convolutional
    neurotools.stats.density
    neurotools.stats.distributions

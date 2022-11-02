@@ -1,6 +1,10 @@
 #!/us#!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Functions to make creation of GPU functions more 
+succinct and compact. Also contains generic routines for manipulating Cl 
+source objects.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -14,13 +18,6 @@ try:
 except:
     xrange = range
 
-
-'''
-Contains higher order functions to make creation of GPU functions more 
-succinct and compact. Also contains generic routines for manipulating Cl 
-source objects.
-'''
-
 try:
     import pyopencl
 except:
@@ -33,7 +30,7 @@ except:
     # TODO: shadow missing function with the above, which raises an error?
     pyopencl = None
 
-from neurotools.gpu.cl import *   
+from neurotools.obsolete.gpu.cl import *   
 
 try:
     from pytools import memoize

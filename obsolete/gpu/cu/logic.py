@@ -1,8 +1,20 @@
-'''This module contains GPU wrappers to perform boolean logic in parallel.
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+'''
+This module contains GPU wrappers to perform boolean logic in parallel.
 These functions very much need work, since they basically use 
 Iverson's convention, but with floats, such that 0.0f = false, 1.0f=true.
 Nevertheless I have found these little functions quite useful in their
-present form in some circumstances'''
+present form in some circumstances
+'''
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+
 
 from neurotools.obsolete.gpu.cu.function import *
 

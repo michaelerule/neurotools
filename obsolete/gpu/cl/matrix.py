@@ -1,13 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
 '''
 Matrix routines
 
@@ -22,19 +14,25 @@ In interest of fixing convention, GPU matricies shall be accepted as a
 tuple of (data,cols). The number of rows is inferred from the length
 of the data. 
 
-TODO : check correlation matrix funcions, look wrong
+TODO : check correlation matrix funcions, something is off here
 '''
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
 
-# These libraries are missing!
-from neurotools.gpu.cpu.util import *
-from neurotools.gpu.cl.function import *
+from neurotools.obsolete.gpu.cpu.util import *
+from neurotools.obsolete.gpu.cl.function import *
     
 try:
     from pytools import memoize
 except:
     print('Please install the pytools module')
     print('Attempting fallback to neurotools')
-    from neurotools.tools import memoize
+    from neurotools.jobs.ndecorator import memoize
 
 gputranspose = lambda(rows,cols):gpumap('x[(i%'+str(rows)+')*'+str(cols)+'+(i/'+str(rows)+')]')
 '''Prepares a map kernel that transposed a row-major packed float matrix/ Eg gputranspose(rows,cols)(data) will transpose data. Creates a new, memoized, kernel for each array dimension'''

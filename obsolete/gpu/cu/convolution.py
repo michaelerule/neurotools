@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Utilities for performing convolutions in PyCuda. 
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,13 +11,14 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-'''
-Utilities for performing certain Naive convolutions in PyCuda. Sadly I 
-have not accelerated anything using the FT yet
-'''
 
 def gpuboxconv_core(data,size):
     '''
+    
+    Parameters
+    ----------
+    data:
+    size:
     
     '''
     cells=int(len(data))

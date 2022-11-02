@@ -22,8 +22,8 @@ except:
     # TODO: shadow missing function with the above, which raises an error?
     cl = None
 
-from neurotools.gpu.cl import *
-from neurotools.gpu.cl.function import *
+from neurotools.obsolete.gpu.cl import *
+from neurotools.obsolete.gpu.cl.function import *
 zero_device = elemental("int *d","d=0")
 
 def zeros_float(N):

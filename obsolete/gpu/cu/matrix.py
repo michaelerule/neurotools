@@ -1,5 +1,13 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
 '''
-
 This class collects routines that operate on lists of lists. Typically,
 arguments are in the form of a row-major ordered matrix, as well as 
 the number of rows and number of elements in each row. These algorithms
@@ -10,11 +18,10 @@ serial algorithm operating on a single row.
 In interest of fixing convention, GPU matricies shall be accepted as a
 tuple of (data,cols). The number of rows is inferred from the length
 of the data. 
-
 '''
 
-from neurotools.gpu.cpu.util import *
-from neurotools.gpu.cu.function import *
+from neurotools.obsolete.gpu.cpu.util import *
+from neurotools.obsolete.gpu.cu.function import *
 
 try:
     from pytools import memoize

@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Contains statistical routines. All routines assume float32 arrays as the
+underlying datatype.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,10 +12,6 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-'''
-Contains statistical routines. All routines assume float32 arrays as the
-underlying datatype.
-'''
 
 try:
     import pycuda.gpuarray
@@ -23,7 +22,8 @@ except:
     def ElementwiseKernel(*args,**kwargs):
         print('PyCuda is missing; please install it to use CUDA routines')
 
-from neurotools.gpu.cu.gpufun import *
+from . import gpufun
+from gpufun import *
 from math import *
 import numpy
 

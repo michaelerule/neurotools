@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+This module contains utility for performing graph algorithms on the GPU.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -10,8 +12,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 '''
-This module contains utility for performing graph algorithms on the GPU.
-
 Representations of Graph datastructures on GPU :
 
 Sparse Matrix :

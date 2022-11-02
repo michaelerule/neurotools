@@ -8,10 +8,6 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import neurotools
-from   neurotools import *
-
-
 from . import graphics
 from . import jobs
 from . import linalg

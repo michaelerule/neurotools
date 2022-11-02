@@ -37,7 +37,7 @@ try:
 except:
     print('Please install the pytools module')
     print('Attempting fallback to neurotools')
-    from neurotools.tools import memoize
+    from neurotools.jobs.ndecorator import memoize
 
 from math import log,ceil
 import re

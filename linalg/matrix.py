@@ -692,18 +692,22 @@ def rmatrix(h):
 
 def ldiv(A,B):
     '''
-    Behaves like Matlab A\B
-    Solve AX=B for X = A^{-1}B
-    i.e. find matrix X which when right-multiplied with A is close to B
+    Behaves like Matlab `A\B`; Solves `AX=B` for 
+    `X = A^{-1}B`
+    i.e. find matrix `X` which when right-multiplied with 
+    `A` is close to `B`.
     
     Parametrs
     ---------
-    A: Nsamples x Nfeatures array of independent variables
-    B: Nsamples x Noutputs  array of   dependent variables
+    A: np.array
+        Nsamples x Nfeatures array of independent variables
+    B: np.array
+        NSAMPLES×NOUTPUTS  array of   dependent variables
     
     Returns
     -------
-    X: Nfeatures x Noutputs vector such that AX≃B
+    X: np.array
+        NFEATURES×NOUTPUTS vector such that AX≃B
     '''
     A = np.array(A)
     B = np.array(B)
@@ -712,7 +716,7 @@ def ldiv(A,B):
     if not len(A.shape)==2:
         raise ValueError('Argument A should be 2D Nsamples x Nfeatures array of independent variables')
     if not len(B.shape)==2:
-        raise ValueError('Argument B should be 2D Nsamples x Noutputs array of dependent variables')
+        raise ValueError('Argument B should be 2D NSAMPLES×NOUTPUTS array of dependent variables')
     if not (A.shape[0]==B.shape[0]):
         raise ValueError('First dimension of each array should match (Nsamples)')
     if (A.shape[0]!=A.shape[1]):

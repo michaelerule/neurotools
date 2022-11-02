@@ -77,8 +77,63 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="neurotools-obsolete-gpu-cl-function-module">
-<h1>neurotools.obsolete.gpu.cl.function module<a class="headerlink" href="#neurotools-obsolete-gpu-cl-function-module" title="Permalink to this heading"></a></h1>
+  <section id="module-neurotools.obsolete.gpu.cl.function">
+<span id="neurotools-obsolete-gpu-cl-function-module"></span><h1>neurotools.obsolete.gpu.cl.function module<a class="headerlink" href="#module-neurotools.obsolete.gpu.cl.function" title="Permalink to this heading"></a></h1>
+<p>Functions to make creation of GPU functions more
+succinct and compact. Also contains generic routines for manipulating Cl
+source objects.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.format">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/obsolete/gpu/cl/function.html#format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.format" title="Permalink to this definition"></a></dt>
+<dd><p>This is a kernel source auto-formatter.
+It mostly just does auto-indent</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.printKernel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">printKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/obsolete/gpu/cl/function.html#printKernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.printKernel" title="Permalink to this definition"></a></dt>
+<dd><p>This prints out a kernel source with line numbers</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.guessGPUType">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">guessGPUType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/obsolete/gpu/cl/function.html#guessGPUType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.guessGPUType" title="Permalink to this definition"></a></dt>
+<dd><p>At the moment, this returns numpy.float32 for Python floats and
+numpy.int32 for python integers, and is otherwise undefined</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.toGPUType">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">toGPUType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.toGPUType" title="Permalink to this definition"></a></dt>
+<dd><p>A little wrapper to auto-cast floats/ints to respective numpy datatypes
+for use on the GPU. This functionality probably exists elsewhere</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.insert_global">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">insert_global</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.insert_global" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.kernel">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/obsolete/gpu/cl/function.html#kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.kernel" title="Permalink to this definition"></a></dt>
+<dd><p>This is my easy kernel wrapper. This function accepts a header ( the
+list of arguments ), a body ( the core of the loop ), and optionally
+a block of helper function code. The core loop should reference “tid” as
+the thread index variable. The distribution of threads on the GPU is
+automatically managed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.elemental">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">elemental</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/obsolete/gpu/cl/function.html#elemental"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.elemental" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.obsolete.gpu.cl.function.gpumap">
+<span class="sig-prename descclassname"><span class="pre">neurotools.obsolete.gpu.cl.function.</span></span><span class="sig-name descname"><span class="pre">gpumap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/obsolete/gpu/cl/function.html#gpumap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.obsolete.gpu.cl.function.gpumap" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

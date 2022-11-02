@@ -8,32 +8,32 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import scipy.stats
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
 import colorsys
-import matplotlib.pyplot as plt
-from mpl_toolkits import axes_grid1
-import scipy.stats
 
+from mpl_toolkits import axes_grid1
 from neurotools.graphics.color import hcl2rgb,hsv2rgb
 
-# Configure matplotlib
-matplotlib.rcParams['figure.dpi']=300
-TEXTWIDTH = 5.62708
-matplotlib.rcParams['figure.figsize'] = (TEXTWIDTH, TEXTWIDTH/sqrt(2))
-SMALL_SIZE  = 7
-MEDIUM_SIZE = 8
-BIGGER_SIZE = 9
-matplotlib.rc('font'  , size     =SMALL_SIZE ) # controls default text sizes
-matplotlib.rc('axes'  , titlesize=MEDIUM_SIZE) # fontsize of the axes title
-matplotlib.rc('axes'  , labelsize=MEDIUM_SIZE) # fontsize of the x and y labels
-matplotlib.rc('xtick' , labelsize=SMALL_SIZE ) # fontsize of the tick labels
-matplotlib.rc('ytick' , labelsize=SMALL_SIZE ) # fontsize of the tick labels
-matplotlib.rc('legend', fontsize =SMALL_SIZE ) # legend fontsize
-matplotlib.rc('figure', titlesize=BIGGER_SIZE) # fontsize of the figure title
-matplotlib.rc('lines' , solid_capstyle='round')
+# Configure matplotlib defaults
+def configure_matplotlib():
+    globals TEXTWIDTH,SMALL_SIZE,MEDIUM_SIZE,BIGGER_SIZE
+    matplotlib.rcParams['figure.dpi']=300
+    TEXTWIDTH = 5.62708
+    matplotlib.rcParams['figure.figsize'] = (TEXTWIDTH, TEXTWIDTH/sqrt(2))
+    SMALL_SIZE  = 7
+    MEDIUM_SIZE = 8
+    BIGGER_SIZE = 9
+    matplotlib.rc('font'  , size     =SMALL_SIZE ) # controls default text sizes
+    matplotlib.rc('axes'  , titlesize=MEDIUM_SIZE) # fontsize of the axes title
+    matplotlib.rc('axes'  , labelsize=MEDIUM_SIZE) # fontsize of the x and y labels
+    matplotlib.rc('xtick' , labelsize=SMALL_SIZE ) # fontsize of the tick labels
+    matplotlib.rc('ytick' , labelsize=SMALL_SIZE ) # fontsize of the tick labels
+    matplotlib.rc('legend', fontsize =SMALL_SIZE ) # legend fontsize
+    matplotlib.rc('figure', titlesize=BIGGER_SIZE) # fontsize of the figure title
+    matplotlib.rc('lines' , solid_capstyle='round')
 
 def add_circle(radius=1,lw=0.75,color='k',linestyle='-',n=360):
     '''

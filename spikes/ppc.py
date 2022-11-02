@@ -25,9 +25,9 @@ import types
 import numpy as np
 from numpy.fft import *
 from warnings import warn
+import neurotools.signal as sig
 
 __PPC_FP_TYPE__=np.longdouble
-import neurotools.signal as sig
 
 def phase_randomize(signal):
     '''

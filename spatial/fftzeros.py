@@ -19,7 +19,7 @@ from neurotools.signal import rewrap
 from neurotools.graphics.plot import *
 from neurotools.spatial.triangulation import mergeNearby
 from neurotools.util.array import zeroslike,find
-from neurotools.util.array import c2p
+from neurotools.util.tools import c2p
 
 def plot_phase_gradient(dz,skip=1,lw=1,zorder=None,cmap='hsv'):
     '''

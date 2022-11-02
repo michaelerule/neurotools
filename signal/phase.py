@@ -302,7 +302,7 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     Correctly flipping the sign of the signal when it crosses zero,
     rather than returning a rectified result.
 
-    Sign-changes are heuriddddstically detected basd on the following:
+    Sign-changes are heuristically detected basd on the following:
         - An abnormally large skip in phase between two time points,
           larger than np.pi/2, that is also a local extremum in phase velocity
         - local minima in the amplitude at low-voltage with high curvature

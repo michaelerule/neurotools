@@ -19,6 +19,25 @@ from scipy.stats.stats import describe
 from neurotools.util.array import find
 from sklearn.decomposition import FactorAnalysis
 
+from . import circular
+from . import convolutional
+from . import covalign
+from . import density
+from . import distributions
+from . import fastkde
+from . import gaussian
+from . import glm
+from . import gridsearch
+from . import hmm
+from . import information
+from . import kalman
+from . import mcint
+from . import minimize
+from . import mixtures
+from . import modefind
+from . import pvalues
+from . import regresions
+
 def nrmse(estimate,true,axis=None):
     '''
     Normalized root mean-squared error.

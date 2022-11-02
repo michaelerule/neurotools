@@ -24,6 +24,7 @@ __PYTHON_2__ = sys.version_info<(3, 0)
 import numpy as np
 import neurotools
 from neurotools.util.tools import metaloadmat,globalize
+from neurotools.jobs.ndecorator import memoize
 
 opto_dataset = '/home/mrule/Workspace2/Optogenetics_data/TOMMY_MI_121101_full_trial_continuous_square_pulse_6mW001';
 

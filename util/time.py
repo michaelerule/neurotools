@@ -16,6 +16,7 @@ Helper functions associated with time
 import datetime
 import time as systime
 
+import neurotools
 import neurotools.util as util
 import util.tools as tools
 

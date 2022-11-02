@@ -13,3 +13,4 @@ from __future__ import print_function
 
 from . import spikes
 from . import waveform
+from . import ppc

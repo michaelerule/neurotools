@@ -15,10 +15,8 @@ from . import coherence
 from . import conv
 from . import morlet
 from . import multitaper
-from . import ppc
 from . import savitskygolay
 from . import sde
-
 
 
 import warnings

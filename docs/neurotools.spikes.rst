@@ -6,6 +6,7 @@ Submodules
 
 .. toctree::
 
+   neurotools.spikes.ppc
    neurotools.spikes.spikes
    neurotools.spikes.waveform
 

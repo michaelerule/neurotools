@@ -22,6 +22,7 @@ from scipy.linalg           import solve,lstsq
 from sklearn.decomposition  import FactorAnalysis
 from sklearn                import manifold
 from neurotools.util.hdfmat import printmatHDF5, hdf2dict, getHDF
+from neurotools.util.tools  import progress_bar
 
 NPERMUTATION = 10
 
@@ -172,7 +173,6 @@ def rebuild_unit_quality_caches():
         NUNITS = len(allunits[animal])
         print('Animal %d, %d out of %d units available'%(animal,NUNITS,NIDS))
 
-from neurotools.tools import progress_bar
 
 @memoize
 def get_trial_conditioned_population_activity(animal,CUE,PREV,LOWF=.03,HIGHF=.3,TIMERES=25):

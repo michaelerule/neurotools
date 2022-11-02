@@ -16,7 +16,7 @@ Helper functions associated with time
 import datetime
 import time as systime
 
-import neurotools.util.tools as tools
+import neurotools.util
 
 def current_milli_time():
     '''
@@ -112,7 +112,7 @@ def waitfor(t):
     return current_milli_time()
 
 
-@tools.piper
+@neurotools.util.tools.piper
 def progress_bar(x,N=None):
     if N is None:
         x = list(x)

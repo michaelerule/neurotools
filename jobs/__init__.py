@@ -11,6 +11,8 @@ from __future__ import print_function
 from . import cache
 from . import closure
 from . import filenames
-from . import initialize_system_cache
-from . import ndecorator
-from . import parallel
+
+# These must be imported in a very careful sequence
+#from . import initialize_system_cache
+#from . import ndecorator
+#from . import parallel

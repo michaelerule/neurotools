@@ -11,14 +11,6 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import numpy as np
-import scipy
-import random
-import warnings
-from scipy.stats.stats import describe
-from neurotools.util.array import find
-from sklearn.decomposition import FactorAnalysis
-
 from . import circular
 from . import convolutional
 from . import covalign
@@ -36,7 +28,18 @@ from . import minimize
 from . import mixtures
 from . import modefind
 from . import pvalues
-from . import regresions
+from . import regressions
+
+
+
+import numpy as np
+import scipy
+import random
+import warnings
+from scipy.stats.stats import describe
+from neurotools.util.array import find
+from sklearn.decomposition import FactorAnalysis
+
 
 def nrmse(estimate,true,axis=None):
     '''

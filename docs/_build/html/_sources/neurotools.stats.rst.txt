@@ -11,10 +11,10 @@ Submodules
    neurotools.stats.covalign
    neurotools.stats.density
    neurotools.stats.distributions
-   neurotools.stats.fast_kde
+   neurotools.stats.fastkde
    neurotools.stats.gaussian
    neurotools.stats.glm
-   neurotools.stats.grid_search
+   neurotools.stats.gridsearch
    neurotools.stats.hmm
    neurotools.stats.information
    neurotools.stats.kalman

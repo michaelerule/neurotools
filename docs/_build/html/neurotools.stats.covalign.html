@@ -49,10 +49,10 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">neurotools.stats.covalign module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.density.html">neurotools.stats.density module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.distributions.html">neurotools.stats.distributions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.fast_kde.html">neurotools.stats.fast_kde module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.fastkde.html">neurotools.stats.fastkde module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.gaussian.html">neurotools.stats.gaussian module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.glm.html">neurotools.stats.glm module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.grid_search.html">neurotools.stats.grid_search module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.gridsearch.html">neurotools.stats.gridsearch module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.hmm.html">neurotools.stats.hmm module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.information.html">neurotools.stats.information module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.kalman.html">neurotools.stats.kalman module</a></li>
@@ -100,8 +100,231 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="neurotools-stats-covalign-module">
-<h1>neurotools.stats.covalign module<a class="headerlink" href="#neurotools-stats-covalign-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-neurotools.stats.covalign">
+<span id="neurotools-stats-covalign-module"></span><h1>neurotools.stats.covalign module<a class="headerlink" href="#module-neurotools.stats.covalign" title="Permalink to this headline">¶</a></h1>
+<p>Covariance alignment routines related to</p>
+<dl class="function">
+<dt id="neurotools.stats.covalign.keeprank">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">keeprank</code><span class="sig-paren">(</span><em>Σ</em>, <em>eps=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#keeprank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.keeprank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all eigenvectors with eigenvalues greater than epsilon times
+the largest eigenvalue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Σ</strong> (<em>2D square array-like</em><em> (</em><em>positive semidefinite matrix</em><em>)</em>) – Covariance matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Leading eigenvectors of Σ.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.expected_intersection_rank1">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">expected_intersection_rank1</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em>, <em>N=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#expected_intersection_rank1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.expected_intersection_rank1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rank-1 approximation of average overlap. Uses only the largest
+eigenvector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Δμ</strong> (<em>1D array-like</em><em> (</em><em>vector</em><em>)</em>) – Direction of shift in mean activity</li>
+<li><strong>Σ</strong> (<em>2D square array-like</em><em> (</em><em>positive semidefinite matrix</em><em>)</em>) – Covariance matrix of distribution of single-sessiona activity</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.expected_intersection">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">expected_intersection</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#expected_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.expected_intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unnormalized expected intersection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Δμ</strong> (<em>1D array-like</em><em> (</em><em>vector</em><em>)</em>) – Direction of shift in mean activity</li>
+<li><strong>Σ</strong> (<em>2D square array-like</em><em> (</em><em>positive semidefinite matrix</em><em>)</em>) – Covariance matrix of distribution of single-sessiona activity</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.expected_intersection_enormed">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">expected_intersection_enormed</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#expected_intersection_enormed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.expected_intersection_enormed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalized expected intersection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Δμ</strong> (<em>1D array-like</em><em> (</em><em>vector</em><em>)</em>) – Direction of shift in mean activity</li>
+<li><strong>Σ</strong> (<em>2D square array-like</em><em> (</em><em>positive semidefinite matrix</em><em>)</em>) – Covariance matrix of distribution of single-sessiona activity</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>Root-mean-square normalized magnitude of the dot-product between the</em></li>
+<li><em>vector Δμ and unit vector directions of random variables sampled from</em></li>
+<li><em>a Gaussian with covariance Σ.</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.expected_intersection_enormed_chance">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">expected_intersection_enormed_chance</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em>, <em>N=300</em>, <em>pct=95</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#expected_intersection_enormed_chance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.expected_intersection_enormed_chance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalized expected intersection chance level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Δμ</strong> (<em>1D array-like</em><em> (</em><em>vector</em><em>)</em>) – Direction of shift in mean activity</li>
+<li><strong>Σ</strong> (<em>2D square array-like</em><em> (</em><em>positive semidefinite matrix</em><em>)</em>) – Covariance matrix of distribution of single-sessiona activity</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>N</strong> (<em>int, defaults to 300</em>) – The number of random Monte-Carlo samples to use to asses chance
+level.</li>
+<li><strong>pct</strong> (<em>numeric in (0,100), defaults to 90</em>) – The chance-level percentile to report</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li>The <cite>pct</cite> percentile chance level, via Monte-Carlo sampling, for the</li>
+<li><em>null hypothesis that Δμ has no more than chance alignment with the</em></li>
+<li><em>structure of Σ.</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.rebuild_unit_quality_caches">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">rebuild_unit_quality_caches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#rebuild_unit_quality_caches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.rebuild_unit_quality_caches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuilds a disk cache of which units are “good” units (have viable
+recordings on a given session).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.orthnormedcovariance">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">orthnormedcovariance</code><span class="sig-paren">(</span><em>C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#orthnormedcovariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.orthnormedcovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given covariance Σ
+Computes I-Σ/λmax</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.get_orthogonal_alignment">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">get_orthogonal_alignment</code><span class="sig-paren">(</span><em>animal</em>, <em>CUE</em>, <em>PREV</em>, <em>verbose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#get_orthogonal_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.get_orthogonal_alignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute orthogonal complement drift alignment statistics
+for the given animal, previous cue, and current cue.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.alignment_angle">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">alignment_angle</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#alignment_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.alignment_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computed generalzation of alignment angle between a vector
+and a covariance matrix</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_angle">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_angle</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computed generalzation of alignment angle between a vector
+and a covariance matrix</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_self">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_self</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_self"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_self" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self-alignment of distribution
+Sanity check for baseline</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_cross">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_cross</code><span class="sig-paren">(</span><em>Σ</em>, <em>Σother</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self-alignment of distribution
+Sanity check for baseline</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_complement">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_complement</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_complement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_complement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Self-alignment of distribution
+Sanity check for baseline</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.alignment_angle_unnormalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">alignment_angle_unnormalized</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#alignment_angle_unnormalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.alignment_angle_unnormalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.alignment_angle_normalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">alignment_angle_normalized</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#alignment_angle_normalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.alignment_angle_normalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_angle_unnormalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_angle_unnormalized</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_angle_unnormalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_angle_unnormalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_angle_normalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_angle_normalized</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_angle_normalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_angle_normalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_self_unnormalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_self_unnormalized</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_self_unnormalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_self_unnormalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_self_unnormalized_nounit">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_self_unnormalized_nounit</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_self_unnormalized_nounit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_self_unnormalized_nounit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_self_normalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_self_normalized</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_self_normalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_self_normalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_cross_normalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_cross_normalized</code><span class="sig-paren">(</span><em>Σ</em>, <em>Σother</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_cross_normalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_cross_normalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.sample_alignment_complement_normalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">sample_alignment_complement_normalized</code><span class="sig-paren">(</span><em>Σ</em>, <em>K=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#sample_alignment_complement_normalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.sample_alignment_complement_normalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="neurotools.stats.covalign.new_alignment_normalized">
+<code class="descclassname">neurotools.stats.covalign.</code><code class="descname">new_alignment_normalized</code><span class="sig-paren">(</span><em>Δμ</em>, <em>Σ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/covalign.html#new_alignment_normalized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.stats.covalign.new_alignment_normalized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 

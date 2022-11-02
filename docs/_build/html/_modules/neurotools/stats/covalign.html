@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.stats.covalign &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.covalign</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.stats.covalign</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Covariance alignment routines related to </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span><span class="o">,</span><span class="nn">traceback</span><span class="o">,</span><span class="nn">h5py</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span>                <span class="k">import</span> <span class="n">manifold</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span>           <span class="k">import</span> <span class="n">solve</span><span class="p">,</span><span class="n">lstsq</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span>  <span class="k">import</span> <span class="n">FactorAnalysis</span>
+<span class="kn">from</span> <span class="nn">sklearn</span>                <span class="k">import</span> <span class="n">manifold</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.hdfmat</span> <span class="k">import</span> <span class="n">printmatHDF5</span><span class="p">,</span> <span class="n">hdf2dict</span><span class="p">,</span> <span class="n">getHDF</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.time</span>   <span class="k">import</span> <span class="n">progress_bar</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="k">import</span> <span class="n">Polygon</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">PatchCollection</span>
+
+<span class="n">NPERMUTATION</span> <span class="o">=</span> <span class="mi">10</span>
+
+<div class="viewcode-block" id="keeprank"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.keeprank">[docs]</a><span class="k">def</span> <span class="nf">keeprank</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Return all eigenvectors with eigenvalues greater than epsilon times</span>
+<span class="sd">    the largest eigenvalue.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Σ : 2D square array-like (positive semidefinite matrix)</span>
+<span class="sd">        Covariance matrix </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Leading eigenvectors of Σ.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">maxe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="n">e</span><span class="o">&gt;</span><span class="n">eps</span><span class="o">*</span><span class="n">maxe</span>
+    <span class="k">return</span> <span class="n">v</span><span class="p">[:,</span><span class="n">keep</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="expected_intersection_rank1"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.expected_intersection_rank1">[docs]</a><span class="k">def</span> <span class="nf">expected_intersection_rank1</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rank-1 approximation of average overlap. Uses only the largest</span>
+<span class="sd">    eigenvector.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Δμ : 1D array-like (vector)</span>
+<span class="sd">        Direction of shift in mean activity</span>
+<span class="sd">    Σ : 2D square array-like (positive semidefinite matrix)</span>
+<span class="sd">        Covariance matrix of distribution of single-sessiona activity</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># set Δμ to unit length</span>
+    <span class="n">Δμ</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">Δμ</span><span class="p">)</span>
+    <span class="c1"># get normalized leading eigenvector</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">top_v</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># This will be 1 if all aligns perfectly</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="p">(</span><span class="n">Δμ</span><span class="nd">@vmax</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="c1"># This is the analytic chance level</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">e1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">e2</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="expected_intersection"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.expected_intersection">[docs]</a><span class="k">def</span> <span class="nf">expected_intersection</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Unnormalized expected intersection.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Δμ : 1D array-like (vector)</span>
+<span class="sd">        Direction of shift in mean activity</span>
+<span class="sd">    Σ : 2D square array-like (positive semidefinite matrix)</span>
+<span class="sd">        Covariance matrix of distribution of single-sessiona activity</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless</span>
+    <span class="n">Δμ</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">Δμ</span><span class="p">)</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Δμ</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@Δμ</span></div>
+
+<div class="viewcode-block" id="expected_intersection_enormed"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.expected_intersection_enormed">[docs]</a><span class="k">def</span> <span class="nf">expected_intersection_enormed</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Normalized expected intersection.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Δμ : 1D array-like (vector)</span>
+<span class="sd">        Direction of shift in mean activity</span>
+<span class="sd">    Σ : 2D square array-like (positive semidefinite matrix)</span>
+<span class="sd">        Covariance matrix of distribution of single-sessiona activity</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Root-mean-square normalized magnitude of the dot-product between the</span>
+<span class="sd">    vector Δμ and unit vector directions of random variables sampled from</span>
+<span class="sd">    a Gaussian with covariance Σ. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">expected_intersection</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># Normalize to chance level</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">e1</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="n">e2</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">e1</span><span class="o">-</span><span class="n">e2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">e2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="expected_intersection_enormed_chance"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.expected_intersection_enormed_chance">[docs]</a><span class="k">def</span> <span class="nf">expected_intersection_enormed_chance</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">pct</span><span class="o">=</span><span class="mi">95</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Normalized expected intersection chance level.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Δμ : 1D array-like (vector)</span>
+<span class="sd">        Direction of shift in mean activity</span>
+<span class="sd">    Σ : 2D square array-like (positive semidefinite matrix)</span>
+<span class="sd">        Covariance matrix of distribution of single-sessiona activity</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    N : int, defaults to 300</span>
+<span class="sd">        The number of random Monte-Carlo samples to use to asses chance</span>
+<span class="sd">        level.</span>
+<span class="sd">    pct : numeric in (0,100), defaults to 90</span>
+<span class="sd">        The chance-level percentile to report    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The `pct` percentile chance level, via Monte-Carlo sampling, for the</span>
+<span class="sd">    null hypothesis that Δμ has no more than chance alignment with the</span>
+<span class="sd">    structure of Σ.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless</span>
+    <span class="n">Δμ</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">Δμ</span><span class="p">)</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># random unit vectors</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Δμ</span><span class="p">)</span>
+    <span class="n">vv</span><span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Expected projection of drift onto variability</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vv</span><span class="p">])</span>
+    <span class="c1"># Normalize to analytic chance level</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">K</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">e1</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="n">e2</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">e1</span><span class="o">-</span><span class="n">e2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">e2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">pct</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="rebuild_unit_quality_caches"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.rebuild_unit_quality_caches">[docs]</a><span class="k">def</span> <span class="nf">rebuild_unit_quality_caches</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rebuilds a disk cache of which units are &quot;good&quot; units (have viable </span>
+<span class="sd">    recordings on a given session). </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">allunits</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">animal</span> <span class="ow">in</span> <span class="n">get_subject_ids</span><span class="p">():</span>
+        <span class="n">allunits</span><span class="p">[</span><span class="n">animal</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">get_session_ids</span><span class="p">(</span><span class="n">animal</span><span class="p">):</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">good_units_index</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">session</span><span class="p">)</span>
+            <span class="n">allunits</span><span class="p">[</span><span class="n">animal</span><span class="p">]</span> <span class="o">|=</span> <span class="nb">set</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="n">allunits</span><span class="p">[</span><span class="n">animal</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">allunits</span><span class="p">[</span><span class="n">animal</span><span class="p">])))</span>
+        <span class="n">NIDS</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_units</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">session</span><span class="p">))</span>
+        <span class="n">NUNITS</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">allunits</span><span class="p">[</span><span class="n">animal</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Animal </span><span class="si">%d</span><span class="s1">, </span><span class="si">%d</span><span class="s1"> out of </span><span class="si">%d</span><span class="s1"> units available&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">NUNITS</span><span class="p">,</span><span class="n">NIDS</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="orthnormedcovariance"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.orthnormedcovariance">[docs]</a><span class="k">def</span> <span class="nf">orthnormedcovariance</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Given covariance Σ</span>
+<span class="sd">    Computes I-Σ/λmax</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="n">Corth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="n">C</span>
+    <span class="k">return</span> <span class="n">Corth</span></div>
+    
+<div class="viewcode-block" id="get_orthogonal_alignment"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.get_orthogonal_alignment">[docs]</a><span class="k">def</span> <span class="nf">get_orthogonal_alignment</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">CUE</span><span class="p">,</span><span class="n">PREV</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute orthogonal complement drift alignment statistics </span>
+<span class="sd">    for the given animal, previous cue, and current cue. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Getting trial-conditioned neural sigals for </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">CUE</span><span class="p">,</span><span class="n">PREV</span><span class="p">))</span>
+    <span class="n">allμ</span><span class="p">,</span><span class="n">allΣ</span><span class="p">,</span><span class="n">alldμ</span><span class="p">,</span><span class="n">alldΣ</span><span class="p">,</span><span class="n">allunits</span> <span class="o">=</span>\
+        <span class="n">get_trial_conditioned_population_activity</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">CUE</span><span class="p">,</span><span class="n">PREV</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">tvar</span><span class="p">,</span><span class="n">tvarch</span><span class="p">,</span><span class="n">cvar</span><span class="p">,</span><span class="n">cvarch</span> <span class="o">=</span> <span class="p">[],[],[],[]</span>
+    <span class="n">sessions</span>  <span class="o">=</span> <span class="n">get_session_ids</span><span class="p">(</span><span class="n">animal</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sessions</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">sessions</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Comparing sessions </span><span class="si">%d</span><span class="s1"> and </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">))</span>
+        <span class="n">days_apart</span> <span class="o">=</span> <span class="n">s2</span><span class="o">-</span><span class="n">s1</span>
+
+        <span class="c1"># Get population statistics for both days</span>
+        <span class="n">μ1</span><span class="p">,</span><span class="n">μ2</span>   <span class="o">=</span> <span class="n">allμ</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">Σ1</span><span class="p">,</span><span class="n">Σ2</span>   <span class="o">=</span> <span class="n">allΣ</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">u1</span><span class="p">,</span><span class="n">u2</span>   <span class="o">=</span> <span class="n">allunits</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dμ1</span><span class="p">,</span><span class="n">dμ2</span> <span class="o">=</span> <span class="n">alldμ</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dΣ1</span><span class="p">,</span><span class="n">dΣ2</span> <span class="o">=</span> <span class="n">alldΣ</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># Get units in common</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">u1</span><span class="p">)</span><span class="o">&amp;</span><span class="nb">set</span><span class="p">(</span><span class="n">u2</span><span class="p">))))</span>
+        <span class="n">ix1</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u1</span><span class="p">))</span> <span class="k">if</span> <span class="n">u1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
+        <span class="n">ix2</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u2</span><span class="p">))</span> <span class="k">if</span> <span class="n">u2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
+
+        <span class="c1"># Extract the mean drift vector</span>
+        <span class="n">μ1r</span><span class="p">,</span><span class="n">μ2r</span> <span class="o">=</span> <span class="n">μ1</span><span class="p">[:,</span><span class="n">ix1</span><span class="p">],</span><span class="n">μ2</span><span class="p">[:,</span><span class="n">ix2</span><span class="p">]</span>
+        <span class="n">Σ1r</span><span class="p">,</span><span class="n">Σ2r</span> <span class="o">=</span> <span class="n">Σ1</span><span class="p">[:,</span><span class="n">ix1</span><span class="p">,:][:,:,</span><span class="n">ix1</span><span class="p">],</span><span class="n">Σ2</span><span class="p">[:,</span><span class="n">ix2</span><span class="p">,:][:,:,</span><span class="n">ix2</span><span class="p">]</span>
+        <span class="n">Δμ</span> <span class="o">=</span> <span class="n">μ2r</span> <span class="o">-</span> <span class="n">μ1r</span>
+
+        <span class="c1"># Extract the coding-relevant distributions</span>
+        <span class="n">dμ1r</span><span class="p">,</span><span class="n">dμ2r</span> <span class="o">=</span> <span class="n">dμ1</span><span class="p">[:,</span><span class="n">ix1</span><span class="p">],</span><span class="n">dμ2</span><span class="p">[:,</span><span class="n">ix2</span><span class="p">]</span>
+        <span class="n">dΣ1r</span><span class="p">,</span><span class="n">dΣ2r</span> <span class="o">=</span> <span class="n">dΣ1</span><span class="p">[:,</span><span class="n">ix1</span><span class="p">,:][:,:,</span><span class="n">ix1</span><span class="p">],</span><span class="n">dΣ2</span><span class="p">[:,</span><span class="n">ix2</span><span class="p">,:][:,:,</span><span class="n">ix2</span><span class="p">]</span>
+
+        <span class="c1"># Compare the drift direction with the coding axis</span>
+        <span class="c1"># We need the 2nd moment not the covariance </span>
+        <span class="c1"># Since the absolut edisplacement matters</span>
+        <span class="n">dM21</span> <span class="o">=</span> <span class="n">dΣ1r</span> <span class="o">+</span> <span class="n">array</span><span class="p">([</span><span class="n">outer</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span><span class="n">μ</span><span class="p">)</span> <span class="k">for</span> <span class="n">μ</span> <span class="ow">in</span> <span class="n">dμ1r</span><span class="p">])</span>
+        
+        <span class="c1"># alignement with trial-to-trial variability distribution</span>
+        <span class="n">tvar</span>   <span class="o">+=</span> <span class="p">[</span><span class="n">array</span><span class="p">([</span><span class="n">expected_intersection_enormed</span><span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">))</span> 
+                        <span class="k">for</span> <span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ1r</span><span class="p">)])]</span>
+        <span class="n">tvarch</span> <span class="o">+=</span> <span class="p">[</span><span class="n">array</span><span class="p">([</span><span class="n">expected_intersection_enormed_chance</span><span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">))</span> 
+                        <span class="k">for</span> <span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ1r</span><span class="p">)])]</span>
+                        
+        <span class="c1"># alignment with coding (location gradient) distribution</span>
+        <span class="n">cvar</span>   <span class="o">+=</span> <span class="p">[</span><span class="n">array</span><span class="p">([</span><span class="n">expected_intersection_enormed</span><span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">))</span> 
+                        <span class="k">for</span> <span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">dM21</span><span class="p">)])]</span>
+        <span class="n">cvarch</span> <span class="o">+=</span> <span class="p">[</span><span class="n">array</span><span class="p">([</span><span class="n">expected_intersection_enormed_chance</span><span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">))</span> 
+                        <span class="k">for</span> <span class="p">(</span><span class="n">dμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">dM21</span><span class="p">)])]</span>
+    <span class="k">return</span> <span class="n">tvar</span><span class="p">,</span><span class="n">tvarch</span><span class="p">,</span><span class="n">cvar</span><span class="p">,</span><span class="n">cvarch</span></div>
+
+
+<div class="viewcode-block" id="alignment_angle"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.alignment_angle">[docs]</a><span class="k">def</span> <span class="nf">alignment_angle</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computed generalzation of alignment angle between a vector</span>
+<span class="sd">    and a covariance matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Δμ</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">Δμ</span><span class="p">)</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">Φ</span>  <span class="o">=</span> <span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># Alignment statistic and chance-normalized</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">expected_intersection</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="c1"># Non-alignment statistic and chance-normalized</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">expected_intersection</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Φ</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="c1"># Compute subspace alignment angle</span>
+    <span class="c1"># Smaller = more aligned</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x1</span><span class="o">+</span><span class="n">y1</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">θ</span></div>
+
+<div class="viewcode-block" id="sample_alignment_angle"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_angle">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_angle</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computed generalzation of alignment angle between a vector</span>
+<span class="sd">    and a covariance matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">Φ</span>  <span class="o">=</span> <span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># sample chance level</span>
+    <span class="c1"># get random unit vectors then compute</span>
+    <span class="c1"># expected projection of drift onto variability</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">N</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">y_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Φ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="c1"># Compute subspace alignment angle</span>
+    <span class="c1"># Smaller = more aligned</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x_chance</span><span class="o">+</span><span class="n">y_chance</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="c1"># This works too; seems the same and is a bit faster</span>
+    <span class="c1">#x0 = (np.trace(Σ)/N)**0.5</span>
+    <span class="c1">#y0 = (np.trace(Φ)/N)**0.5</span>
+    <span class="c1">#θ = np.angle(x0+y0*1j)*180/np.pi</span>
+    <span class="k">return</span> <span class="n">θ</span></div>
+
+<div class="viewcode-block" id="sample_alignment_self"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_self">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_self</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Self-alignment of distribution</span>
+<span class="sd">    Sanity check for baseline</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">Φ</span>  <span class="o">=</span> <span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># Build square-root using eigendecomposition</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">((</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">y_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Φ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x_chance</span><span class="o">+</span><span class="n">y_chance</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
+
+<div class="viewcode-block" id="sample_alignment_cross"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_cross">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_cross</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">Σother</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Self-alignment of distribution</span>
+<span class="sd">    Sanity check for baseline</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">Φ</span>  <span class="o">=</span> <span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># Build square-root using eigendecomposition</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Σother</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">((</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">y_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Φ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x_chance</span><span class="o">+</span><span class="n">y_chance</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
+
+<div class="viewcode-block" id="sample_alignment_complement"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_complement">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_complement</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Self-alignment of distribution</span>
+<span class="sd">    Sanity check for baseline</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">Φ</span>  <span class="o">=</span> <span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># Build square-root using eigendecomposition</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Φ</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">((</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">y_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Φ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x_chance</span><span class="o">+</span><span class="n">y_chance</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
+
+<div class="viewcode-block" id="alignment_angle_unnormalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.alignment_angle_unnormalized">[docs]</a><span class="k">def</span> <span class="nf">alignment_angle_unnormalized</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">):</span>
+    <span class="n">Δμ</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">Δμ</span><span class="p">)</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">Δμ</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@Δμ</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="alignment_angle_normalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.alignment_angle_normalized">[docs]</a><span class="k">def</span> <span class="nf">alignment_angle_normalized</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">):</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">alignment_angle_unnormalized</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="sample_alignment_angle_unnormalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_angle_unnormalized">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_angle_unnormalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">V</span>  <span class="o">=</span> <span class="n">unit_length</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">N</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="sample_alignment_angle_normalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_angle_normalized">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_angle_normalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">xc</span> <span class="o">=</span> <span class="n">sample_alignment_angle_unnormalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xc</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="sample_alignment_self_unnormalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_self_unnormalized">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_self_unnormalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span>  <span class="o">=</span> <span class="n">unit_length</span><span class="p">((</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="sample_alignment_self_unnormalized_nounit"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_self_unnormalized_nounit">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_self_unnormalized_nounit</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span>  <span class="o">=</span> <span class="p">(</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="sample_alignment_self_normalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_self_normalized">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_self_normalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">xc</span> <span class="o">=</span> <span class="n">sample_alignment_self_unnormalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xc</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="sample_alignment_cross_normalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_cross_normalized">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_cross_normalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">Σother</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Σother</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">((</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x_chance</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="sample_alignment_complement_normalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.sample_alignment_complement_normalized">[docs]</a><span class="k">def</span> <span class="nf">sample_alignment_complement_normalized</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">NPERMUTATION</span><span class="p">):</span>
+    <span class="c1"># make unitless and compute complementary space</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">Φ</span>  <span class="o">=</span> <span class="n">orthnormedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="c1"># Build square-root using eigendecomposition</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">Φ</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">unit_length</span><span class="p">((</span><span class="n">ch</span> <span class="o">@</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">K</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x_chance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ@v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x_chance</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="new_alignment_normalized"><a class="viewcode-back" href="../../../neurotools.stats.covalign.html#neurotools.stats.covalign.new_alignment_normalized">[docs]</a><span class="k">def</span> <span class="nf">new_alignment_normalized</span><span class="p">(</span><span class="n">Δμ</span><span class="p">,</span><span class="n">Σ</span><span class="p">):</span>
+    <span class="n">Σ</span>  <span class="o">=</span> <span class="n">normedcovariance</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span>
+    <span class="n">r</span>  <span class="o">=</span> <span class="p">(</span><span class="n">Δμ</span><span class="nd">@Σ@Δμ</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Δμ</span><span class="o">.</span><span class="n">T</span><span class="nd">@Δμ</span><span class="p">)</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="p">)</span><span class="o">/</span><span class="n">Σ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">Σ</span><span class="o">.</span><span class="n">T</span><span class="nd">@Σ</span><span class="p">)</span>
+    <span class="n">rb</span> <span class="o">=</span> <span class="p">((</span><span class="n">r</span><span class="o">-</span><span class="n">r0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">r1</span><span class="o">-</span><span class="n">r0</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">,</span><span class="n">rb</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

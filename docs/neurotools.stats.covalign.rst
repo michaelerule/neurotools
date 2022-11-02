@@ -1,7 +1,7 @@
-neurotools.jobs.filenames module
+neurotools.stats.covalign module
 ================================
 
-.. automodule:: neurotools.jobs.filenames
+.. automodule:: neurotools.stats.covalign
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,7 +1,7 @@
-neurotools.util.getfftw module
+neurotools.stats.kalman module
 ==============================
 
-.. automodule:: neurotools.util.getfftw
+.. automodule:: neurotools.stats.kalman
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,7 +1,7 @@
-neurotools.jobs.cache module
+neurotools.util.array module
 ============================
 
-.. automodule:: neurotools.jobs.cache
+.. automodule:: neurotools.util.array
     :members:
     :undoc-members:
     :show-inheritance:

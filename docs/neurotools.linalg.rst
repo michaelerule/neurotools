@@ -5,7 +5,6 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 4
 
    neurotools.linalg.arguments
    neurotools.linalg.matrix
@@ -15,6 +14,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.linalg
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:

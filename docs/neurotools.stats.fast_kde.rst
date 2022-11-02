@@ -2,6 +2,6 @@ neurotools.stats.fast\_kde module
 =================================
 
 .. automodule:: neurotools.stats.fast_kde
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:

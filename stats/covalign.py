@@ -24,6 +24,9 @@ from sklearn                import manifold
 from neurotools.util.hdfmat import printmatHDF5, hdf2dict, getHDF
 from neurotools.util.time   import progress_bar
 
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
+
 NPERMUTATION = 10
 
 def keeprank(Σ,eps = 1e-1):
@@ -174,155 +177,6 @@ def rebuild_unit_quality_caches():
         print('Animal %d, %d out of %d units available'%(animal,NUNITS,NIDS))
 
 
-@memoize
-def get_trial_conditioned_population_activity(animal,CUE,PREV,LOWF=.03,HIGHF=.3,TIMERES=25):
-    '''
-    Get distribution of noise and distribution of location gradient
-    for the given animal, previous cue, and current cue. 
-    
-    Returns the location-triggered mean and covariance of neuronal activity
-    (filtered dF/F calcium signals) for all sessions, for all location
-    bins (`TIMERES`), and for all good units. Neurons are taken from the 
-    `good_units_index(animal,session)` function and packed in  numerical 
-    order, with missing neurons omitted.
-    
-    Also returns location-triggered mean and covariance of the gradient of
-    neuronal activity with location, packed similarly to the mean and
-    covariance for neuronal activity. This is a measure of the location-
-    coding related variability in the neuronal population, at each location.
-    
-    Parameters
-    ----------
-    animal : int
-        Which mouse to use
-    CUE : numeric
-        Which left/right cue to select (or both). 0=left, 1=right, 
-        nan=both
-    PREV : numeric
-        Which previous left/right cue to select (or both).  0=left, 1=right, 
-        nan=both
-    LOWF : float
-        Low-frequency filtering cutoff in Hz
-    HIGHF : float
-        High-frequency filtering cutoff in Hz
-    TIMERES : int
-        Divide each trials into TIMERES bins for the analysis
-    
-    Returns
-    -------
-    allμ : np.array
-        All location-triggered mean activity vectors.
-    allΣ : np.array
-        All location-triggered covariance matrices. 
-    alldμ : np.array
-        All location-triggered mean location gradient vectors. 
-    alldΣ : np.arrayt
-        All location-triggered location gradient covariance matrices. 
-    allunits : np.array
-        Units used for each session.
-    '''
-    sessions  = get_session_ids(animal)
-    FS = get_FS(animal,sessions[0])
-    allμ,allΣ,alldμ,alldΣ,allunits = [],[],[],[],[]
-    for session in sessions:
-        units = good_units_index(animal,session)
-        if LOWF is None and HIGHF is None:
-            Y = get_dFF(animal,session,units).T
-        else:
-            Y = array([get_smoothed_dFF(animal,session,u,LOWF,HIGHF) for u in progress_bar(units)])
-        ydata = zscore(Y.T,axis=0)
-        align = align_trials(animal,
-            array([session]),
-            array([ydata.T]),
-            TIMERES,CUE,PREV)[0]
-        NTRIALS, NTIMES, NNEURONS = align.shape
-        μ,Σ,dμ,dΣ = [],[],[],[]
-        for t in range(NTIMES):
-            μ += [mean(align[:,t,:],axis=0)]
-            Σ += [covariance(align[:,t,:],sample_deficient=True)]
-        dz = diff(align,1,axis=1)
-        for t in range(NTIMES-1):
-            dμ += [mean(dz[:,t,:],axis=0)]
-            dΣ += [covariance(dz[:,t,:],sample_deficient=True)]
-        allμ  += [array(μ)]
-        allΣ  += [array(Σ)]
-        allunits += [units]
-        alldμ += [array(dμ)]
-        alldΣ += [array(dΣ)]
-    return allμ,allΣ,alldμ,alldΣ,allunits
-
-def get_drift_alignment(animal,CUE,PREV,verbose=True,**kwargs):
-    '''
-    Compute all drift alignment statistics 
-    for the given animal, previous cue, and current cue. 
-    
-    Parameters
-    ----------
-    animal : int
-        Which mouse to use
-    CUE : numeric
-        Which left/right cue to select (or both). 0=left, 1=right, 
-        nan=both
-    PREV : numeric
-        Which previous left/right cue to select (or both).  0=left, 1=right, 
-        nan=both
-        
-    Other Parameters
-    ----------------
-    
-    Returns
-    -------
-    '''
-    if verbose:
-        print('Getting trial-conditioned neural sigals for %s %s %s'%(animal,CUE,PREV))
-    allμ,allΣ,alldμ,alldΣ,allunits =\
-        get_trial_conditioned_population_activity(animal,CUE,PREV,**kwargs)
-    tvar,tvarch,cvar,cvarch = [],[],[],[]
-    sessions  = get_session_ids(animal)
-    for i,(s1,s2) in enumerate(zip(sessions[:-1],sessions[1:])):
-        if verbose:
-            print('Comparing sessions %d and %d'%(s1,s2))
-        days_apart = s2-s1
-
-        # Get population statistics for both days
-        μ1,μ2   = allμ[i:i+2]
-        Σ1,Σ2   = allΣ[i:i+2]
-        u1,u2   = allunits[i:i+2]
-        dμ1,dμ2 = alldμ[i:i+2]
-        dΣ1,dΣ2 = alldΣ[i:i+2]
-
-        # Get units in common
-        units = array(sorted(list(set(u1)&set(u2))))
-        ix1 = [i for i in range(len(u1)) if u1[i] in units]
-        ix2 = [i for i in range(len(u2)) if u2[i] in units]
-
-        # Extract the mean drift vector
-        μ1r,μ2r = μ1[:,ix1],μ2[:,ix2]
-        Σ1r,Σ2r = Σ1[:,ix1,:][:,:,ix1],Σ2[:,ix2,:][:,:,ix2]
-        Δμ = μ2r - μ1r
-
-        # Extract the coding-relevant distributions
-        dμ1r,dμ2r = dμ1[:,ix1],dμ2[:,ix2]
-        dΣ1r,dΣ2r = dΣ1[:,ix1,:][:,:,ix1],dΣ2[:,ix2,:][:,:,ix2]
-
-        # Compare the drift direction with the coding axis
-        # We need the 2nd moment not the covariance 
-        # Since the absolut edisplacement matters
-        dM21 = dΣ1r + array([outer(μ,μ) for μ in dμ1r])
-        
-        # alignement with trial-to-trial variability distribution
-        tvar   += [array([expected_intersection_enormed(dμ,Σ) 
-                        for (dμ,Σ) in zip(Δμ,Σ1r)])]
-        tvarch += [array([expected_intersection_enormed_chance(dμ,Σ) 
-                        for (dμ,Σ) in zip(Δμ,Σ1r)])]
-                        
-        # alignment with coding (location gradient) distribution
-        cvar   += [array([expected_intersection_enormed(dμ,Σ) 
-                        for (dμ,Σ) in zip(Δμ,dM21)])]
-        cvarch += [array([expected_intersection_enormed_chance(dμ,Σ) 
-                        for (dμ,Σ) in zip(Δμ,dM21)])]
-    return tvar,tvarch,cvar,cvarch
-    
 def orthnormedcovariance(C):
     '''
     Given covariance Σ
@@ -566,8 +420,6 @@ def new_alignment_normalized(Δμ,Σ):
     rb = ((r-r0)/(r1-r0))**0.5
     return r,r0,r1,rb
 
-from matplotlib.patches import Polygon
-from matplotlib.collections import PatchCollection
 def plot_circular_histogram(x,bins,r,scale,color=BLACK,alpha=0.8):
     p,_ = histogram(x,bins,density=True)
     patches = []

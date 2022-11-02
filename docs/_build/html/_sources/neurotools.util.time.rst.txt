@@ -2,6 +2,6 @@ neurotools.util.time module
 ===========================
 
 .. automodule:: neurotools.util.time
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.graphics.color
    neurotools.graphics.colormaps
@@ -20,6 +21,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.graphics
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.jobs.closure module &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <title>neurotools.jobs.closure module &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -26,7 +29,8 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Neurotools<img src="_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="index.html" class="icon icon-home"> Neurotools
+            <img src="_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -39,7 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neurotools.stats.html">stats</a></li>
@@ -88,9 +92,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="neurotools.jobs.html">neurotools.jobs package</a></li>
-      <li class="breadcrumb-item active">neurotools.jobs.closure module</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="neurotools.jobs.html">neurotools.jobs package</a> &raquo;</li>
+      <li>neurotools.jobs.closure module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/neurotools.jobs.closure.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,8 +104,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-neurotools.jobs.closure">
-<span id="neurotools-jobs-closure-module"></span><h1>neurotools.jobs.closure module<a class="headerlink" href="#module-neurotools.jobs.closure" title="Permalink to this headline">¶</a></h1>
+  <section id="module-neurotools.jobs.closure">
+<span id="neurotools-jobs-closure-module"></span><h1>neurotools.jobs.closure module<a class="headerlink" href="#module-neurotools.jobs.closure" title="Permalink to this heading"></a></h1>
 <p>Code dealing with closures in Python.</p>
 <p>The default way that Python handles closures creates problems</p>
 <blockquote>
@@ -110,27 +114,28 @@
 3   Mutable default arguments can causing surprising errors
 4   Closing over external state that may change across runs can cause</p>
 <blockquote>
-<div>surprising errors, as the same arguments may return different values</div></blockquote>
-<dl class="docutils">
-<dt>5   Closing over extrenal state makes safe caching difficult, as we</dt>
-<dd>have to guarantee that the arguments, function source, subroutines,
+<div><p>surprising errors, as the same arguments may return different values</p>
+</div></blockquote>
+<dl class="simple">
+<dt>5   Closing over extrenal state makes safe caching difficult, as we</dt><dd><p>have to guarantee that the arguments, function source, subroutines,
 and closed-over state are all IDENTICAL before we can trust a
-cached value.</dd>
+cached value.</p>
+</dd>
 </dl>
 </div></blockquote>
 <p>This module defines some decorators that improve safety, hopefully
 automatically detecting functions that are likele to cause trouble.</p>
-<dl class="function">
-<dt id="neurotools.jobs.closure.is_immutable">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">is_immutable</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#is_immutable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.is_immutable" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.closure.is_immutable">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.closure.</span></span><span class="sig-name descname"><span class="pre">is_immutable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#is_immutable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.closure.is_immutable" title="Permalink to this definition"></a></dt>
 <dd><p>Checks whether an object is immutable. It must be composed of the
 built-in types str, int, long, bool, float, and tuple. If it is
 a tuple, each of its elements must be immutable</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="neurotools.jobs.closure.is_probably_safe">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">is_probably_safe</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#is_probably_safe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.is_probably_safe" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.closure.is_probably_safe">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.closure.</span></span><span class="sig-name descname"><span class="pre">is_probably_safe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#is_probably_safe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.closure.is_probably_safe" title="Permalink to this definition"></a></dt>
 <dd><p>Objects are probably “safe” (unlikly to change) if they are
 – immutable
 – functions
@@ -139,14 +144,14 @@ Obviously, the latter two may change, but in practice it is likely
 ok. Still, risky!</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="neurotools.jobs.closure.csv">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">csv</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.csv" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.closure.csv">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.closure.</span></span><span class="sig-name descname"><span class="pre">csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.closure.csv" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="neurotools.jobs.closure.inspect_function_closure">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">inspect_function_closure</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#inspect_function_closure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.inspect_function_closure" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.closure.inspect_function_closure">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.closure.</span></span><span class="sig-name descname"><span class="pre">inspect_function_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#inspect_function_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.closure.inspect_function_closure" title="Permalink to this definition"></a></dt>
 <dd><p>Checks if a function is “safe”</p>
 <p>Formally this is quite tricky as not all closures can be avoided.
 Functions MUST close over their namespace in some sense, in order
@@ -154,43 +159,43 @@ to access subroutines. This cannot be avoided, and changes in
 subroutines may cause changes in behavior.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="neurotools.jobs.closure.verify_function_closure">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">verify_function_closure</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#verify_function_closure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.verify_function_closure" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.closure.verify_function_closure">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.closure.</span></span><span class="sig-name descname"><span class="pre">verify_function_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#verify_function_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.closure.verify_function_closure" title="Permalink to this definition"></a></dt>
 <dd><p>Checks if a function is “safe” (likely immutable)</p>
 <p>Formally this is quite tricky as not all closures can be avoided.
 Functions MUST close over their namespace in order to access
 subroutines later, as Python is by design late-binding. This cannot
 be avoided, and changes in subroutines may cause changes in behavior.</p>
 <p>Levels of safety:</p>
-<dl class="docutils">
-<dt>Safe:</dt>
-<dd>Function references only other functions. All state is passed
+<dl class="simple">
+<dt>Safe:</dt><dd><p>Function references only other functions. All state is passed
 via arguments. Hash values of subroutines are incorporated into
-the hash value for this function.</dd>
-<dt>Risky:</dt>
-<dd>Function may close over state and reference globals, as long as
+the hash value for this function.</p>
+</dd>
+<dt>Risky:</dt><dd><p>Function may close over state and reference globals, as long as
 those states / globals are themselves immutable. This is risky
 as values may still change across invokation. In theory we could
 snapshot the dependent state and incorporate that into the call
-signature.</dd>
-<dt>Unsafe:</dt>
-<dd>Function contains mutable defaults. Function references mutable
+signature.</p>
+</dd>
+<dt>Unsafe:</dt><dd><p>Function contains mutable defaults. Function references mutable
 globals or closes over mutable state. Unsafe conditions will
-cause a ValueError</dd>
+cause a ValueError</p>
+</dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="neurotools.jobs.closure.get_subroutines">
-<code class="descclassname">neurotools.jobs.closure.</code><code class="descname">get_subroutines</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#get_subroutines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.jobs.closure.get_subroutines" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.closure.get_subroutines">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.closure.</span></span><span class="sig-name descname"><span class="pre">get_subroutines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/closure.html#get_subroutines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.closure.get_subroutines" title="Permalink to this definition"></a></dt>
 <dd><p>Returns things that resemble subroutines of function f. These are all
 callable objets that are either named or bound via closures.
 Return value is a set of functions.
 Non-function callable subroutines will cause an error.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

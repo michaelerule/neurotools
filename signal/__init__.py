@@ -33,32 +33,12 @@ from scipy.stats import rankdata
 import scipy.stats
 import scipy.interpolate as ip
 
-def geometric_window(c,w):
-    '''
-    Gemoetrically center a frequency window
-    
-    Parameters
-    ----------
-    c : float
-        Center of frequency window
-    w : float
-        width of frequency window
-        
-    Returns
-    -------
-    fa : float
-        low-frequency cutoff
-    fb : float
-        high-frequency cutoff
-    '''
-    if not c>0: raise ValueError(
-        'The center of the window should be positive')
-    if not w>=0:raise ValueError(
-        'The window size should be non-negative')
-    lgwindow = (w+np.sqrt(w**2+4*c**2))/(2*c)
-    fa       = c/lgwindow
-    fb       = c*lgwindow
-    return fa,fb
+
+
+
+
+############################################################
+# Functions for Gaussian smoothing
 
 def gaussian_kernel(sigma):
     '''
@@ -109,16 +89,20 @@ def gaussian_smooth(x,sigma,mode='same'):
 
 def circular_gaussian_smooth(x,sigma):
     '''
-    Smooth signal x with gaussian of standard deviation sigma
-    Circularly wrapped using Fourier transform
+    Smooth signal `x` with Gaussian of standard deviation 
+    `sigma`,
+    Circularly wrapped using Fourier transform.
     
     Parameters
     ----------
-    sigma: standard deviation
-    x: 1D array-like signal
-    
+    x: np.array
+        1D array-like signal
+    sigma: positive float
+        Standard deviation
+
     Returns
     -------
+    smoothed signal
     '''
     N = len(x)
     g = np.exp(-np.linspace(-N/2,N/2,N)**2/sigma**2)
@@ -137,12 +121,18 @@ def circular_gaussian_smooth_2D(x,sigma):
     
     Parameters
     ----------
-    x: ndarray
+    x: np.ndarray
         Smoothing is performed over the last two dimensions, 
         which should have the same length
+    sigma: positive float
+        Standard deviation of Gaussian kernel for smoothing,
+        in pixels. 
         
     Returns
     -------
+    :np.array
+        `x`, circularly smoothed over the last two 
+        dimensions.
     '''
     # Make coordinate grid
     Nr,Nc = x.shape[-2:]
@@ -158,54 +148,43 @@ def circular_gaussian_smooth_2D(x,sigma):
     # convolution via 2D FFT
     return np.fft.ifft2(np.fft.fft2(x)*f).real
 
-def linear_cosine_basis(TIMERES=100,NBASIS=10,normalize=True):
-    '''
-    Cosine basis tiling unit interval
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    times = np.linspace(0,1,TIMERES)
-    bt = times*np.pi/2*(NBASIS-1)
-    def cos_basis(t):
-        t = np.clip(t,-np.pi,np.pi)
-        return (np.cos(t)+1)*0.5
-    B = np.array([cos_basis(bt-np.pi/2*delta) for delta in np.arange(NBASIS)])
-    if normalize:
-        B/= np.sum(B,axis=0)
-    return B
-    
-def circular_cosine_basis(N,T):
-    '''
-    Parameters
-    ----------
-    N : number of basis functions
-    T : grid resolution
-    
-    Returns
-    -------
-    Circularly-wrapped cosine basis
-    '''
-    wl = 4/N
-    qc = 1/N
-    h      = np.linspace(0,1,T+1)[:-1]
-    phases = np.linspace(0,1,N+1)[:-1]
-    return 1-np.cos(np.clip((h[:,None] + phases[None,:])%1,0,wl)*2*np.pi/wl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# Functions for adjusting/scaling timeseries
 
 def unitscale(signal,axis=None):
     '''
-    Rescales `signal` so that its minimum is 0 and its maximum is 1.
+    Rescales `signal` so that its minimum is 0 and its 
+    maximum is 1.
 
     Parameters
     ----------
-    signal
-        array-like real-valued signal
+    signal: np.array
+        Array-like real-valued signal
+    
     Returns
     -------
-    signal
-        Rescaled signal-min(signal)/(max(signal)-min(signal))
+    signalL np.array
+        Rescaled 
+        `signal-min(signal)/(max(signal)-min(signal))`
     '''
     signal = np.float64(np.array(signal))
     if axis==None:
@@ -233,69 +212,440 @@ def topercentiles(x):
     ranks = order.argsort()
     return ranks/(len(x)-1)*100
 
-def local_maxima(x):
-    '''
-    Returns signal index and values at those indecies
 
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    t = np.where(np.diff(np.sign(np.diff(x)))<0)[0]+1
-    return t,x[t]
 
-def local_minima(x):
-    '''
-    Returns signal index and values at those indecies for all local minima.
-    See local_maxima
 
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    t,x = local_maxima(-x)
-    return t,-x
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# Phase routines
 
 def amp(x):
     '''
-    Extracts amplitude envelope using Hilbert transform. X must be narrow
-    band. No padding is performed so watch out for boundary effects
+    Extracts amplitude envelope using Hilbert transform.
+    `x` must be narrow-band. 
+    No padding is performed --- watch out for boundary 
+    effects.
     
     Parameters
     ----------
-    x : sequence
+    x: np.array
         numeric time-series data
+        
     Returns
     -------
     result:
-        abs(hilbert(x))
+        `abs(hilbert(x))`
     '''
     return np.abs(hilbert(np.array(x)))
-
-def get_snips(signal,times,window):
+    
+def ifreq(x,Fs=1000,mode='pad'):
     '''
-    Extract snippits of a time series surronding a list of times. Typically
-    used for spike-triggered statistics
+    Extract the instantaneous frequency from a narrow-band 
+    signal using the Hilbert transform.
+    
+    Parameters
+    ----------
+    x: np.array
+        numeric time-series data
+    
+    Other Parameters
+    ----------------
+    Fs : int
+        defaults to 1000
+    mode : str
+        'pad' will return a signal of the original length
+        'valid' will return a signal 1 sample shorter, with 
+        derivative computed between each pair of points 
+        in the original signal.
+    '''
+    pg = pghilbert(x)
+    pg = pg/(2*np.pi)*Fs
+    if mode=='valid':
+        return pg # in Hz
+    if mode=='pad':
+        return fix_derivative(pg)
+    assert 0
+    
+def pdiff(x):
+    '''
+    Take the derivative of a sequence of phases.
+    Times when this derivative wraps around form 0 to 2π
+    are correctly handeled.
+    
+    Parameters
+    ----------
+    x: np.array
+        Array of phase values in radians to differentiate.
+
+    Returns
+    -------
+    dx: np.array
+        Phase derivative of `x`, with wrapping around 2π
+        handled automatically. 
+    '''
+    return rewrap(np.diff(np.array(x)))
+
+def rewrap(x):
+    '''
+    Used to handle wraparound when getting phase derivatives.
+    See pdiff.
+    
+    Parameters
+    ----------
+    dx: np.array
+        Array of phase derivatives, with 2π wrap-around
+        not yet handled.
+        
+    Returns
+    -------
+    dx: np.array
+        Phase derivative of `x`, with wrapping around 2π
+        handled automatically. 
+    '''
+    x = np.array(x)
+    return (x+np.pi)%(2*np.pi)-np.pi
+
+def pghilbert(x):
+    '''
+    Extract phase derivative in time from a narrow-band 
+    real-valued signal using the hilbert transform. 
+    
+    Parameters
+    ----------
+    x: np.float32
+        Narrow-band real-valued signal to get the phase 
+        gradient of. 
+    
+    Returns
+    -------
+    d/dt[phase(x)]: np.array
+        Time derivative in radians/sample
+    '''
+    return pdiff(np.angle(np.hilbert(np.array(x))))
+
+def unwrap(h):
+    '''
+    Unwraps a sequences of phase measurements so that,
+    rather than ranging from 0 to 2π, 
+    the values increase (or decrease) continuously.
+    
+    Parameters
+    ----------
+    h: np.float32
+    
+    Returns
+    -------
+    :np.array
+        Re-wrapped phases, in radians. These phases
+        will continue counting up/down and are not
+        wrapped to [0,2π).
+    '''
+    return np.cumsum(fix_derivative(pdiff(h)))
+
+def ang(x):
+    '''
+    Uses the Hilbert transform to extract the phase of x,
+    in radians.
+    X should be narrow-band. 
+    
+    Parameters
+    ----------
+    x: np.float32
+        Narrow-band real-valued signal to get the phase 
+        gradient of. 
+    
+    Returns
+    -------
+    ang: np.float32
+        Phase angle of `x`, in radiance.
+    '''
+    return np.angle(np.hilbert(x))
+
+def fix_derivative(x):
+    '''
+    Adjust discrete derivative `x` to pad-back the 1 sample
+    removed by differentiation, and center the derivative
+    on samples (rather than between them). 
+    
+    Applying this after using `diff()` is equivalent
+    to using the differentiation kernel `[-.5,0,.5]`
+    in the interior of the array and `[-1,1]` at its
+    endpoints
+    
+    Parameters
+    ----------
+    x: np.array
+        Derivative signal to fix.
+    
+    Returns
+    -------
+    :np.array
+    '''
+    x = np.array(x)
+    n = len(x)+1
+    result = np.zeros(n,dtype=x.dtype)
+    result[1:]   += x
+    result[:-1]  += x
+    result[1:-1] *= 0.5
+    return result
+
+def phase_rotate(s,f,Fs=1000.):
+    '''
+    Only the phase advancement portion of a resonator.
+    
+    Parameters
+    ----------
+    s: np.array
+        Analytic signal
+    f: float
+        Frequency, in Hz.
+    
+    Other Parameters
+    ----------------
+    Fs: positive number; default 1000
+        Sampling rate.
+    
+    Returns
+    -------
+    :np.array
+    '''
+    theta = f*2*np.pi/Fs
+    s *= np.exp(1j*theta)
+    return s
+
+def randband(N,fa=None,fb=None,Fs=1000):
+    '''
+    Returns Gaussian random noise band-pass filtered between 
+    `fa` and `fb`.
+    
+    Parameters
+    ----------
+    N: int
+        Number of samples to draw
+    
+    Returns
+    -------
+    '''
+    return zscore(
+            bandfilter(
+            np.random.randn(N*2),fa=fa,fb=fb,Fs=Fs)
+        )[N//2:N//2+N]
+
+def phase_randomize(signal):
+    '''
+    Phase randomizes a signal by rotating frequency components by a random
+    angle. Negative frequencies are rotated in the opposite direction.
+    The nyquist frequency, if present, has it's sign randomly flipped.
+    
+    Parameters
+    ----------
+    signal: 1D np.array
+    
+    Returns
+    -------
+    '''
+    assert 1==len(signal.shape)
+    N = len(signal)
+    '''
+    if N%2==1:
+        # signal length is odd.
+        # ft will have one DC component then symmetric frequency components
+        randomize  = np.exp(1j*np.random.rand((N-1)//2))
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,conjugates)
+    else:
+        # signal length is even
+        # will have one single value at the nyquist frequency
+        # which will be real and can be sign flipped but not rotated
+        flip = 1 if np.random.rand(1)<0.5 else -1
+        randomize  = np.exp(1j*np.random.rand((N-2)//2))
+        conjugates = np.conj(randomize)[::-1]
+        randomize  = np.append(randomize,flip)
+        randomize  = np.append(randomize,conjugates)
+    # the DC component is not randomized
+    randomize = np.append(1,randomize)
+    # take FFT and apply phase randomization
+    ff = np.fft.fft(signal)*randomize
+    # take inverse
+    randomized = np.fft.ifft(ff)
+    return np.real(randomized)
+    '''
+    return phase_randomize_from_amplitudes(np.abs(np.fft.fft(signal)))
+
+def phase_randomize_from_amplitudes(amplitudes):
+    '''
+    phase_randomize_from_amplitudes(amplitudes)
+    treats input amplitudes as amplitudes of fourier components
     
     Parameters
     ----------
     Returns
     -------
     '''
+    N = len(amplitudes)
+    x = np.complex128(amplitudes) # need to make a copy
+    if N%2==0: # N is even
+        rephase = np.exp(1j*2*np.pi*np.random.rand((N-2)//2))
+        rephase = np.concatenate([rephase,[np.sign(np.random.rand()-0.5)],np.conj(rephase[::-1])])
+    else: # N is odd
+        rephase = np.exp(1j*2*np.pi*np.random.rand((N-1)//2))
+        rephase = np.append(rephase,np.conj(rephase[::-1]))
+    rephase = np.append([1],rephase)
+    x *= rephase
+    return np.real(np.fft.ifft(x))
+
+def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
+    '''
+    Extracts an amplitude-modulated component from an analytic signal,
+    Correctly flipping the sign of the signal when it crosses zero,
+    rather than returning a rectified result.
+
+    Sign-changes are heuriddddstically detected basd on the following:
+        - An abnormally large skip in phase between two time points,
+          larger than np.pi/2, that is also a local extremum in phase velocity
+        - local minima in the amplitude at low-voltage with high curvature
+    
+    Parameters
+    ----------
+    analytic_signal: np.arrau
+    
+    Other Parameters
+    ----------------
+    doplot: boolean; default False
+        Whether to draw plot
+    
+    Returns
+    -------
+    demodulated
+    '''
+
+    analytic_signal = zscore(analytic_signal)
+
+    phase      = np.angle(analytic_signal)
+    amplitude  = np.abs(analytic_signal)
+
+    phase_derivative     = fix_derivative(pdiff(phase))
+    phase_curvature      = fix_derivative(np.diff(phase_derivative))
+    amplitude_derivative = fix_derivative(np.diff(amplitude))
+    amplitude_curvature  = fix_derivative(np.diff(amplitude_derivative))
+
+    amplitude_candidates = find( (amplitude_curvature >= 0.05) & (amplitude < 0.6) )
+    amplitude_exclude    = find( (amplitude_curvature <  0.01) | (amplitude > 0.8) )
+    phase_candidates     = find( (phase_curvature     >= 0.05) & (phase_derivative < np.pi*0.5) )
+    phase_exclude        = find( (phase_derivative > np.pi*0.9) )
+    aminima,_ = local_minima(amplitude)
+    pminima,_ = local_minima(phase_derivative)
+    pmaxima,_ = local_maxima(phase_derivative)
+    minima = \
+        ((set(aminima)|set(amplitude_candidates)) - \
+          set(amplitude_exclude)) & \
+        ((set(pminima)|set(pminima-1)|set(pmaxima)|set(pmaxima-1)) -\
+          set(phase_exclude))
+
+    minima = np.array(list(minima))
+    minima = minima[diff(list(minima))!=1]
+
+    edges = np.zeros(np.shape(analytic_signal),dtype=np.int32)
+    edges[list(minima)] = 1
+    sign = np.cumsum(edges)%2*2-1
+
+    demodulated = amplitude*sign
+
+    if doplot:
+        clf()
+
+        Nplots = 4
+        iplot = 1
+
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(demodulated,color='r',lw=2)
+        [axvline(x,lw=2,color='k') for x in (minima)]
+
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(phase_derivative,color='r',lw=2)
+        [axvline(x,lw=2,color='k') for x in (minima)]
+
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(amplitude_curvature,color='r',lw=2)
+        [axvline(x,lw=2,color='k') for x in (minima)]
+
+        subplot(Nplots,1,iplot)
+        iplot+=1
+        plot(real(analytic_signal),color='g')
+        [axvline(x,lw=2,color='k') for x in (minima)]
+
+    return demodulated
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# STA routines TODO move to spikes subpackage
+
+def get_snips(signal,times,window):
+    '''
+    Extract snippits of a time series surronding a list of 
+    times. Typically used for spike-triggered statistics
+    
+    Parameters
+    ----------
+    signal: 1D np.array
+        Timseries to extract snips from.
+    times: 1D np.int32
+        Indecies of spiking events (samples) in `signal`
+    window: positive int
+        A region of size `2*window+1` will be extracted
+        around each spike time.
+    
+    Returns
+    -------
+    snips: NSPIKES×(2*window+1) np.array
+        Extracted spike-triggered signal snippits.
+    '''
     times = times[times>window]
     times = times[times<len(signal)-window-1]
-    snips = np.array([signal[t-window:t+window+1] for t in times])
+    snips = np.array([
+        signal[t-window:t+window+1] for t in times])
     return snips
 
 def triggered_average(signal,times,window):
     '''
+    Calculate spike-triggered average of a signal.
     
     Parameters
     ----------
+    signal: 1D np.array
+        Timseries to extract snips from.
+    times: 1D np.int32
+        Indecies of spiking events (samples) in `signal`
+    window: positive int
+        A region of size `2*window+1` will be extracted
+        around each spike time.
+    
     Returns
     -------
+    STA: length 2*window+1 np.array
+        Spike-triggered average of `signal`.
     '''
     return np.mean(get_snips(signal,times,window),0)
 
@@ -306,82 +656,94 @@ def get_triggered_stats(signal,times,window):
     
     Parameters
     ----------
-    signal : one-dimensional array-like
-        Signal to summarize
-    times : one-dimensionan array-like
-        list of time-points around which to summarize (in frames)
-    window : positive int
-        window (in frames) around each time-point to use for statistical
-        summary
+    signal: 1D np.array
+        Timseries to extract snips from.
+    times: 1D np.int32
+        Indecies of spiking events (samples) in `signal`
+    window: positive int
+        A region of size `2*window+1` will be extracted
+        around each spike time.
         
     Returns
     -------
     means : 
-        means of `signal` for all time-windows specified in `times`
+        Means of `signal` for all time-windows 
+        specified in `times`.
     standard-deviations : 
-        std of `signal` for all time-windows specified in `times`
+        Standard deviation of `signal` for all time-windows 
+        specified in `times`.
     standard-erros : 
-        standard errors of the mean of `signal` for all time-windows 
-        specified in `times`
+        Standard errors of the mean of `signal` for all 
+        time-windows specified in `times`.
     '''
     s = get_snips(signal,times,window)
     return np.mean(s,0),np.std(s,0),np.std(s,0)/np.sqrt(len(times))*1.96
-
-def padout(data):
+    
+    
+def fftsta(spikes,x):
     '''
-    Generates a reflected version of a 1-dimensional signal. This can be
-    handy for achieving reflected boundary conditions in algorithms that
-    do not support this condition by default.
-
-    The original data is placed in the middle, between the mirrord copies.
-    Use the function "padin" to strip the padding
+    Spike triggerd average (STA) via FFT
+    Signal `x` is z-scored befor calculating the spike-triggered average
+    (a.k.a. reverse correlation).
+    The returned STA is normalized so that the maximum magnitude is 1.
     
     Parameters
     ----------
-    Returns
-    -------
-    '''
-    N = len(data)
-    assert len(data.shape)==1
-    padded = np.zeros(2*N,dtype=data.dtype)
-    padded[N//2  :N//2+N]=data
-    padded[     :N//2  ]=data[N//2:0    :-1]
-    padded[N//2+N:     ]=data[-1 :N//2-1:-1]
-    return padded
-
-def padin(data):
-    '''
-    Removes padding added by the `padout` function; 
-    `padin` and `padout` together are used to control the
-    boundary condtitions for filtering. See the documentation
-    for padout for details.
-    
-    Parameters
-    ----------
-    data : array-like
-        Data array produced by the `padout function` 
+    spikes: np.array
+        1D spike count vector
+    x: np.array
         
     Returns
     -------
-    np.array : 
-        data with edge padding removed
+    np.float32 : normalized spike-triggered average
     '''
-    N = len(data)
-    assert len(data.shape)==1
-    return data[N//2:N//2+N]
+    signal = np.float32((x-np.mean(x))/np.std(x))
+    spikes = np.float32(spikes)
+    sta    = fftshift(ifft(fft(spikes,axis=1)*\
+                    np.conj(fft(x),dtype=np.complex64)),axes=1).real
+    return sta/np.max(abs(sta),axis=1)[:,None]
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+############################################################
+# Filtering
 
 def nonnegative_bandpass_filter(data,fa=None,fb=None,
     Fs=1000.,order=4,zerophase=True,bandstop=False,
     offset=1.0):
     '''
-    For filtering data that must remain non-negative. Due to ringing
-    conventional fitering can create values less than zero for non-
-    negative real inputs. This may be unrealistic for some data.
+    For filtering data that must remain non-negative. Due to 
+    ringing conventional fitering can create values less 
+    than zero for non-negative real inputs. 
+    This may be unrealistic for some data.
 
-    To compensate, this performs the filtering on the natural
-    logarithm of the input data. For small numbers, this can lead to
-    numeric underflow, so an offset parameter (default 1) is added
-    to the data for stability.
+    To compensate, this performs the filtering on the 
+    natural logarithm of the input data. For small numbers, 
+    this can lead to numeric underflow, so an offset 
+    parameter (default 1) is added to the data for 
+    stability.
 
     Parameters
     ----------
@@ -393,8 +755,11 @@ def nonnegative_bandpass_filter(data,fa=None,fb=None,
         high-freq cutoff Hz. If none, highpass at fa
     Fs (int): 
         Sample rate in Hz
+        
+    Other Parameters
+    ----------------
     order (1..6): 
-        butterworth filter order. Default 4
+        butterworth filter order. Default is 4
     zerophase (boolean): 
         Use forward-backward filtering? (true)
     bandstop (boolean): 
@@ -416,26 +781,14 @@ def nonnegative_bandpass_filter(data,fa=None,fb=None,
         bandstop=bandstop)
     return np.expm1(filtered)
 
-def pad_signal(data):
-    '''
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    N = data.shape[-1]
-    padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
-    padded[...,N//2  :N//2+N] = data
-    padded[...,     :N//2  ] = data[...,N//2:0    :-1]
-    padded[...,N//2+N:     ] = data[...,-1 :N//2-1:-1]
-    return padded
 
 def bandpass_filter(data,fa=None,fb=None,
     Fs=1000.,order=4,zerophase=True,bandstop=False):
     '''
     IF fa is None, assumes lowpass with cutoff fb
     IF fb is None, assume highpass with cutoff fa
-    Array can be any dimension, filtering performed over last dimension
+    Array can be any dimension, filtering performed over 
+    last dimension.
 
     Args:
         data (ndarray): data, filtering performed over last dimension
@@ -445,10 +798,10 @@ def bandpass_filter(data,fa=None,fb=None,
         zerophase (boolean): Use forward-backward filtering? (true)
         bandstop (boolean): Do band-stop rather than band-pass
     
-    Parameters
-    ----------
     Returns
     -------
+    result: np.array
+        Filtered signal. 
     '''
     if np.product(data.shape)<=0:
         raise ValueError('Singular array! no data to filter')
@@ -484,15 +837,11 @@ def bandpass_filter(data,fa=None,fb=None,
         return result[...,N//2:N//2+N]
     assert 0
 
-#'''
-#For backward compatibility, bandpass_filter is aliased as bandfilter
-#'''
-#bandfilter = bandpass_filter
 
 def box_filter(data,smoothat,padmode='reflect'):
     '''
     Smooths data by convolving with a size smoothat box
-    provide smoothat in units of frames i.e. samples (not ms or seconds)
+    provide smoothat in units of frames i.e. samples. 
     
     Parameters
     ----------
@@ -645,137 +994,257 @@ def variance_filter(x,window=100,mode='same'):
         return np.array(filtered)
     assert 0
 
-def rewrap(x):
-    '''
-    Used to handle wraparound when getting phase derivatives.
-    See pdiff.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    x = np.array(x)
-    return (x+np.pi)%(2*np.pi)-np.pi
 
-def pdiff(x):
+def stats_block(data,statfunction,N=100,sample_match=None):
     '''
-    Take the derivative of a sequence of phases.
-    Times when this derivative wraps around form 0 to 2*np.pi are correctly
-    handeled.
+    Compute function of signal in blocks of size $N$ over the last axis
+    of the data
     
     Parameters
     ----------
-    Returns
-    -------
-    '''
-    x = np.array(x)
-    return rewrap(np.diff(x))
-    #return rewrap(spaced_derivative(x))
-
-def pghilbert(x):
-    '''
-    Extract phase gradient using the hilbert transform. See also pdiff.
+    data: np.array
+        N-dimensional numpy array. Blocking is performed over the last axis
+    statfunction: function
+        Statistical function to compute on each block. Should be, or 
+        behave similarly to, the `numpy` buit-ins, e.g. np.mean,
+        np.median, etc.
     
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    x = np.array(x)
-    return pdiff(np.angle(np.hilbert(x)))
-
-def fudge_derivative(x):
-    '''
-    Discretely differentiating a signal reduces its signal by one sample.
-    In some cases, this may be undesirable. It also creates ambiguity as
-    the sample times of the differentiated signal occur halfway between the
-    sample times of the original signal. This procedure uses averaging to
-    move the sample times of a differentiated signal back in line with the
-    original.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    x = np.array(x)
-    n = len(x)+1
-    result = np.zeros(n,dtype=x.dtype)
-    result[1:]   += x
-    result[:-1]  += x
-    result[1:-1] *= 0.5
-    return result
-
-def ifreq(x,Fs=1000,mode='pad'):
-    '''
-    Extract the instantaneous frequency from a narrow-band signal using
-    the Hilbert transform.
-    
-    Parameters
-    ----------
-    Fs : int
-        defaults to 1000
-    mode : str
-        'pad' will return a signal of the original length
-        'valid' will return a signal 1 sample shorter, with derivative
-        computed between each pair od points in the original signal.
-    '''
-    pg = pghilbert(x)
-    pg = pg/(2*np.pi)*Fs
-    if mode=='valid':
-        return pg # in Hz
-    if mode=='pad':
-        return fudge_derivative(pg)
-    assert 0
-
-def unwrap(h):
-    '''
-    Unwraps a sequences of phase measurements so that rather than
-    ranging from 0 to 2*np.pi, the values increase (or decrease) continuously.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    d = fudgeDerivative(pdiff(h))
-    return np.cumsum(d)
-
-def ang(x):
-    '''
-    Uses the Hilbert transform to extract the phase of x. X should be
-    narrow-band. The signal is not padded, so be wary of boundary effects.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    return np.angle(np.hilbert(x))
-
-def randband(N,fa=None,fb=None,Fs=1000):
-    '''
-    Returns Gaussian random noise band-pass filtered between fa and fb.
-    
-    Parameters
-    ----------
-    N:
+    Other Parameters
+    ----------------
+    N: positive integer, default 100
+        Block size in which to break data. If data cannot be split 
+        evenly into blocks of size $N$, then data are truncated to the 
+        largest integer multiple of N. 
+    sample_match: positive integer, default None
+        If not None, then blocks will be sub-sampled to contain
+        `sample_match` samples. `sample_match` should not exceed
+        data.shape[-1]//N
     
     Returns
     -------
+    np.array : 
+        Blocked data
     '''
-    return zscore(bandfilter(np.random.randn(N*2),fa=fa,fb=fb,Fs=Fs))[N//2:N//2+N]
+    N = int(N)
+    L = data.shape[-1]
+    B = L//N
+    if not sample_match is None and sample_match>N:
+        raise ValueError('%d samples/block requested but blocks have only %d samples'%(sample_match,N))
+    D = B*N
+    data = data[...,:D]
+    data = np.reshape(data,data.shape[:-1]+(B,N))
+    if not sample_match is None:
+        keep = np.int32(np.linspace(0,N-1,sample_match))
+        data = data[:,keep]
+    return statfunction(data,axis=-1)
+
+def mean_block(data,N=100,sample_match=None):
+    '''
+    Calls stats_block using np.mean. See documentation of stats_block for
+    details.
+    
+    Parameters
+    ----------
+    data: 1D np.array
+        Signal to filter
+    N: positive integer, default 100
+        Block size in which to break data. If data cannot be split 
+        evenly into blocks of size $N$, then data are truncated to the 
+        largest integer multiple of N. 
+    sample_match: positive integer, default None
+        If not None, then blocks will be sub-sampled to contain
+        `sample_match` samples. `sample_match` should not exceed
+        data.shape[-1]//N
+        
+    Returns
+    -------
+    result: np.array
+        `stats_block(data,np.mean,N)`
+    '''
+    return stats_block(data,np.mean,N,sample_match)
+
+def var_block(data,N=100):
+    '''
+    Calls stats_block using np.var. See documentation of stats_block for
+    details.
+    
+    Parameters
+    ----------
+    data: 1D np.array
+        Signal to filter
+    N: positive integer, default 100
+        Block size in which to break data. If data cannot be split 
+        evenly into blocks of size $N$, then data are truncated to the 
+        largest integer multiple of N. 
+    sample_match: positive integer, default None
+        If not None, then blocks will be sub-sampled to contain
+        `sample_match` samples. `sample_match` should not exceed
+        data.shape[-1]//N
+        
+    Returns
+    -------
+    result: np.array
+        `stats_block(data,np.var,N)`
+    '''
+    return stats_block(data,np.var,N)
+
+def median_block(data,N=100):
+    '''
+    Calls stats_block using np.median. See documentation of stats_block for
+    details.
+    
+    Parameters
+    ----------
+    data: 1D np.array
+        Signal to filter
+    N: positive integer, default 100
+        Block size in which to break data. If data cannot be split 
+        evenly into blocks of size $N$, then data are truncated to the 
+        largest integer multiple of N. 
+        
+    Returns
+    -------
+    result: np.array
+        `stats_block(data,np.median,N)`
+    '''
+    return stats_block(data,np.median,N)
+    
+
+def linfilter(A,C,x,initial=None):
+    '''
+    Linear response filter on data $x$ for system
+    
+    $$
+    \\partial_t z = A z + C x(t)
+    $$
+    
+    Parameters
+    ----------
+    A : matrix
+        K x K matrix defining linear syste,
+    C : matrix
+        K x N matrix defining projection from signal $x$ to linear system
+    x : vector or matrix
+        T x N sequence of states to filter
+    initial : vector
+        Optional length N vector of initial filter conditions. Set to 0
+        by default
+
+    Returns
+    -------
+    filtered : array
+        filtered data
+    '''
+    # initial state for filters (no response)
+    L = len(x)
+    K = A.shape[0]
+    z = np.zeros((K,1)) if initial is None else initial
+    filtered = []
+    for t in range(L):
+        dz = A.dot(z) + C.dot([[x[t]]])
+        z += dz
+        filtered.append(z.copy())
+    return np.squeeze(np.array(filtered))
+    
+def padout(data):
+    '''
+    Generates a reflected version of a 1-dimensional signal. 
+
+    The original data is placed in the middle, between the 
+    mirrord copies.
+    Use the function "padin" to strip the padding
+    
+    Parameters
+    ----------
+    data: 1d np.array
+    
+    Returns
+    -------
+    result: np.array
+        length 2*data.shape[0] padded array
+    '''
+    N = len(data)
+    assert len(data.shape)==1
+    padded = np.zeros(2*N,dtype=data.dtype)
+    padded[N//2  :N//2+N]=data
+    padded[     :N//2  ]=data[N//2:0    :-1]
+    padded[N//2+N:     ]=data[-1 :N//2-1:-1]
+    return padded
+
+def padin(data):
+    '''
+    Removes padding added by the `padout` function; 
+    `padin` and `padout` together are used to control the
+    boundary condtitions for filtering. See the documentation
+    for padout for details.
+    
+    Parameters
+    ----------
+    data : array-like
+        Data array produced by the `padout function` 
+        
+    Returns
+    -------
+    np.array : 
+        data with edge padding removed
+    '''
+    N = len(data)
+    assert len(data.shape)==1
+    return data[N//2:N//2+N]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+############################################################
+# Binary signal functions
 
 def arenear(b,K=5):
     '''
-    Expand a boolean/binary sequence by K samples in each direction.
-    See "aresafe"
+    Expand a boolean/binary sequence by K samples in each 
+    direction.
+    See also "aresafe"
     
     Parameters
     ----------
+    b: 1D np.bool
+        Boolean array; 
+        
+    Other Parameters
+    ----------------
+    K: positive int; default 5
+        Number of samples to add to each end of 
+        spans of `b` which are `True`
+    
     Returns
     -------
+    b: bp.bool
+        Expanded `b`.
     '''
     for i in range(1,K+1):
         b[i:] |= b[:-i]
@@ -785,14 +1254,28 @@ def arenear(b,K=5):
 
 def aresafe(b,K=5):
     '''
-    Contract a boolean/binary sequence by K samples in each direction.
-    For example, you may want to test for a condition, but avoid samples
-    close to edges in that condition.
+    Contract a boolean/binary sequence by `K` samples in 
+    each direction. I.e. trim off `K` samples from the ends
+    of spans of `b` that are `True`.
+    
+    For example, you may want to test for a condition, but 
+    avoid samples close to edges in that condition.
     
     Parameters
     ----------
+    b: 1D np.bool
+        Boolean array; 
+        
+    Other Parameters
+    ----------------
+    K: positive int; default 5
+        Number of samples to shave off each end of 
+        spans of `b` which are `True`
+        
     Returns
     -------
+    b: bp.bool
+        Trimmed `b`
     '''
     for i in range(1,K+1):
         b[i:] &= b[:-i]
@@ -802,8 +1285,8 @@ def aresafe(b,K=5):
 
 def get_edges(signal,pad_edges=True):
     '''
-    Assuming a binary signal, get the start and stop times of each
-    treatch of "1s"
+    Assuming a binary signal, get the start and stop times 
+    of each treatch of "1s"
     
     Parameters
     ----------
@@ -812,8 +1295,8 @@ def get_edges(signal,pad_edges=True):
     Other Parameters
     ----------------
     pad_edges : True
-        Should we treat blocks that start or stop at the beginning or end 
-        of the signal as valid?
+        Should we treat blocks that start or stop at the 
+        beginning or end of the signal as valid?
     
     Returns
     -------
@@ -898,41 +1381,24 @@ def remove_short(w,cutoff):
     newgaps = set_edges(keep.T,len(w))
     return newgaps
 
-def phase_rotate(s,f,Fs=1000.):
-    '''
-    Only the phase advancement portion of a resonator.
-    See resonantDrive
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    theta = f*2*np.pi/Fs
-    s *= np.exp(1j*theta)
-    return s
-
-def fm_mod(freq):
-    '''
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    N = len(freq)
-    signal = [1]
-    for i in range(N):
-        signal.append(phaseRotate(signal[-1],freq[i]))
-    return np.array(signal)[1:]
-
 def pieces(x,thr=4):
     '''
+    Chops up `x` between points that differ by more
+    than `thr`
     
     Parameters
     ----------
+    x: 1D np.array
+    
+    Other Parameters
+    ----------------
+    thr: number; default 4
+        Derivative threshold for cutting segments.
+    
     Returns
     -------
+    ps: list
+     List of `(range(a,b),x[a:b])` for each piece of `x`.
     '''
     dd = diff(x)
     br = [0]+list(find(abs(dd)>thr))+[len(x)]
@@ -943,150 +1409,7 @@ def pieces(x,thr=4):
         if a==b: continue
         ps.append((range(a,b),x[a:b]))
     return ps
-
-def stats_block(data,statfunction,N=100,sample_match=None):
-    '''
-    Compute function of signal in blocks of size $N$ over the last axis
-    of the data
     
-    Parameters
-    ----------
-    data: np.array
-        N-dimensional numpy array. Blocking is performed over the last axis
-    statfunction: function
-        Statistical function to compute on each block. Should be, or 
-        behave similarly to, the `numpy` buit-ins, e.g. np.mean,
-        np.median, etc.
-    
-    Other Parameters
-    ----------------
-    N: positive integer, default 100
-        Block size in which to break data. If data cannot be split 
-        evenly into blocks of size $N$, then data are truncated to the 
-        largest integer multiple of N. 
-    sample_match: positive integer, default None
-        If not None, then blocks will be sub-sampled to contain
-        `sample_match` samples. `sample_match` should not exceed
-        data.shape[-1]//N
-    
-    Returns
-    -------
-    np.array : 
-        Blocked data
-    '''
-    N = int(N)
-    L = data.shape[-1]
-    B = L//N
-    if not sample_match is None and sample_match>N:
-        raise ValueError('%d samples/block requested but blocks have only %d samples'%(sample_match,N))
-    D = B*N
-    data = data[...,:D]
-    data = np.reshape(data,data.shape[:-1]+(B,N))
-    if not sample_match is None:
-        keep = np.int32(np.linspace(0,N-1,sample_match))
-        data = data[:,keep]
-    return statfunction(data,axis=-1)
-
-def mean_block(data,N=100,sample_match=None):
-    '''
-    Calls stats_block using np.mean. See documentation of stats_block for
-    details.
-    
-    Parameters
-    ----------
-    See `stats_block` documentation
-    
-    Returns
-    -------
-    np.array : 
-        Block-averaged data
-    '''
-    return stats_block(data,np.mean,N,sample_match)
-
-def var_block(data,N=100):
-    '''
-    Calls stats_block using np.var. See documentation of stats_block for
-    details.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    return stats_block(data,np.var,N)
-
-def median_block(data,N=100):
-    '''
-    Calls stats_block using np.median. See documentation of stats_block for
-    details.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    return stats_block(data,np.median,N)
-
-def phase_randomize(signal):
-    '''
-    Phase randomizes a signal by rotating frequency components by a random
-    angle. Negative frequencies are rotated in the opposite direction.
-    The nyquist frequency, if present, has it's sign randomly flipped.
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    assert 1==len(signal.shape)
-    N = len(signal)
-    '''
-    if N%2==1:
-        # signal length is odd.
-        # ft will have one DC component then symmetric frequency components
-        randomize  = np.exp(1j*np.random.rand((N-1)//2))
-        conjugates = np.conj(randomize)[::-1]
-        randomize  = np.append(randomize,conjugates)
-    else:
-        # signal length is even
-        # will have one single value at the nyquist frequency
-        # which will be real and can be sign flipped but not rotated
-        flip = 1 if np.random.rand(1)<0.5 else -1
-        randomize  = np.exp(1j*np.random.rand((N-2)//2))
-        conjugates = np.conj(randomize)[::-1]
-        randomize  = np.append(randomize,flip)
-        randomize  = np.append(randomize,conjugates)
-    # the DC component is not randomized
-    randomize = np.append(1,randomize)
-    # take FFT and apply phase randomization
-    ff = np.fft.fft(signal)*randomize
-    # take inverse
-    randomized = np.fft.ifft(ff)
-    return np.real(randomized)
-    '''
-    return phase_randomize_from_amplitudes(np.abs(np.fft.fft(signal)))
-
-def phase_randomize_from_amplitudes(amplitudes):
-    '''
-    phase_randomize_from_amplitudes(amplitudes)
-    treats input amplitudes as amplitudes of fourier components
-    
-    Parameters
-    ----------
-    Returns
-    -------
-    '''
-    N = len(amplitudes)
-    x = np.complex128(amplitudes) # need to make a copy
-    if N%2==0: # N is even
-        rephase = np.exp(1j*2*np.pi*np.random.rand((N-2)//2))
-        rephase = np.concatenate([rephase,[np.sign(np.random.rand()-0.5)],np.conj(rephase[::-1])])
-    else: # N is odd
-        rephase = np.exp(1j*2*np.pi*np.random.rand((N-1)//2))
-        rephase = np.append(rephase,np.conj(rephase[::-1]))
-    rephase = np.append([1],rephase)
-    x *= rephase
-    return np.real(np.fft.ifft(x))
 
 def estimate_padding(fa,fb,Fs=1000):
     '''
@@ -1131,19 +1454,45 @@ def highpass_filter(x, cut=40, Fs=1000, order=4):
 
 def fdiff(x,Fs=240.):
     '''
-    Take the discrete derivative of a signal, correcting result for
-    sample rate. This procedure returns a singnal two samples shorter than
-    the original.
+    Take the discrete derivative of a signal, correcting 
+    result for sample rate. This procedure returns a singnal
+    two samples shorter than the original.
     
     Parameters
     ----------
-    x:
-    Fs: 240.
-    
+    x: 1D np.array
+        Signal to differentiate
+    Fs: positive number; 
+        Sampling rate of x
+
     Returns
     -------
     '''
     return (x[2:]-x[:-2])*Fs*.5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# Signal cleaning
 
 def interpolate_NaN(u):
     '''
@@ -1173,17 +1522,22 @@ def interpolate_NaN_quadratic(u):
     
     Parameters
     ----------
-    u: 
+    u: 1D np.array
     
     Returns
     -------
+    :np.array
+        `u`, with `NaN` values replaced using locally-
+        quadratic interpolation.
     
     '''
+    u = np.array(u)
+    N = len(u)
+    i = np.arange(N)
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", message="Polyfit may be poorly conditioned")
-        u = np.array(u)
-        N = len(u)
-        i = np.arange(N)
+        warnings.filterwarnings(
+            "ignore", 
+            message="Polyfit may be poorly conditioned")
         splices = []
         for s,e in list(zip(*get_edges(~np.isfinite(u)))):
             #if s==0: continue
@@ -1231,36 +1585,112 @@ def killSpikes(x,threshold=1):
         x[s:e+2] = np.linspace(a,b,e-s+2)
     return x
 
-def peak_within(freqs,spectrum,fa,fb):
+
+def drop_nonfinite(x):
     '''
-    Find maximum within a band
+    Flatten array and remove non-finite values
+
+    Parameters
+    ----------
+    x: np.float32
+        Numpy array from which to move non-finite values
+        
+    Returns
+    1D np.float32
+        Flattened array with non-finite values removed.
+    '''
+    x = np.float32(x).ravel()
+    return x[np.isfinite(x)]
+
+
+
+def virtual_reference_line_noise_removal(lfps,frequency=60,hbw=5):
+    '''
+    Accepts an array of LFP recordings (first dimension should be 
+    channel number, second dimension time ).
+    Sample rate assumed 1000Hz
+    
+    Extracts the mean signal within 2.5 Hz of 60Hz.
+    For each channel, removes the projection of the LFP signal onto 
+    this estimated line noise signal.
+    
+    I've found this approach sometimes doesn't work very well, 
+    so please inspect the output for quality. 
+    
+    To filter out overtones, see `band_stop_line_noise_removal()`.
     
     Parameters
     ----------
-    freqs : np.array
-        Frequencies
-    spectrum : 
-    fa : float
-        low-frequency cutoff
-    fb : float
-        high-frequency cutoff
-    
+    lfps:
+        LFP channel data
+    frequency: positive number
+        Line noise frequency, defaults to 60 Hz
+        (USA).  
+    hbw: positive number
+        Half-bandwidth settings; Default is 5
+        
     Returns
     -------
+    removed: np.array
+        Band-stop filtered signal
     '''
-    # clean up arguments
-    order    = argsort(freqs)
-    freqs    = np.array(freqs)[order]
-    spectrum = np.array(spectrum)[order]
-    start = find(freqs>=fa)[0]
-    stop  = find(freqs<=fb)[-1]+1
-    index = np.argmax(spectrum[start:stop]) + start
-    return freqs[index], spectrum[index]
+    filtered = [bandfilter(x,frequency-hbw,frequency+hbw) for x in lfps]
+    noise    = mean(filtered,0)
+    scale    = 1./dot(noise,noise)
+    removed  = [x-dot(x,noise)*scale*noise for x in lfps]
+    return removed
+
+def band_stop_line_noise_removal(lfps,frequency=60.):
+    '''
+    Remove line noise using band-stop at 60Hz 
+    and overtones.
+    
+    Parameters
+    ----------
+    lfps:
+        LFP channel data
+    frequency: positive number
+        Line noise frequency, defaults to 60 Hz
+        (USA).  
+    hbw: positive number
+        Half-bandwidth settings; Default is 10
+        
+    Returns
+    -------
+    removed: np.array
+        Band-stop filtered signal
+    '''
+    hbw   = 10
+    freqs = float32([60,120,180,240,300])*frequency/60.
+    lfps = array(lfps)
+    for i,x in enumerate(lfps):
+        for f in freqs:
+            lfps[i,:] = bandfilter(lfps[i,:],f-hbw,f+hbw,bandstop=1)
+    return lfps
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# minima/maxima
 
 def local_peak_within(freqs,cc,fa,fb):
     '''
-    For a spectrum, identify the largest local maximum in the frequency
-    range [fa,fb].
+    For a spectrum, identify the largest local maximum in 
+    the frequency range [fa,fb].
     
     Parameters
     ----------
@@ -1289,6 +1719,108 @@ def local_peak_within(freqs,cc,fa,fb):
         return (None,)*3 # no peaks!
     i     = peaks[argmax(cc[peaks])]
     return i, freqs[i], cc[i]
+    
+def local_maxima(x):
+    '''
+    Detect local maxima in a 1D signal.
+
+    Parameters
+    ----------
+    x: np.array
+    
+    Returns
+    -------
+    t: np.int32
+        Location of local maxima in x
+    x[t]: np.array
+        Values of `x` at these local maxima.
+    '''
+    t = np.where(np.diff(np.sign(np.diff(x)))<0)[0]+1
+    return t,x[t]
+
+def local_minima(x):
+    '''
+    Detect local minima in a 1D signal.
+
+    Parameters
+    ----------
+    x: np.array
+    
+    Returns
+    -------
+    t: np.int32
+        Location of local minima in x
+    x[t]: np.array
+        Values of `x` at these local minima.
+    '''
+    t,x = local_maxima(-x)
+    return t,-x
+
+def peak_within(freqs,spectrum,fa,fb):
+    '''
+    Find maximum within a band
+    
+    Parameters
+    ----------
+    freqs : np.array
+        Frequencies
+    spectrum : 
+    fa : float
+        low-frequency cutoff
+    fb : float
+        high-frequency cutoff
+    
+    Returns
+    -------
+    '''
+    # clean up arguments
+    order    = argsort(freqs)
+    freqs    = np.array(freqs)[order]
+    spectrum = np.array(spectrum)[order]
+    start = find(freqs>=fa)[0]
+    stop  = find(freqs<=fb)[-1]+1
+    index = np.argmax(spectrum[start:stop]) + start
+    return freqs[index], spectrum[index]
+
+
+def interpmax1d(x):
+    '''
+    Locate a peak in a 1D array by interpolation; see
+    dspguru.com/dsp/howtos/how-to-interpolate-fft-peak
+    
+    Parameters
+    ----------
+    x: 1D np.array; Signal in which to locate the gloabal maximum.
+    
+    Returns
+    -------
+    i: float; Interpolated index of global maximum in `x`.
+    '''
+    i = np.argmax(x)
+    try:
+        y1,y2,y3 = x[i-1:i+2]
+        return i + (y3-y1)/(2*(2*y2-y1-y3))
+    except:
+        return i
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# 1D signal adjusting
 
 def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     '''
@@ -1339,523 +1871,15 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]
-
+    
 def gaussianize(x,axis=-1,verbose=False):
     '''
-    Use percentiles to force a timeseries to have a normal distribution.
+    Use percentiles to force a timeseries to have a normal 
+    distribution.
     '''
     x = np.array(x)
     if np.prod(x.shape)==0: return x
     return ndtri((rankdata(x,axis=axis))/(x.shape[axis]+1))
-
-def deltaovermean(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
-    '''
-    Subtracts, then divides by, the mean.
-    
-    Parameters
-    ----------
-    x:
-        Array-like real-valued signal.
-    axis: 
-        Axis to zscore; default is 0.
-    
-    Returns
-    -------
-    x: np.ndarray
-        (x-mean(x))/std(x)
-    '''
-    x = np.array(x)
-    if np.prod(x.shape)==0: return x
-    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
-    mx = (np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
-    return (x-mx)/mx
-
-def unit_length(x,axis=0):
-    '''
-    Interpret given axis of multidimensional array as vectors,
-    and normalize them to unit length.
-    
-    Parameters
-    ----------
-    x : np.array
-    
-    Other Parameters
-    ----------------
-    axis : int or tuple, default None
-    
-    Returns
-    -------
-    u : np.array
-        vectors in `x` normalized to unit length
-    '''
-    x = np.array(x)
-    theslice = narray.make_rebroadcast_slice(x,axis=axis)
-    return x*(np.sum(x**2,axis=axis)**-.5)[theslice]
-
-def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
-    '''
-    Extracts an amplitude-modulated component from an analytic signal,
-    Correctly flipping the sign of the signal when it crosses zero,
-    rather than returning a rectified result.
-
-    Sign-changes are heuriddddstically detected basd on the following:
-        - An abnormally large skip in phase between two time points,
-          larger than np.pi/2, that is also a local extremum in phase velocity
-        - local minima in the amplitude at low-voltage with high curvature
-
-    
-    Parameters
-    ----------
-    analytic_signal
-    
-    Other Parameters
-    ----------------
-    doplot: boolean, False
-    
-    Returns
-    -------
-    demodulated
-    '''
-
-    analytic_signal = zscore(analytic_signal)
-
-    phase      = np.angle(analytic_signal)
-    amplitude  = np.abs(analytic_signal)
-
-    phase_derivative     = fudge_derivative(pdiff(phase))
-    phase_curvature      = fudge_derivative(np.diff(phase_derivative))
-    amplitude_derivative = fudge_derivative(np.diff(amplitude))
-    amplitude_curvature  = fudge_derivative(np.diff(amplitude_derivative))
-
-    amplitude_candidates = find( (amplitude_curvature >= 0.05) & (amplitude < 0.6) )
-    amplitude_exclude    = find( (amplitude_curvature <  0.01) | (amplitude > 0.8) )
-    phase_candidates     = find( (phase_curvature     >= 0.05) & (phase_derivative < np.pi*0.5) )
-    phase_exclude        = find( (phase_derivative > np.pi*0.9) )
-    aminima,_ = local_minima(amplitude)
-    pminima,_ = local_minima(phase_derivative)
-    pmaxima,_ = local_maxima(phase_derivative)
-    minima = \
-        ((set(aminima)|set(amplitude_candidates)) - \
-          set(amplitude_exclude)) & \
-        ((set(pminima)|set(pminima-1)|set(pmaxima)|set(pmaxima-1)) -\
-          set(phase_exclude))
-
-    minima = np.array(list(minima))
-    minima = minima[diff(list(minima))!=1]
-
-    edges = np.zeros(np.shape(analytic_signal),dtype=np.int32)
-    edges[list(minima)] = 1
-    sign = np.cumsum(edges)%2*2-1
-
-    demodulated = amplitude*sign
-
-    if doplot:
-        clf()
-
-        Nplots = 4
-        iplot = 1
-
-        subplot(Nplots,1,iplot)
-        iplot+=1
-        plot(demodulated,color='r',lw=2)
-        [axvline(x,lw=2,color='k') for x in (minima)]
-
-        subplot(Nplots,1,iplot)
-        iplot+=1
-        plot(phase_derivative,color='r',lw=2)
-        [axvline(x,lw=2,color='k') for x in (minima)]
-
-        subplot(Nplots,1,iplot)
-        iplot+=1
-        plot(amplitude_curvature,color='r',lw=2)
-        [axvline(x,lw=2,color='k') for x in (minima)]
-
-        subplot(Nplots,1,iplot)
-        iplot+=1
-        plot(real(analytic_signal),color='g')
-        [axvline(x,lw=2,color='k') for x in (minima)]
-
-    return demodulated
-
-
-def autocorrelation(x,lags=None,center=True,normalize=True):
-    '''
-    Computes the normalized autocorrelation over the specified
-    time-lags using convolution. Autocorrelation is normalized
-    such that the zero-lag autocorrelation is 1.
-
-    TODO, fix: For long
-    lags it uses FFT, but has a different normalization from the
-    time-domain implementation for short lags. In practice this
-    will not matter.
-    
-    Parameters
-    ----------
-    x : 1d array
-        Data for which to compute autocorrelation function
-
-    Other Parameters
-    ----------------
-    lags : int, default length of signal or 200, whichever is smaller
-        Number of time-lags over which to compute the ACF. Default
-        is min(200,len(x))
-    center : bool, default True
-        Whether to mean-center data before taking autocorrelation
-    normalize : bool, default True
-        Whether to normalize by zero-lag signal variance
-
-    Returns
-    -------
-    ndarray
-        Autocorrelation function, length 2*lags + 1
-    '''
-    x = np.array(x)
-    if center:
-        x -= np.mean(x)
-    N = len(x)
-    if lags is None:
-        lags = min(200,N)
-    # TODO: disabling FFT for now; clean up
-    # For long, scalar-valued timeseries,
-    # Use FFT to compute autocorrelations
-    '''
-    if lags>0.5*np.log2(N) and len(x.shape)==1:
-        # Use FFT for long lags
-        result = np.float32(fftconvolve(x,x[::-1],'same'))
-        M = len(result)//2
-        result *= 1./result[M]
-        return result[M-lags:M+lags+1]
-    '''
-    # For short correlation times or 
-    # vector-valued data, use iteration to compute time-lags
-    # else:
-    # Use time domain for short lags
-    result  = np.zeros(lags*2+1,x.dtype)
-
-    zerolag = np.var(x)
-    xx = np.mean(x)**2
-    result[lags] = zerolag
-    #for i in range(1,lags+1):
-    #    result[i+lags] = result[lags-i] = np.nanmean(x[...,i:]*x[...,:-i])
-    for i in range(1,lags+1):
-        result[i+lags] = result[lags-i] = (np.nanmean(x[...,i:]*x[...,:-i])*(N-i)+xx*i)/N
-    if normalize:
-        result *= 1./zerolag
-    return result
-    #assert 0
-
-def upsample(x,factor=4):
-    '''
-    Uses fourier transform to upsample x by some factor.
-
-    Operations:
-    
-    1. remove linear trend
-    2. mirror to get reflected boundary
-    3. take the fourier transform
-    4. add padding zeros to FFT to effectively upsample
-    5. taking inverse fourier transform
-    6. remove mirroring
-    7. restore linear tend
-
-    Parameters
-    ----------
-    factor : int
-        Integer upsampling factor. Default is 4.
-    x : array-like
-        X is cast to float64 before processing. Complex values are
-        not supported.
-        
-    Returns
-    -------
-    x : array
-        upsampled `x`
-    '''
-    assert type(factor) is int
-    assert factor>1
-    N = len(x)
-    # Remove DC
-    dc = np.mean(x)
-    x -= dc
-    # Remove linear trend
-    dx = np.mean(np.diff(x))
-    x -= np.arange(N)*dx
-    # Mirror signal
-    y = np.zeros(2*N,dtype=np.float64)
-    y[:N]=x
-    y[N:]=x[::-1]
-    # Fourier transform
-    ft = np.fft.fft(y).real
-    # note
-    # if N is even we have 1 DC and one nyquist coefficient
-    # if N is odd  we have 1 DC and two nyquist-ish coefficients
-    # If there is only one nyquist coefficient, it will be real-valued,
-    # so it will be it's own complex conjugate, so it's fine if we
-    # double it.
-    up = np.zeros(N*2*factor,dtype=np.float64)
-    up[:N//2+1]=ft[:N//2+1]
-    up[-N//2: ]=ft[-N//2: ]
-    x  = (np.fft.ifft(up).real)[:N*factor]*factor
-    x += dx*np.arange(N*factor)/float(factor)
-    x += dc
-    return x
-
-def linfilter(A,C,x,initial=None):
-    '''
-    Linear response filter on data $x$ for system
-    
-    $$
-    \\partial_t z = A z + C x(t)
-    $$
-    
-    Parameters
-    ----------
-    A : matrix
-        K x K matrix defining linear syste,
-    C : matrix
-        K x N matrix defining projection from signal $x$ to linear system
-    x : vector or matrix
-        T x N sequence of states to filter
-    initial : vector
-        Optional length N vector of initial filter conditions. Set to 0
-        by default
-
-    Returns
-    -------
-    filtered : array
-        filtered data
-    '''
-    # initial state for filters (no response)
-    L = len(x)
-    K = A.shape[0]
-    z = np.zeros((K,1)) if initial is None else initial
-    filtered = []
-    for t in range(L):
-        dz = A.dot(z) + C.dot([[x[t]]])
-        z += dz
-        filtered.append(z.copy())
-    return np.squeeze(np.array(filtered))
-
-def span(data):
-    '''
-    Get the range of values (min,max) spanned by a dataset
-    
-    Parameters
-    ----------
-    data : array-like, numeric
-    
-    Returns
-    -------
-    span: 
-        np.max(data)-np.min(data)
-    '''
-    data = np.array(data).ravel()
-    return np.max(data)-np.min(data)
-
-
-def make_lagged(x,NLAGS=5,LAGSPACE=1):
-    '''
-    Create shifted/lagged copies of a 1D signal.
-    These are retrospective (causal) features. 
-    
-    Parameters
-    ----------
-    x: 1D np.array length `T`
-    
-    Other Parameters
-    ----------------
-    NLAGS: positive int; default 5
-    LAGSPACE: positive int; default 1
-    
-    Returns
-    -------
-    result: NLAGS×T np.array
-         The first element is the original unshifted signal.
-         Later elements are shifts progressively further 
-         back in time.
-    '''
-    if not len(x.shape)==1:
-        raise ValueError('Signal should be one-dimensional')
-    t = np.arange(len(x))
-    return np.array([np.interp(t-LAG,t,x) for LAG in np.arange(NLAGS)*LAGSPACE])
-  
-
-def zgrid(L):
-    '''
-    2D grid coordinates as complex numbers, ranging from -L/2 to L/2
-    
-    Parameters
-    ----------
-    L: int
-        Desired size of LxL grid
-    
-    Returns
-    -------
-    np.complex64: LxL coordinate grid; center is zero.
-    '''
-    c = np.arange(L)-L//2
-    return 1j*c[:,None]+c[None,:]
-
-
-def nice_interp(a,b,t):
-    '''
-    numpy.interp1d with nice defaults
-    
-    Parameters
-    ----------
-    a: x values for interpolation
-    b: y values for interpolation
-    t: x values to sample at
-    
-    Returns
-    -------
-    np.array: interpolated values
-    '''
-    return interp1d(a,b,
-        kind='cubic',fill_value=(b[0],b[-1]),bounds_error=False,axis=0)(t)
-    
-    
-def fftacorr1d(x):
-    '''
-    Autocorrelogram via FFT.
-    
-    Parameters
-    ----------
-    x: bp.float32
-    
-    Returns
-    -------
-    '''
-    x = np.float32(x)
-    x = x-np.mean(x)
-    N = len(x)
-    x = np.concatenate([x,x[::-1]])
-    a = fftshift(ifft(abs(fft(x))**2).real)[N:]
-    a = a/np.max(a)
-    return a
-    
-    
-def fftsta(spikes,x):
-    '''
-    Spike triggerd average (STA) via FFT
-    Signal `x` is z-scored befor calculating the spike-triggered average
-    (a.k.a. reverse correlation).
-    The returned STA is normalized so that the maximum magnitude is 1.
-    
-    Parameters
-    ----------
-    spikes: np.array
-        1D spike count vector
-    x: np.array
-        
-    Returns
-    -------
-    np.float32 : normalized spike-triggered average
-    '''
-    signal = np.float32((x-np.mean(x))/np.std(x))
-    spikes = np.float32(spikes)
-    sta    = fftshift(ifft(fft(spikes,axis=1)*\
-                    np.conj(fft(x),dtype=np.complex64)),axes=1).real
-    return sta/np.max(abs(sta),axis=1)[:,None]
-
-
-def interpmax1d(x):
-    '''
-    Locate a peak in a 1D array by interpolation; see
-    dspguru.com/dsp/howtos/how-to-interpolate-fft-peak
-    
-    Parameters
-    ----------
-    x: 1D np.array; Signal in which to locate the gloabal maximum.
-    
-    Returns
-    -------
-    i: float; Interpolated index of global maximum in `x`.
-    '''
-    i = np.argmax(x)
-    try:
-        y1,y2,y3 = x[i-1:i+2]
-        return i + (y3-y1)/(2*(2*y2-y1-y3))
-    except:
-        return i
-    
-    
-def spaced_derivative(x):
-    '''
-    Differentiate a 1D timeseries returning a new vector with the same
-    number of samples. This smoothly interpolates between a forward
-    difference at the start of the signal and a backward difference at
-    the end of the signal. 
-    
-    Parameters
-    ----------
-    x: 1D np.float32
-        Signal to differentiate
-    
-    Returns
-    -------
-    '''
-    N = len(x)
-    return interp1d(
-        np.linspace(0,1,N-1),
-        np.diff(x))(
-        np.linspace(0,1,N))
-
-
-def drop_nonfinite(x):
-    '''
-    Flatten array and remove non-finite values
-
-    Parameters
-    ----------
-    x: np.float32
-        Numpy array from which to move non-finite values
-        
-    Returns
-    1D np.float32
-        Flattened array with non-finite values removed.
-    '''
-    x = np.float32(x).ravel()
-    return x[np.isfinite(x)]
-
-
-def split_into_groups(x,group_sizes):
-    '''
-    Split `np.array` `x` into `len(group_sizes)` groups,
-    with the size of the groups specified by `group_sizes`.
-    
-    This operates along the last axis of `x`
-    
-    Parameters
-    ----------
-    x: np.array
-        Numpy array to split; Last axis should have the
-        same length as `sum(group_sizes)`
-    group_sizes: iterable of positive ints
-        Group sizes
-        
-    Returns
-    -------
-    list
-        List of sub-arrays for each group
-    '''
-    x = np.array(x)
-    g = np.int32([*group_sizes])
-    if np.any(g<=0): 
-        raise ValueError(
-            'Group sizes should be positive, got %s'%g)
-    if x.shape[-1]!=sum(g):
-        raise ValueError(
-            'Length of last axis ov `x` shoud match sum of '
-            'group sizes, got %s and %s'%(x.shape,g))
-
-    ngroups = len(g)
-    edges = np.cumsum(np.concatenate([[0],g]))
-        
-    return [
-        x[...,edges[i]:edges[i+1]] for i in range(ngroups)
-    ]
-
 
 def uniformize(x,axis=-1,killeps=None):
     '''
@@ -2003,69 +2027,103 @@ def invert_uniformize(x,p,axis=-1,killeps=None):
         scaled,x_,bounds_error=False,fill_value=(0,1)
     )(p)
 
-def virtual_reference_line_noise_removal(lfps,frequency=60,hbw=5):
-    '''
-    Accepts an array of LFP recordings (first dimension should be 
-    channel number, second dimension time ).
-    Sample rate assumed 1000Hz
-    
-    Extracts the mean signal within 2.5 Hz of 60Hz.
-    For each channel, removes the projection of the LFP signal onto 
-    this estimated line noise signal.
-    
-    I've found this approach sometimes doesn't work very well, 
-    so please inspect the output for quality. 
-    
-    To filter out overtones, see `band_stop_line_noise_removal()`.
-    
-    Parameters
-    ----------
-    lfps:
-        LFP channel data
-    frequency: positive number
-        Line noise frequency, defaults to 60 Hz
-        (USA).  
-    hbw: positive number
-        Half-bandwidth settings; Default is 5
-        
-    Returns
-    -------
-    removed: np.array
-        Band-stop filtered signal
-    '''
-    filtered = [bandfilter(x,frequency-hbw,frequency+hbw) for x in lfps]
-    noise    = mean(filtered,0)
-    scale    = 1./dot(noise,noise)
-    removed  = [x-dot(x,noise)*scale*noise for x in lfps]
-    return removed
 
-def band_stop_line_noise_removal(lfps,frequency=60.):
+def deltaovermean(x,axis=0,
+    regularization=1e-30,verbose=False,ignore_nan=True):
     '''
-    Remove line noise using band-stop at 60Hz 
-    and overtones.
+    Subtracts, then divides by, the mean.
+    Sometimes called "dF/F"
     
     Parameters
     ----------
-    lfps:
-        LFP channel data
-    frequency: positive number
-        Line noise frequency, defaults to 60 Hz
-        (USA).  
-    hbw: positive number
-        Half-bandwidth settings; Default is 10
+    x: np.array
+        Array-like real-valued signal.
         
+    Other Parameters
+    ----------------
+    axis: maptlotlib.Axis
+        Axis to zscore; default is 0.
+    regularization: positive number; default 1e-30
+        Regularization to avoid division by 0
+    verbose: boolean; default False
+    ignore_nan: boolean; default True
+    
     Returns
     -------
-    removed: np.array
-        Band-stop filtered signal
+    x: np.ndarray
+        (x-mean(x))/std(x)
     '''
-    hbw   = 10
-    freqs = float32([60,120,180,240,300])*frequency/60.
-    lfps = array(lfps)
-    for i,x in enumerate(lfps):
-        for f in freqs:
-            lfps[i,:] = bandfilter(lfps[i,:],f-hbw,f+hbw,bandstop=1)
-    return lfps
+    x = np.array(x)
+    if np.prod(x.shape)==0: return x
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    mx = (np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
+    return (x-mx)/mx
+
+def span(data):
+    '''
+    Get the range of values (min,max) spanned by a dataset
+    
+    Parameters
+    ----------
+    data: np.array
+    
+    Returns
+    -------
+    span: non-negative number
+        np.max(data)-np.min(data)
+    '''
+    data = np.array(data).ravel()
+    return np.max(data)-np.min(data)
+
+def unit_length(x,axis=0):
+    '''
+    Interpret given axis of multidimensional array as 
+    vectors, and normalize them to unit length.
+    
+    Parameters
+    ----------
+    x : np.array
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+    
+    Returns
+    -------
+    u : np.array
+        vectors in `x` normalized to unit length
+    '''
+    x = np.array(x)
+    theslice = narray.make_rebroadcast_slice(x,axis=axis)
+    return x*(np.sum(x**2,axis=axis)**-.5)[theslice]
+
+    
+def spaced_derivative(x):
+    '''
+    Differentiate a 1D timeseries returning a new vector 
+    with the same number of samples. This smoothly 
+    interpolates between a forward difference at the start 
+    of the signal and a backward difference at the end of 
+    the signal. 
+    
+    Parameters
+    ----------
+    x: 1D np.float32
+        Signal to differentiate
+    
+    Returns
+    -------
+    '''
+    N = len(x)
+    return interp1d(
+        np.linspace(0,1,N-1),
+        np.diff(x))(
+        np.linspace(0,1,N))
+
+
+
+
+
 
 
 
@@ -2075,5 +2133,291 @@ def band_stop_line_noise_removal(lfps,frequency=60.):
 
 
 ############################################################
-# Array helpers (may eventually migrate to new modeule)
+# Interpolation
+
+
+def upsample(x,factor=4):
+    '''
+    Uses fourier transform to upsample x by some factor.
+
+    Operations:
+    
+    1. remove linear trend
+    2. mirror to get reflected boundary
+    3. take the fourier transform
+    4. add padding zeros to FFT to effectively upsample
+    5. taking inverse fourier transform
+    6. remove mirroring
+    7. restore linear tend
+
+    Parameters
+    ----------
+    factor : int
+        Integer upsampling factor. Default is 4.
+    x : array-like
+        X is cast to float64 before processing. Complex values are
+        not supported.
+        
+    Returns
+    -------
+    x : array
+        upsampled `x`
+    '''
+    assert type(factor) is int
+    assert factor>1
+    N = len(x)
+    # Remove DC
+    dc = np.mean(x)
+    x -= dc
+    # Remove linear trend
+    dx = np.mean(np.diff(x))
+    x -= np.arange(N)*dx
+    # Mirror signal
+    y = np.zeros(2*N,dtype=np.float64)
+    y[:N]=x
+    y[N:]=x[::-1]
+    # Fourier transform
+    ft = np.fft.fft(y).real
+    # note
+    # if N is even we have 1 DC and one nyquist coefficient
+    # if N is odd  we have 1 DC and two nyquist-ish coefficients
+    # If there is only one nyquist coefficient, it will be real-valued,
+    # so it will be it's own complex conjugate, so it's fine if we
+    # double it.
+    up = np.zeros(N*2*factor,dtype=np.float64)
+    up[:N//2+1]=ft[:N//2+1]
+    up[-N//2: ]=ft[-N//2: ]
+    x  = (np.fft.ifft(up).real)[:N*factor]*factor
+    x += dx*np.arange(N*factor)/float(factor)
+    x += dc
+    return x
+
+def nice_interp(a,b,t):
+    '''
+    numpy.interp1d with nice defaults
+    
+    Parameters
+    ----------
+    a: x values for interpolation
+    b: y values for interpolation
+    t: x values to sample at
+    
+    Returns
+    -------
+    np.array: interpolated values
+    '''
+    return interp1d(a,b,
+        kind='cubic',fill_value=(b[0],b[-1]),bounds_error=False,axis=0)(t)
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+# Correlations
+
+def autocorrelation(x,lags=None,center=True,normalize=True):
+    '''
+    Computes the normalized autocorrelation over the specified
+    time-lags using convolution. Autocorrelation is normalized
+    such that the zero-lag autocorrelation is 1.
+
+    TODO, fix: For long
+    lags it uses FFT, but has a different normalization from 
+    the time-domain implementation for short lags. In 
+    practice this will not matter.
+    
+    Parameters
+    ----------
+    x : 1d array
+        Data for which to compute autocorrelation function
+
+    Other Parameters
+    ----------------
+    lags : int,
+        Default is `min(200,len(x)`,
+        Number of time-lags over which to compute the ACF. 
+    center : bool, default True
+        Whether to mean-center data before taking autocorrelation
+    normalize : bool, default True
+        Whether to normalize by zero-lag signal variance
+
+    Returns
+    -------
+    ndarray
+        Autocorrelation function, length 2*lags + 1
+    '''
+    x = np.array(x)
+    if center:
+        x -= np.mean(x)
+    N = len(x)
+    if lags is None:
+        lags = min(200,N)
+    # TODO: disabling FFT for now; clean up
+    # For long, scalar-valued timeseries,
+    # Use FFT to compute autocorrelations
+    '''
+    if lags>0.5*np.log2(N) and len(x.shape)==1:
+        # Use FFT for long lags
+        result = np.float32(fftconvolve(x,x[::-1],'same'))
+        M = len(result)//2
+        result *= 1./result[M]
+        return result[M-lags:M+lags+1]
+    '''
+    # For short correlation times or 
+    # vector-valued data, use iteration to compute time-lags
+    # else:
+    # Use time domain for short lags
+    result  = np.zeros(lags*2+1,x.dtype)
+
+    zerolag = np.var(x)
+    xx = np.mean(x)**2
+    result[lags] = zerolag
+    #for i in range(1,lags+1):
+    #    result[i+lags] = result[lags-i] = np.nanmean(x[...,i:]*x[...,:-i])
+    for i in range(1,lags+1):
+        result[i+lags] = result[lags-i] =\
+            (np.nanmean(x[...,i:]*x[...,:-i])*(N-i)+xx*i)/N
+    if normalize:
+        result *= 1./zerolag
+    return result
+    
+def fftacorr1d(x):
+    '''
+    Autocorrelogram via FFT.
+    
+    Parameters
+    ----------
+    x: bp.float32
+    
+    Returns
+    -------
+    '''
+    x = np.float32(x)
+    x = x-np.mean(x)
+    N = len(x)
+    x = np.concatenate([x,x[::-1]])
+    a = fftshift(ifft(abs(fft(x))**2).real)[N:]
+    a = a/np.max(a)
+    return a
+    
+def zgrid(L):
+    '''
+    2D grid coordinates as complex numbers, 
+    ranging from -L/2 to L/2
+    
+    Parameters
+    ----------
+    L: int
+        Desired size of LxL grid
+    
+    Returns
+    -------
+    np.complex64: LxL coordinate grid; center is zero.
+    '''
+    c = np.arange(L)-L//2
+    return 1j*c[:,None]+c[None,:]
+
+
+
+
+
+
+
+    
+############################################################
+# Feature building
+
+def make_lagged(x,NLAGS=5,LAGSPACE=1):
+    '''
+    Create shifted/lagged copies of a 1D signal.
+    These are retrospective (causal) features. 
+    
+    Parameters
+    ----------
+    x: 1D np.array length `T`
+    
+    Other Parameters
+    ----------------
+    NLAGS: positive int; default 5
+    LAGSPACE: positive int; default 1
+    
+    Returns
+    -------
+    result: NLAGS×T np.array
+         The first element is the original unshifted signal.
+         Later elements are shifts progressively further 
+         back in time.
+    '''
+    if not len(x.shape)==1:
+        raise ValueError('Signal should be one-dimensional')
+    t = np.arange(len(x))
+    return np.array([np.interp(t-LAG,t,x) for LAG in np.arange(NLAGS)*LAGSPACE])
+
+
+def linear_cosine_basis(
+    TIMERES=100,
+    NBASIS=10,
+    normalize=True):
+    '''
+    Cosine basis tiling the unit interval
+    
+    Other Parameters
+    ----------------
+    TIMERES: int; default 100
+        Number of samples used to tile the unit interval.
+    NBASIS: int; default 10
+        Number of cosine basis functions to prepare
+    normalize: boolean; default True
+        Normalize sum of each basis element to 1? 
+    
+    Returns
+    -------
+    B: np.array
+    '''
+    times = np.linspace(0,1,TIMERES)
+    bt = times*np.pi/2*(NBASIS-1)
+    def cos_basis(t):
+        t = np.clip(t,-np.pi,np.pi)
+        return (np.cos(t)+1)*0.5
+    B = np.array([
+        cos_basis(bt-np.pi/2*delta) 
+        for delta in np.arange(NBASIS)
+    ])
+    if normalize:
+        B/= np.sum(B,axis=0)
+    return B
+    
+def circular_cosine_basis(N,T):
+    '''
+    Periodic raised-consine basis.
+    
+    Parameters
+    ----------
+    N : number of basis functions
+    T : grid resolution
+    
+    Returns
+    -------
+    B:np.array
+        Periodic raised-consine basis.
+    '''
+    wl = 4/N
+    qc = 1/N
+    h      = np.linspace(0,1,T+1)[:-1]
+    phases = np.linspace(0,1,N+1)[:-1]
+    return 1-np.cos(np.clip((h[:,None] + phases[None,:])%1,0,wl)*2*np.pi/wl)
+
+
+
+
+
+
 

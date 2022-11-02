@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    neurotools.spikes.ppc
    neurotools.spikes.spikes
@@ -14,6 +15,6 @@ Module contents
 ---------------
 
 .. automodule:: neurotools.spikes
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

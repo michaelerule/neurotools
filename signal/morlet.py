@@ -128,6 +128,32 @@ def fft_cwt(data,fa,fb,w=4.0,nfreqs=0.1,Fs=1000):
     result   = array([ifft(fft_data.T*wl,axis=1)[:,:N] for wl in wavelets])
     return freqs,transpose(result,(1,0,2))
     
+def geometric_window(c,w):
+    '''
+    Gemoetrically centered frequency window.
+    
+    Parameters
+    ----------
+    c : float
+        Center of frequency window
+    w : float
+        width of frequency window
+        
+    Returns
+    -------
+    fa : float
+        low-frequency cutoff
+    fb : float
+        high-frequency cutoff
+    '''
+    if not c>0: raise ValueError(
+        'The center of the window should be positive')
+    if not w>=0:raise ValueError(
+        'The window size should be non-negative')
+    lgwindow = (w+np.sqrt(w**2+4*c**2))/(2*c)
+    fa       = c/lgwindow
+    fb       = c*lgwindow
+    return fa,fb
     
 def logfreqs(fa,fb,nfreq):
     '''

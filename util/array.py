@@ -260,8 +260,42 @@ def oneslike(x):
     '''
     return np.ones(x.shape,dtype=x.dtype)
 
+def split_into_groups(x,group_sizes):
+    '''
+    Split `np.array` `x` into `len(group_sizes)` groups,
+    with the size of the groups specified by `group_sizes`.
+    
+    This operates along the last axis of `x`
+    
+    Parameters
+    ----------
+    x: np.array
+        Numpy array to split; Last axis should have the
+        same length as `sum(group_sizes)`
+    group_sizes: iterable of positive ints
+        Group sizes
+        
+    Returns
+    -------
+    list
+        List of sub-arrays for each group
+    '''
+    x = np.array(x)
+    g = np.int32([*group_sizes])
+    if np.any(g<=0): 
+        raise ValueError(
+            'Group sizes should be positive, got %s'%g)
+    if x.shape[-1]!=sum(g):
+        raise ValueError(
+            'Length of last axis ov `x` shoud match sum of '
+            'group sizes, got %s and %s'%(x.shape,g))
 
-
+    ngroups = len(g)
+    edges = np.cumsum(np.concatenate([[0],g]))
+        
+    return [
+        x[...,edges[i]:edges[i+1]] for i in range(ngroups)
+    ]
 
 
 

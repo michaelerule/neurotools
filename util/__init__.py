@@ -23,3 +23,11 @@ import neurotools.util.system as system
 import neurotools.util.time as time
 import neurotools.util.tools as tools
 '''
+from . import array
+from . import functions
+from . import getfftw
+from . import hdfmat
+from . import string
+from . import system
+from . import time
+from . import tools

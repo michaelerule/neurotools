@@ -110,6 +110,18 @@ def opto_get_lfp_filtered(opto_dataset,channel,fa,fb,order=4):
 
 @memoize
 def opto_get_all_lfp_analytic_quick(opto_dataset,fa,fb):
+    '''
+    Parameters
+    ----------
+    opto_dataset : string
+        path or string identifier for a dataset
+    fa:
+        low frequency of band-pass, or 'None' to use a low-pass filter.
+        if fb is 'None' then this is the cutoff for a high-pass filter.
+    fb:
+        high-frequency of band-pass, or 'None to use a high-pass filter.
+        if fa is 'None' then this is the cutoff for a low-pass filter
+    '''
     Fs = 1000.0
     order = 4
     data = metaloadmat(opto_dataset+'_compact')['lfp']
@@ -124,15 +136,18 @@ def __opto_get_all_lfp_analytic_quick_parallel_helper__():
 
 def opto_get_all_lfp_analytic_quick_parallel(opto_dataset,fa,fb):
     '''
-    Fs = 1000.0
-    order = 4
-    data = metaloadmat(opto_dataset+'_compact')['lfp']
-    data = data.transpose((0,2,1))
-    data = squeeze(parmap(
-        __opto_get_all_lfp_analytic_quick_parallel_helper__,
-        None)
-    data = bandfilter(hilbert(data),fa,fb,Fs,order)
-    return data
+    
+    Example::
+    
+        Fs = 1000.0
+        order = 4
+        data = metaloadmat(opto_dataset+'_compact')['lfp']
+        data = data.transpose((0,2,1))
+        data = squeeze(parmap(
+            __opto_get_all_lfp_analytic_quick_parallel_helper__,
+            None)
+        data = bandfilter(hilbert(data),fa,fb,Fs,order)
+        return data
     '''
     assert 0
     pass

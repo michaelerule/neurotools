@@ -186,6 +186,18 @@
 
 <div class="viewcode-block" id="opto_get_all_lfp_analytic_quick"><a class="viewcode-back" href="../../../neurotools.obsolete.opto.html#neurotools.obsolete.opto.opto_get_all_lfp_analytic_quick">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">opto_get_all_lfp_analytic_quick</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    opto_dataset : string</span>
+<span class="sd">        path or string identifier for a dataset</span>
+<span class="sd">    fa:</span>
+<span class="sd">        low frequency of band-pass, or &#39;None&#39; to use a low-pass filter.</span>
+<span class="sd">        if fb is &#39;None&#39; then this is the cutoff for a high-pass filter.</span>
+<span class="sd">    fb:</span>
+<span class="sd">        high-frequency of band-pass, or &#39;None to use a high-pass filter.</span>
+<span class="sd">        if fa is &#39;None&#39; then this is the cutoff for a low-pass filter</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Fs</span> <span class="o">=</span> <span class="mf">1000.0</span>
     <span class="n">order</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">metaloadmat</span><span class="p">(</span><span class="n">opto_dataset</span><span class="o">+</span><span class="s1">&#39;_compact&#39;</span><span class="p">)[</span><span class="s1">&#39;lfp&#39;</span><span class="p">]</span>
@@ -200,15 +212,18 @@
 
 <div class="viewcode-block" id="opto_get_all_lfp_analytic_quick_parallel"><a class="viewcode-back" href="../../../neurotools.obsolete.opto.html#neurotools.obsolete.opto.opto_get_all_lfp_analytic_quick_parallel">[docs]</a><span class="k">def</span> <span class="nf">opto_get_all_lfp_analytic_quick_parallel</span><span class="p">(</span><span class="n">opto_dataset</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Fs = 1000.0</span>
-<span class="sd">    order = 4</span>
-<span class="sd">    data = metaloadmat(opto_dataset+&#39;_compact&#39;)[&#39;lfp&#39;]</span>
-<span class="sd">    data = data.transpose((0,2,1))</span>
-<span class="sd">    data = squeeze(parmap(</span>
-<span class="sd">        __opto_get_all_lfp_analytic_quick_parallel_helper__,</span>
-<span class="sd">        None)</span>
-<span class="sd">    data = bandfilter(hilbert(data),fa,fb,Fs,order)</span>
-<span class="sd">    return data</span>
+<span class="sd">    </span>
+<span class="sd">    Example::</span>
+<span class="sd">    </span>
+<span class="sd">        Fs = 1000.0</span>
+<span class="sd">        order = 4</span>
+<span class="sd">        data = metaloadmat(opto_dataset+&#39;_compact&#39;)[&#39;lfp&#39;]</span>
+<span class="sd">        data = data.transpose((0,2,1))</span>
+<span class="sd">        data = squeeze(parmap(</span>
+<span class="sd">            __opto_get_all_lfp_analytic_quick_parallel_helper__,</span>
+<span class="sd">            None)</span>
+<span class="sd">        data = bandfilter(hilbert(data),fa,fb,Fs,order)</span>
+<span class="sd">        return data</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="mi">0</span>
     <span class="k">pass</span></div>

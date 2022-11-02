@@ -18,7 +18,7 @@ import time as systime
 
 import neurotools
 import neurotools.util as util
-import util.tools as tools
+from util import tools
 
 def current_milli_time():
     '''

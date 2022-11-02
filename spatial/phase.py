@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import numpy as np
-from neurotools.signal import rewrap
+import neurotools.signal as sig
 
 ELECTRODE_SPACING = 0.4
 
@@ -655,7 +655,7 @@ def population_phase_relative_sliding_kuramoto(data,L=100,window=np.hanning):
         # get the local phases
         x  = phases[...,i:i+L]
         # dephase the signal in time
-        y  = rewrap(x-np.cumsum([mf]*L))
+        y  = sig.rewrap(x-np.cumsum([mf]*L))
         # dephase the signal per channel
         z  = np.angle(np.mean(exp(1j*y),axis=-1))
         rephased = (x.T-z).T

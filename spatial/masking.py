@@ -1,5 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Routines related to 2D boolean arrays used as image masks
+depends on neurotools.spatial.geometry
+These routines expect 2D (x,y) points to be encoded as complex z=x+iy numbers.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -7,13 +12,12 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
+
 import numpy as np
 
-'''
-Routines related to 2D boolean arrays used as image masks
-depends on neurotools.spatial.geometry
-These routines expect 2D (x,y) points to be encoded as complex z=x+iy numbers.
-'''
+from neurotools.util.tools import find
+import neurotools.signal as sig
+
 
 def as_mask(x):
     '''
@@ -63,7 +67,6 @@ def mask_to_points(x):
     return px+1j*py
 
 
-from neurotools.signal import circular_gaussian_smooth_2D
 def extend_mask(mask,sigma=2,thr=0.5):
     '''
     Extend 2D image mask by blurring and thresholding.
@@ -79,7 +82,7 @@ def extend_mask(mask,sigma=2,thr=0.5):
     smoothed mask: 2D np.bool
     '''
     mask = np.float32(as_mask(mask))
-    return circular_gaussian_smooth_2D(mask,sigma)>thr
+    return sig.circular_gaussian_smooth_2D(mask,sigma)>thr
     
 
 def pgrid(W,H=None):
@@ -136,7 +139,6 @@ def maskout(x,mask,**kwargs):
     return x.reshape(mask.shape)*nan_mask(mask,**kwargs)
 
 
-from neurotools.tools import find
 def trim_mask(mask):
     '''
     Remove empty edges of boolean mask.

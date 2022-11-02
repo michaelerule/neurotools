@@ -11,14 +11,6 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from . import coherence
-from . import conv
-from . import morlet
-from . import multitaper
-from . import savitskygolay
-from . import sde
-from . import phase
-
 import warnings
 import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
@@ -1910,6 +1902,15 @@ def circular_cosine_basis(N,T):
 
 
 
+
+
+from . import coherence
+from . import conv
+from . import morlet
+from . import multitaper
+from . import savitskygolay
+from . import sde
+from . import phase
 
 
 

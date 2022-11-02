@@ -38,11 +38,13 @@ def configure_matplotlib():
 def add_circle(radius=1,lw=0.75,color='k',linestyle='-',n=360):
     '''
     
-    Parameters
-    ----------
-    
-    Returns
-    -------
+    Other Parameters
+    ----------------
+    radius:1
+    lw:0.75
+    color:'k'
+    linestyle:'-'
+    n:360
     '''
     circle = exp(1j*linspace(0,2*pi,n))*radius
     plot(circle.real,circle.imag,lw=lw,color=color,linestyle=linestyle)
@@ -50,8 +52,8 @@ def add_circle(radius=1,lw=0.75,color='k',linestyle='-',n=360):
 def label_complex_axes(color='k'):
     '''
     
-    Parameters
-    ----------
+    Other Parameters
+    ----------------
     
     Returns
     -------

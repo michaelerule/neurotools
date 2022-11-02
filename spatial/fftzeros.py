@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib as plt
 import pylab as pl
 from scipy.signal import convolve2d
-from neurotools.signal import rewrap
+import neurotools.signal as sig
 from neurotools.graphics.plot import *
 from neurotools.spatial.triangulation import mergeNearby
 from neurotools.util.array import zeroslike,find
@@ -94,7 +94,7 @@ def dPhidx(phase):
     np.array
         phases differentiated along the x-axis (first dimension)
     '''
-    dx = rewrap(np.diff(phase,1,0))
+    dx = sig.rewrap(np.diff(phase,1,0))
     dx = (dx[:,1:]+dx[:,:-1])*0.5
     return dx
 
@@ -114,7 +114,7 @@ def dPhidy(phase):
     np.array
         phases differentiated along the y-axis (second dimension)
     '''
-    dy = rewrap(np.diff(phase,1,1))
+    dy = sig.rewrap(np.diff(phase,1,1))
     dy = (dy[1:,:]+dy[:-1,:])*0.5
     return dy
 

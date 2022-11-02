@@ -14,6 +14,9 @@ from __future__ import print_function
 import numpy as np
 from scipy.signal import hilbert
 
+import neurotools.signal as sig
+from neurotools.util.array import find
+
 ############################################################
 # Phase routines
 
@@ -224,8 +227,8 @@ def randband(N,fa=None,fb=None,Fs=1000):
     Returns
     -------
     '''
-    return zscore(
-            bandfilter(
+    return sig.zscore(
+            sig.bandfilter(
             np.random.randn(N*2),fa=fa,fb=fb,Fs=Fs)
         )[N//2:N//2+N]
 
@@ -317,7 +320,7 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     demodulated
     '''
 
-    analytic_signal = zscore(analytic_signal)
+    analytic_signal = sig.zscore(analytic_signal)
 
     phase      = np.angle(analytic_signal)
     amplitude  = np.abs(analytic_signal)

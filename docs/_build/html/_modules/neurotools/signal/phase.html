@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.signal.phase &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../signal.html">neurotools.signal</a> &raquo;</li>
+      <li>neurotools.signal.phase</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.signal.phase</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Routines for working with analytic signals.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">hilbert</span>
+
+<span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="kn">import</span> <span class="n">find</span>
+
+<span class="c1">############################################################</span>
+<span class="c1"># Phase routines</span>
+
+<div class="viewcode-block" id="amp"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.amp">[docs]</a><span class="k">def</span> <span class="nf">amp</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts amplitude envelope using Hilbert transform.</span>
+<span class="sd">    `x` must be narrow-band. </span>
+<span class="sd">    No padding is performed --- watch out for boundary </span>
+<span class="sd">    effects.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">        numeric time-series data</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result:</span>
+<span class="sd">        `abs(hilbert(x))`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span></div>
+    
+<div class="viewcode-block" id="ifreq"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.ifreq">[docs]</a><span class="k">def</span> <span class="nf">ifreq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;pad&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extract the instantaneous frequency from a narrow-band </span>
+<span class="sd">    signal using the Hilbert transform.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">        numeric time-series data</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    Fs : int</span>
+<span class="sd">        defaults to 1000</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        &#39;pad&#39; will return a signal of the original length</span>
+<span class="sd">        &#39;valid&#39; will return a signal 1 sample shorter, with </span>
+<span class="sd">        derivative computed between each pair of points </span>
+<span class="sd">        in the original signal.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="n">pghilbert</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="n">pg</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">Fs</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;valid&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pg</span> <span class="c1"># in Hz</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;pad&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fix_derivative</span><span class="p">(</span><span class="n">pg</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="mi">0</span></div>
+    
+<div class="viewcode-block" id="pdiff"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.pdiff">[docs]</a><span class="k">def</span> <span class="nf">pdiff</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Take the derivative of a sequence of phases.</span>
+<span class="sd">    Times when this derivative wraps around form 0 to 2π</span>
+<span class="sd">    are correctly handeled.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">        Array of phase values in radians to differentiate.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dx: np.array</span>
+<span class="sd">        Phase derivative of `x`, with wrapping around 2π</span>
+<span class="sd">        handled automatically. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">rewrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="rewrap"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.rewrap">[docs]</a><span class="k">def</span> <span class="nf">rewrap</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Used to handle wraparound when getting phase derivatives.</span>
+<span class="sd">    See pdiff.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dx: np.array</span>
+<span class="sd">        Array of phase derivatives, with 2π wrap-around</span>
+<span class="sd">        not yet handled.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dx: np.array</span>
+<span class="sd">        Phase derivative of `x`, with wrapping around 2π</span>
+<span class="sd">        handled automatically. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
+
+<div class="viewcode-block" id="pghilbert"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.pghilbert">[docs]</a><span class="k">def</span> <span class="nf">pghilbert</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extract phase derivative in time from a narrow-band </span>
+<span class="sd">    real-valued signal using the hilbert transform. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.float32</span>
+<span class="sd">        Narrow-band real-valued signal to get the phase </span>
+<span class="sd">        gradient of. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    d/dt[phase(x)]: np.array</span>
+<span class="sd">        Time derivative in radians/sample</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">pdiff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span></div>
+
+<div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.unwrap">[docs]</a><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Unwraps a sequences of phase measurements so that,</span>
+<span class="sd">    rather than ranging from 0 to 2π, </span>
+<span class="sd">    the values increase (or decrease) continuously.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h: np.float32</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :np.array</span>
+<span class="sd">        Re-wrapped phases, in radians. These phases</span>
+<span class="sd">        will continue counting up/down and are not</span>
+<span class="sd">        wrapped to [0,2π).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">fix_derivative</span><span class="p">(</span><span class="n">pdiff</span><span class="p">(</span><span class="n">h</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="ang"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.ang">[docs]</a><span class="k">def</span> <span class="nf">ang</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses the Hilbert transform to extract the phase of x,</span>
+<span class="sd">    in radians.</span>
+<span class="sd">    X should be narrow-band. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.float32</span>
+<span class="sd">        Narrow-band real-valued signal to get the phase </span>
+<span class="sd">        gradient of. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ang: np.float32</span>
+<span class="sd">        Phase angle of `x`, in radiance.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="fix_derivative"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.fix_derivative">[docs]</a><span class="k">def</span> <span class="nf">fix_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Adjust discrete derivative `x` to pad-back the 1 sample</span>
+<span class="sd">    removed by differentiation, and center the derivative</span>
+<span class="sd">    on samples (rather than between them). </span>
+<span class="sd">    </span>
+<span class="sd">    Applying this after using `diff()` is equivalent</span>
+<span class="sd">    to using the differentiation kernel `[-.5,0,.5]`</span>
+<span class="sd">    in the interior of the array and `[-1,1]` at its</span>
+<span class="sd">    endpoints</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">        Derivative signal to fix.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :np.array</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>   <span class="o">+=</span> <span class="n">x</span>
+    <span class="n">result</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="o">+=</span> <span class="n">x</span>
+    <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="phase_rotate"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.phase_rotate">[docs]</a><span class="k">def</span> <span class="nf">phase_rotate</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Only the phase advancement portion of a resonator.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s: np.array</span>
+<span class="sd">        Analytic signal</span>
+<span class="sd">    f: float</span>
+<span class="sd">        Frequency, in Hz.</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    Fs: positive number; default 1000</span>
+<span class="sd">        Sampling rate.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :np.array</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">f</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">Fs</span>
+    <span class="n">s</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="randband"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.randband">[docs]</a><span class="k">def</span> <span class="nf">randband</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns Gaussian random noise band-pass filtered between </span>
+<span class="sd">    `fa` and `fb`.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N: int</span>
+<span class="sd">        Number of samples to draw</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">sig</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span>
+            <span class="n">sig</span><span class="o">.</span><span class="n">bandfilter</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span><span class="n">fa</span><span class="o">=</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="n">Fs</span><span class="p">)</span>
+        <span class="p">)[</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="phase_randomize"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.phase_randomize">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Phase randomizes a signal by rotating frequency components by a random</span>
+<span class="sd">    angle. Negative frequencies are rotated in the opposite direction.</span>
+<span class="sd">    The nyquist frequency, if present, has it&#39;s sign randomly flipped.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal: 1D np.array</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    if N%2==1:</span>
+<span class="sd">        # signal length is odd.</span>
+<span class="sd">        # ft will have one DC component then symmetric frequency components</span>
+<span class="sd">        randomize  = np.exp(1j*np.random.rand((N-1)//2))</span>
+<span class="sd">        conjugates = np.conj(randomize)[::-1]</span>
+<span class="sd">        randomize  = np.append(randomize,conjugates)</span>
+<span class="sd">    else:</span>
+<span class="sd">        # signal length is even</span>
+<span class="sd">        # will have one single value at the nyquist frequency</span>
+<span class="sd">        # which will be real and can be sign flipped but not rotated</span>
+<span class="sd">        flip = 1 if np.random.rand(1)&lt;0.5 else -1</span>
+<span class="sd">        randomize  = np.exp(1j*np.random.rand((N-2)//2))</span>
+<span class="sd">        conjugates = np.conj(randomize)[::-1]</span>
+<span class="sd">        randomize  = np.append(randomize,flip)</span>
+<span class="sd">        randomize  = np.append(randomize,conjugates)</span>
+<span class="sd">    # the DC component is not randomized</span>
+<span class="sd">    randomize = np.append(1,randomize)</span>
+<span class="sd">    # take FFT and apply phase randomization</span>
+<span class="sd">    ff = np.fft.fft(signal)*randomize</span>
+<span class="sd">    # take inverse</span>
+<span class="sd">    randomized = np.fft.ifft(ff)</span>
+<span class="sd">    return np.real(randomized)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="phase_randomize_from_amplitudes"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.phase_randomize_from_amplitudes">[docs]</a><span class="k">def</span> <span class="nf">phase_randomize_from_amplitudes</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    phase_randomize_from_amplitudes(amplitudes)</span>
+<span class="sd">    treats input amplitudes as amplitudes of fourier components</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span> <span class="c1"># need to make a copy</span>
+    <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="c1"># N is even</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">rephase</span><span class="p">,[</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)],</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># N is odd</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rephase</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">rephase</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">rephase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span><span class="n">rephase</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">*=</span> <span class="n">rephase</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="sign_preserving_amplitude_demodulate"><a class="viewcode-back" href="../../../neurotools.signal.phase.html#neurotools.signal.phase.sign_preserving_amplitude_demodulate">[docs]</a><span class="k">def</span> <span class="nf">sign_preserving_amplitude_demodulate</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts an amplitude-modulated component from an analytic signal,</span>
+<span class="sd">    Correctly flipping the sign of the signal when it crosses zero,</span>
+<span class="sd">    rather than returning a rectified result.</span>
+
+<span class="sd">    Sign-changes are heuriddddstically detected basd on the following:</span>
+<span class="sd">        - An abnormally large skip in phase between two time points,</span>
+<span class="sd">          larger than np.pi/2, that is also a local extremum in phase velocity</span>
+<span class="sd">        - local minima in the amplitude at low-voltage with high curvature</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    analytic_signal: np.arrau</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    doplot: boolean; default False</span>
+<span class="sd">        Whether to draw plot</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    demodulated</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">analytic_signal</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">)</span>
+
+    <span class="n">phase</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">)</span>
+    <span class="n">amplitude</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">)</span>
+
+    <span class="n">phase_derivative</span>     <span class="o">=</span> <span class="n">fix_derivative</span><span class="p">(</span><span class="n">pdiff</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span>
+    <span class="n">phase_curvature</span>      <span class="o">=</span> <span class="n">fix_derivative</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">phase_derivative</span><span class="p">))</span>
+    <span class="n">amplitude_derivative</span> <span class="o">=</span> <span class="n">fix_derivative</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">amplitude</span><span class="p">))</span>
+    <span class="n">amplitude_curvature</span>  <span class="o">=</span> <span class="n">fix_derivative</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">amplitude_derivative</span><span class="p">))</span>
+
+    <span class="n">amplitude_candidates</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">amplitude_curvature</span> <span class="o">&gt;=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">amplitude</span> <span class="o">&lt;</span> <span class="mf">0.6</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">amplitude_exclude</span>    <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">amplitude_curvature</span> <span class="o">&lt;</span>  <span class="mf">0.01</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">amplitude</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">phase_candidates</span>     <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_curvature</span>     <span class="o">&gt;=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">phase_derivative</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">phase_exclude</span>        <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="p">(</span><span class="n">phase_derivative</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">0.9</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">aminima</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">local_minima</span><span class="p">(</span><span class="n">amplitude</span><span class="p">)</span>
+    <span class="n">pminima</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">local_minima</span><span class="p">(</span><span class="n">phase_derivative</span><span class="p">)</span>
+    <span class="n">pmaxima</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">phase_derivative</span><span class="p">)</span>
+    <span class="n">minima</span> <span class="o">=</span> \
+        <span class="p">((</span><span class="nb">set</span><span class="p">(</span><span class="n">aminima</span><span class="p">)</span><span class="o">|</span><span class="nb">set</span><span class="p">(</span><span class="n">amplitude_candidates</span><span class="p">))</span> <span class="o">-</span> \
+          <span class="nb">set</span><span class="p">(</span><span class="n">amplitude_exclude</span><span class="p">))</span> <span class="o">&amp;</span> \
+        <span class="p">((</span><span class="nb">set</span><span class="p">(</span><span class="n">pminima</span><span class="p">)</span><span class="o">|</span><span class="nb">set</span><span class="p">(</span><span class="n">pminima</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">|</span><span class="nb">set</span><span class="p">(</span><span class="n">pmaxima</span><span class="p">)</span><span class="o">|</span><span class="nb">set</span><span class="p">(</span><span class="n">pmaxima</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span>\
+          <span class="nb">set</span><span class="p">(</span><span class="n">phase_exclude</span><span class="p">))</span>
+
+    <span class="n">minima</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">minima</span><span class="p">))</span>
+    <span class="n">minima</span> <span class="o">=</span> <span class="n">minima</span><span class="p">[</span><span class="n">diff</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">minima</span><span class="p">))</span><span class="o">!=</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">edges</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">minima</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">demodulated</span> <span class="o">=</span> <span class="n">amplitude</span><span class="o">*</span><span class="n">sign</span>
+
+    <span class="k">if</span> <span class="n">doplot</span><span class="p">:</span>
+        <span class="n">clf</span><span class="p">()</span>
+
+        <span class="n">Nplots</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">iplot</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">subplot</span><span class="p">(</span><span class="n">Nplots</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">iplot</span><span class="p">)</span>
+        <span class="n">iplot</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">demodulated</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minima</span><span class="p">)]</span>
+
+        <span class="n">subplot</span><span class="p">(</span><span class="n">Nplots</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">iplot</span><span class="p">)</span>
+        <span class="n">iplot</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">phase_derivative</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minima</span><span class="p">)]</span>
+
+        <span class="n">subplot</span><span class="p">(</span><span class="n">Nplots</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">iplot</span><span class="p">)</span>
+        <span class="n">iplot</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">amplitude_curvature</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minima</span><span class="p">)]</span>
+
+        <span class="n">subplot</span><span class="p">(</span><span class="n">Nplots</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">iplot</span><span class="p">)</span>
+        <span class="n">iplot</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">analytic_signal</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minima</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">demodulated</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

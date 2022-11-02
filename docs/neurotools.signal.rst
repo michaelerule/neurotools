@@ -11,6 +11,7 @@ Submodules
    neurotools.signal.conv
    neurotools.signal.morlet
    neurotools.signal.multitaper
+   neurotools.signal.phase
    neurotools.signal.savitskygolay
    neurotools.signal.sde
 

@@ -103,18 +103,6 @@ def matlab(commands):
     os.system("""%s "identifyHost(); %s; exit" """%(matlabpath,commands))
     os.system('reset')
 
-def zeroslike(x):
-    '''
-    Create numpy array of zeros the same shape and type as x
-    '''
-    return np.zeros(x.shape,dtype=x.dtype)
-
-def oneslike(x):
-    '''
-    Create numpy array of ones the same shape and type as x
-    '''
-    return np.ones(x.shape,dtype=x.dtype)
-
 def history(n):
     '''
     Return last n lines of shell history

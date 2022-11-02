@@ -247,3 +247,23 @@ def _take_axis_slice(shape,axis,index):
 def _take_axis(x,axis,index):
     # Redundant to existing numpy functions TODO remove
     return x[_take_axis_slice(x.shape,axis,index)]
+    
+def zeroslike(x):
+    '''
+    Create numpy array of zeros the same shape and type as x
+    '''
+    return np.zeros(x.shape,dtype=x.dtype)
+
+def oneslike(x):
+    '''
+    Create numpy array of ones the same shape and type as x
+    '''
+    return np.ones(x.shape,dtype=x.dtype)
+
+
+
+
+
+
+
+

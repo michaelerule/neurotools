@@ -27,7 +27,7 @@ from numpy.fft import *
 from warnings import warn
 
 __PPC_FP_TYPE__=np.longdouble
-from neurotools.signal import zeromean as nodc
+import neurotools.signal as sig
 
 def phase_randomize(signal):
     '''
@@ -348,7 +348,7 @@ def pairwise_phase_consistancy(
     if len(shape(signal))==1:
         usetimes = discard_spikes_closer_than_delta(signal,times,delta)
         snippits = array([
-            nodc(signal[t-window:t+window+1]) for t in usetimes
+            sig.zeromean(signal[t-window:t+window+1]) for t in usetimes
         ])
     elif len(shape(signal))==2:
         warn('assuming first dimension is trials / repititions')
@@ -363,7 +363,7 @@ def pairwise_phase_consistancy(
             for t in times:
                 if t-t_o>delta:
                     t_o = t
-                    snippits.append(nodc(signal[t-window:t+window+1]))
+                    snippits.append(sig.zeromean(signal[t-window:t+window+1]))
     else: assert 0
     if biased:
         if multitaper: return fftppc_biased_multitaper(snippits,Fs,k),snippits
@@ -569,7 +569,7 @@ def ppc_phase_randomize_chance_level_sample(
         # only a single trial provided
         usetimes = discard_spikes_closer_than_delta(signal,times,delta)
         signal = phase_randomize(signal)
-        snippits = array([nodc(signal[t-window:t+window+1]) for t in usetimes])
+        snippits = array([sig.zeromean(signal[t-window:t+window+1]) for t in usetimes])
     elif len(shape(signal))==2:
         warn('assuming first dimension is trials / repititions')
         signals,alltimes = signal,times
@@ -584,7 +584,7 @@ def ppc_phase_randomize_chance_level_sample(
             for t in times:
                 if t-t_o>delta:
                     t_o = t
-                    snippits.append(nodc(signal[t-window:t+window+1]))
+                    snippits.append(sig.zeromean(signal[t-window:t+window+1]))
     else: assert 0
 
     if biased:

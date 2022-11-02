@@ -17,9 +17,11 @@ from collections import defaultdict
 
 from neurotools.signal.morlet     import *
 from neurotools.util.getfftw      import *
-from neurotools.signal            import zscore
 from neurotools.signal.multitaper import dpss_cached
 from neurotools.stats.circular    import squared_first_circular_moment
+
+
+import neurotools.signal
 
 from multiprocessing import cpu_count
 __N_CPU__ = cpu_count()
@@ -197,7 +199,7 @@ def multitaper_multitrial_coherence(x,
         raise ValueError("Expected 3 dimensional data: vars x trails x times")
     if not test in (None,'bootstrap','shuffle','pvalue'):
         raise ValueError("test must be None, bootstrap, shuffle, pvalue")
-    x = zscore(np.array(x).T,axis=0).T
+    x = neurotools.signal.zscore(np.array(x).T,axis=0).T
 
     NVar, NTrials, NTime = shape(x)
     NSample = NTapers * NTrials

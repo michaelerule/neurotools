@@ -18,7 +18,6 @@ from . import multitaper
 from . import savitskygolay
 from . import sde
 
-
 import warnings
 import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
@@ -162,6 +161,11 @@ def circular_gaussian_smooth_2D(x,sigma):
 def linear_cosine_basis(TIMERES=100,NBASIS=10,normalize=True):
     '''
     Cosine basis tiling unit interval
+    
+    Parameters
+    ----------
+    Returns
+    -------
     '''
     times = np.linspace(0,1,TIMERES)
     bt = times*np.pi/2*(NBASIS-1)
@@ -413,6 +417,12 @@ def nonnegative_bandpass_filter(data,fa=None,fb=None,
     return np.expm1(filtered)
 
 def pad_signal(data):
+    '''
+    Parameters
+    ----------
+    Returns
+    -------
+    '''
     N = data.shape[-1]
     padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
     padded[...,N//2  :N//2+N] = data
@@ -750,6 +760,8 @@ def randband(N,fa=None,fb=None,Fs=1000):
     
     Parameters
     ----------
+    N:
+    
     Returns
     -------
     '''
@@ -957,7 +969,6 @@ def stats_block(data,statfunction,N=100,sample_match=None):
         `sample_match` samples. `sample_match` should not exceed
         data.shape[-1]//N
     
-    
     Returns
     -------
     np.array : 
@@ -1126,6 +1137,9 @@ def fdiff(x,Fs=240.):
     
     Parameters
     ----------
+    x:
+    Fs: 240.
+    
     Returns
     -------
     '''
@@ -1135,6 +1149,13 @@ def interpolate_NaN(u):
     '''
     Fill in NaN (missing) data in a one-dimensional timeseries via linear
     interpolation.
+    
+    Parameters
+    ----------
+    u:
+    
+    Returns
+    -------
     '''
     u = np.array(u)
     for s,e in list(zip(*get_edges(~np.isfinite(u)))):
@@ -1145,11 +1166,18 @@ def interpolate_NaN(u):
         u[s:e+1] = a + (b-a)*np.linspace(0,1,e-s+1)
     return u
 
-import warnings
 def interpolate_NaN_quadratic(u):
     '''
     Fill in NaN (missing) data in a one-dimensional timeseries via quadratic
     interpolation.
+    
+    Parameters
+    ----------
+    u: 
+    
+    Returns
+    -------
+    
     '''
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", message="Polyfit may be poorly conditioned")
@@ -1187,6 +1215,9 @@ def killSpikes(x,threshold=1):
     
     Parameters
     ----------
+    x:
+    threshold:1
+    
     Returns
     -------
     '''
@@ -1979,11 +2010,13 @@ def virtual_reference_line_noise_removal(lfps,frequency=60,hbw=5):
     Sample rate assumed 1000Hz
     
     Extracts the mean signal within 2.5 Hz of 60Hz.
-    For each channel, removes the projection of the LFP signal onto this
-    estimated line noise signal.
+    For each channel, removes the projection of the LFP signal onto 
+    this estimated line noise signal.
     
-    To also want to filter out overtones,
-    see `band_stop_line_noise_removal()`.
+    I've found this approach sometimes doesn't work very well, 
+    so please inspect the output for quality. 
+    
+    To filter out overtones, see `band_stop_line_noise_removal()`.
     
     Parameters
     ----------

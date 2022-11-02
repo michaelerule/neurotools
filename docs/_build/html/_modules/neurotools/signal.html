@@ -94,7 +94,6 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">savitskygolay</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">sde</span>
 
-
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.signal.signaltools</span> <span class="k">import</span> <span class="n">fftconvolve</span><span class="p">,</span><span class="n">hilbert</span>
@@ -238,6 +237,11 @@
 <div class="viewcode-block" id="linear_cosine_basis"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.linear_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">linear_cosine_basis</span><span class="p">(</span><span class="n">TIMERES</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">NBASIS</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cosine basis tiling unit interval</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">TIMERES</span><span class="p">)</span>
     <span class="n">bt</span> <span class="o">=</span> <span class="n">times</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">NBASIS</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -489,6 +493,12 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="pad_signal"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.pad_signal">[docs]</a><span class="k">def</span> <span class="nf">pad_signal</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">padded</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span>  <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
@@ -826,6 +836,8 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    N:</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -1033,7 +1045,6 @@
 <span class="sd">        `sample_match` samples. `sample_match` should not exceed</span>
 <span class="sd">        data.shape[-1]//N</span>
 <span class="sd">    </span>
-<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.array : </span>
@@ -1202,6 +1213,9 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">    Fs: 240.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -1211,6 +1225,13 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fill in NaN (missing) data in a one-dimensional timeseries via linear</span>
 <span class="sd">    interpolation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u:</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">get_edges</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">u</span><span class="p">)))):</span>
@@ -1221,11 +1242,18 @@
         <span class="n">u</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">e</span><span class="o">-</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">u</span></div>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 <div class="viewcode-block" id="interpolate_NaN_quadratic"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.interpolate_NaN_quadratic">[docs]</a><span class="k">def</span> <span class="nf">interpolate_NaN_quadratic</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fill in NaN (missing) data in a one-dimensional timeseries via quadratic</span>
 <span class="sd">    interpolation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u: </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Polyfit may be poorly conditioned&quot;</span><span class="p">)</span>
@@ -1263,6 +1291,9 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    x:</span>
+<span class="sd">    threshold:1</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -2055,11 +2086,13 @@
 <span class="sd">    Sample rate assumed 1000Hz</span>
 <span class="sd">    </span>
 <span class="sd">    Extracts the mean signal within 2.5 Hz of 60Hz.</span>
-<span class="sd">    For each channel, removes the projection of the LFP signal onto this</span>
-<span class="sd">    estimated line noise signal.</span>
+<span class="sd">    For each channel, removes the projection of the LFP signal onto </span>
+<span class="sd">    this estimated line noise signal.</span>
 <span class="sd">    </span>
-<span class="sd">    To also want to filter out overtones,</span>
-<span class="sd">    see `band_stop_line_noise_removal()`.</span>
+<span class="sd">    I&#39;ve found this approach sometimes doesn&#39;t work very well, </span>
+<span class="sd">    so please inspect the output for quality. </span>
+<span class="sd">    </span>
+<span class="sd">    To filter out overtones, see `band_stop_line_noise_removal()`.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

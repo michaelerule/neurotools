@@ -632,6 +632,14 @@ narrow-band. The signal is not padded, so be wary of boundary effects.</p>
 <dt id="neurotools.signal.randband">
 <code class="descclassname">neurotools.signal.</code><code class="descname">randband</code><span class="sig-paren">(</span><em>N</em>, <em>fa=None</em>, <em>fb=None</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#randband"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.randband" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns Gaussian random noise band-pass filtered between fa and fb.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>N</strong> – </td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -861,6 +869,18 @@ Defaults to order=4 and Fs=1000</p>
 <dd><p>Take the discrete derivative of a signal, correcting result for
 sample rate. This procedure returns a singnal two samples shorter than
 the original.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> – </li>
+<li><strong>Fs</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -868,6 +888,14 @@ the original.</p>
 <code class="descclassname">neurotools.signal.</code><code class="descname">interpolate_NaN</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpolate_NaN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.interpolate_NaN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill in NaN (missing) data in a one-dimensional timeseries via linear
 interpolation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>u</strong> – </td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -875,6 +903,14 @@ interpolation.</p>
 <code class="descclassname">neurotools.signal.</code><code class="descname">interpolate_NaN_quadratic</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#interpolate_NaN_quadratic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#neurotools.signal.interpolate_NaN_quadratic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill in NaN (missing) data in a one-dimensional timeseries via quadratic
 interpolation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>u</strong> – </td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -886,6 +922,18 @@ re-interpolated from the edges. This procedure is particularly
 useful in correcting higkinematics velocity trajectories. Velocity
 should be smooth, but motion tracking errors can cause sharp spikes
 in the signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> – </li>
+<li><strong>threshold</strong> (<em>1</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -1498,10 +1546,11 @@ standard-deviation “σ” of <cite>original_x</cite> set to
 channel number, second dimension time ).
 Sample rate assumed 1000Hz</p>
 <p>Extracts the mean signal within 2.5 Hz of 60Hz.
-For each channel, removes the projection of the LFP signal onto this
-estimated line noise signal.</p>
-<p>To also want to filter out overtones,
-see <cite>band_stop_line_noise_removal()</cite>.</p>
+For each channel, removes the projection of the LFP signal onto
+this estimated line noise signal.</p>
+<p>I’ve found this approach sometimes doesn’t work very well,
+so please inspect the output for quality.</p>
+<p>To filter out overtones, see <cite>band_stop_line_noise_removal()</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

@@ -13,8 +13,8 @@ from __future__ import print_function
 
 import numpy as np
 import matplotlib.pyplot as plt
-from neurotools.graphics.plot import force_aspect
 from collections import defaultdict
+import neurotools.graphics.plot as nplt
 
 import scipy
 import scipy.spatial
@@ -140,7 +140,7 @@ def plot_edges(iz,edges,**kwargs):
     '''
     edgelist = np.ravel(np.concatenate([edges[:,:1]*np.NaN,iz[edges]],axis=1))
     plt.plot(*z2xy(np.array(edgelist)),**kwargs)
-    force_aspect()
+    nplt.force_aspect()
     
 def plot_triangles(iz,triangles,**kwargs):
     '''
@@ -154,7 +154,7 @@ def plot_triangles(iz,triangles,**kwargs):
     edges = trianglesToEdges(triangles)
     edgelist = np.ravel(np.concatenate([edges[:,:1]*np.NaN,iz[edges]],axis=1))
     plt.plot(*z2xy(np.array(edgelist)),**kwargs)
-    force_aspect()
+    nplt.force_aspect()
 
 def mergeNearby(x,y,radius):
     '''

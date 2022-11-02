@@ -24,6 +24,7 @@ Submodules
    :maxdepth: 4
 
    neurotools.nlab
+   neurotools.phase
 
 Module contents
 ---------------

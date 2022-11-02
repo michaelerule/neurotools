@@ -100,6 +100,8 @@ from neurotools.stats.hmm                import *
 from neurotools.stats.modefind           import *
 from neurotools.stats.regressions        import *
 from neurotools.signal.morlet            import *
+from neurotools.signal.phase             import *
+from neurotools.signal.savitskygolay     import *
 
 # Depends on the spectrum package and will not import if this is missing
 try:

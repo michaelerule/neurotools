@@ -5,15 +5,15 @@ Code dealing with closures in Python.
 
 The default way that Python handles closures creates problems
 
-    1   Late binding can cause suprising errors
-    2   Closing over mutable state can cause surprising errors
-    3   Mutable default arguments can causing surprising errors
-    4   Closing over external state that may change across runs can cause
-        surprising errors, as the same arguments may return different values
-    5   Closing over extrenal state makes safe caching difficult, as we
-        have to guarantee that the arguments, function source, subroutines,
-        and closed-over state are all IDENTICAL before we can trust a
-        cached value.
+ 1. Late binding can cause suprising errors
+ 2. Closing over mutable state can cause surprising errors
+ 3. Mutable default arguments can causing surprising errors
+ 4. Closing over external state that may change across runs can cause
+    surprising errors, as the same arguments may return different values
+ 5. Closing over extrenal state makes safe caching difficult, as we
+    have to guarantee that the arguments, function source, subroutines,
+    and closed-over state are all IDENTICAL before we can trust a
+    cached value.
 
 This module defines some decorators that improve safety, hopefully
 automatically detecting functions that are likele to cause trouble.

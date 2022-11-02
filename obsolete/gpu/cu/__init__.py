@@ -23,7 +23,6 @@ except:
 
 if cuda:
     cuda.init()
-
     # We will use the current context if one is initialized, otherwise we create
     # a new context.
     #ctx = pycuda.tools.make_default_context()

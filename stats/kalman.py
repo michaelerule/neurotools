@@ -11,13 +11,16 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from neurotools.nlab import *
-
-from pylab import *
-from numpy import *
-
 
 def multiply_gaussian(M1,C1,M2,C2):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     C1P2   = ldiv(C2,C1).T
     I      = np.eye(C2.shape[0])
     IC1P2  = I+C1P2
@@ -26,16 +29,40 @@ def multiply_gaussian(M1,C1,M2,C2):
     return m,c
 
 def kalman_forward(m,c,A,Q):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     m   = A@m
     c   = A@c@A.T + Q
     return m,c
 
 def kalman_backward(m,c,A,Q):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     m   = ldiv(A,m)
     c   = ldiv(A,ldiv(A,c).T) + Q 
     return m,c
 
 def kalman_measure(m,c,B,pxyBi,y):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # Measure
     cpxyBi = c@pxyBi
     I      = np.eye(m.shape[0])
@@ -45,6 +72,14 @@ def kalman_measure(m,c,B,pxyBi,y):
     return m,c
 
 def kalman_smooth(Y,A,B,Q,U):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # initial mean and covariance
     N = Q.shape[0]
     K = U.shape[0]

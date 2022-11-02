@@ -34,7 +34,7 @@ def amp(x):
         
     Returns
     -------
-    result:
+    np.array:
         `abs(hilbert(x))`
     '''
     return np.abs(hilbert(np.array(x)))
@@ -244,6 +244,7 @@ def phase_randomize(signal):
     
     Returns
     -------
+    :np.array
     '''
     assert 1==len(signal.shape)
     N = len(signal)
@@ -317,7 +318,7 @@ def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
     
     Returns
     -------
-    demodulated
+    demodulated: np.array
     '''
 
     analytic_signal = sig.zscore(analytic_signal)

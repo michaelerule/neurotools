@@ -112,7 +112,7 @@ def waitfor(t):
     return current_milli_time()
 
 
-@neurotools.util.tools.piper
+@tools.piper
 def progress_bar(x,N=None):
     if N is None:
         x = list(x)

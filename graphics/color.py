@@ -17,7 +17,6 @@ import pylab
 
 from neurotools.signal import gaussian_smooth
 from neurotools.signal import circular_gaussian_smooth
-from neurotools.util import tools
 from neurotools import signal
 
 import numpy as np
@@ -611,17 +610,17 @@ def bit16_RGB_to_tuple(RGB):
 
 def enumerate_fast_colors():
     '''
+    This is for the Arduino TFT touch screen shield from Adafruit.
+    
     Enumerates colors that can be rendered over a 16 bit bus
     using two identical bytes, skipping the lowest two bits of
     each byte, and reserving the fourth bit for mask storage.
     This is intended for development of optimized color pallets for
     mictrocontroller driven display interfaces.
     
-    Parameters
-    ----------
-    
     Returns
     -------
+    colors:
     '''
     bytes = sorted(list(set([i&0b11110100 for i in range(0,256)])))
     colors = [bit16_RGB_to_tuple(x*256|x) for x in bytes]
@@ -638,6 +637,7 @@ def tuple_to_bit16(c):
     
     Returns
     -------
+    RGB:
     '''
     R,G,B = c
     R = int(R*0b11111)

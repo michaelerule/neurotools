@@ -38,6 +38,8 @@ from neurotools.util.time   import today,now
 from neurotools.util.string import shortscientific
 
 from matplotlib.pyplot import *
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
 
 try:
     import statsmodels
@@ -2670,7 +2672,45 @@ def pikeplot(x,y,**kwargs):
     y: 1D np.array
         Y position of bars
     '''
+    x = np.array(x)
     y = np.array(y)
     y = np.array([y*0,y,np.NaN*y]).T.ravel()
     x = np.array([x,x,np.NaN*x]).T.ravel()
     plt.plot(x,y,**kwargs)
+    
+    
+def plot_circular_histogram(x,bins,r,scale,color=BLACK,alpha=0.8):
+    p,_ = histogram(x,bins,density=True)
+    patches = []
+    for j,pj in enumerate(p):
+        base = r
+        top  = r + pj*scale
+        h1   = bins[j]
+        h2   = bins[j]
+        arc = exp(1j*linspace(bins[j],bins[j+1],10)*pi/180)
+        verts = []
+        verts.extend(c2p(base*arc).T)
+        verts.extend(c2p(top*arc[::-1]).T)
+        patches.append(Polygon(verts,closed=True))
+    collection = PatchCollection(patches,facecolors=color,edgecolors=WHITE,linewidths=0.5,alpha=alpha)
+    gca().add_collection(collection)
+
+def plot_quadrant(xlabel=r'←$\mathrm{noise}$→',ylabel=r'←$\varnothing$→'):
+    # Quadrant of unit circle
+    φ = linspace(0,pi/2,100)
+    z = r*exp(1j*φ)
+    x,y = c2p(z)
+    plot(x,y,color='k',lw=1)
+    plot([0,0],[0,r],color='k',lw=1)
+    plot([0,r],[0,0],color='k',lw=1)
+    text(r+.02,0,'$0\degree$',ha='left',va='top')
+    text(0,r+.02,'$90\degree$',ha='right',va='bottom')
+    text(0,r/2,ylabel,rotation=90,ha='right',va='center')
+    text(r/2,0,xlabel,ha='center',va='top')
+
+def quadrant_axes(q = 0.2):
+    xlim(0-q,1+q)
+    ylim(0-q,1+q)
+    force_aspect()
+    noaxis()
+    noxyaxes()

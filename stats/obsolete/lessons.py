@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from neurotools.graphics.color import BLACK,RUST,TURQUOISE,OCHRE,AZURE
-from neurotools.util.tools import find
+from neurotools.util.array import find
 from neurotools.signal.sde import sample_wiener_process, sample_ou_process
 
 # Adjust plotting preference

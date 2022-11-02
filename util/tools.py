@@ -314,26 +314,7 @@ def find_all_extension(d,ext='png'):
         found.extend([f for f  in files if f.lower().split('.')[-1]==ext])
     return found
 
-def lmap(function,*args):
-    return list(map(function,*args))
 
-def slist(x):
-    return sorted([*x])
-
-def amap(function,*args):
-    a = lmap(function,*args)
-    try:
-        return np.array(a)
-    except ValueError:
-        b = np.empty(len(a), object)    
-        b[:] = a
-        return b
-
-lap = lmap
-aap = amap
-sls = slist
-
-# really should make nice datastructures for all this
 setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b)}
 mapdict    = lambda data,function: {k:function(v) for k,v in data.iteritems()}
 getdict    = lambda data,index: mapdict(data, lambda v:v[index])
@@ -458,78 +439,6 @@ def getVariable(path,var):
             return f[var].value
     raise ValueError('Path is neither .mat nor .hdf5')
 
-def arraymap(f,*iterables,**kwargs):
-    '''
-    Map functionality over numpy arrays
-    replaces depricated arraymap from pylab.
-    '''
-    depth = kwargs['depth'] if 'depth' in kwargs else 0
-    if depth<=1:
-        return np.array([f(*list(map(np.array,args))) for args in zip(*iterables)])
-    kwargs['depth']=depth-1
-    def fun(*args):
-        return arraymap(f,*args,**kwargs)
-    return arraymap(fun,*iterables,**{'depth':0})
-
-def invert_permutation(p):
-    '''
-    Invert a a permutation
-    '''
-    p = np.int32(p)
-    s = np.empty(p.size, p.dtype)
-    s[p] = np.arange(p.size)
-    return s
-    
-def find(x):
-    '''
-    Replacement to Pylab's lost `find()` function.
-    Synonym for `np.where(np.array(x).ravel())[0]`
-    '''
-    return np.where(np.array(x).ravel())[0]
-    
-def ezip(*args):
-    return enumerate(zip(*args))
-
-import time
-@piper
-def progress_bar(x,N=None):
-    if N is None:
-        x = list(x)
-        N = len(x)
-    K = int(np.floor(np.log10(N)))+1
-    pattern = ' %%%dd/%d'%(K,N)
-    wait_til_ms = time.time()*1000
-    for i,x in enumerate(x):
-        time_ms = time.time()*1000
-        if time_ms>=wait_til_ms:
-            r = i*50/N
-            k = int(r)
-            q = ' ▏▎▍▌▋▊▉'[int((r-k)*8)]
-            print(
-                '\r['+
-                ('█'*k)+    
-                q+
-                (' '*(50-k-1))+
-                ']%3d%%'%(i*100//N)+
-                (pattern%i),
-                end='',
-                flush=True)
-            wait_til_ms = time_ms+1000
-        yield x
-    print('\r'+' '*70+'\r',end='',flush=True)
-
-pbar = progress_bar
-pb   = progress_bar
-en   = piper(enumerate)
-
-def asiterable(x):
-    '''
-    Check if something is iterable
-    '''
-    try: 
-        return list(iter(x))
-    except TypeError:
-        return None
 
 class stuff:
     def __init__(self, **kwargs):

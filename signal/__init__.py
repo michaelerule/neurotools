@@ -16,7 +16,9 @@ import numpy as np
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
 from scipy.interpolate import interp1d
-from neurotools.util.tools import find
+from neurotools.util.array import find
+
+import neurotools.util.array as narray # make_rebroadcast_slice
 
 # Inverse of standard normal cumulative distribution function
 from scipy.special import ndtri
@@ -200,7 +202,7 @@ def unitscale(signal,axis=None):
         signal/= np.nanmax(signal)
         return signal
     # New behavior
-    theslice = make_rebroadcast_slice(signal, axis)
+    theslice = narray.make_rebroadcast_slice(signal, axis)
     signal-= np.nanmin(signal,axis=axis)[theslice]
     signal/= np.nanmax(signal,axis=axis)[theslice]
     return signal
@@ -287,8 +289,8 @@ def triggered_average(signal,times,window):
 
 def get_triggered_stats(signal,times,window):
     '''
-    Get a statistical summary of data in length window around time point
-    times.
+    Get a statistical summary of data in length window 
+    around time points.
     
     Parameters
     ----------
@@ -1270,7 +1272,7 @@ def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     x = np.array(x)
     if np.prod(x.shape)==0:
         return x
-    theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     return x-(np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
 
 def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
@@ -1295,7 +1297,7 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     x = zeromean(x,axis=axis,ignore_nan=ignore_nan)
     if np.prod(x.shape)==0:
         return x
-    theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
     return x/ss[theslice]
 
@@ -1325,7 +1327,7 @@ def deltaovermean(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     '''
     x = np.array(x)
     if np.prod(x.shape)==0: return x
-    theslice = make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     mx = (np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
     return (x-mx)/mx
 
@@ -1348,7 +1350,7 @@ def unit_length(x,axis=0):
         vectors in `x` normalized to unit length
     '''
     x = np.array(x)
-    theslice = make_rebroadcast_slice(x,axis=axis)
+    theslice = narray.make_rebroadcast_slice(x,axis=axis)
     return x*(np.sum(x**2,axis=axis)**-.5)[theslice]
 
 def sign_preserving_amplitude_demodulate(analytic_signal,doplot=False):
@@ -1619,8 +1621,19 @@ def make_lagged(x,NLAGS=5,LAGSPACE=1):
     
     Parameters
     ----------
+    x: 1D np.array length `T`
+    
+    Other Parameters
+    ----------------
+    NLAGS: positive int; default 5
+    LAGSPACE: positive int; default 1
+    
     Returns
     -------
+    result: NLAGS×T np.array
+         The first element is the original unshifted signal.
+         Later elements are shifts progressively further 
+         back in time.
     '''
     if not len(x.shape)==1:
         raise ValueError('Signal should be one-dimensional')
@@ -2016,76 +2029,10 @@ def band_stop_line_noise_removal(lfps,frequency=60.):
 
 
 
+
+
+
+
 ############################################################
 # Array helpers (may eventually migrate to new modeule)
 
-def _take_axis_slice(shape,axis,index):
-    # Redundant to existing numpy functions TODO remove
-    ndims = len(shape)
-    if axis<0 or axis>=ndims:
-        raise ValueError('axis %d invalid for shape %s'%(axis,shape))
-    before = axis
-    after  = ndims-1-axis
-    return (np.s_[:],)*before + (index,) + (np.s_[:],)*after
-
-def _take_axis(x,axis,index):
-    # Redundant to existing numpy functions TODO remove
-    return x[_take_axis_slice(x.shape,axis,index)]
-    
-def ndargmax(x):
-    '''
-    Get coordinates of largest value in a multidimensional 
-    array
-    
-    Parameters
-    ----------
-    x: np.array
-    '''
-    x = np.array(x)
-    return np.unravel_index(np.nanargmax(x),x.shape)
-    
-def complex_to_nan(x,value=np.NaN):
-    '''
-    Replce complex entries with NaN or other value
-    
-    Parameters
-    ----------
-    x: np.array
-    
-    Other Parameters
-    ----------------
-    value: float; default `np.NaN`
-        Value to replace complex entries with
-    '''
-    x = np.array(x)
-    x[np.iscomplex(x)]=value
-    return x.real
-
-def make_rebroadcast_slice(x,axis=0,verbose=False):
-    '''
-    Generate correct slice object for broadcasting 
-    stastistics averaged over the given axis back to the
-    original shape.
-    
-    Parameters
-    ----------
-    x: np.array
-    '''
-    x = np.array(x)
-    naxes = len(np.shape(x))
-    if verbose:
-        print('x.shape=',np.shape(x))
-        print('naxes=',naxes)
-    if axis<0:
-        axis=naxes+axis
-    if axis==0:
-        theslice = (None,Ellipsis)
-    elif axis==naxes-1:
-        theslice = (Ellipsis,None)
-    else:
-        a = axis
-        b = naxes - a - 1
-        theslice = (np.s_[:],)*a + (None,) + (np.s_[:],)*b
-    if verbose:
-        print('axis=',axis)
-    return theslice

@@ -13,7 +13,6 @@ from __future__ import print_function
 
 from scipy.stats import gaussian_kde
 from neurotools.signal import get_edges
-from neurotools.util.tools import find
 
 import numpy as np
 import scipy

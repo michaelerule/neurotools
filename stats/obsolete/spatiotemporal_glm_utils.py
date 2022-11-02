@@ -18,7 +18,7 @@ import numpy as np
 import matplotlib 
 import matplotlib.pyplot as plt
 
-from neurotools.util.tools import find
+from neurotools.util.array import find
 from neurotools.util.string import isInt
 from neurotools.stats import pca
 from neurotools.stats.glm import gradientglmfit

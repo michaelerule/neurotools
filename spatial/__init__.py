@@ -9,8 +9,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 
-
-
 def brute_force_local_2d_maxima(x,R=5):
     '''
     Find points higher than all neighbors within 

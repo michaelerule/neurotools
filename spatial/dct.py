@@ -14,7 +14,7 @@ from __future__ import print_function
 import numpy as np
 from neurotools.util import getfftw as fft
 from neurotools.signal.conv import reflect2D, reflect2D_1
-from neurotools.util.tools import find
+from neurotools.util.array import find
 
 def get_mask_antialiased(h_w,aa,spacing,cutoff):
     '''

@@ -16,7 +16,8 @@ import scipy
 import random
 import warnings
 from scipy.stats.stats import describe
-from neurotools.util.tools import find
+from neurotools.util.array import find
+from sklearn.decomposition import FactorAnalysis
 
 def nrmse(estimate,true,axis=None):
     '''
@@ -841,26 +842,6 @@ except:
           'Some glm routines will not work')
     
 
-def auc_to_g2(auc):
-    '''
-    Convert AUC measure to sign-preserving squared Gini 
-    impurity index. (Comparable scale to normalized r²)
-    
-        return g²*sign(g) where g = AUC×2-1
-    
-    Parmeters
-    ---------
-    auc: np.array
-
-    Returns
-    ---------
-    g²: np.array
-    '''
-    g2 = (auc-0.5)*2
-    g2 = (g2)**2*sign(g2)
-    return g2
-
-
 def fraction_explained_deviance(L,L0,Ls):
     '''
     Calculate the fraction explained deviance, which is
@@ -891,3 +872,156 @@ def fraction_explained_deviance(L,L0,Ls):
         spare = len(L.shape)-len(L0.shape)
         theslice = L0.shape + (None,)*spare
         return (L-L0[theslice])/(Ls-L0)[theslice]
+        
+
+def get_factor_analysis(X,NFACTORS):
+    '''
+    Wrapper to fit factor analysis model, extract the model,
+    and sort by factor importance.
+    
+    Parameters
+    ----------
+    X: np.array
+        Multivariate signal
+    NFACTORS: int
+        Number of factors to fit
+        
+    Returns
+    -------
+    Y:
+        Result of `fa.fit_transform(X)`
+    Sigma:
+        `fa.noise_variance_`
+    F:
+        `fa.components_`
+    lmbda: 
+        Loadings `diag(F.dot(F.T))`
+    fa: sklearn.decomposition.FactorAnalysis
+        Fitted factor analysis model
+
+    '''
+    fa = FactorAnalysis(n_components=NFACTORS)
+    Y = fa.fit_transform(X)
+    Sigma = fa.noise_variance_
+    F     = fa.components_
+    # Get eigenvalues/loadings
+    lmbda = diag(F.dot(F.T))
+    # Sort by importance
+    #order = argsort(abs(lmbda))[::-1]
+    #lmbda = lmbda[order]
+    #F     = F[order,:]
+    return Y,Sigma,F,lmbda,fa
+
+
+def project_factors(X,F,S):
+    '''
+    Project observations X with noise variances S onto latent factors F.
+    This uses the same argument/return conventions as scipy's factor analysis.
+    
+    Parameters
+    ----------
+    X : array-like
+        data
+    F : array-like
+        factor matrix
+    S : array-like
+        i.i.d variances
+    '''
+    Nfactors, Nobserved = F.shape
+    assert(S.shape==(Nobserved,))
+    P = 1/S
+    FP = F*P
+    Px = np.eye(Nfactors) + FP.dot(F.T)
+    return lstsq(Px,FP.dot(X.T))[0].T
+
+
+def predict_latent(fa,predict_from,X):
+    '''
+    Predict mean of all factors from 
+    `predict_from` factors.
+    
+    Parameters
+    ----------
+    fa: sklearn.decomposition.FactorAnalysis
+        Fitted factor analysis model
+    predict_from: list of int
+        Factor indecies to use for prediction
+    X: np.array
+        Underlying signal
+    
+    Returns
+    -------
+    Xthat: np.array
+        Predicted means over time
+    '''
+    S = fa.noise_variance_
+    F = fa.components_
+    e = diag(F.dot(F.T))
+    N = F.shape[0]
+    Xf = X[:,predict_from]
+    Ff = F[:,predict_from]
+    Pf  = np.diag(1/S[predict_from])
+    I   = np.eye(N)
+    FPf = Ff.dot(Pf)
+    Px  = FPf.dot(Ff.T)
+    pPx = I+Px
+    # Predict means
+    Xthat = scipy.linalg.lstsq(pPx,FPf.dot(Xf.T))[0]
+    return Xthat
+
+
+def factor_predict(fa,predict_from,predict_to,X):
+    '''
+    Predict mean, variance of `predict_to` factors from 
+    `predict_from` factors.
+    
+    Parameters
+    ----------
+    fa: sklearn.decomposition.FactorAnalysis
+        Fitted factor analysis model
+    predict_from: list of int
+        Factor indecies to use for prediction
+    predict_to: list of int
+        Factor indecies to predict
+    X: np.array
+        Underlying signal
+    
+    Returns
+    -------
+    Xthat: np.array
+        Predicted means over time
+    Xtc: np.array
+        Predicted covariance over time
+    '''
+    S = fa.noise_variance_
+    F = fa.components_
+    e = diag(F.dot(F.T))
+    N = F.shape[0]
+
+    Xf = X[:,predict_from]
+    Xt = X[:,predict_to  ]
+
+    Ff = F[:,predict_from]
+    Ft = F[:,predict_to  ]
+
+    Pf  = np.diag(1/S[predict_from])
+    I   = np.eye(N)
+
+    FPf = Ff.dot(Pf)
+    Px  = FPf.dot(Ff.T)
+    pPx = I+Px
+
+    # Predict means
+    latents = scipy.linalg.lstsq(pPx,FPf.dot(Xf.T))[0]
+    Xthat   = Ft.T.dot(latents)
+
+    # Predict variance
+    #iFf = numpy.linalg.pinv(Ff)
+    #Sf  = np.diag(S[predict_from])
+    St  = np.diag(S[predict_to])
+    #M   = lstsq(Ff,Ft)[0]
+    #Xtc = M.T.dot(Sf).dot(M)+St
+
+    Xtc = Ft.T.dot(scipy.linalg.lstsq(pPx,Ft)[0]) + St
+
+    return Xthat,Xtc

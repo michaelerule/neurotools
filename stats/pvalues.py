@@ -17,7 +17,7 @@ from __future__ import print_function
 import statsmodels
 import numpy as np
 from numpy import random
-from neurotools.util.tools import find
+from neurotools.util.array import find
 
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''

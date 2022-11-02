@@ -12,8 +12,8 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 from scipy.stats import gaussian_kde
-from neurotools.signal as sig
 
+import neurotools.signal as sig
 import numpy as np
 import scipy
 

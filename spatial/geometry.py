@@ -1,5 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+Collected functions from 2018--2023 concerning analyses of 2D data.
+
+These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,12 +13,10 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-
-'''
-Collected functions from 2018--2023 concerning analyses of 2D data.
-
-These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.
-'''
+import neurotools.util.tools as ntools
+import neurotools.signal as sig
+from scipy.spatial import ConvexHull
+import neurotools.spatial.masking
 
 from numpy import *
 
@@ -67,8 +70,7 @@ def p2z(px,py=None):
     return np.real(px) + 1j*np.real(py)
 
 # Operator abuse;
-from neurotools.tools import piper
-@piper
+@ntools.piper
 def z2p(pz):
     '''
     Convert complex points to 2D (x,y) points
@@ -88,7 +90,6 @@ def z2p(pz):
     return float32([pz.real,pz.imag])
 
 
-from neurotools.signal import circular_gaussian_smooth
 def polar_smooth_contour(z,sigma=2):
     '''
     Smooth the radial and angular components of a closed, circular,
@@ -110,15 +111,14 @@ def polar_smooth_contour(z,sigma=2):
     c = mean(z)
     z = z - c
     theta = angle(z)
-    ct = circular_gaussian_smooth(cos(theta),sigma)
-    st = circular_gaussian_smooth(sin(theta),sigma)
+    ct = sig.circular_gaussian_smooth(cos(theta),sigma)
+    st = sig.circular_gaussian_smooth(sin(theta),sigma)
     h  = angle((ct+1j*st))
-    r  = circular_gaussian_smooth(abs(z)**2,sigma)**0.5
+    r  = sig.circular_gaussian_smooth(abs(z)**2,sigma)**0.5
     return r*exp(1j*h) + c
 
 
 
-from scipy.spatial import ConvexHull
 def convex_hull(px,py=None):
     '''
     A wrapper for scipy.spatial.ConvexHull that returns points as z=x+iy
@@ -139,7 +139,6 @@ def convex_hull(px,py=None):
     return points[verts]@[1,1j]
 
 
-import neurotools.spatial.masking
 def convex_hull_from_mask(x,Ntheta=None,sigma=None):
     '''
     Extract convex hull containing all pixels in a 2D boolean array that are 

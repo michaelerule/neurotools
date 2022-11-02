@@ -134,6 +134,10 @@ def plot_edges(iz,edges,**kwargs):
     
     Parameters
     ----------
+    is:
+    edges:
+    **kwargs:
+        Forward to `plot()`
     
     Returns
     -------
@@ -147,6 +151,10 @@ def plot_triangles(iz,triangles,**kwargs):
     
     Parameters
     ----------
+    iz:
+    triangles:
+    **kwargs:
+        Forward to `plot()`
     
     Returns
     -------
@@ -162,6 +170,9 @@ def mergeNearby(x,y,radius):
     
     Parameters
     ----------
+    x:
+    y:
+    radius:
     
     Returns
     -------

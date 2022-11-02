@@ -25,6 +25,7 @@ import functools
 import inspect
 import neurotools.jobs.ndecorator
 import neurotools.jobs.closure
+
 from neurotools.util.array import asiterable
 if sys.version_info<(3,0):
     from itertools import imap as map

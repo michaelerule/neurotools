@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 from scipy.stats import gaussian_kde
-from neurotools.signal import get_edges
+from neurotools.signal as sig
 
 import numpy as np
 import scipy
@@ -82,7 +82,7 @@ def knn_1d_density(x,k=10,eps=0.01,pad=100,final=None):
     x    = np.concatenate([pre,x,post])
     
     # Handle duplicates by dithering
-    duplicates = get_edges(np.diff(x)==0.)+1
+    duplicates = sig.get_edges(np.diff(x)==0.)+1
     duplicates[duplicates>=len(x)-1]=len(x)-2
     duplicates[duplicates<=0]=1
     for a,b in zip(*duplicates):

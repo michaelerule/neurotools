@@ -16,8 +16,8 @@ Helper functions associated with time
 import datetime
 import time as systime
 
-import neurotools.util
-import neurotools.util.tools
+import neurotools.util as util
+import util.tools as tools
 
 def current_milli_time():
     '''

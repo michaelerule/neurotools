@@ -51,11 +51,19 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">spikes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spikes.ppc.html">neurotools.spikes.ppc module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neurotools.spikes.spikes.html">neurotools.spikes.spikes module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spikes.waveform.html">neurotools.spikes.waveform module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-neurotools.spikes">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-neurotools.spikes">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.pp_xcorr"><code class="docutils literal notranslate"><span class="pre">pp_xcorr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.txcorr"><code class="docutils literal notranslate"><span class="pre">txcorr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.pack_cross_correlation_matrix"><code class="docutils literal notranslate"><span class="pre">pack_cross_correlation_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.cut_spikes"><code class="docutils literal notranslate"><span class="pre">cut_spikes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.times_to_raster"><code class="docutils literal notranslate"><span class="pre">times_to_raster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.bin_spikes_raster"><code class="docutils literal notranslate"><span class="pre">bin_spikes_raster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.spikes.bin_spike_times"><code class="docutils literal notranslate"><span class="pre">bin_spike_times()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="neurotools.graphics.html">graphics</a></li>
@@ -108,16 +116,6 @@
 <li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.ppc.html#neurotools.spikes.ppc.ppc_phase_randomize_chance_level_sample"><code class="docutils literal notranslate"><span class="pre">ppc_phase_randomize_chance_level_sample()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="neurotools.spikes.spikes.html">neurotools.spikes.spikes module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.pp_xcorr"><code class="docutils literal notranslate"><span class="pre">pp_xcorr()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.txcorr"><code class="docutils literal notranslate"><span class="pre">txcorr()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.pack_cross_correlation_matrix"><code class="docutils literal notranslate"><span class="pre">pack_cross_correlation_matrix()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.cut_spikes"><code class="docutils literal notranslate"><span class="pre">cut_spikes()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.times_to_raster"><code class="docutils literal notranslate"><span class="pre">times_to_raster()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.bin_spikes_raster"><code class="docutils literal notranslate"><span class="pre">bin_spikes_raster()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.spikes.html#neurotools.spikes.spikes.bin_spike_times"><code class="docutils literal notranslate"><span class="pre">bin_spike_times()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="neurotools.spikes.waveform.html">neurotools.spikes.waveform module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.waveform.html#neurotools.spikes.waveform.realign"><code class="docutils literal notranslate"><span class="pre">realign()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.spikes.waveform.html#neurotools.spikes.waveform.getFWHM"><code class="docutils literal notranslate"><span class="pre">getFWHM()</span></code></a></li>
@@ -138,7 +136,74 @@
 </section>
 <section id="module-neurotools.spikes">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-neurotools.spikes" title="Permalink to this heading"></a></h2>
-<p>Routines for spiking timeseries.</p>
+<p>Signal processing routines related to spike trains.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.pp_xcorr">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">pp_xcorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#pp_xcorr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.pp_xcorr" title="Permalink to this definition"></a></dt>
+<dd><p>Gets all pairwise relative time lags within maxlag. pp_xcorr
+stands for point-process cross correlation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t1</strong> (<em>1d arrays</em>) – Lists of time points to compare</p></li>
+<li><p><strong>t2</strong> (<em>1d arrays</em>) – Lists of time points to compare</p></li>
+<li><p><strong>maxlag</strong> (<em>number</em>) – maximum time lag to consider, in the same units as t1 and t2</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.txcorr">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">txcorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#txcorr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.txcorr" title="Permalink to this definition"></a></dt>
+<dd><p>Computes cross correlation between two spike trains provided in
+terms of spike times, over a maximum range of lags. Uses nearest-
+neighbor density estimation to provide an adaptively smoothed
+cross-correlation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t1</strong> (<em>1d arrays</em>) – Lists of time points to compare</p></li>
+<li><p><strong>t2</strong> (<em>1d arrays</em>) – Lists of time points to compare</p></li>
+<li><p><strong>maxlag</strong> (<em>number</em>) – maximum time lag to consider, in the same units as t1 and t2</p></li>
+<li><p><strong>k</strong> (<em>positive integer</em>) – number of nearest neighbors to use in the density estimation</p></li>
+<li><p><strong>normalize</strong> (<em>boolean</em>) – Normalize correlation by zero-lag correlation. Default False</p></li>
+<li><p><strong>sampleat</strong> (<em>int</em>) – time lags to sample for the density estimation
+defaults to spanning +-lags with 1 time-unit bins if none</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.pack_cross_correlation_matrix">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">pack_cross_correlation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#pack_cross_correlation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.pack_cross_correlation_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.cut_spikes">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">cut_spikes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#cut_spikes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.cut_spikes" title="Permalink to this definition"></a></dt>
+<dd><p>downsampling spike raster by factor cut
+just sums up the bins (can generate counts &gt;1)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.times_to_raster">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">times_to_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spikes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#times_to_raster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.times_to_raster" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.bin_spikes_raster">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">bin_spikes_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#bin_spikes_raster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.bin_spikes_raster" title="Permalink to this definition"></a></dt>
+<dd><p>Important! This accepts a spike raster, not spike times!</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spikes.bin_spike_times">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">bin_spike_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#bin_spike_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.bin_spike_times" title="Permalink to this definition"></a></dt>
+<dd><p>Important! This accepts spike times, not a raster</p>
+</dd></dl>
+
 </section>
 </section>
 

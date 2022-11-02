@@ -8,7 +8,6 @@ Submodules
    :maxdepth: 4
 
    neurotools.spikes.ppc
-   neurotools.spikes.spikes
    neurotools.spikes.waveform
 
 Module contents

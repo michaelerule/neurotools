@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.stats.hmm &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <title>neurotools.stats.hmm &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -24,7 +27,8 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -37,7 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
@@ -62,10 +66,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-          <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
-      <li class="breadcrumb-item active">neurotools.stats.hmm</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../stats.html">neurotools.stats</a> &raquo;</li>
+      <li>neurotools.stats.hmm</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -80,27 +84,27 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Routines for discrete time hidden Markov models</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg</span>   <span class="k">import</span> <span class="n">solve</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
-<span class="kn">from</span> <span class="nn">math</span>           <span class="k">import</span> <span class="n">factorial</span> <span class="k">as</span> <span class="n">fact</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span>   <span class="kn">import</span> <span class="n">solve</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">math</span>           <span class="kn">import</span> <span class="n">factorial</span> <span class="k">as</span> <span class="n">fact</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.util.functions</span>      <span class="k">import</span> <span class="n">slog</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.functions</span>      <span class="k">import</span> <span class="n">slog</span><span class="p">,</span><span class="n">sexp</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.distributions</span> <span class="k">import</span> <span class="n">poisson_logpdf</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.gaussian</span>      <span class="k">import</span> <span class="n">Gaussian</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.gaussian</span>      <span class="k">import</span> <span class="n">gaussian_quadrature</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.gaussian</span>      <span class="k">import</span> <span class="n">gaussian_quadrature_logarithmic</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.functions</span>      <span class="kn">import</span> <span class="n">slog</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.functions</span>      <span class="kn">import</span> <span class="n">slog</span><span class="p">,</span><span class="n">sexp</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.distributions</span> <span class="kn">import</span> <span class="n">poisson_logpdf</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.gaussian</span>      <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.gaussian</span>      <span class="kn">import</span> <span class="n">gaussian_quadrature</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.gaussian</span>      <span class="kn">import</span> <span class="n">gaussian_quadrature_logarithmic</span>
 
 <div class="viewcode-block" id="poisson_parameter_guess"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.poisson_parameter_guess">[docs]</a><span class="k">def</span> <span class="nf">poisson_parameter_guess</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -615,7 +619,7 @@
     <span class="c1"># Initialize random guess</span>
     <span class="c1"># Estimated transition operator between hidden states</span>
     <span class="c1"># Initialize to the identity</span>
-    <span class="n">That</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_hid</span><span class="p">)</span><span class="o">*.</span><span class="mi">9</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_hid</span><span class="p">))</span><span class="o">*.</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">n_hid</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">That</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_hid</span><span class="p">)</span><span class="o">*</span><span class="mf">.9</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_hid</span><span class="p">))</span><span class="o">*</span><span class="mf">.1</span><span class="o">/</span><span class="p">(</span><span class="n">n_hid</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="c1"># Estimated transition operator between observed states</span>
     <span class="c1"># Initialize to uniform distribution</span>
     <span class="n">Bhat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_hid</span><span class="p">,</span><span class="n">n_obs</span><span class="p">))</span><span class="o">/</span><span class="n">n_obs</span>
@@ -797,7 +801,7 @@
 <span class="sd">    Diffusion operator to use in abstracted forward-backward</span>
 <span class="sd">    Operates on Gaussian densities</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        d should be the variance of the process</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -836,9 +840,9 @@
 <span class="sd">    b: log-rate bias parameter</span>
 <span class="sd">    y: The observed count (non-negative integer)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="c1"># Estimate integration limits</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">o</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
             <span class="c1"># No information about the state yet.</span>
@@ -868,7 +872,7 @@
         <span class="c1"># Estimate mean and variance of posterior</span>
         <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
         
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LogGaussianCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.LogGaussianCoxModel">[docs]</a><span class="k">class</span> <span class="nc">LogGaussianCoxModel</span><span class="p">:</span>
@@ -878,7 +882,7 @@
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
 <span class="sd">    see: LogGaussianCoxApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -886,7 +890,7 @@
 <span class="sd">        b: log-rate bias parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">LogGaussianCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GaussianCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.GaussianCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">GaussianCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
@@ -899,9 +903,9 @@
 <span class="sd">    b: rate bias parameter</span>
 <span class="sd">    y: The observed count (non-negative integer)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -941,7 +945,7 @@
         <span class="n">m</span> <span class="o">=</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
         <span class="c1">#m.m = max(1e-9,m.m)</span>
         <span class="k">return</span> <span class="n">m</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GaussianCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.GaussianCoxModel">[docs]</a><span class="k">class</span> <span class="nc">GaussianCoxModel</span><span class="p">:</span>
@@ -949,7 +953,7 @@
 <span class="sd">    One-dimensional Gaussian Cox-process observation model</span>
 <span class="sd">    see: GaussianCoxApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -957,7 +961,7 @@
 <span class="sd">        b: bias parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">GaussianCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ChisquareCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.ChisquareCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">ChisquareCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
@@ -973,9 +977,9 @@
 <span class="sd">    b: log-rate bias parameter</span>
 <span class="sd">    y: The observed count (non-negative integer)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="c1"># Estimate integration limits</span>
         <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
             <span class="c1"># No information about the state yet.</span>
@@ -1008,7 +1012,7 @@
         <span class="n">m</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">m</span>
         
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ChisquareCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.ChisquareCoxModel">[docs]</a><span class="k">class</span> <span class="nc">ChisquareCoxModel</span><span class="p">:</span>
@@ -1016,7 +1020,7 @@
 <span class="sd">    One-dimensional Chi-squared Cox-process observation model</span>
 <span class="sd">    see: GaussianCoxApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1024,7 +1028,7 @@
 <span class="sd">        b: bias parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ChisquareCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BernoulliObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.BernoulliObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">BernoulliObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
@@ -1033,9 +1037,9 @@
 <span class="sd">    backward. Used to condition Gaussian states on Bernoulli </span>
 <span class="sd">    observations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="c1"># Estimate integration limits</span>
         <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
             <span class="c1"># No information about the state yet.</span>
@@ -1058,7 +1062,7 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">pxy</span><span class="o">*</span><span class="p">(</span><span class="n">o</span> <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BernoulliObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.BernoulliObservationModel">[docs]</a><span class="k">class</span> <span class="nc">BernoulliObservationModel</span><span class="p">:</span>
@@ -1068,9 +1072,9 @@
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
 <span class="sd">    see: BernoulliObservationApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">BernoulliObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TruncatedLogGaussianCoxApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedLogGaussianCoxApproximator">[docs]</a><span class="k">class</span> <span class="nc">TruncatedLogGaussianCoxApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
@@ -1079,9 +1083,9 @@
 <span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
 <span class="sd">    observations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="c1"># Estimate integration limits</span>
         <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
             <span class="c1"># No information about the state yet.</span>
@@ -1104,13 +1108,13 @@
         <span class="c1"># Truncated Poisson</span>
         <span class="n">ll</span>  <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> 
         <span class="n">l</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">ll</span><span class="p">)</span>
-        <span class="n">pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">ll</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">l</span><span class="o">+</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span><span class="o">*.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">ll</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">l</span><span class="o">+</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="mf">.5</span><span class="p">)</span>
         <span class="c1"># Multiply pxy by distribution o, </span>
         <span class="c1"># handling identity as special case</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">pxy</span><span class="o">*</span><span class="p">(</span><span class="n">o</span> <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TruncatedLogGaussianCoxModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedLogGaussianCoxModel">[docs]</a><span class="k">class</span> <span class="nc">TruncatedLogGaussianCoxModel</span><span class="p">:</span>
@@ -1120,16 +1124,16 @@
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
 <span class="sd">    see: LogGaussianCoxApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">TruncatedLogGaussianCoxApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MVGaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVGaussian">[docs]</a><span class="k">class</span> <span class="nc">MVGaussian</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Multivariate Gaussian model to use in abstracted forward-backward</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">TM</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">TM</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        M vector of means</span>
 <span class="sd">        T precision matrix</span>
@@ -1137,7 +1141,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span><span class="o">.</span><span class="n">M</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">M</span><span class="p">,</span><span class="n">T</span>
         <span class="n">s</span><span class="o">.</span><span class="n">TM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">M</span><span class="p">)</span> <span class="k">if</span> <span class="n">TM</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">TM</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">s</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
@@ -1164,7 +1168,7 @@
 <span class="sd">    A: linear system transition matrix. Means evolve as X = AX</span>
 <span class="sd">    sigma: linear system covariance transition. it is a matrix.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span>
         <span class="n">s</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
@@ -1216,9 +1220,9 @@
 <span class="sd">    Uses Laplace approximation for covariance</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="MVLogGaussianCox.MVPoissonApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.MVLogGaussianCox.MVPoissonApproximator">[docs]</a>    <span class="k">class</span> <span class="nc">MVPoissonApproximator</span><span class="p">():</span>
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
             <span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="n">B</span><span class="p">,</span><span class="n">y</span>
-        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">MVGaussian</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
             <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
@@ -1226,13 +1230,13 @@
             <span class="n">fun</span><span class="p">,</span><span class="n">jac</span><span class="p">,</span><span class="n">hess</span> <span class="o">=</span> <span class="n">lgcp_observation_minimizer</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">o</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
             <span class="n">mode</span>  <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="n">jac</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="n">hess</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">MVGaussian</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">hess</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">x</span><span class="p">))</span></div>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">B</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">MVPoissonApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">B</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OUGaussian"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.OUGaussian">[docs]</a><span class="k">class</span> <span class="nc">OUGaussian</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="n">regularize</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="n">regularize</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">var</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">dt</span>
         <span class="n">s</span><span class="o">.</span><span class="n">regularize</span> <span class="o">=</span> <span class="n">regularize</span>
 <div class="viewcode-block" id="OUGaussian.fwd"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.OUGaussian.fwd">[docs]</a>    <span class="k">def</span> <span class="nf">fwd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
@@ -1253,7 +1257,7 @@
 <span class="sd">    A: linear system transition matrix. Means evolve as X = AX</span>
 <span class="sd">    sigma: linear system covariance transition. it is a matrix.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">regularize</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">regularize</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span> 
         <span class="n">A</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">s</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)</span><span class="o">*</span><span class="n">regularize</span><span class="p">)</span>
@@ -1298,9 +1302,9 @@
 <span class="sd">    b: log-rate bias parameter</span>
 <span class="sd">    y: The observed count (non-negative integer)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="c1"># Estimate integration limits</span>
         <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
             <span class="c1"># No information about the state yet.</span>
@@ -1339,7 +1343,7 @@
         
         <span class="c1"># Estimate mean and variance of posterior</span>
         <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PoissonObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.PoissonObservationModel">[docs]</a><span class="k">class</span> <span class="nc">PoissonObservationModel</span><span class="p">:</span>
@@ -1349,9 +1353,9 @@
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
 <span class="sd">    see: PoissonObservationApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">PoissonObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TruncatedPoissonObservationApproximator"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedPoissonObservationApproximator">[docs]</a><span class="k">class</span> <span class="nc">TruncatedPoissonObservationApproximator</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">):</span>
@@ -1360,9 +1364,9 @@
 <span class="sd">    backward. Used to condition Gaussian states on Poisson </span>
 <span class="sd">    observations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">):</span>
         <span class="c1"># Estimate integration limits</span>
         <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">o</span><span class="o">.</span><span class="n">t</span><span class="o">&lt;</span><span class="mf">1e-6</span><span class="p">:</span>
             <span class="c1"># No information about the state yet.</span>
@@ -1391,7 +1395,7 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">pxy</span><span class="o">*</span><span class="p">(</span><span class="n">o</span> <span class="k">if</span> <span class="n">o</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-10</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">gaussian_quadrature</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
         <span class="k">return</span> <span class="s1">&#39;Approximator(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TruncatedPoissonObservationModel"><a class="viewcode-back" href="../../../neurotools.stats.hmm.html#neurotools.stats.hmm.TruncatedPoissonObservationModel">[docs]</a><span class="k">class</span> <span class="nc">TruncatedPoissonObservationModel</span><span class="p">:</span>
@@ -1401,9 +1405,9 @@
 <span class="sd">    returns a numeric approximation of the posterior as a Gaussian</span>
 <span class="sd">    see: PoissonObservationApproximator</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">TruncatedPoissonObservationApproximator</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> </div>
 </pre></div>
 

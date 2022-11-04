@@ -187,30 +187,92 @@ defaults to spanning +-lags with 1 time-unit bins if none</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spikes.pack_cross_correlation_matrix">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">pack_cross_correlation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#pack_cross_correlation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.pack_cross_correlation_matrix" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Convert a 1D autocorrelogram into a two-timepoint
+correlation matrix.</p>
+<p>This function is obsolete, use <cite>scipy.linalg.toeplitz</cite>
+instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>xc</strong> (<em>1D np.array</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>matrix</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2D np.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spikes.cut_spikes">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">cut_spikes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#cut_spikes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.cut_spikes" title="Permalink to this definition"></a></dt>
-<dd><p>downsampling spike raster by factor cut
-just sums up the bins (can generate counts &gt;1)</p>
+<dd><p>Downsample a spike raster <cite>s</cite> by factor <cite>cut</cite>
+by symming adjacent bins. This may generate counts &gt;1
+when two spikes occur within the same downsampled bin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>1D np.array</em>) – Array of spike counts</p></li>
+<li><p><strong>cut</strong> (<em>positive int</em>) – Downsampling factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>downsampled</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spikes.times_to_raster">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">times_to_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spikes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#times_to_raster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.times_to_raster" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Convert spike times to a spike raster</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spikes</strong> (<em>np.int32</em>) – List of spike times as non-negative array
+indecies</p></li>
+<li><p><strong>duration</strong> – Duration of the desired raster</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1D np.array with length <cite>duration</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spikes.bin_spikes_raster">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">bin_spikes_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#bin_spikes_raster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.bin_spikes_raster" title="Permalink to this definition"></a></dt>
 <dd><p>Important! This accepts a spike raster, not spike times!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train</strong> – </p></li>
+<li><p><strong>binsize</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spikes.bin_spike_times">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spikes.</span></span><span class="sig-name descname"><span class="pre">bin_spike_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spikes.html#bin_spike_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spikes.bin_spike_times" title="Permalink to this definition"></a></dt>
 <dd><p>Important! This accepts spike times, not a raster</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train</strong> – </p></li>
+<li><p><strong>binsize</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

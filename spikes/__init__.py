@@ -18,6 +18,7 @@ from . import sta
 import numpy as np
 import matplotlib.mlab as ml
 from neurotools.stats.density import knn_1d_density
+from neurotools.util.array import find
 
 def pp_xcorr(t1,t2,maxlag):
     '''
@@ -120,11 +121,19 @@ def txcorr(t1,t2,maxlag,
 
 def pack_cross_correlation_matrix(xc):
     '''
+    Convert a 1D autocorrelogram into a two-timepoint
+    correlation matrix. 
+    
+    This function is obsolete, use `scipy.linalg.toeplitz`
+    instead.
+    
     Parameters
     ----------
+    xc: 1D np.array
     
     Returns
     -------
+    matrix: 2D np.array
     '''
     assert len(xc.shape)==1
     k = xc.shape[0]
@@ -137,14 +146,20 @@ def pack_cross_correlation_matrix(xc):
 
 def cut_spikes(s,cut):
     '''
-    downsampling spike raster by factor cut
-    just sums up the bins (can generate counts >1)
+    Downsample a spike raster `s` by factor `cut`
+    by symming adjacent bins. This may generate counts >1
+    when two spikes occur within the same downsampled bin.
     
     Parameters
     ----------
-    
+    s: 1D np.array 
+        Array of spike counts
+    cut: positive int
+        Downsampling factor 
+        
     Returns
     -------
+    downsampled:np.array
     '''
     return np.array([
         np.sum(s[i:i+cut])
@@ -152,13 +167,24 @@ def cut_spikes(s,cut):
 
 def times_to_raster(spikes,duration=1000):
     '''
+    Convert spike times to a spike raster
     
     Parameters
     ----------
+    spikes: np.int32
+        List of spike times as non-negative array
+        indecies
+    duration: 
+        Duration of the desired raster
     
     Returns
     -------
+    result: 1D np.array with length `duration`    
     '''
+    if np.max(spikes)>=duration:
+        raise ValueError(
+            'Some spike times are larger than the requested'
+            ' raster duration')
     result = np.zeros((1000,),dtype=np.float32)
     if len(spikes)>0:
         result[spikes]=1
@@ -170,12 +196,14 @@ def bin_spikes_raster(train,binsize=5):
     
     Parameters
     ----------
+    train:
+    binsize:
     
     Returns
     -------
     '''
     bins = int(np.ceil(len(train)/float(binsize)))
-    return np.histogram(ml.find(train),bins,(0,bins*binsize))[0]
+    return np.histogram(find(train),bins,(0,bins*binsize))[0]
 
 def bin_spike_times(times,binsize=5):
     '''
@@ -183,6 +211,8 @@ def bin_spike_times(times,binsize=5):
     
     Parameters
     ----------
+    train:
+    binsize:
     
     Returns
     -------

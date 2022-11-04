@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.signal.coherence &mdash; Neurotools 2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <title>neurotools.signal.coherence &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -24,7 +27,8 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools<img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
@@ -37,7 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption"><span class="caption-text">Subpackages:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
@@ -62,10 +66,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-          <li class="breadcrumb-item"><a href="../signal.html">neurotools.signal</a></li>
-      <li class="breadcrumb-item active">neurotools.signal.coherence</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../signal.html">neurotools.signal</a> &raquo;</li>
+      <li>neurotools.signal.coherence</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -80,33 +84,33 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Routines for calculating coherence</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.signal.morlet</span>     <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.getfftw</span>      <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.signal.multitaper</span> <span class="k">import</span> <span class="n">dpss_cached</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.circular</span>    <span class="k">import</span> <span class="n">squared_first_circular_moment</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal.morlet</span>     <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.getfftw</span>      <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal.multitaper</span> <span class="kn">import</span> <span class="n">dpss_cached</span>
+<span class="kn">from</span> <span class="nn">neurotools.stats.circular</span>    <span class="kn">import</span> <span class="n">squared_first_circular_moment</span>
 
 
 <span class="kn">import</span> <span class="nn">neurotools.signal</span>
 
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">cpu_count</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">cpu_count</span>
 <span class="n">__N_CPU__</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
 
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">nitime</span>
-    <span class="kn">from</span> <span class="nn">nitime.algorithms</span> <span class="k">import</span> <span class="n">coherence</span>
+    <span class="kn">from</span> <span class="nn">nitime.algorithms</span> <span class="kn">import</span> <span class="n">coherence</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not locate nitime module; coherence functions missing&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">coherence</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -365,7 +369,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing coherence code on CGID data&quot;</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">cgid.setup</span> <span class="k">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">cgid.setup</span> <span class="kn">import</span> <span class="o">*</span>
     <span class="n">okwarn</span><span class="p">()</span>
     <span class="n">session</span> <span class="o">=</span> <span class="s1">&#39;RUS120518&#39;</span>
     <span class="n">area</span> <span class="o">=</span> <span class="s1">&#39;M1&#39;</span>

@@ -6,6 +6,7 @@
   <title>neurotools.spikes &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -97,6 +98,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.mlab</span> <span class="k">as</span> <span class="nn">ml</span>
 <span class="kn">from</span> <span class="nn">neurotools.stats.density</span> <span class="kn">import</span> <span class="n">knn_1d_density</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="kn">import</span> <span class="n">find</span>
 
 <div class="viewcode-block" id="pp_xcorr"><a class="viewcode-back" href="../../neurotools.spikes.html#neurotools.spikes.pp_xcorr">[docs]</a><span class="k">def</span> <span class="nf">pp_xcorr</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">maxlag</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -199,11 +201,19 @@
 
 <div class="viewcode-block" id="pack_cross_correlation_matrix"><a class="viewcode-back" href="../../neurotools.spikes.html#neurotools.spikes.pack_cross_correlation_matrix">[docs]</a><span class="k">def</span> <span class="nf">pack_cross_correlation_matrix</span><span class="p">(</span><span class="n">xc</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert a 1D autocorrelogram into a two-timepoint</span>
+<span class="sd">    correlation matrix. </span>
+<span class="sd">    </span>
+<span class="sd">    This function is obsolete, use `scipy.linalg.toeplitz`</span>
+<span class="sd">    instead.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    xc: 1D np.array</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    matrix: 2D np.array</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">xc</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">xc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -216,14 +226,20 @@
 
 <div class="viewcode-block" id="cut_spikes"><a class="viewcode-back" href="../../neurotools.spikes.html#neurotools.spikes.cut_spikes">[docs]</a><span class="k">def</span> <span class="nf">cut_spikes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">cut</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    downsampling spike raster by factor cut</span>
-<span class="sd">    just sums up the bins (can generate counts &gt;1)</span>
+<span class="sd">    Downsample a spike raster `s` by factor `cut`</span>
+<span class="sd">    by symming adjacent bins. This may generate counts &gt;1</span>
+<span class="sd">    when two spikes occur within the same downsampled bin.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
+<span class="sd">    s: 1D np.array </span>
+<span class="sd">        Array of spike counts</span>
+<span class="sd">    cut: positive int</span>
+<span class="sd">        Downsampling factor </span>
+<span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    downsampled:np.array</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
         <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">cut</span><span class="p">])</span>
@@ -231,13 +247,24 @@
 
 <div class="viewcode-block" id="times_to_raster"><a class="viewcode-back" href="../../neurotools.spikes.html#neurotools.spikes.times_to_raster">[docs]</a><span class="k">def</span> <span class="nf">times_to_raster</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert spike times to a spike raster</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    spikes: np.int32</span>
+<span class="sd">        List of spike times as non-negative array</span>
+<span class="sd">        indecies</span>
+<span class="sd">    duration: </span>
+<span class="sd">        Duration of the desired raster</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result: 1D np.array with length `duration`    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">duration</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Some spike times are larger than the requested&#39;</span>
+            <span class="s1">&#39; raster duration&#39;</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1000</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
         <span class="n">result</span><span class="p">[</span><span class="n">spikes</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
@@ -249,12 +276,14 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    train:</span>
+<span class="sd">    binsize:</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">bins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">binsize</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">ml</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">train</span><span class="p">),</span><span class="n">bins</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="n">bins</span><span class="o">*</span><span class="n">binsize</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">find</span><span class="p">(</span><span class="n">train</span><span class="p">),</span><span class="n">bins</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="n">bins</span><span class="o">*</span><span class="n">binsize</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="bin_spike_times"><a class="viewcode-back" href="../../neurotools.spikes.html#neurotools.spikes.bin_spike_times">[docs]</a><span class="k">def</span> <span class="nf">bin_spike_times</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">binsize</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -262,6 +291,8 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    train:</span>
+<span class="sd">    binsize:</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

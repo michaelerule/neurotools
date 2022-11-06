@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>neurotools.stats.convolutional &mdash; Neurotools 2 documentation</title>
+  <title>neurotools.spikes.convolutional &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
@@ -68,8 +68,8 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-          <li><a href="../stats.html">neurotools.stats</a> &raquo;</li>
-      <li>neurotools.stats.convolutional</li>
+          <li><a href="../spikes.html">neurotools.spikes</a> &raquo;</li>
+      <li>neurotools.spikes.convolutional</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -78,7 +78,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for neurotools.stats.convolutional</h1><div class="highlight"><pre>
+  <h1>Source code for neurotools.spikes.convolutional</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
@@ -97,19 +97,22 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="ccor"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.ccor">[docs]</a><span class="k">def</span> <span class="nf">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
+<div class="viewcode-block" id="ccor"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.ccor">[docs]</a><span class="k">def</span> <span class="nf">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Cross correlate spikes</span>
+<span class="sd">    Get zero-lag cross-correlation between spike trains `i` and `j`.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    i : first neuron index </span>
-<span class="sd">    j : second neuron index</span>
-<span class="sd">    spikes : nreplicas x nneurons x samples array of spiking data</span>
+<span class="sd">    i: int </span>
+<span class="sd">        first neuron index </span>
+<span class="sd">    j: int</span>
+<span class="sd">        second neuron index</span>
+<span class="sd">    spikes: NTRIALS×NNEURONS×NSAMPLES np.array</span>
+<span class="sd">        Spiking population data </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    x : </span>
+<span class="sd">    x: float</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">i</span><span class="p">,:]</span>
     <span class="n">B</span> <span class="o">=</span> <span class="n">spikes</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span>
@@ -118,20 +121,25 @@
     <span class="n">x</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>  <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="ccm"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.ccm">[docs]</a><span class="k">def</span> <span class="nf">ccm</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
+<div class="viewcode-block" id="ccm"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.ccm">[docs]</a><span class="k">def</span> <span class="nf">ccm</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Construct size k cross-correlation matrix.</span>
-<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
+<span class="sd">    Construct size `k`-lag cross-correlation matrix between two spike</span>
+<span class="sd">    trains `i` and `j`.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    i : first neuron index </span>
-<span class="sd">    j : second neuron index</span>
-<span class="sd">    spikes : nreplicas x nneurons x samples array of spiking data</span>
-<span class="sd">    k : TODO</span>
+<span class="sd">    i: int </span>
+<span class="sd">        first neuron index </span>
+<span class="sd">    j: int</span>
+<span class="sd">        second neuron index</span>
+<span class="sd">    k: positive int</span>
+<span class="sd">        Number of cross-correlation lags to include</span>
+<span class="sd">    spikes : NTRIALS×NNEURONS×NSAMPLES np.array</span>
+<span class="sd">        Spiking population data </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result:</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
     <span class="n">midpoint</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
@@ -140,16 +148,17 @@
         <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">midpoint</span><span class="o">-</span><span class="n">i</span><span class="p">:</span><span class="n">midpoint</span><span class="o">+</span><span class="n">k</span><span class="o">-</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="blockccm"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.blockccm">[docs]</a><span class="k">def</span> <span class="nf">blockccm</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
+<div class="viewcode-block" id="blockccm"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.blockccm">[docs]</a><span class="k">def</span> <span class="nf">blockccm</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate covariance matrix for linear least squares. </span>
 <span class="sd">    It is a block matrix of all pairwise cross-correlation </span>
-<span class="sd">    matrices NTrials,NNeurons,NSamples = np.shape(spikes)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    k:</span>
-<span class="sd">    spikes:</span>
+<span class="sd">    k: positive int</span>
+<span class="sd">        Number of cross-correlation lags to include</span>
+<span class="sd">    spikes : NTRIALS×NNEURONS×NSAMPLES np.array</span>
+<span class="sd">        Spiking population data </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -167,16 +176,17 @@
             <span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="p">:,</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">,:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="sta"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.sta">[docs]</a><span class="k">def</span> <span class="nf">sta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
+<div class="viewcode-block" id="sta"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.sta">[docs]</a><span class="k">def</span> <span class="nf">sta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Construct size k STA</span>
-<span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
+<span class="sd">    Construct Spike-Triggered Average (STA) of sigal `lfp`</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    i:</span>
-<span class="sd">    spikes:</span>
-<span class="sd">    lfp:</span>
+<span class="sd">    i: int</span>
+<span class="sd">        Neuron index</span>
+<span class="sd">    spikes : NTRIALS×NNEURONS×NSAMPLES np.array</span>
+<span class="sd">        Spiking population data </span>
+<span class="sd">    lfp: 1D np.array</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -191,7 +201,7 @@
         <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)],</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="blocksta"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.blocksta">[docs]</a><span class="k">def</span> <span class="nf">blocksta</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
+<div class="viewcode-block" id="blocksta"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.blocksta">[docs]</a><span class="k">def</span> <span class="nf">blocksta</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Block spike-triggered average vector for time-domain least squares</span>
 <span class="sd">    filter</span>
@@ -214,7 +224,7 @@
         <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">k</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">B</span></div>
     
-<div class="viewcode-block" id="reconstruct"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.reconstruct">[docs]</a><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
+<div class="viewcode-block" id="reconstruct"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.reconstruct">[docs]</a><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reconstructs LFP from spikes</span>
 <span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
@@ -241,7 +251,7 @@
 <span class="c1"># get cross-spectral matrix for spiking data</span>
 <span class="c1"># compute least-squares estimator in frequency domain</span>
 
-<div class="viewcode-block" id="cspect"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.cspect">[docs]</a><span class="k">def</span> <span class="nf">cspect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
+<div class="viewcode-block" id="cspect"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.cspect">[docs]</a><span class="k">def</span> <span class="nf">cspect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get cross-spectral density as FT of cross-correlation</span>
 <span class="sd">    </span>
@@ -258,7 +268,7 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">ccor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">spikes</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="cspectm"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.cspectm">[docs]</a><span class="k">def</span> <span class="nf">cspectm</span><span class="p">(</span><span class="n">spikes</span><span class="p">):</span>
+<div class="viewcode-block" id="cspectm"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.cspectm">[docs]</a><span class="k">def</span> <span class="nf">cspectm</span><span class="p">(</span><span class="n">spikes</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get all pairs cross spectral matrix</span>
 <span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
@@ -291,7 +301,7 @@
             <span class="n">result</span><span class="p">[:,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="spike_lfp_filters"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.spike_lfp_filters">[docs]</a><span class="k">def</span> <span class="nf">spike_lfp_filters</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
+<div class="viewcode-block" id="spike_lfp_filters"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.spike_lfp_filters">[docs]</a><span class="k">def</span> <span class="nf">spike_lfp_filters</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cross-spectral densities between spikes and LFP</span>
 <span class="sd">    NTrials,NNeurons,NSamples = np.shape(spikes)</span>
@@ -317,7 +327,7 @@
         <span class="n">result</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cspectra</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
     
-<div class="viewcode-block" id="spectreconstruct"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.spectreconstruct">[docs]</a><span class="k">def</span> <span class="nf">spectreconstruct</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">spikes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fftspikes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="spectreconstruct"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.spectreconstruct">[docs]</a><span class="k">def</span> <span class="nf">spectreconstruct</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">spikes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fftspikes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reconstructs LFP from spikes using cross-spectral matrix.</span>
 <span class="sd">    Can optionally pass the fts if they are already available</span>
@@ -347,7 +357,7 @@
     <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">ifft</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">fftspikes</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">NTrials</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="create_spectral_model"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.create_spectral_model">[docs]</a><span class="k">def</span> <span class="nf">create_spectral_model</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">,</span><span class="n">shrinkage</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="create_spectral_model"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.create_spectral_model">[docs]</a><span class="k">def</span> <span class="nf">create_spectral_model</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">lfp</span><span class="p">,</span><span class="n">shrinkage</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -370,7 +380,7 @@
     <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">inv</span><span class="p">(</span><span class="n">xtx</span><span class="o">+</span><span class="n">shrinkage</span><span class="p">),</span><span class="n">xty</span><span class="p">)</span> <span class="k">for</span> <span class="n">xtx</span><span class="p">,</span><span class="n">xty</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">XTX</span><span class="p">,</span><span class="n">XTY</span><span class="p">)])</span>
     <span class="k">return</span> <span class="n">B</span></div>
 
-<div class="viewcode-block" id="construct_lowpass_operator"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.construct_lowpass_operator">[docs]</a><span class="k">def</span> <span class="nf">construct_lowpass_operator</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">):</span>
+<div class="viewcode-block" id="construct_lowpass_operator"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.construct_lowpass_operator">[docs]</a><span class="k">def</span> <span class="nf">construct_lowpass_operator</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    TODO: documentation</span>
 <span class="sd">    </span>
@@ -402,7 +412,7 @@
         <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ff</span><span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">:][:</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="autocorrelation_bayes"><a class="viewcode-back" href="../../../neurotools.stats.convolutional.html#neurotools.stats.convolutional.autocorrelation_bayes">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation_bayes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">D</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">prior_var</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="autocorrelation_bayes"><a class="viewcode-back" href="../../../neurotools.spikes.convolutional.html#neurotools.spikes.convolutional.autocorrelation_bayes">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation_bayes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">D</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">prior_var</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Computes autocorrelation of signal `s` over time lags `D`, </span>
 <span class="sd">    applying a Gaussian prior of mean zero and variance `prior_var`.</span>

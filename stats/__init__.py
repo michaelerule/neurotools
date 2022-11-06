@@ -12,7 +12,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 from . import circular
-from . import convolutional
 from . import covalign
 from . import density
 from . import distributions
@@ -576,6 +575,7 @@ def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None)
 def print_stats(g,name='',prefix=''):
     '''
     computes, prints, and returns
+    
         mean
         median
         minimum
@@ -613,6 +613,7 @@ def outliers(x,percent=10,side='both'):
         values from the left / right / both sides of the data
         distribution. If both, the percent is halved and removed
         from both the left and the right
+
     Returns
     -------
     ndarray:
@@ -917,7 +918,6 @@ def get_factor_analysis(X,NFACTORS):
         Loadings `diag(F.dot(F.T))`
     fa: sklearn.decomposition.FactorAnalysis
         Fitted factor analysis model
-
     '''
     fa = FactorAnalysis(n_components=NFACTORS)
     Y = fa.fit_transform(X)

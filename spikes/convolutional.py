@@ -18,17 +18,20 @@ import numpy as np
 
 def ccor(i,j,spikes):
     '''
-    Cross correlate spikes
+    Get zero-lag cross-correlation between spike trains `i` and `j`.
     
     Parameters
     ----------
-    i : first neuron index 
-    j : second neuron index
-    spikes : nreplicas x nneurons x samples array of spiking data
+    i: int 
+        first neuron index 
+    j: int
+        second neuron index
+    spikes: NTRIALS×NNEURONS×NSAMPLES np.array
+        Spiking population data 
     
     Returns
     -------
-    x : 
+    x: float
     '''
     A = spikes[:,i,:]
     B = spikes[:,j,:]
@@ -39,18 +42,23 @@ def ccor(i,j,spikes):
 
 def ccm(i,j,k,spikes):
     '''
-    Construct size k cross-correlation matrix.
-    NTrials,NNeurons,NSamples = np.shape(spikes)
+    Construct size `k`-lag cross-correlation matrix between two spike
+    trains `i` and `j`.
     
     Parameters
     ----------
-    i : first neuron index 
-    j : second neuron index
-    spikes : nreplicas x nneurons x samples array of spiking data
-    k : TODO
+    i: int 
+        first neuron index 
+    j: int
+        second neuron index
+    k: positive int
+        Number of cross-correlation lags to include
+    spikes : NTRIALS×NNEURONS×NSAMPLES np.array
+        Spiking population data 
     
     Returns
     -------
+    result:
     '''
     x = ccor(i,j,spikes)
     midpoint = len(x)//2
@@ -63,12 +71,13 @@ def blockccm(k,spikes):
     '''
     Generate covariance matrix for linear least squares. 
     It is a block matrix of all pairwise cross-correlation 
-    matrices NTrials,NNeurons,NSamples = np.shape(spikes)
     
     Parameters
     ----------
-    k:
-    spikes:
+    k: positive int
+        Number of cross-correlation lags to include
+    spikes : NTRIALS×NNEURONS×NSAMPLES np.array
+        Spiking population data 
     
     Returns
     -------
@@ -88,14 +97,15 @@ def blockccm(k,spikes):
 
 def sta(i,spikes,lfp):
     '''
-    Construct size k STA
-    NTrials,NNeurons,NSamples = np.shape(spikes)
+    Construct Spike-Triggered Average (STA) of sigal `lfp`
     
     Parameters
     ----------
-    i:
-    spikes:
-    lfp:
+    i: int
+        Neuron index
+    spikes : NTRIALS×NNEURONS×NSAMPLES np.array
+        Spiking population data 
+    lfp: 1D np.array
     
     Returns
     -------

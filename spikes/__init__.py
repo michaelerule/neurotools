@@ -14,6 +14,7 @@ from __future__ import print_function
 from . import waveform
 from . import ppc
 from . import sta
+from . import convolutional
 
 import numpy as np
 import matplotlib.mlab as ml

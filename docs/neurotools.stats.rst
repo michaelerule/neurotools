@@ -8,7 +8,6 @@ Submodules
    :maxdepth: 4
 
    neurotools.stats.circular
-   neurotools.stats.convolutional
    neurotools.stats.covalign
    neurotools.stats.density
    neurotools.stats.distributions

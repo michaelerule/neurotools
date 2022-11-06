@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 '''
-A couple functions for circular statistics.
+Functions for circular statistics.
 '''
 from __future__ import absolute_import
 from __future__ import with_statement
@@ -71,7 +71,8 @@ def logpolar_gaussian(frame,doplot=False):
 
 def complex_gaussian(frame,doplot=False):
     '''
-    Generate axis and 1-sigma contour for a complex gaussian distribution
+    Generate axis and 1-sigma contour for a complex gaussian 
+    distribution
     
     Parameters
     ----------
@@ -82,7 +83,12 @@ def complex_gaussian(frame,doplot=False):
     
     Returns
     -------
-        (axis 1, axis 2, 1-sigma ellipse)
+    axis1:
+        Path for axis 1, encoded as z=x+iy
+    axis2:
+        Path for axis 2, encoded as z=x+iy
+    circle:
+        Path for 1-sigma radius ellipse, encoded as z=x+iy
     '''
     # set to zero mean phase
     rephased = frame#*np.exp(1j*-theta)
@@ -130,6 +136,12 @@ def logpolar_stats(frame,doplot=False):
     
     Returns
     -------
+    circle:
+        Path for 1σ ellipse, encoded as z=x+iy.
+    arc:
+        Path for angular arc, encoded as z=x+iy.
+    radial:
+        Path for radial line, encoded as z=x+iy.
     '''
     z = np.mean(frame)
     r = np.mean(np.abs(frame))
@@ -170,6 +182,12 @@ def abspolar_stats(frame,doplot=False):
     
     Returns
     -------
+    circle:
+        Path for 1σ ellipse, encoded as z=x+iy.
+    arc:
+        Path for angular arc, encoded as z=x+iy.
+    radial:
+        Path for radial line, encoded as z=x+iy.
     '''
     z    = frame
     phi  = angle(np.mean(z**2))/2
@@ -235,6 +253,12 @@ def fit_vonmises(z):
     
     Returns
     -------
+    location:
+        von Mises location parameter μ
+    theta:
+        Sample circular mean of the provided data.
+    scale:
+        von Mises location parameter κ
     '''
     scipy.stats.distributions.vonmises.a = -numpy.pi
     scipy.stats.distributions.vonmises.b = numpy.pi

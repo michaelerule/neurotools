@@ -143,11 +143,11 @@ def function_hash_no_subroutines(f):
     '''
     See function_hash_with_subroutines. This has value is based on the
 
-        1   Undecorated source code
-        2   Docstring
-        3   function name
-        4   module name
-        5   function argument specification
+     1. Undecorated source code
+     2. Docstring
+     3. function name
+     4. module name
+     5. function argument specification
 
     Note that this function cannot detect changes in effective function
     behavior as a result of changes in subroutines, global variables, or
@@ -155,12 +155,12 @@ def function_hash_no_subroutines(f):
     
     Parameters
     ----------
-    f : function
+    f: function
         Function for which to generate a hash value
     
     Returns
     -------
-    string
+    :str
         Hash value that depends on the function. Hash is constructed such
         that changes in function source code and some dependencies will
         also generate a different hash. 
@@ -173,6 +173,17 @@ def function_hash_no_subroutines(f):
     return hash((module,name,docstring,source,argspec,subroutines))
 
 def base64hash(obj):
+    '''
+    Retrieve a base-64 encoded has for an object
+    
+    Parameters
+    ----------
+    obj: object
+    
+    Returns
+    -------
+    code: str
+    '''
     try:
         ss = ss.encode('UTF-8')
     except:
@@ -182,6 +193,18 @@ def base64hash(obj):
     return code
 
 def base64hash2byte(obj):
+    '''
+    Retrieve first two bytes of a base-64 encoded has for 
+    an object.
+    
+    Parameters
+    ----------
+    obj: object
+    
+    Returns
+    -------
+    code: str
+    '''
     try:
         ss = ss.encode('UTF-8')
     except:
@@ -249,54 +272,89 @@ def signature_to_file_string(f,sig,
     '''
     Converts an argument signature to a string if possible. 
     
-    This can
-    be used to store cached results in a human-readable format.
-    Alternatively, we may want to simply encode the value of the
-    argument signature in a string that is compatible with most file
-    systems. We'd still need to perform verification on the object.
-
-    No more than 4096 characters in path string
-    No more than 255 characters in file string
-    For windows compatibility try to limit it to 260 character total pathlen
-
-    For compatibility, these characters should be avoided in paths:
+    This can be used to store cached results in a human-
+    readable format. Alternatively, we may want to encode 
+    the value of the argument signature in a string that is 
+    compatible with most file systems.
+    
+    This does not append the file extension.
+    
+    Reasonable restrictions for compatibility:
+    
+     - No more than 4096 characters in path string
+     - No more than 255 characters in file string
+     - For windows compatibility try to limit it to 
+       260 character total pathlength
+     - These characters should be avoided:
         `\/<>:"|?*,@#={}'&`!%$. ASCII 0..31`
 
-    The easiest way to avoid problematic characters without restricting the
-    input is to re-encode as base 64.
+    The easiest way to avoid problematic characters without
+    restricting the input is to re-encode as base 64.
 
     The following modes are supported.
 
-        repr:
-            Uses repr and ast.literal_eval(node_or_string) to serialize the
-            argument signature. This is safe, but restricts the types permitted
-            as paramteters.
+    repr:
+        Uses repr and ast.literal_eval(node_or_string) to 
+        serialize the argument signature. This is safe, but
+        restricts the types permitted as paramteters.
 
-        json:
-            Uses json to serialize the argument signature. Argument signatures
-            cannot be uniquely recovered, because tuples and lists both map to
-            lists in the json representation. Restricting the types used in
-            the argument signature may circumvent this.
+    json:
+        Uses json to serialize the argument signature. 
+        Argument signatures cannot be uniquely recovered, 
+        because tuples and lists both map to lists in the 
+        json representation. Restricting the types used in
+        the argument signature may circumvent this.
 
-        pickle:
-            Uses pickle to serialize argument signature. This should uniquely
-            store argument signatures that can be recovered, but takes more
-            space. **This option no longer works in Python 3**
+    pickle:
+        Uses pickle to serialize argument signature. This 
+        should uniquely store argument signatures that can
+        be recovered, but takes more space. 
+        Use this with caution, since any changes to 
+        the pickle serialization protocol between version
+        will make the encoded data irretrievable.
 
-        human:
-            Attempts a human-readable format. Experimental.
+    human:
+        Attempts a human-readable format. Eperimental.
 
     Compression is on by defaut
     Signatures are base64 encoded by default
+    
+    Parameters
+    ----------
+    f: str
+        Function being called
+    sig:
+        Cleaned-up function arguments created by
+        `neurotools.jobs.ndecorator.argument_signature()`
+    
+    Other Parameters
+    ----------------
+    mode: str; default 'repr'
+        Can be `'repr'` `'json'` `'pickle'` `'human'`.
+    compressed: boolean; default True
+        Compress the resulting signature usingzlib?
+    base64encode: boolean; default True
+        Base-64 encode the resulting signature?
+    truncate: boolean; default True
+        Truncate file names that are too long?
+        This will discard data, but the truncated signature
+        may still serve as an identified with a low 
+        collision probability.
+        
+    Returns
+    -------
+    filename: str
     '''
     sig = neurotools.jobs.ndecorator.sanitize(sig)
 
     if compressed and not base64encode:
-        raise ValueError('Compression requires base64 encoding to be enabled')
+        raise ValueError(
+        'To use compression set base64encode=True')
 
     # A hash value gives us good distribution to control the complexity of
     # the directory tree used to manage the cache, but is not unique
-    # hsh = base64.urlsafe_b64encode(str(hash(sig)&0xffff).encode('UTF-8')).decode().replace('=','')
+    # hsh = base64.urlsafe_b64encode(
+    # str(hash(sig)&0xffff).encode('UTF-8')).decode().replace('=','')
     hsh = base64hash2byte(sig)    
 
     # We also need to store some information about which function this
@@ -332,18 +390,19 @@ def signature_to_file_string(f,sig,
             # hash the key if it is too long and truncation is enabled
             # TODO: probably should be a better hash function?
             s  = key.decode()
-            #kh = base64.urlsafe_b64encode(str(hash(s)).encode('UTF-8')).decode().replace('=','')
+            #kh = base64.urlsafe_b64encode(
+            #    str(hash(s)).encode('UTF-8')).decode().replace('=','')
             kh = base64hash(s)            
             filename = '%s.%s.%s'%(fname,hsh,kh)
             filename = filename[:255]
-        else:
-            raise ValueError(\
-                'Argument specification exceeds maximum path length.\n'+
-                'Function probably accepts data as an argument,\n'+
-                'rather than a key to locate data. See Joblib for a\n'+
-                'caching framework that uses cryptographic hashes\n'+
-                'to solve this problem. For now, we skip the cache.\n\n'+
-                'The offending filename is '+filename)
+        else: raise ValueError(
+            'Argument specification exceeds maximum path '
+            'length. Function probably accepts data as an '
+            'argument, rather than a key to locate data. '
+            'See Joblib for a caching framework that uses '
+            'cryptographic hashes to solve this problem. '
+            'For now, we skip the cache. The offending '
+            'filename is '+filename)
     if __PYTHON_2__:
         try:
             ascii = filename.encode("utf8","ignore")
@@ -356,76 +415,122 @@ def signature_to_file_string(f,sig,
     #print((fname,hsh,key.decode()))
     return filename
 
-def file_string_to_signature(filename,mode='repr',compressed=True,base64encode=True):
+def file_string_to_signature(
+    filename,
+    mode='repr',
+    compressed=True,
+    base64encode=True):
     '''
-    Extracts the argument key from the compressed representation in a
-    cache filename entry. Inverse of signature_to_file_string.
+    Extracts the argument key from the compressed 
+    representation in a cache filename entry. Inverse of 
+    `signature_to_file_string()`.
+    
+    The `filename` should be provided as a string, without
+    the file extension.
 
     The following modes are supported.
 
     repr:
-        Uses repr and ast.literal_eval(node_or_string) to serialize the
-        argument signature. This is safe, but restricts the types permitted
-        as paramteters.
+        Uses repr and ast.literal_eval(node_or_string) to 
+        serialize the argument signature. This is safe, but
+        restricts the types permitted as paramteters.
 
     json:
-        Uses json to serialize the argument signature. Argument signatures
-        cannot be uniquely recovered, because tuples and lists both map to
-        lists in the json representation. Restricting the types used in
+        Uses json to serialize the argument signature. 
+        Argument signatures cannot be uniquely recovered, 
+        because tuples and lists both map to lists in the 
+        json representation. Restricting the types used in
         the argument signature may circumvent this.
 
     pickle:
-        Uses pickle to serialize argument signature. This should uniquely
-        store argument signatures that can be recovered, but takes more
-        space. **This option no longer works in Python 3**
+        Uses pickle to serialize argument signature. This 
+        should uniquely store argument signatures that can
+        be recovered, but takes more space. 
+        Use this with caution, since any changes to 
+        the pickle serialization protocol between version
+        will make the encoded data irretrievable.
 
     human:
-        Attempts a human-readable format. Eperimental.
+        Attempts a human-readable format. Experimental.
 
     Compression is on by default
     Signatures are base64 encoded by default
+    
+    Parameters
+    ----------
+    filename: str
+        Encoded filename, as a string, *without* the file
+        extension 
+    
+    Other Parameters
+    ----------------
+    mode: str; default 'repr'
+        Can be `'repr'` `'json'` `'pickle'` `'human'`.
+    compressed: boolean; default True
+        Whether `zlib` was used to compress this function
+        call signature
+    base64encode: boolean; default  True
+        Whether this function call signature was base-65
+        encoded.
+    
     '''
     pieces = filename.split('.')
     key  = pieces[-1]
     hsh  = pieces[-2]
     name = '.'.join(pieces[:-3])
 
-    # The argument spec can be mapped uniquely to a file name by converting
-    # it to text, then converting this text to base64 to avoid issues with
-    # special characters. Passing the text representation through zlib
-    # preserves the uniqueness of the key, while reducing the overall size.
-    # This improves performance
-    if base64encode: key = base64.urlsafe_b64decode((key+'='*10).encode('UTF-8'))
-    if compressed  : key = zlib.decompress(key)
-    key = key.decode()
-    if   mode=='repr'  : sig = ast.literal_eval(key)
-    elif mode=='json'  : sig = json.loads(key)
-    elif mode=='pickle': sig = pickle.loads(key)
-    elif mode=='human' : sig = human_decode(key)
-    else: raise ValueError('I support coding modes repr, json, and pickle\n'+
-        'I don\'t recognize coding mode %s'%mode)
-    sig = neurotools.jobs.ndecorator.sanitize(sig)
-    return sig
-
+    try:
+        # The argument spec can be mapped uniquely to a file
+        # name by converting it to text, then converting 
+        # this text to base64 to avoid issues with special 
+        # characters. Passing the text representation 
+        # through zlib preserves the uniqueness of the key, 
+        # while reducing the overall size. This improves
+        # performance.
+        if base64encode: key = base64.urlsafe_b64decode(
+            (key+'='*10).encode('UTF-8'))
+        if compressed  : key = zlib.decompress(key)
+        key = key.decode()
+        if   mode=='repr'  : sig = ast.literal_eval(key)
+        elif mode=='json'  : sig = json.loads(key)
+        elif mode=='pickle': sig = pickle.loads(key)
+        elif mode=='human' : sig = human_decode(key)
+        else: raise ValueError((
+            'I support coding modes repr, json, and pickle;'
+            ' I don\'t recognize coding mode %s')%mode)
+        sig = neurotools.jobs.ndecorator.sanitize(sig)
+        return sig
+    except:
+        raise ValueError((
+            'Could not decode "%s"; Please ensure that you'
+            'provide the file name without the file '
+            'extension')%filename)
+    
+    
+    
 def human_encode(sig):
     '''
     Formats the argument signature for saving as file name
     
     Parameters
     ----------
-    sig: argument signature as a safe nested tuple
+    sig: nested tuple
+        Argument signature as a safe nested tuple
     
     Returns
     -------
-    result (str): human-readable argument-signature filename
+    result: str
+        Human-readable argument-signature filename
     '''
-    sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
+    sig = neurotools.jobs.ndecorator.sanitize(
+        sig,mode='strict')
     named, vargs = sig
     if not vargs is None:
         raise ValueError(
-            'Currently variable arguments are not permitted '+
-            'in the human-readable format')
-    result = ','.join(['%s=%s'%(k,repr(v)) for (k,v) in named])
+            'Currently variable arguments are not permitted'
+            ' in the human-readable format')
+    result = ','.join(
+        ['%s=%s'%(k,repr(v)) for (k,v) in named])
     return result
 
 def human_decode(key):
@@ -434,54 +539,80 @@ def human_decode(key):
     
     Parameters
     ----------
-    key (str): human-readable argument-signature filename
+    key: str
+        Human-readable argument-signature filename
     
     Returns
     -------
-    sig: argument signature as a nested tuple
+    sig: nested tuple
+        Argument signature as a nested tuple
     '''
     params = [k.split('=') for k in key.split(',')]
     params = tuple((n,ast.literal_eval(v)) for n,v in params)
     sig = (params,None)
-    sig = neurotools.jobs.ndecorator.sanitize(sig,mode='strict')
+    sig = neurotools.jobs.ndecorator.sanitize(
+        sig,mode='strict')
     return sig
 
 def get_cache_path(cache_root,f):
     '''
+    Locate the directory path for function `f` within the
+    `__neurotools_cache__` path `cache_root`.
     
     Parameters
     ----------
-    cache_root: 
-    f: 
+    cache_root: str
+        Path to root of the `__neurotools__` cache
+    f: function
+        Cached function object
+        
+    Returns
+    -------
+    path: str
     '''
-    sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
+    sig = neurotools.jobs.ndecorator.argument_signature(
+        f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
             mode        ='repr',
             compressed  =True,
             base64encode=True)
-    pieces   = fn.split('.')
+    pieces = fn.split('.')
     # first two words used as directories
-    path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
+    path = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
     return path
 
 def locate_cached(cache_root,f,method,*args,**kwargs):
     '''
+    Locate a specific cache entry within `cache_root` for
+    function `f` cached with method `method`, and called
+    with arguments `*args` and keyword arguments `**kwargs`.
     
     Parameters
     ----------
-    cache_root: directory/path as string
-    f:          function
-    method:     cache file extension e.g. .npy, .mat, etc. 
-    args:       function parameters
-    kwargs:     function keyword arguments
+    cache_root: str
+        directory/path as string
+    f: function
+        Function being cached
+    method: str
+        Cache file extension e.g. .npy, .mat, etc. 
+    args: iterable
+        function parameters
+    kwargs: dict
+        function keyword arguments
     
     Returns
     -------
-    fn (str):   File name of cache entry without extension
-    sig:        Tuple of (args,kwargs) info from `argument_signature()`
-    path (str): Directory containing cache file    
-    filename:   File name with extension
-    location:   Full absolute path to cache entry
+    fn: str   
+        File name of cache entry without extension
+    sig: tuple
+        Tuple of (args,kwargs) info from 
+        `argument_signature()`
+    path: str
+        Directory containing cache file    
+    filename: str
+        File name with extension
+    location: str
+        Full absolute path to cache entry
     '''
     sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
@@ -489,9 +620,9 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
             compressed  =True,
             base64encode=True)
 
-    pieces   = fn.split('.')
+    pieces = fn.split('.')
     # first two words used as directories
-    path     = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
+    path = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
     # remaining pieces a filename
     filename = '.'.join(pieces[-2:])+'.'+method
     location = path+filename
@@ -499,6 +630,11 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
 
 def validate_for_matfile(x):
     '''
+    Verify that the nested tuple `x`, which contains the
+    arguments to a function call, can be safely stored 
+    in a Matlab matfile (`.mat`).
+    
+    
     Numpy types: these should be compatible
     ==========  ================================================================================
     Type        Description
@@ -522,9 +658,12 @@ def validate_for_matfile(x):
     
     Parameters
     ----------
+    x: nested tuple
+        Arguments to a function
     
     Returns
     -------
+    :boolean
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
@@ -544,8 +683,8 @@ import warnings
 
 def validate_for_numpy(x):
     '''
-    Check whether an array-like object can safely be stored in a numpy
-    archive. 
+    Check whether an array-like object can safely be stored 
+    in a numpy archive. 
     
     Numpy types: these should be compatible
     ==========  ================================================================================
@@ -570,13 +709,14 @@ def validate_for_numpy(x):
     
     Parameters
     ----------
-    x : object
+    x: object
         array-like object; 
     
     Returns
     -------
-    bool
-        True if the data in `x` can be safely stored in a Numpy archive
+    :boolean
+        True if the data in `x` can be safely stored in a 
+        Numpy archive
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
                   np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
@@ -680,9 +820,10 @@ def disk_cacher(
     
     def cached(f):
         '''
-        The `disk_cacher` function constructs a decorator `cached` that
-        can be used to wrap functions to memoize their results to disk. 
-        `cached` returns the `decorated` object which is constructed by
+        The `disk_cacher` function constructs a decorator 
+        `cached` that can be used to wrap functions to 
+        memoize their results to disk. `cached` returns the
+        `decorated` object which is constructed by
         calling the inner function `wrapped`.
         
             cached <-- disk_cacher(location,...)
@@ -808,17 +949,19 @@ def disk_cacher(
         
         def purge(*args,**kwargs):
             '''
-            Delete cache entries matching arguments. This is a diestructive
-            operation, execute with care.
+            Delete cache entries matching arguments. This is
+            a destructive operation, execute with care.
     
             Parameters
             ----------
             *args
-                Arguments forward to the `locate_cached` function. Matching
-                cache entries will be deleted.
+                Arguments forward to the `locate_cached` 
+                function. Matching cache entries will be 
+                deleted.
             **kwargs
-                Keyword arguments forward to the `locate_cached` function
-                Matching cache entries will be deleted.
+                Keyword arguments forward to the 
+                `locate_cached` function Matching cache 
+                entries will be deleted.
             '''
             for method in VALID_METHODS:
                 fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
@@ -916,9 +1059,10 @@ def hierarchical_cacher(fast_to_slow,
     
     Returns
     -------
-    hierarchical : decorator
-        A hierarchical disk-caching decorator that can be used to memoize
-        functions to the specified disk caching hierarchy. 
+    hierarchical: decorator
+        A hierarchical disk-caching decorator that can be 
+        used to memoize functions to the specified disk 
+        caching hierarchy. 
     '''
     slow_to_fast = fast_to_slow[::-1] # reverse it
     all_cachers  = []

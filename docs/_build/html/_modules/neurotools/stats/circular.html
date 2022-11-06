@@ -82,7 +82,7 @@
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">A couple functions for circular statistics.</span>
+<span class="sd">Functions for circular statistics.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
@@ -152,7 +152,8 @@
 
 <div class="viewcode-block" id="complex_gaussian"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.complex_gaussian">[docs]</a><span class="k">def</span> <span class="nf">complex_gaussian</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Generate axis and 1-sigma contour for a complex gaussian distribution</span>
+<span class="sd">    Generate axis and 1-sigma contour for a complex gaussian </span>
+<span class="sd">    distribution</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -163,7 +164,12 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        (axis 1, axis 2, 1-sigma ellipse)</span>
+<span class="sd">    axis1:</span>
+<span class="sd">        Path for axis 1, encoded as z=x+iy</span>
+<span class="sd">    axis2:</span>
+<span class="sd">        Path for axis 2, encoded as z=x+iy</span>
+<span class="sd">    circle:</span>
+<span class="sd">        Path for 1-sigma radius ellipse, encoded as z=x+iy</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># set to zero mean phase</span>
     <span class="n">rephased</span> <span class="o">=</span> <span class="n">frame</span><span class="c1">#*np.exp(1j*-theta)</span>
@@ -211,6 +217,12 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    circle:</span>
+<span class="sd">        Path for 1σ ellipse, encoded as z=x+iy.</span>
+<span class="sd">    arc:</span>
+<span class="sd">        Path for angular arc, encoded as z=x+iy.</span>
+<span class="sd">    radial:</span>
+<span class="sd">        Path for radial line, encoded as z=x+iy.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>
@@ -251,6 +263,12 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    circle:</span>
+<span class="sd">        Path for 1σ ellipse, encoded as z=x+iy.</span>
+<span class="sd">    arc:</span>
+<span class="sd">        Path for angular arc, encoded as z=x+iy.</span>
+<span class="sd">    radial:</span>
+<span class="sd">        Path for radial line, encoded as z=x+iy.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">z</span>    <span class="o">=</span> <span class="n">frame</span>
     <span class="n">phi</span>  <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
@@ -316,6 +334,12 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    location:</span>
+<span class="sd">        von Mises location parameter μ</span>
+<span class="sd">    theta:</span>
+<span class="sd">        Sample circular mean of the provided data.</span>
+<span class="sd">    scale:</span>
+<span class="sd">        von Mises location parameter κ</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">vonmises</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>
     <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">vonmises</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>

@@ -229,9 +229,9 @@ def argument_signature(function,*args,**kwargs):
         
     # If not all arguments are provided,
     # check **kwargs and defaults
-    ndefaulted   = max(0,nnamed - nargs)
-    default_map = dict(zip(named[-ndefault:],defaults)) \
-        if ndefault>0 else {}
+    ndefaulted  = max(0,nnamed - nargs)
+    default_map = {} if ndefault<=0 else\
+        dict(zip(named[-ndefault:],defaults))
     if ndefaulted>0:
         for k in named[-ndefaulted:]:
             if k in named_store: raise ValueError(

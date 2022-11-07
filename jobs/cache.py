@@ -44,91 +44,103 @@ import neurotools.util.tools
 import neurotools.jobs
 import neurotools.jobs.ndecorator
 from   neurotools.jobs.closure   import verify_function_closure
-from   neurotools.jobs.filenames import is_dangerous_filename, check_filename
+from   neurotools.jobs.filenames import is_dangerous_filename
+from   neurotools.jobs.filenames import check_filename
 
 from pathlib import Path
 
 @neurotools.jobs.ndecorator.memoize
 def function_hash_with_subroutines(f,force=False):
     '''
-    Functions may change if their subroutines change. This function computes
-    a hash value that is sensitive to changes in the source code, docstring,
-    argument specification, name, module, and subroutines.
+    Functions may change if their subroutines change. This 
+    function computes a hash value that is sensitive to 
+    changes in the source code, docstring, argument 
+    specification, name, module, and subroutines.
 
-    This is a recursive procedure with a fair amount of overhead.
-    To allow for the possibility of mutual recursion, subroutines are
-    excluded from the hash if the function has already been visited.
+    This is a recursive procedure with a fair amount of 
+    overhead. To allow for the possibility of mutual 
+    recursion, subroutines are excluded from the hash if 
+    the function has already been visited.
 
-    This does not use the built-in hash function for functions in python.
+    This does not use the built-in hash function for 
+    functions in python.
 
-    Is memoization possible? Making memoization compatible with graceful
-    handling of potentially complex mutually recurrent call structures is
-    tricky. Each function generates a call tree, which does not expand a
-    node if it is already present in the call tree structure. Therefore
-    there are many possible hash values for an intermediate function
-    depending on how far it's call tree gets expanded, which depends on
-    what has been expanded and encountered so far. Therefore, we cannot
+    Is memoization possible? Making memoization compatible 
+    with graceful handling of potentially complex mutually 
+    recurrent call structures is tricky. Each function 
+    generates a call tree, which does not expand a node if
+    it is already present in the call tree structure. 
+    Therefore there are many possible hash values for an 
+    intermediate function depending on how far it's call 
+    tree gets expanded, which depends on what has been 
+    expanded and encountered so far. Therefore, we cannot
     cache these intermediate values.
 
-    Is it worth noting that the topology of a mutually recurrent call
-    structure cannot change without changing the source code of at least
-    one function in the call graph? So it suffices, to hash the subroutines,
-    to expand the call graph (potentially excluding standard and system
-    library functions), grab the non-recursive hash for each of these
-    functions (which may be cached), and then generate the subroutine
-    dependent hash by combining the non-recursive hash with the hash
-    of a datastructure representing the subroutine "profile" obtained
-    from the call graph.
+    Note: the topology of a mutually recurrent call 
+    structure cannot change without changing the source 
+    code of at least one function in the call graph? 
+    So it suffices to (1) hash the subroutines, (2) 
+    expand the call graph (potentially excluding standard 
+    and system library functions), (3) grab the non-
+    recursive hash for each of these functions, 
+    and (4) then generate the subroutine dependent hash by 
+    combining the non-recursive hash with the hash of a 
+    datastructure representing the subroutine "profile" 
+    obtained from the call graph.
+    
+    We assume that any decorators wrapping the function do 
+    not modify it's computation, and can safely be stripped.
 
-    For now we are assuming that any decorators wrapping the function
-    do not modify it's computation, and therefore can safely be stripped.
-    This is an assumption and is not, in general, true.
-
-    Note that this function cannot detect changes in effective function
-    behavior that result from changes in global variables or mutable scope
-    that has been closed over.
+    Note that this function cannot detect changes in 
+    effective function behavior that result from changes 
+    in global variables or mutable scope that has been 
+    closed over.
     
     Parameters
     ----------
-    force : bool
-        force muse be true, otherwise this function will fail with a 
-        warning. 
+    force: boolean
+        force muse be true, otherwise this function will 
+        fail with a warning. 
     
     Returns
     -------
-    string
+    :str
         Hash of function
     '''
     if not force:
         raise NotImplementedError(
-        "It is not, in general, possible to hash a function reliably")
+        'It is not possible to hash a function reliably')
 
     # repeatedly expand list of subroutines
     to_expand = {f}
     expanded  = set()
     while len(to_expand)>0:
         new_subroutines = set()
-        for g in to_expand: new_subroutines |= get_subroutines(g)
+        for g in to_expand: 
+            new_subroutines|=get_subroutines(g)
         expanded |= to_expand
         to_expand = new_subroutines - expanded
-    # we now have a set, we need to provide some ordering over that set
-    # sort the hash values and hash that
-    return hash(tuple(sorted(map(function_hash_no_subroutines,expanded))))
+    # we now have a set, we need to provide some ordering 
+    # over that set sort the hash values and hash that
+    return hash(tuple(sorted(map(
+        function_hash_no_subroutines,expanded))))
 
 
 def get_source(f):
     '''
-    Extracts and returns the source code of a function (if it exists). 
+    Extracts and returns the source code of a function 
+    (if it exists). 
     
     Parameters
     ----------
-    f : function
-        Function for which to extract source code (if possible)
+    f: function
+        Function for which to extract source code
     
     Returns
     -------
-    string
-        String containing the source code of the passed function        
+    :str
+        String containing the source code of 
+        the passed function        
     '''
     g = neurotools.jobs.ndecorator.unwrap(f)
     try:
@@ -141,7 +153,8 @@ def get_source(f):
 @neurotools.jobs.ndecorator.memoize
 def function_hash_no_subroutines(f):
     '''
-    See function_hash_with_subroutines. This has value is based on the
+    See function_hash_with_subroutines. 
+    This hash value is based on the
 
      1. Undecorated source code
      2. Docstring
@@ -149,9 +162,10 @@ def function_hash_no_subroutines(f):
      4. module name
      5. function argument specification
 
-    Note that this function cannot detect changes in effective function
-    behavior as a result of changes in subroutines, global variables, or
-    mutable scope that has been closed over.
+    Note that this function cannot detect changes in 
+    effective function behavior as a result of changes in 
+    subroutines, global variables, or mutable scope that 
+    has been closed over.
     
     Parameters
     ----------
@@ -161,16 +175,19 @@ def function_hash_no_subroutines(f):
     Returns
     -------
     :str
-        Hash value that depends on the function. Hash is constructed such
-        that changes in function source code and some dependencies will
-        also generate a different hash. 
+        Hash value that depends on the function. Hash is 
+        constructed such that changes in function source 
+        code and some dependencies will also generate a 
+        different hash. 
     '''
     source    = get_source(f)
     docstring = inspect.getdoc(f)
     name      = f.__name__
     module    = f.__module__
-    argspec   = neurotools.jobs.ndecorator.sanitize(inspect.getargspec(f))
-    return hash((module,name,docstring,source,argspec,subroutines))
+    argspec   = neurotools.jobs.ndecorator.sanitize(
+        inspect.getargspec(f))
+    return hash((
+        module,name,docstring,source,argspec,subroutines))
 
 def base64hash(obj):
     '''
@@ -189,7 +206,8 @@ def base64hash(obj):
     except:
         ss = repr(obj).encode('UTF-8')
     code = base64.urlsafe_b64encode(\
-        str(hashlib.sha224(ss).digest()).encode('UTF-8')).decode().replace('=','')
+            str(hashlib.sha224(ss).digest()).encode('UTF-8')
+        ).decode().replace('=','')
     return code
 
 def base64hash2byte(obj):
@@ -211,26 +229,28 @@ def base64hash2byte(obj):
         ss = repr(obj).encode('UTF-8')
     bytes = hashlib.sha224(ss).digest()
     code = base64.urlsafe_b64encode(\
-        str(bytes[:2]).encode('UTF-8')).decode().replace('=','')
+            str(bytes[:2]).encode('UTF-8')
+        ).decode().replace('=','')
     return code
 
 def function_signature(f):
     '''
-    Generates identifier used to locate cache corresponding to a
-    particular function.
+    Generates identifier used to locate cache corresponding 
+    to a particular function.
 
-    We want to be able to cache results to dist to memoize across
-    different instances and over time. However, if the code for the
-    underlying function changes, we're in a pickle, as checking whether
-    the change is meaningful is almost impossible.
+    We want to be able to cache results to dist to memoize 
+    across different instances and over time. However, if 
+    the code for the underlying function changes, checking 
+    whether the change is meaningful is almost impossible.
 
-    Caches can also become invalid if the behavior of subroutines change,
-    quite tricky!
+    Caches can also become invalid if the behavior of 
+    subroutines change, quite tricky!
 
-    For now, we'll check that the function module, name, argspec, source,
-    and file are the same. Note that module and name identify which cache,
-    and source, file, and argspec validate that the function has not
-    changes significantly.
+    For now, we'll check that the function module, name, 
+    argspec, source, and file are the same. Note that 
+    module and name identify which cache, and source, file,
+    and argspec validate that the function has not changed
+    significantly.
 
     Parameters
     ----------
@@ -238,29 +258,30 @@ def function_signature(f):
 
     Returns
     -------
+    :str
+        name+'.'+code
     
     '''
-    # The one thing the decorator module can't fake is where the
-    # function is defined. So we can't see the source code directly if
-    # we're passed a wrapped function. We can however detect this case
-    # and peel away the layers to get to the underlying source. The
-    # decorator module will leave the wrapped function in a variable
-    # called __wrapped__, so we can follow this back to the source code
+    # The one thing the decorator module can't fake is 
+    # where the function is defined. So we can't see the 
+    # source code directly if we're passed a wrapped 
+    # function. We can however detect this case and peel
+    # away the layers to get to the underlying source. The
+    # decorator module will leave the wrapped function in a
+    # variable  called __wrapped__, so we can follow this
+    # back to the source code
     g = f
     source    = get_source(f)
     docstring = inspect.getdoc(f)
     name      = f.__name__
     module    = f.__module__
-    argspec   = neurotools.jobs.ndecorator.sanitize(inspect.getargspec(f))
+    argspec   = neurotools.jobs.ndecorator.sanitize(
+        inspect.getargspec(f))
 
     identity  = (module,name)
     signature = (docstring,source,argspec)
     name = '.'.join(identity)
-    #print(identity,signature)
-    #code = base64.urlsafe_b64encode(\
-    #    str(hash((identity,signature))&0xffff).encode('UTF-8')).decode().replace('=','')
     code = base64hash2byte((identity,signature))
-    #print(name,code)
     return name+'.'+code
    
 
@@ -326,6 +347,13 @@ def signature_to_file_string(f,sig,
     sig:
         Cleaned-up function arguments created by
         `neurotools.jobs.ndecorator.argument_signature()`
+        A tuple of:
+            args: tuple
+                A tuple consisting of a list of
+                (argument_name, argument_value) tuples.
+            vargs:
+                A tuple containing extra variable 
+                arguments ("varargs"), if any.
     
     Other Parameters
     ----------------
@@ -351,47 +379,47 @@ def signature_to_file_string(f,sig,
         raise ValueError(
         'To use compression set base64encode=True')
 
-    # A hash value gives us good distribution to control the complexity of
-    # the directory tree used to manage the cache, but is not unique
-    # hsh = base64.urlsafe_b64encode(
-    # str(hash(sig)&0xffff).encode('UTF-8')).decode().replace('=','')
+    # A hash value gives us good distribution to control
+    # the complexity of the directory tree used to manage
+    # the cache, but is not unique
     hsh = base64hash2byte(sig)    
 
-    # We also need to store some information about which function this
-    # is for. We'll get a human readable name identifying the funciton,
-    # and a shorter hash-value to make sure we invalidate the cache if
+    # We also need to store some information about which
+    # function this is for. We'll get a human readable
+    # name identifying the funciton, and a shorter
+    # hash-value to make sure we invalidate the cache if
     # the source code or function definition changes.
     fname = function_signature(f)
 
-    # The argument spec can be mapped uniquely to a file name by converting
-    # it to text, then converting this text to base64 to avoid issues with
-    # special characters. Passing the text representation through zlib
-    # preserves the uniqueness of the key, while reducing the overall size.
-    # This improves performance
+    # The argument spec can be mapped uniquely to a file 
+    # name by converting it to text, then converting this
+    # text to base64 to avoid issues with special
+    # characters. Passing the text representation through
+    # zlib preserves the uniqueness of the key, while
+    # reducing the overall size. This improves performance
     # convert key to an encoded string
     if   mode=='repr'  : key = repr(sig)
     elif mode=='json'  : key = json.dumps(sig)
     elif mode=='pickle': key = pickle.dumps(sig)
     elif mode=='human' : key = human_encode(sig)
-    else: raise ValueError('I support coding modes repr, json, and pickle\n'+
+    else: raise ValueError(
+        'I support coding modes repr, json, and pickle. '
         'I don\'t recognize coding mode %s'%mode)
     # compress and base64 encode string
     key = key.encode('UTF-8')
     if compressed  : key = zlib.compress(key)
     if base64encode: key = base64.urlsafe_b64encode(key)
 
-    # Path will be a joining of the hash and the key. The hash should give
-    # good distribution, while the key means we can recover the arguments
-    # from the file name.
+    # Path will be a joining of the hash and the key. The 
+    # hash should give good distribution, while the key 
+    # means we can recover the arguments from the file name.
     filename = '%s.%s.%s'%(fname,hsh,key.decode())
     # If for some reason the path is too long, complain
     if len(filename)>255:
         if truncate:
-            # hash the key if it is too long and truncation is enabled
-            # TODO: probably should be a better hash function?
+            # hash the key if it is too long and truncation 
+            # is enabled
             s  = key.decode()
-            #kh = base64.urlsafe_b64encode(
-            #    str(hash(s)).encode('UTF-8')).decode().replace('=','')
             kh = base64hash(s)            
             filename = '%s.%s.%s'%(fname,hsh,kh)
             filename = filename[:255]
@@ -411,8 +439,6 @@ def signature_to_file_string(f,sig,
         except UnicodeDecodeError:
             pass
     check_filename(filename)
-    #print(filename)
-    #print((fname,hsh,key.decode()))
     return filename
 
 def file_string_to_signature(
@@ -473,6 +499,18 @@ def file_string_to_signature(
         Whether this function call signature was base-65
         encoded.
     
+    Returns
+    -------
+    sig: nested tuple
+        Function arguments created by
+        `neurotools.jobs.ndecorator.argument_signature()`
+        A tuple of:
+            args: tuple
+                A tuple consisting of a list of
+                (argument_name, argument_value) tuples.
+            vargs:
+                A tuple containing extra variable 
+                arguments ("varargs"), if any.
     '''
     pieces = filename.split('.')
     key  = pieces[-1]
@@ -510,7 +548,7 @@ def file_string_to_signature(
     
 def human_encode(sig):
     '''
-    Formats the argument signature for saving as file name
+    Formats an argument signature for saving as file name
     
     Parameters
     ----------
@@ -594,7 +632,7 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     f: function
         Function being cached
     method: str
-        Cache file extension e.g. .npy, .mat, etc. 
+        Cache file extension e.g. `".npy"`, "`.mat`", etc. 
     args: iterable
         function parameters
     kwargs: dict
@@ -634,26 +672,27 @@ def validate_for_matfile(x):
     arguments to a function call, can be safely stored 
     in a Matlab matfile (`.mat`).
     
-    
-    Numpy types: these should be compatible
-    ==========  ================================================================================
-    Type        Description
-    ==========  ================================================================================
-    bool  	    Boolean (True or False) stored as a byte
-    int8 	    Byte (-128 to 127)
-    int16 	    Integer (-32768 to 32767)
-    int32 	    Integer (-2147483648 to 2147483647)
-    int64 	    Integer (-9223372036854775808 to 9223372036854775807)
-    uint8 	    Unsigned integer (0 to 255)
-    uint16 	    Unsigned integer (0 to 65535)
-    uint32 	    Unsigned integer (0 to 4294967295)
-    uint64 	    Unsigned integer (0 to 18446744073709551615)
-    float16 	Half precision float: sign bit, 5 bits exponent, 10 bits mantissa
-    float32 	Single precision float: sign bit, 8 bits exponent, 23 bits mantissa
-    float64 	Double precision float: sign bit, 11 bits exponent, 52 bits mantissa
-    complex64 	Complex number, represented by two 32-bit floats (real and imaginary components)
-    complex128 	Complex number, represented by two 64-bit floats (real and imaginary components)
-    ==========  ================================================================================
+    .. table:: Numpy types: these should be compatible
+        :widths: auto
+        
+        ==========  ========================================
+        Type        Description
+        ==========  ========================================
+        bool 	    Boolean (True or False) stored as a byte
+        int8 	    Byte (-128 to 127)
+        int16 	    Integer (-32768 to 32767)
+        int32 	    Integer (-2147483648 to 2147483647)
+        int64 	    Integer (-9223372036854775808 to 9223372036854775807)
+        uint8 	    Unsigned integer (0 to 255)
+        uint16 	    Unsigned integer (0 to 65535)
+        uint32 	    Unsigned integer (0 to 4294967295)
+        uint64 	    Unsigned integer (0 to 18446744073709551615)
+        float16 	Half precision float: sign bit, 5 bits exponent, 10 bits mantissa
+        float32 	Single precision float: sign bit, 8 bits exponent, 23 bits mantissa
+        float64 	Double precision float: sign bit, 11 bits exponent, 52 bits mantissa
+        complex64 	Complex number, represented by two float32
+        complex128 	Complex number, represented by two float64
+        ==========  ========================================
     
     
     Parameters
@@ -686,25 +725,27 @@ def validate_for_numpy(x):
     Check whether an array-like object can safely be stored 
     in a numpy archive. 
     
-    Numpy types: these should be compatible
-    ==========  ================================================================================
-    Type        Description
-    ==========  ================================================================================
-    bool 	    Boolean (True or False) stored as a byte
-    int8 	    Byte (-128 to 127)
-    int16 	    Integer (-32768 to 32767)
-    int32 	    Integer (-2147483648 to 2147483647)
-    int64 	    Integer (-9223372036854775808 to 9223372036854775807)
-    uint8 	    Unsigned integer (0 to 255)
-    uint16 	    Unsigned integer (0 to 65535)
-    uint32 	    Unsigned integer (0 to 4294967295)
-    uint64 	    Unsigned integer (0 to 18446744073709551615)
-    float16 	Half precision float: sign bit, 5 bits exponent, 10 bits mantissa
-    float32 	Single precision float: sign bit, 8 bits exponent, 23 bits mantissa
-    float64 	Double precision float: sign bit, 11 bits exponent, 52 bits mantissa
-    complex64 	Complex number, represented by two 32-bit floats (real and imaginary components)
-    complex128 	Complex number, represented by two 64-bit floats (real and imaginary components)
-    ==========  ================================================================================
+    .. table:: Numpy types: these should be compatible
+        :widths: auto
+        
+        ==========  ========================================
+        Type        Description
+        ==========  ========================================
+        bool 	    Boolean (True or False) stored as a byte
+        int8 	    Byte (-128 to 127)
+        int16 	    Integer (-32768 to 32767)
+        int32 	    Integer (-2147483648 to 2147483647)
+        int64 	    Integer (-9223372036854775808 to 9223372036854775807)
+        uint8 	    Unsigned integer (0 to 255)
+        uint16 	    Unsigned integer (0 to 65535)
+        uint32 	    Unsigned integer (0 to 4294967295)
+        uint64 	    Unsigned integer (0 to 18446744073709551615)
+        float16 	Half precision float: sign bit, 5 bits exponent, 10 bits mantissa
+        float32 	Single precision float: sign bit, 8 bits exponent, 23 bits mantissa
+        float64 	Double precision float: sign bit, 11 bits exponent, 52 bits mantissa
+        complex64 	Complex number, represented by two float32
+        complex128 	Complex number, represented by two float64
+        ==========  ========================================
     
     
     Parameters
@@ -733,7 +774,8 @@ def validate_for_numpy(x):
             raise ValueError('is not iterable')
         return map(validate_for_numpy,x)
     if not x.dtype in safe:
-        raise ValueError("Numpy type %s is not on the list of compatible types"%x.dtype)
+        raise ValueError("Numpy type %s is not on the list"
+            " of compatible types"%x.dtype)
     return True
 
 def read_cache_entry(location,method):
@@ -755,55 +797,63 @@ def disk_cacher(
     CACHE_IDENTIFIER='__neurotools_cache__'):
     '''
     Decorator to memoize functions to disk.
-    Currying pattern here where cache_location creates decotrators
+    Currying pattern here where cache_location creates 
+    decotrators.
 
     write_back:
 
          True: Default. Computed results are saved to disk
 
-        False: Computed results are not saved to disk. In this case of
-               Hierarchical caches mapped to the filesystem, a background
-               rsync loop can handle asynchronous write-back.
+        False: Computed results are not saved to disk. In 
+               this case of hierarchical caches mapped to 
+               the filesystem, a background rsync loop can 
+               handle asynchronous write-back.
 
     method:
 
-         p: Use pickle to store cache. Can serialize all objects but
-            seriously slow! May not get ANY speedup due to time costs if
-            pickling and disk IO
+         p: Use pickle to store cache. Can serialize all 
+            objects but seriously slow! May not get ANY 
+            speedup due to time costs if pickling and disk 
+            IO.
 
-       mat: Use scipy.io.savemat and scipy.io.loadmat. Nice because it's
-            compatible with matlab. Unfortunately, can only store numpy types
-            and data that can be converted to numpy types. Data conversion
-            may alter the type signature of the return arguments when
-            retrieved from the cache.
+       mat: Use scipy.io.savemat and scipy.io.loadmat. 
+            Nice because it's compatible with matlab. 
+            Unfortunately, can only store numpy types and 
+            data that can be converted to numpy types. Data 
+            conversion may alter the types of the return 
+            arguments when retrieved from the cache.
 
-       npy: Use built in numpy.save functionality. Experimental. Will
-            likely only work if the return value is a single numpy array?
+       npy: Use built in numpy.save functionality. 
 
-      hdf5: Not supported. Will be implemented in the future
-      
+      hdf5: Not yet implemented.
       
     
     Parameters
     ----------
-    cache_location : string
+    cache_location: str
         Path to disk cache
-    method : string, default 'npy',
-        Storange format for caches. Can be 'pickle', 'mat' or 'npy'
-    write_back : bool, default=True
-        Whether to copy new cache value back to the disk cache. If false,
-        then previously cached values can be read but new entries will not
-        be creates
-    skip_fast : bool, default=False
-        Attempt to simply re-compute values which are taking too long to
-        retrieve from the cache. Experimental, should not be used.
-    verbose : bool, default=False
+        
+    Other Parameters
+    ----------------
+    method: str; default 'npy'
+        Storange format for caches. 
+        Can be 'pickle', 'mat' or 'npy'
+    write_back: boolean; default True
+        Whether to copy new cache value back to the disk 
+        cache. If false, then previously cached values can 
+        be read but new entries will not be creates
+    skip_fast: boolean; default False
+        Attempt to simply re-compute values which are 
+        taking too long to retrieve from the cache. 
+        Experimental, do not use. 
+    verbose: boolean; default False
         Whether to print detailde logging information
-    allow_mutable_bindings : bool, default=False
-        Whether to allow caching of functions that close over mutable
-        scope. Such functions are more likely to return different results
-        for the same arguments, leading to invalid cached return values.
-    CACHE_IDENTIFIER : string, default='.__neurotools_cache__'
+    allow_mutable_bindings: boolean; default False
+        Whether to allow caching of functions that close 
+        over mutable scope. Such functions are more likely
+        to return different results for the same arguments, 
+        leading to invalid cached values.
+    CACHE_IDENTIFIER: str; default '.__neurotools_cache__'
         subdirectory name for disk cache.
     
     Returns
@@ -843,16 +893,19 @@ def disk_cacher(
         def wrapped(f,*args,**kwargs):
             '''
             This is a wrapper for memoizing results to disk. 
-            This docstring should be overwritten by the docstring of
-            the wrapped function.
+            This docstring should be overwritten by the 
+            docstring of the wrapped function.
             '''
             t0 = neurotools.util.time.current_milli_time()
 
-            # Store parameters; These will be saved in the cached result
+            # Store parameters;
+            # These will be saved in the cached result
             params = (args,tuple(list(kwargs.items())))
 
             try:
-                fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
+                fn,sig,path,filename,location = \
+                    locate_cached(
+                        cache_root,f,method,*args,**kwargs)
             except ValueError as exc:
                 print('Generating cache key failed')
                 traceback.print_exc()#exc)
@@ -897,12 +950,14 @@ def disk_cacher(
                         elif method =='mat':
                             validated_result = validate_for_matfile(savedata)
                             if validated_result is None:
-                                raise ValueError('Error: return value cannot be safely packaged in a matfile')
+                                raise ValueError(
+                                    'Error: return value cannot be safely packaged in a matfile')
                             scipy.io.savemat(location,{'varargout':savedata})
                         elif method =='npy':
                             validated_result = validate_for_numpy(savedata)
                             if validated_result is None:
-                                raise ValueError('Error: return value cannot be safely packaged in a numpy file')
+                                raise ValueError(
+                                    'Error: return value cannot be safely packaged in a numpy file')
                             np.save(location, savedata)
                     except (ValueError, IOError, PicklingError) as exc2:
                         if verbose:
@@ -964,7 +1019,9 @@ def disk_cacher(
                 entries will be deleted.
             '''
             for method in VALID_METHODS:
-                fn,sig,path,filename,location = locate_cached(cache_root,f,method,*args,**kwargs)
+                fn,sig,path,filename,location = \
+                    locate_cached(
+                        cache_root,f,method,*args,**kwargs)
                 print('Deleting %s'%location)
                 try:
                     os.remove(location)
@@ -978,33 +1035,46 @@ def disk_cacher(
         
         def lscache(verbose=False):
             '''
-            List all files associated with cached invocations of the wrapped function.
+            List all files associated with cached 
+            invocations of the wrapped function.
             ("cache entries")
             '''
-            path = cache_root + os.sep + os.sep.join(function_signature(f).split('.'))
+            path = cache_root + os.sep +\
+                os.sep.join(
+                    function_signature(f).split('.'))
             try:
                 files = os.listdir(path)
             except:
                 files = []
             if verbose:
                 print('Cache %s contains:'%path)
-                print('\n  '+'\n  '.join([f[:20]+'…' for f in files]))
+                print('\n  '+'\n  '.join([
+                    f[:20]+'…' for f in files
+                ]))
             return path,files
         
         @neurotools.jobs.ndecorator.robust_decorator
         def locate(f,*args,**kwargs):
             '''
-            A version of the decorator that simply locates the cache file.
-            The result of `locate_cached` is returned directly. It is a tuple:
+            A version of the decorator that simply locates 
+            the cache file. The result of `locate_cached` is
+            returned directly. It is a tuple:
+            
                 (fn,sig,path,filename,location)
             
             Returns
             -------
-            fn (str):   File name of cache entry without extension
-            sig:        Tuple of (args,kwargs) info from `argument_signature()`
-            path (str): Directory containing cache file    
-            filename:   File name with extension
-            location:   Full absolute path to cache entry
+            fn: str   
+                File name of cache entry without extension
+            sig: tuple
+                Tuple of (args,kwargs) info from 
+                `argument_signature()`
+            path:str
+                Directory containing cache file    
+            filename: str  
+                File name with extension
+            location: str  
+                Full absolute path to cache entry
             '''
             return locate_cached(cache_root,f,method,*args,**kwargs)
         
@@ -1028,32 +1098,33 @@ def hierarchical_cacher(fast_to_slow,
         allow_mutable_bindings=False,
         CACHE_IDENTIFIER ='.__neurotools_cache__'):
     '''
-    Construct a filesystem cache defined in terms of a hierarchy from
-    faster to slower (fallback) caches.
+    Construct a filesystem cache defined in terms of a 
+    hierarchy from faster to slower (fallback) caches.
     
     Parameters
     ----------
     fast_to_slow : tuple of strings
-        list of filesystem paths for disk caches in order from the fast
-        (default or main) cache to slower.
+        list of filesystem paths for disk caches in order 
+        from the fast (default or main) cache to slower.
         
     Other Parameters
     ----------------
     method: string, default 'npy'
         cache storing method;
     write_back : bool, default True
-        whether to automatically copy newly computed cache values to 
-        the slower caches
+        whether to automatically copy newly computed cache 
+        values to the slower caches
     verbose : bool, defaults to `False`
-        whether to print detailed logging iformation to standard out
-        when manipulating the cache
+        whether to print detailed logging iformation to 
+        standard out when manipulating the cache
     allow_mutable_bindings : bool, default False
-        If true, then "unsafe" namespace bindings, for example user-
-        defined functions, will be allowed in disk cached functions. 
-        If a cached function calls subroutines, and those subroutines
-        change, the disk cacher cannot detect the implementation different.
-        Consequentially, it cannot tell whether old cached values are 
-        invalid. 
+        If true, then "unsafe" namespace bindings, for 
+        example user-defined functions, will be allowed in 
+        disk cached functions. If a cached function calls 
+        subroutines, and those subroutines change, the disk
+        cacher cannot detect the implementation different.
+        Consequentially, it cannot tell whether old cached 
+        values are invalid. 
     CACHE_IDENTIFIER : str, default '.__neurotools_cache__'
         (sub)folder name to store cached results
     
@@ -1096,5 +1167,43 @@ def hierarchical_cacher(fast_to_slow,
     return hierarchical
 
 
-
+def scan_cachedir(cachedir,method="npy",**kw):
+    '''
+    Retrieve all entries in `cachedir`, unpacking their 
+    encoded arguments.
+    
+    Parameters
+    ----------
+    cachedir: str
+        Cache directory to scane, e.g. 
+        __neurotools_cache__/…/…/…/somefunction
+    
+    Other Parameters
+    ----------------
+    method: str; default 'npy'
+        Can be 'npy' or 'mat'
+    **kw:
+        Forwarded to `file_string_to_signature()`; 
+        See `file_string_to_signature()` for details.
+        
+    Returns
+    -------
+    :dict
+        `filename -> (args,varags)` dictionary, where
+        `args` is a `parameter_name -> value` dictionary
+        and `varargs` is a list of extra arguments, if 
+        any.
+    '''
+    if not method.startswith('.'):
+        method = '.'+method
+    results = {}
+    for f in os.listdir(cachedir):
+        name, ext = os.path.splitext(f)
+        if not ext==method: continue
+        args, varargs = file_string_to_signature(name,**kw)
+        if len(args)==2 and isinstance(args[0],str):
+            args = (args,)
+        args = dict(args)
+        results[f] = (args,varargs)
+    return results
 

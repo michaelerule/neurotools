@@ -137,8 +137,8 @@ def partition_trials_for_crossvalidation(x,K,shuffle=False):
     Parameters
     ----------
     x : list
-        List of trial data to partition. Each entry in the list should
-        be a Ntimepoints x Ndatapoints array.
+        List of trial data to partition. Each entry in the 
+        list should be a NTIMEPOITS×NVARIABLES array.
     K : int
         Number of crossvalidation blocks to compute
     shuffle : bool, default False
@@ -255,14 +255,15 @@ def add_constant(data,axis=None):
         Axis along which to append the constant feature
     '''
     data = np.array(data)
-    # if Nsamples<Nfeatures:
-    #     warnings.warn("data shape is %dx%d\n# samples < # features; is data transposed?"%data.shape)
     if axis is None:
         if not len(data.shape)==2:
-            raise ValueError('Expected a Nsamples x Nfeatures 2D array')
+            raise ValueError(
+            'Expected a Nsamples x Nfeatures 2D array')
         Nsamples,Nfeatures = data.shape
         # Default/old behavior from before axis argument was added
-        return np.concatenate([data,np.ones((data.shape[0],1))],axis=1)
+        return np.concatenate([
+                data,np.ones((data.shape[0],1))
+            ],axis=1)
     else:
         # New behavior: allow axis to be specified
         # shape = np.array(data.shape)
@@ -283,14 +284,16 @@ def trial_crossvalidated_least_squares(a,b,K,
     errmethod='L2',
     **kwargs):
     '''
-    predicts B from A in K-fold cross-validated blocks using linear
-    least squares. I.e. find w such that B = Aw
+    predicts B from A in K-fold cross-validated blocks 
+    using linear least squares. 
+    I.e. find `w` such that `B=Aw`.
 
     Parameters
     ----------
     a : array
-        List of trials for independent variables; For every trial, 
-        First dimension should be time or number of samples, etc. 
+        List of trials for independent variables; For every 
+        trial, the first dimension should be time or number
+        of samples, etc. 
     b : vector
         List of trials for dependent variables
     K : int
@@ -307,14 +310,16 @@ def trial_crossvalidated_least_squares(a,b,K,
     shuffle : bool, default False
         Whether to shuffle trials before crossvalidation
     errmethod: String
-        Method used to compute the error. Can be 'L1' (mean absolute error)
-        'L2' (root mean-squared error) or 'correlation' (pearson correlation
+        Method used to compute the error. Can be 'L1' 
+        (mean absolute error); 'L2' (root mean-squared 
+        error) or 'correlation' (pearson correlation
         coefficient). 
     add_constant: bool, default False
-        Whether to append an additional constand offset feature to the
-        data. The returned weight matrix will have one extra entry, at the
-        end, reflecting the offset, if this is set to True. 
-    
+        Whether to append an additional constand offset 
+        feature to the data. The returned weight matrix 
+        will have one extra entry, at the end, reflecting 
+        the offset, if this is set to True. 
+
     Returns
     -------
     w, array-like:
@@ -322,7 +327,7 @@ def trial_crossvalidated_least_squares(a,b,K,
     bhat, array-like:
         predicted values of b under crossvalidation
     error :
-        root mean squared error from each crossvalidation run
+        root mean squared error from each crossvalidation
     '''
 
     if not errmethod in error_functions:
@@ -386,14 +391,14 @@ def trial_crossvalidated_least_squares(a,b,K,
 
 def partition_data_for_crossvalidation(a,b,K):
     '''
-    For predicting B from A, partition both training and testing
-    data into K-fold cross-validation blocks.
+    For predicting B from A, partition both training and 
+    testing data into K-fold cross-validation blocks.
 
     Parameters
     ----------
     a : array
-        Independent variables; First dimension should be time
-        or number of samples, etc. 
+        Independent variables; First dimension should be 
+        time or number of samples, etc. 
     b : vector
         dependent variables
     K : int
@@ -414,7 +419,8 @@ def partition_data_for_crossvalidation(a,b,K):
     a   = np.array(a)
     b   = np.array(b)
     N,h = np.shape(a)
-    if N<h: raise ValueError('1st axis of `a` must be time. is `a` transposed?')
+    if N<h: raise ValueError(
+        '1st axis of `a` must be time. is `a` transposed?')
     # Get typical block length
     B = N//K
     trainA, trainB, testA, testB = [],[],[],[]
@@ -890,7 +896,9 @@ def fraction_explained_deviance(L,L0,Ls):
         return (L-L0)/(Ls-L0)
     else:
         spare = len(L.shape)-len(L0.shape)
-        theslice = L0.shape + (None,)*spare
+        theslice = (slice(None,None,None),)*len(L0.shape)\
+                 + (None,)*spare
+        #print(np.shape(L),np.shape(L0),np.shape(Ls),theslice)
         return (L-L0[theslice])/(Ls-L0)[theslice]
         
 

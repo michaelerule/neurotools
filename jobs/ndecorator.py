@@ -230,7 +230,7 @@ def argument_signature(function,*args,**kwargs):
     # If not all arguments are provided,
     # check **kwargs and defaults
     ndefaulted   = max(0,nnamed - nargs)
-    default_map = dict(zip(named[-ndefault:],defaults)) 
+    default_map = dict(zip(named[-ndefault:],defaults)) \
         if ndefault>0 else {}
     if ndefaulted>0:
         for k in named[-ndefaulted:]:

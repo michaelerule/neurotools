@@ -488,18 +488,18 @@ Nsamples x Nfeatures</p></li>
 <cite>X = A^{-1}B</cite>
 i.e. find matrix <cite>X</cite> which when right-multiplied with
 <cite>A</cite> is close to <cite>B</cite>.</p>
-<dl class="simple">
-<dt>A: np.array</dt><dd><p>Nsamples x Nfeatures array of independent variables</p>
-</dd>
-<dt>B: np.array</dt><dd><p>NSAMPLES×NOUTPUTS  array of   dependent variables</p>
-</dd>
-</dl>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>X</strong> – NFEATURES×NOUTPUTS vector such that AX≃B</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>np.array</em>) – Nsamples x Nfeatures array of independent variables</p></li>
+<li><p><strong>B</strong> (<em>np.array</em>) – NSAMPLES×NOUTPUTS  array of   dependent variables</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>np.array</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X</strong> – NFEATURES×NOUTPUTS vector such that AX≃B</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -582,65 +582,49 @@ Proceedings.(ICASSP’03). 2003 Apr 6 (Vol. 6, pp. VI-713). IEEE.</p>
 MMSE whitening and subspace whitening.
 IEEE Transactions on Information Theory.
 2003 Jun 25;49(7):1846-51.</p>
-<dl class="simple">
-<dt>&#64;inproceedings{eldar2003minimum,</dt><dd><p>title={Minimum mean-squared error covariance shaping},
-author={Eldar, Yonina C},
-booktitle={2003 IEEE International Conference on Acoustics, Speech, and Signal Processing, 2003. Proceedings.(ICASSP’03).},
-volume={6},
-pages={VI–713},
-year={2003},
-organization={IEEE}</p>
-</dd>
-</dl>
-<p>}</p>
-<dl class="simple">
-<dt>&#64;article{eldar2003mmse,</dt><dd><p>title={MMSE whitening and subspace whitening},
-author={Eldar, Yonina C and Oppenheim, Alan V},
-journal={IEEE Transactions on Information Theory},
-volume={49},
-number={7},
-pages={1846–1851},
-year={2003},
-publisher={IEEE}</p>
-</dd>
-</dl>
-<p>}</p>
 </div></blockquote>
 <p>Test code (relies on from neurotools.nlab import <a href="#id1"><span class="problematic" id="id2">*</span></a>):</p>
-<blockquote>
-<div><p>N = 2    # dimensions
-T = 1000 # Samples</p>
-<p># Target covariance structure
-q = randn(N,N)
-e,v = psd_eig(<a class="reference external" href="mailto:q&#37;&#52;&#48;q&#46;T">q<span>&#64;</span>q<span>&#46;</span>T</a>)
-e = array([1,0.1])
-shuffle(e)
-q = v&#64;diag(e**0.5)
-Q = <a class="reference external" href="mailto:q&#37;&#52;&#48;q&#46;T">q<span>&#64;</span>q<span>&#46;</span>T</a></p>
-<p># Source covariance structure
-w = randn(N,N)
-e,v = psd_eig(<a class="reference external" href="mailto:w&#37;&#52;&#48;w&#46;T">w<span>&#64;</span>w<span>&#46;</span>T</a>)
-e = array([1,0.1])
-shuffle(e)
-w = v&#64;diag(e**0.5)
-W = <a class="reference external" href="mailto:w&#37;&#52;&#48;w&#46;T">w<span>&#64;</span>w<span>&#46;</span>T</a></p>
-<p># Original samples
-x1 = w&#64;randn(N,T)</p>
-<p>x2 = match_covariance(Q,x1,verbose=True,sample_deficient=False)</p>
-<p>subplot(131)
-scatter(x1.ravel(),x2.ravel(),s=1)
-force_aspect()
-simpleaxis()</p>
-<p>subplot(132)
-scatter(<a href="#id3"><span class="problematic" id="id4">*</span></a>x1,s=1)
-scatter(<a href="#id5"><span class="problematic" id="id6">*</span></a>x2,s=1)
-force_aspect()
-simpleaxis()</p>
-<p>subplot(133)
-plot(<a href="#id7"><span class="problematic" id="id8">*</span></a>cat([(xi1,xi2,(NaN,NaN)) for (xi1,xi2) in zip(x1.T,x2.T)]).T,lw=0.1)
-force_aspect()
-simpleaxis()</p>
-</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">2</span>    <span class="c1"># dimensions</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1"># Samples</span>
+
+<span class="c1"># Target covariance structure</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">psd_eig</span><span class="p">(</span><span class="n">q</span><span class="nd">@q</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">])</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">e</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">q</span><span class="nd">@q</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c1"># Source covariance structure</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">e</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">psd_eig</span><span class="p">(</span><span class="n">w</span><span class="nd">@w</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">])</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@diag</span><span class="p">(</span><span class="n">e</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">w</span><span class="nd">@w</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c1"># Original samples</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">w</span><span class="nd">@randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">x2</span> <span class="o">=</span> <span class="n">match_covariance</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sample_deficient</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+<span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">x2</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">force_aspect</span><span class="p">()</span>
+<span class="n">simpleaxis</span><span class="p">()</span>
+
+<span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+<span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">x1</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">x2</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">force_aspect</span><span class="p">()</span>
+<span class="n">simpleaxis</span><span class="p">()</span>
+
+<span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">cat</span><span class="p">([(</span><span class="n">xi1</span><span class="p">,</span><span class="n">xi2</span><span class="p">,(</span><span class="n">NaN</span><span class="p">,</span><span class="n">NaN</span><span class="p">))</span> <span class="k">for</span> <span class="p">(</span><span class="n">xi1</span><span class="p">,</span><span class="n">xi2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">x2</span><span class="o">.</span><span class="n">T</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">force_aspect</span><span class="p">()</span>
+<span class="n">simpleaxis</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

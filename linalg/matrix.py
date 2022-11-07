@@ -697,8 +697,8 @@ def ldiv(A,B):
     i.e. find matrix `X` which when right-multiplied with 
     `A` is close to `B`.
     
-    Parametrs
-    ---------
+    Parameters
+    ----------
     A: np.array
         Nsamples x Nfeatures array of independent variables
     B: np.array
@@ -828,28 +828,11 @@ def match_covariance(Q,x,verbose=False,sample_deficient=False):
         IEEE Transactions on Information Theory. 
         2003 Jun 25;49(7):1846-51.
 
-        @inproceedings{eldar2003minimum,
-            title={Minimum mean-squared error covariance shaping},
-            author={Eldar, Yonina C},
-            booktitle={2003 IEEE International Conference on Acoustics, Speech, and Signal Processing, 2003. Proceedings.(ICASSP'03).},
-            volume={6},
-            pages={VI--713},
-            year={2003},
-            organization={IEEE}
-        }
-
-        @article{eldar2003mmse,
-            title={MMSE whitening and subspace whitening},
-            author={Eldar, Yonina C and Oppenheim, Alan V},
-            journal={IEEE Transactions on Information Theory},
-            volume={49},
-            number={7},
-            pages={1846--1851},
-            year={2003},
-            publisher={IEEE}
-        }
     
     Test code (relies on from neurotools.nlab import *):
+    
+    .. highlight:: python
+    .. code-block:: python
 
         N = 2    # dimensions
         T = 1000 # Samples

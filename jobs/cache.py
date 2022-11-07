@@ -312,30 +312,28 @@ def signature_to_file_string(f,sig,
     The easiest way to avoid problematic characters without
     restricting the input is to re-encode as base 64.
 
-    The following modes are supported.
+    The following modes are supported:
 
-    repr:
-        Uses repr and ast.literal_eval(node_or_string) to 
-        serialize the argument signature. This is safe, but
-        restricts the types permitted as paramteters.
+    **repr:** Uses repr and 
+    ast.literal_eval(node_or_string) to serialize the 
+    argument signature. This is safe, but restricts the 
+    types permitted as paramteters.
 
-    json:
-        Uses json to serialize the argument signature. 
-        Argument signatures cannot be uniquely recovered, 
-        because tuples and lists both map to lists in the 
-        json representation. Restricting the types used in
-        the argument signature may circumvent this.
+    **json:** Uses json to serialize the argument signature. 
+    Argument signatures cannot be uniquely recovered, 
+    because tuples and lists both map to lists in the json 
+    representation. Restricting the types used in the 
+    argument signature may circumvent this.
 
-    pickle:
-        Uses pickle to serialize argument signature. This 
-        should uniquely store argument signatures that can
-        be recovered, but takes more space. 
-        Use this with caution, since any changes to 
-        the pickle serialization protocol between version
-        will make the encoded data irretrievable.
+    **pickle:** Uses pickle to serialize argument 
+    signature. This should uniquely store argument 
+    signatures that can be recovered, but takes more space. 
+    Use this with caution, since changes to the pickle 
+    serialization protocol between version will make the 
+    encoded data irretrievable.
 
-    human:
-        Attempts a human-readable format. Eperimental.
+    **human:** Attempts a human-readable format.
+    Experimental.
 
     Compression is on by defaut
     Signatures are base64 encoded by default
@@ -454,27 +452,28 @@ def file_string_to_signature(
     The `filename` should be provided as a string, without
     the file extension.
 
-    The following modes are supported.
+    The following modes are supported:
 
-    repr:
-        Uses repr and ast.literal_eval(node_or_string) to 
-        serialize the argument signature. This is safe, but
-        restricts the types permitted as paramteters.
+    **repr:** Uses repr and 
+    ast.literal_eval(node_or_string) to serialize the 
+    argument signature. This is safe, but restricts the 
+    types permitted as paramteters.
 
-    json:
-        Uses json to serialize the argument signature. 
-        Argument signatures cannot be uniquely recovered, 
-        because tuples and lists both map to lists in the 
-        json representation. Restricting the types used in
-        the argument signature may circumvent this.
+    **json:** Uses json to serialize the argument signature. 
+    Argument signatures cannot be uniquely recovered, 
+    because tuples and lists both map to lists in the json 
+    representation. Restricting the types used in the 
+    argument signature may circumvent this.
 
-    pickle:
-        Uses pickle to serialize argument signature. This 
-        should uniquely store argument signatures that can
-        be recovered, but takes more space. 
-        Use this with caution, since any changes to 
-        the pickle serialization protocol between version
-        will make the encoded data irretrievable.
+    **pickle:** Uses pickle to serialize argument 
+    signature. This should uniquely store argument 
+    signatures that can be recovered, but takes more space. 
+    Use this with caution, since changes to the pickle 
+    serialization protocol between version will make the 
+    encoded data irretrievable.
+
+    **human:** Attempts a human-readable format. 
+    Experimental.
 
     human:
         Attempts a human-readable format. Experimental.
@@ -1175,8 +1174,8 @@ def scan_cachedir(cachedir,method="npy",**kw):
     Parameters
     ----------
     cachedir: str
-        Cache directory to scane, e.g. 
-        __neurotools_cache__/…/…/…/somefunction
+        Cache directory to scan, e.g. 
+        `__neurotools_cache__/…/…/…/somefunction`
     
     Other Parameters
     ----------------

@@ -13,6 +13,7 @@ from __future__ import print_function
 Helper functions associated with time
 '''
 
+import numpy as np
 import datetime
 import time as systime
 
@@ -115,6 +116,16 @@ def waitfor(t):
 
 @tools.piper
 def progress_bar(x,N=None):
+    '''
+    Wraps an iterable to print progress through the loop
+    to the terminal.
+    
+    Parameters
+    ----------
+    x: iterable
+    N: int
+        Expected length of iterable (if generator)
+    '''
     if N is None:
         x = list(x)
         N = len(x)

@@ -236,7 +236,7 @@ def argument_signature(function,*args,**kwargs):
         for k in named[-ndefaulted:]:
             if k in named_store: raise ValueError(
                 'Duplicate argument',k)
-            named_store[k] = kwargs[k] if k in kwargs 
+            named_store[k] = kwargs[k] if k in kwargs \
                 else default_map[k]
             if k in kwargs: del kwargs[k]
             

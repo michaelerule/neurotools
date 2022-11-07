@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.spatial.points &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Neurotools
+            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../spatial.html">neurotools.spatial</a> &raquo;</li>
+      <li>neurotools.spatial.points</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.spatial.points</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Collected functions from 2018--2023 concerning analyses of 2D data.</span>
+
+<span class="sd">These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.</span>
+
+<span class="sd">These routines are completely untested and may duplicate functionality</span>
+<span class="sd">found elsehwere. </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="p2c"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.p2c">[docs]</a><span class="k">def</span> <span class="nf">p2c</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert a point in terms of a length-2 iterable into </span>
+<span class="sd">    a complex number</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span> <span class="k">return</span> <span class="n">p</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Shape </span><span class="si">%s</span><span class="s1"> not (x,y)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">,))</span>
+    <span class="n">which</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">which</span><span class="p">,</span>
+        <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">({</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">))}</span><span class="o">-</span><span class="p">{</span><span class="n">which</span><span class="p">})))</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="c2p"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.c2p">[docs]</a><span class="k">def</span> <span class="nf">c2p</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    Convert complex-valued np.array with (shape) into a 2×(shape)</span>
+<span class="sd">    np.float32 array.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z: np.complex64 or np.complex128</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="to_xypoint"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.to_xypoint">[docs]</a><span class="k">def</span> <span class="nf">to_xypoint</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert possible complex (x,y) point intoformation</span>
+<span class="sd">    into float32 (x,y) points.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z: np.complex64</span>
+<span class="sd">        Array of (x,y) points encoded as x+iy complex64</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.float32</span>
+<span class="sd">        (x,y) poiny array with shape 2 × z.shape</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">z</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">complex64</span><span class="p">([</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
+    <span class="c1"># Possibly already a point? </span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This looks like a scalar, not a point&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">z</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="p">(</span><span class="s1">&#39;Expected exactly one length-2 axis for (x,y)&#39;</span><span class="o">+</span>
+             <span class="s1">&#39;points, got shape </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">,))</span>
+    <span class="n">which</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="p">{</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">))}</span><span class="o">-</span><span class="p">{</span><span class="n">which</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">z</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">which</span><span class="p">,</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="closest"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.closest">[docs]</a><span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="n">point</span><span class="p">,</span><span class="n">otherpoints</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">inf</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Find nearest (x,y) point witin a collection of </span>
+<span class="sd">    other points, with maximum distance `radius`</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point: np.float32 with shape 2</span>
+<span class="sd">        (x,y) point to match</span>
+<span class="sd">    otherpoints: np.float32 with shape 2×NPOINTS</span>
+<span class="sd">        List of (x,y) points to compare</span>
+<span class="sd">    radius: float</span>
+<span class="sd">        Maximum allowed distance</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    imatch: int</span>
+<span class="sd">        index into otherpoints of the match, or None</span>
+<span class="sd">        if there is no match within radius</span>
+<span class="sd">    xymatch: np.float32 with shape 2</span>
+<span class="sd">        (x,y) coordinates of closestmatch</span>
+<span class="sd">    distance: float</span>
+<span class="sd">        distance to match, or NaN if no match</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">radius</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Error, radius should be positive&#39;</span><span class="p">)</span>
+    <span class="n">point</span>       <span class="o">=</span> <span class="n">to_xypoint</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="n">otherpoints</span> <span class="o">=</span> <span class="n">to_xypoint</span><span class="p">(</span><span class="n">otherpoints</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">point</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected (x,y) point as 1st argument&#39;</span><span class="p">)</span>
+    <span class="n">otherpoints</span> <span class="o">=</span> <span class="n">otherpoints</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">otherpoints</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+    
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">point</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">otherpoints</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nearest</span>   <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+    <span class="n">distance</span>  <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">nearest</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">distance</span><span class="o">&lt;=</span><span class="n">radius</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nearest</span><span class="p">,</span> <span class="n">otherpoints</span><span class="p">[:,</span><span class="n">nearest</span><span class="p">],</span> <span class="n">distance</span>
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span><span class="n">full</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">NaN</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">),</span><span class="n">NaN</span></div>
+
+<div class="viewcode-block" id="pair_neighbors"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.pair_neighbors">[docs]</a><span class="k">def</span> <span class="nf">pair_neighbors</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">inf</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z1: 1D np.complex64 </span>
+<span class="sd">        List of x+iy points</span>
+<span class="sd">    z2: 1D np.complex64 </span>
+<span class="sd">        List of x+iy points</span>
+<span class="sd">    radius: float, default `inf`</span>
+<span class="sd">        Maximum connection distance</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    edges: NPOINTS × 2 np.int32</span>
+<span class="sd">        Indecies (i,j) into point lists (z1,z2) of pairs</span>
+<span class="sd">    points: NPOINTS × 2 np.complex64</span>
+<span class="sd">        x+iy points from (z1,x2) pairs</span>
+<span class="sd">    delta: NPOINTS np.float32:</span>
+<span class="sd">        List of distances for each pair</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">radius</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Radius should be positive&#39;</span><span class="p">)</span>
+        
+    <span class="n">z1</span><span class="p">,</span><span class="n">z2</span> <span class="o">=</span> <span class="n">p2c</span><span class="p">(</span><span class="n">z1</span><span class="p">),</span><span class="n">p2c</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">n2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">z1</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z1</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">-</span><span class="n">z2</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>
+    <span class="n">unused1</span><span class="p">,</span><span class="n">unused2</span> <span class="o">=</span> <span class="p">{</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="n">n1</span><span class="p">)},{</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="n">n2</span><span class="p">)}</span>
+    <span class="n">paired</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">unused1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">unused2</span><span class="p">):</span>
+        <span class="c1"># useID → pointID</span>
+        <span class="n">ix1</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">unused1</span><span class="p">)))</span>
+        <span class="n">ix2</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">unused2</span><span class="p">)))</span>
+        <span class="c1"># useID → z</span>
+        <span class="n">zz1</span> <span class="o">=</span> <span class="n">z1</span><span class="p">[</span><span class="n">ix1</span><span class="p">]</span>
+        <span class="n">zz2</span> <span class="o">=</span> <span class="n">z2</span><span class="p">[</span><span class="n">ix2</span><span class="p">]</span>
+        <span class="c1"># useID → nearest useID</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">distance</span><span class="p">[</span><span class="n">ix1</span><span class="p">,:][:,</span><span class="n">ix2</span><span class="p">]</span>
+        <span class="n">neighbors1to2</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">neighbors2to1</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># </span>
+        <span class="n">ok1</span>   <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ix1</span><span class="p">))</span> <span class="o">==</span> <span class="n">neighbors2to1</span><span class="p">[</span><span class="n">neighbors1to2</span><span class="p">]</span>
+        <span class="n">ok2</span>   <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ix2</span><span class="p">))</span> <span class="o">==</span> <span class="n">neighbors1to2</span><span class="p">[</span><span class="n">neighbors2to1</span><span class="p">]</span>
+        <span class="n">e1to2</span> <span class="o">=</span> <span class="p">{</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">ix1</span><span class="p">[</span><span class="n">ok1</span><span class="p">],</span><span class="n">ix2</span><span class="p">[</span><span class="n">neighbors1to2</span><span class="p">[</span><span class="n">ok1</span><span class="p">]])}</span>
+        <span class="n">e2to1</span> <span class="o">=</span> <span class="p">{</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">ix1</span><span class="p">[</span><span class="n">neighbors2to1</span><span class="p">[</span><span class="n">ok2</span><span class="p">]],</span><span class="n">ix2</span><span class="p">[</span><span class="n">ok2</span><span class="p">])}</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">e1to2</span><span class="o">-</span><span class="n">e2to1</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span>
+        <span class="n">used1</span><span class="p">,</span><span class="n">used2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">set</span><span class="p">,</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">e1to2</span><span class="p">))</span>
+        <span class="n">unused1</span> <span class="o">-=</span> <span class="n">used1</span>
+        <span class="n">unused2</span> <span class="o">-=</span> <span class="n">used2</span>
+        <span class="n">paired</span> <span class="o">|=</span> <span class="n">e1to2</span>
+
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span>   <span class="o">=</span> <span class="n">int32</span><span class="p">([</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">paired</span><span class="p">)])</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">z1</span><span class="p">[</span><span class="n">a</span><span class="p">],</span><span class="n">z2</span><span class="p">[</span><span class="n">b</span><span class="p">]])</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pairs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">pairs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">keep</span>  <span class="o">=</span> <span class="n">delta</span><span class="o">&lt;</span><span class="n">radius</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">int32</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">edges</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">pairs</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">delta</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span></div>
+    
+<div class="viewcode-block" id="paired_distances"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.paired_distances">[docs]</a><span class="k">def</span> <span class="nf">paired_distances</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculate pairwise distances between two sets of </span>
+<span class="sd">    (x,y) points encoded as x+iy complex numbers</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z1: 1D np.complex64 </span>
+<span class="sd">        List of x+iy points</span>
+<span class="sd">    z2: 1D np.complex64 </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    distance: np.float32 with shape z1.shape+z2.shape</span>
+<span class="sd">        Array of paired distances</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">z1</span><span class="p">,</span><span class="n">z2</span> <span class="o">=</span> <span class="n">p2c</span><span class="p">(</span><span class="n">z1</span><span class="p">),</span><span class="n">p2c</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="n">s1</span><span class="p">,</span><span class="n">s2</span> <span class="o">=</span> <span class="n">z1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">z2</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">z1</span><span class="p">,</span><span class="n">z2</span> <span class="o">=</span> <span class="n">z1</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">z2</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z1</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">-</span><span class="n">z2</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>
+    <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">s1</span><span class="o">+</span><span class="n">s2</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

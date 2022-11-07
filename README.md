@@ -1,5 +1,5 @@
 
-## Python routines for neuroinformatics <img src="https://user-images.githubusercontent.com/687425/199426474-ab245a06-48b9-4521-9eac-f4c05d8b47b1.svg" width="80" />
+## Python routines for neuroinformatics <img src="https://user-images.githubusercontent.com/687425/200168839-cd5d2fe4-4dc4-434f-a49c-e4b329e2cb7b.svg" width="80" />
 
 [Please see the documentation on github pages](http://michaelerule.github.io/neurotools/_build/html/index.html).
 

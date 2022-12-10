@@ -275,9 +275,11 @@ def delta(N):
     x = np.fft.fft(delta)
     return x
 
-def differentiator(N):
+def circular_derivative_operator(N):
     '''
-    Fourier space discrete differentiaion
+    Circulat discete differentiation in the frequeincy
+    domain.
+    
 
     Parameters
     ----------
@@ -286,12 +288,105 @@ def differentiator(N):
     
     Returns
     -------
+    result: N×N np.float32
+        Fourier transform of the circular discrete 
+        derivative.
     '''
     delta = np.zeros((N,))
     delta[0]=-1
     delta[-1]=1
     x = np.fft.fft(delta)
-    return x
+    return bp.flot32(x)
+
+def truncated_derivative_operator(N):
+    '''
+    Discrete derivative operator, projecting from N to 
+    N-1 dimensions (spatial domain). 
+    
+    Parameters
+    ----------
+    N : int
+        Size of the domain    
+    
+    Returns
+    -------
+    result: (N-1)×N np.float32
+        Matrix D such that Dx = Δx
+    '''
+    return eye(N-1,N,1) - eye(N-1,N,0)
+
+def terminated_derivative_operator(N):
+    '''
+    Discrete derivative, using {-1,1} at endpoints and
+    ½{-1,0,1} in the interior. 
+    
+    This operator will have two zero eigenvalues for `N`
+    even and three zero eigenvalues for `N` odd. 
+    
+    Parameters
+    ----------
+    N : int
+        Size of the domain    
+    
+    Returns
+    -------
+    result: N×N np.float32
+        Matrix D such that Dx = Δx
+    '''
+    D = eye(11,11,1) - eye(11,11,-1)
+    D = np0.array(D)
+    D[1:-1]*=0.5
+    D[0,0] = -1
+    D[-1,-1]=1
+    return D
+
+def pad1up(N):
+    '''
+    Interpolation operator going from N to N+1 samples.
+    Used to re-sample the discrete derivative to preserve
+    dimension. 
+    
+    Parameters
+    ----------
+    N : int
+        Size of the domain    
+    
+    Returns
+    -------
+    result: N×(N-1) np.float32
+    '''
+    K = N-1
+    interpoints = linspace(0,K-1,N)
+    ii = int32(floor(interpoints))
+    ii,ff = np0.divmod(interpoints,1)
+    ii = np.int32(ii)
+    D = np0.zeros((N,N-1),dtype=np0.float32)
+    D[arange(N-1),ii[:-1]]=1.-ff[:-1]
+    D[arange(N-1),ii[:-1]+1]=ff[:-1]
+    D[-1,-1]=1.
+    return D
+
+def spaced_derivative_operator(N):
+    '''
+    Discrete derivative, upsampled via linear interpolation
+    to preserve dimension. 
+    
+    This will have 1 zero eigenvalue for odd N and two
+    zero eigenvalues for even N. 
+    
+    Parameters
+    ----------
+    N : int
+        Size of the domain    
+    
+    Returns
+    -------
+    result: N×N np.float32
+    '''
+    return pad1up(N)@truncated_derivative(N)
+    
+    
+
 
 def integrator(N):
     '''

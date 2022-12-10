@@ -66,9 +66,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>neurotools.linalg.operators</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">neurotools.linalg.operators</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -355,9 +355,11 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="differentiator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.differentiator">[docs]</a><span class="k">def</span> <span class="nf">differentiator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="circular_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.circular_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">circular_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Fourier space discrete differentiaion</span>
+<span class="sd">    Circulat discete differentiation in the frequeincy</span>
+<span class="sd">    domain.</span>
+<span class="sd">    </span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -366,12 +368,105 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result: N×N np.float32</span>
+<span class="sd">        Fourier transform of the circular discrete </span>
+<span class="sd">        derivative.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span>
     <span class="n">delta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x</span></div>
+    <span class="k">return</span> <span class="n">bp</span><span class="o">.</span><span class="n">flot32</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="truncated_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.truncated_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">truncated_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Discrete derivative operator, projecting from N to </span>
+<span class="sd">    N-1 dimensions (spatial domain). </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Size of the domain    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result: (N-1)×N np.float32</span>
+<span class="sd">        Matrix D such that Dx = Δx</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="terminated_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.terminated_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">terminated_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Discrete derivative, using {-1,1} at endpoints and</span>
+<span class="sd">    ½{-1,0,1} in the interior. </span>
+<span class="sd">    </span>
+<span class="sd">    This operator will have two zero eigenvalues for `N`</span>
+<span class="sd">    even and three zero eigenvalues for `N` odd. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Size of the domain    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result: N×N np.float32</span>
+<span class="sd">        Matrix D such that Dx = Δx</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">eye</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np0</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+    <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*=</span><span class="mf">0.5</span>
+    <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">D</span></div>
+
+<div class="viewcode-block" id="pad1up"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.pad1up">[docs]</a><span class="k">def</span> <span class="nf">pad1up</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Interpolation operator going from N to N+1 samples.</span>
+<span class="sd">    Used to re-sample the discrete derivative to preserve</span>
+<span class="sd">    dimension. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Size of the domain    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result: N×(N-1) np.float32</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">interpoints</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">interpoints</span><span class="p">))</span>
+    <span class="n">ii</span><span class="p">,</span><span class="n">ff</span> <span class="o">=</span> <span class="n">np0</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">interpoints</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np0</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np0</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">D</span><span class="p">[</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">ii</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">=</span><span class="mf">1.</span><span class="o">-</span><span class="n">ff</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">D</span><span class="p">[</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">ii</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">ff</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mf">1.</span>
+    <span class="k">return</span> <span class="n">D</span></div>
+
+<div class="viewcode-block" id="spaced_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.spaced_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">spaced_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Discrete derivative, upsampled via linear interpolation</span>
+<span class="sd">    to preserve dimension. </span>
+<span class="sd">    </span>
+<span class="sd">    This will have 1 zero eigenvalue for odd N and two</span>
+<span class="sd">    zero eigenvalues for even N. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Size of the domain    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result: N×N np.float32</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">pad1up</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="nd">@truncated_derivative</span><span class="p">(</span><span class="n">N</span><span class="p">)</span></div>
+    
+    
+
 
 <div class="viewcode-block" id="integrator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.integrator">[docs]</a><span class="k">def</span> <span class="nf">integrator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

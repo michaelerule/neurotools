@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 """
-Helper functions related to Numpy arrays and other indexing tasks.
+Helper functions related to Numpy arrays and other indexing
+tasks.
 """
 from __future__ import absolute_import
 from __future__ import with_statement
@@ -30,9 +31,9 @@ def slist(x):
 def amap(function,*args):
     '''
     Map, collecting results immediately in a Numpy array.
-    This will attempt to create a numeric or boolean array first,
-    and fall-back to an object array if a `ValueError` is encountered.
-    Also aliased as `aap`.
+    This will try to create a numeric or boolean array 
+    first, and fall-back to an object array if a 
+    `ValueError` is encountered. Also aliased as `aap`.
     '''
     a = lmap(function,*args)
     try:
@@ -53,7 +54,8 @@ def arraymap(f,*iterables,**kwargs):
     '''
     depth = kwargs['depth'] if 'depth' in kwargs else 0
     if depth<=1:
-        return np.array([f(*list(map(np.array,args))) for args in zip(*iterables)])
+        return np.array([f(*list(map(np.array,args))) \
+        for args in zip(*iterables)])
     kwargs['depth']=depth-1
     def fun(*args):
         return arraymap(f,*args,**kwargs)
@@ -63,15 +65,32 @@ def find(x):
     '''
     Replacement to Pylab's lost `find()` function.
     Synonym for `np.where(np.array(x).ravel())[0]`
+    
+    Parameters
+    ----------
+    x: np.array
     '''
     return np.where(np.array(x).ravel())[0]
     
 def ezip(*args):
+    '''
+    Enumerate and zip, i.e. `enumerate(zip(*args))`
+    '''
     return enumerate(zip(*args))
 
 def asiterable(x):
     '''
-    Attempt to convert an iterable object to a list
+    Attempt to convert an iterable object to a list.
+    This mat eventually be replaced with something fancier,
+    but for now just calls `list(iter(x))`.
+    
+    Parameters
+    ----------
+    x: iterable
+    
+    Returns
+    -------
+    : list
     '''
     try: 
         return list(iter(x))
@@ -132,6 +151,11 @@ def make_rebroadcast_slice(x,axis=0,verbose=False):
     Parameters
     ----------
     x: np.array
+    
+    Other Parameters
+    ----------------
+    axis: int; default 0
+    verbose: boolean; default False
     '''
     x = np.array(x)
     naxes = len(np.shape(x))
@@ -157,6 +181,14 @@ def deep_tuple(x):
     '''
     Convert x to tuple, deeply.
     Defaults to the identity function if x is not iterable
+    
+    Parameters
+    ----------
+    x: nested iterable
+    
+    Returns
+    ----------
+    x: nested iterable
     '''
     if type(x)==str:
         return x
@@ -172,6 +204,15 @@ def deep_tuple(x):
 def deep_map(f,tree):
     '''
     Maps over a tree like structure
+    
+    Parameters
+    ----------
+    f: function
+    tree: nested iterable
+    
+    Returns
+    -------
+    : nested iterable
     '''
     if hasattr(tree, '__iter__') and not type(tree) is str:
         return tuple([deep_map(f,t) for t in tree])
@@ -185,31 +226,41 @@ def to_indices(x):
     1. providing a boolean array of the same shape
     2. providing a list of indecies
     
-    This function is designed to accept either, and return a list 
-    of indecies.
+    This function is designed to accept either, and return 
+    a list of indecies.
+    
+    Parameters
+    ----------
+    x: np.array
     '''
     x = np.array(x)
     if x.dtype==np.dtype('bool'):
         # typed as a boolean, convert this to indicies
         return deep_tuple(np.where(x))
-    # Array is not boolean; 
-    # Several possibilities
+    # Array is not boolean:
     # It could already be a list of indecies
     # OR it could be boolean data encoded in another numeric type
     symbols = np.unique(x.ravel())
     bool_like = np.all((symbols==1)|(symbols==0))
     if bool_like:
         if len(symbols)<2:
-            warnings.warn('Indexing array looks boolean, but contains only the value %s?'%symbols[0])
+            warnings.warn(
+                'Indexing array looks boolean, but '
+                'contains only the value %s?'%symbols[0])
         return deep_tuple(np.where(x!=0))
     if np.all((symbols==-1)|(symbols==-2)):
-        warnings.warn('Numeric array for indexing contains only (-2,-1); Was ~ applied to an int32 array? Assuming -1=True')
+        warnings.warn(
+            'Numeric array for indexing contains only '
+            '(-2,-1); Was ~ applied to an int32 array? '
+            'Assuming -1=True')
         x = (x==-1)
         return deep_tuple(np.where(x))
     if np.all(np.int32(x)==x):
         # Seems like it is already integers?
         return deep_tuple(x)
-    raise ValueError('Indexing array is numeric, but contains non-integer numbers?')
+    raise ValueError(
+        'Indexing array is numeric, but '
+        'contains non-integer numbers?')
         
 
 def onehot(ids):
@@ -217,6 +268,10 @@ def onehot(ids):
     Generate so-called "one-hot"
     representation of class labels from 
     a vector of class identities
+    
+    Parameters
+    ----------
+    ids: np.array
     
     Returns
     -------
@@ -251,12 +306,20 @@ def _take_axis(x,axis,index):
 def zeroslike(x):
     '''
     Create numpy array of zeros the same shape and type as x
+    
+    Parameters
+    ----------
+    x: np.array
     '''
     return np.zeros(x.shape,dtype=x.dtype)
 
 def oneslike(x):
     '''
     Create numpy array of ones the same shape and type as x
+    
+    Parameters
+    ----------
+    x: np.array
     '''
     return np.ones(x.shape,dtype=x.dtype)
 
@@ -298,6 +361,125 @@ def split_into_groups(x,group_sizes):
     ]
 
 
+def maybe_integer(x):
+    '''
+    Cast a float numpy array to int32 or int64, if it would 
+    not result in loss of precision. 
+    
+    Parameters
+    ----------
+    x: np.array
+    
+    Returns
+    -------
+    x: np.array
+        np.int32 or np.int64 if possible, otherwise the
+        original value of x.  
+    '''
+    x = np.array(x)
+    y = np.int32(x)
+    if np.allclose(x,y): return y
+    y = np.int64(x)
+    if np.allclose(x,y): return y
+    return x
 
 
+def widths_to_edges(widths,startat=0):
+    '''
+    Convert a list of widths into a list of edges
+    delimiting consecutive bands of the given width
+    
+    Parameters
+    ----------
+    widths: list of numbers
+        Width of each band
+        
+    Other Parameters
+    ----------------
+    startat: number, default 0
+        Starting position of bands
+        
+    Returns
+    -------
+    edges: 1D np.array
+    '''
+    widths = np.array(widths)
+    e = np.cumsum(np.concatenate([[startat],widths]))
+    if widths.dtype==np.int32: e=maybe_integer(e)
+    return e
+
+
+def widths_to_limits(widths,startat=0):
+    '''
+    Convert a list of integer widths into a list of
+    [a,b) indecies delimiting the concatenated width 
+    
+    Parameters
+    ----------
+    widths: list of integers
+        Width of each band
+    startat: int; default 0
+        Starting index
+        
+    Returns
+    -------
+    limits: N×2 np.int32
+        List of [start,stop) indecies
+    '''
+    w = np.array(widths)
+    q = np.int32(w)
+    r = int(startat)
+    if not np.allclose(w,q):
+        raise ValueError('Widths should be int32')
+    e = np.cumsum(np.concatenate([[r],q]))
+    return np.int32([e[:-1],e[1:]]).T    
+    
+
+def centers(edges):
+    '''
+    Get center of histogram bins given as a list of edges.
+    
+    Parameters
+    ----------
+    edges: list of numbers
+        Edges of histogram bins
+        
+    Returns
+    -------
+    centers: 1D np.array
+        Center of histogram bins
+    '''
+    edges = np.array(edges)
+    e = np.float32(edges)
+    c = (e[1:]+e[:-1])*0.5
+    if edges.dtype==np.int32: c=maybe_integer(c)
+    return c
+
+
+def widths_to_centers(widths,startat=0):
+    '''
+    Get centers of a consecutive collection of histogram
+    widths. 
+    
+    Parameters
+    ----------
+    widths: list of numbers
+        Width of each band
+        
+    Other Parameters
+    ----------------
+    startat: number, default 0
+        Starting position of bands
+    '''
+    edges = widths_to_edges(widths,startat=startat)
+    return centers(edges)
+
+
+def extract(zerod):
+    '''
+    Extract a zero-dimensional array.
+    There is probably a better way to do this but it is
+    poorly documented. 
+    '''
+    return np.array(zerod).reshape(1)[0]
 

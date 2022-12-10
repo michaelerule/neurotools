@@ -386,7 +386,8 @@ def exponential_decay(X,Y):
     # lamb,scale,dc = result.x
     lamb,scale,dc = result
     return lamb,scale,dc
-    
+
+
 def robust_line(X,Y):
     '''
     2-variable linear regression with L1 penalty
@@ -419,3 +420,157 @@ def robust_line(X,Y):
 
 
 
+import neurotools.linalg.matrix as nmatrix
+import neurotools.stats.pvalues as npv
+def cubic_spline_regression(x,y,
+    df = 5,
+    NBOOTSTRAP=1000,
+    reg=1e-15,
+    show_progress=False):
+    '''
+    Bivariate x→y cubic spline regression with bootstrap
+    convidence intervals.
+    
+    Depends on the `cr()` function in the `patsy` package.
+    
+    Parametrs
+    ---------
+    x: length NSAMPLES iterable of scalars
+        Independent variable 
+    y: length NSAMPLES iterable of scalars
+        Dependent variable
+    
+    Other Parameters
+    ----------------
+    df: int>0; default 5
+        Degrees of freedom for cubic spline regression.
+    NBOOTSTRAP: int>0; default 1000
+        Number of samples to use for bootstrap
+    reg: positive float; default 1e-15
+        Regularization for linear least squares
+    show_progress: boolean; default False
+        Show progress bar while sampling bootstrap
+        
+    Returns
+    -------
+    x_hat: np.float32
+        Sorted copy of `x`
+    y_hat: np.float32
+        Smooted curve evaluated at `x_eval`
+    samples: np.float32
+        NBOOTSTRAP × len(x_eval) bootstrap samples. 
+    
+    '''
+    # Import in function TODO
+    # I don't want to create a hard dependency
+    # I do want this function to fail with instructions
+    # to install patsy if not present (TODO)
+    from patsy import cr
+    
+    x = np.float32([*x])
+    y = np.float32([*y])
+    order = np.argsort(x)
+    x = x[order]
+    y = y[order]
+
+    def cubic_spline_smooth(xy,df=5):
+        x,y = np.float32(xy).T
+        μ  = np.mean(y)
+        y -= μ
+        B = cr(x,df=df,constraints="center")
+        M = nmatrix.reglstsq(B,y,reg=reg)
+        return B@M.ravel() + μ
+
+    population = [*zip(x,y)]
+    y_hat   = cubic_spline_smooth(population)
+    
+    samples = np.float64(npv.bootstrap_statistic(
+        cubic_spline_smooth,
+        population,
+        ntrials=NBOOTSTRAP,
+        show_progress=show_progress))
+    return x, y_hat, samples
+
+
+import scipy.interpolate
+import neurotools.linalg.matrix as nmatrix
+import neurotools.stats.pvalues as npv
+def cubic_spline_regression(x,y,x_eval,
+    df = 5,
+    NBOOTSTRAP=1000,
+    reg=1e-15,
+    show_progress=False):
+    '''
+    Bivariate x→y cubic spline regression with bootstrap
+    convidence intervals.
+    
+    Splines are spaced according to the points in
+    `x_eval`, not `x`.
+    
+    Depends on the `cr()` function in the `patsy` package.
+    
+    Parametrs
+    ---------
+    x: length NSAMPLES iterable of scalars
+        Independent variable 
+    y: length NSAMPLES iterable of scalars
+        Dependent variable
+    x_eval: iterable of scalars
+        Points at which to evalute the resulting model.
+    
+    Other Parameters
+    ----------------
+    df: int>0; default 5
+        Degrees of freedom for cubic spline regression.
+    NBOOTSTRAP: int>0; default 1000
+        Number of samples to use for bootstrap
+    reg: positive float; default 1e-15
+        Regularization for linear least squares
+    show_progress: boolean; default False
+        Show progress bar while sampling bootstrap
+        
+    Returns
+    -------
+    y_hat: np.float32
+        Smooted curve evaluated at `x_eval`
+    samples: np.float32
+        NBOOTSTRAP × len(x_eval) bootstrap samples. 
+    
+    '''
+    # Import in function TODO
+    # I don't want to create a hard dependency
+    # I do want this function to fail with instructions
+    # to install patsy if not present (TODO)
+    from patsy import cr
+    
+    x = np.float32([*x])
+    y = np.float32([*y])
+    x_eval = np.float32([*x_eval])
+    
+    # Basis functions
+    B  = cr(x_eval,df=df,constraints="center")
+    Bf = scipy.interpolate.interp1d(
+        x_eval,
+        B,
+        axis=0,
+        bounds_error=False,
+        fill_value='extrapolate',
+        assume_sorted=False)
+
+    def cubic_spline_smooth(xy,df=5):
+        x,y = np.float32(xy).T
+        
+        μ  = np.mean(y)
+        y -= μ
+        M = nmatrix.reglstsq(Bf(x),y,reg=reg)
+        return B@M.ravel() + μ
+
+    population = [*zip(x,y)]
+    y_hat   = cubic_spline_smooth(population)
+    
+    samples = np.float64(npv.bootstrap_statistic(
+        cubic_spline_smooth,
+        population,
+        ntrials=NBOOTSTRAP,
+        show_progress=show_progress))
+    return y_hat, samples

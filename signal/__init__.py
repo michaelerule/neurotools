@@ -11,24 +11,26 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from . import coherence
 from . import conv
 from . import morlet
 from . import multitaper
 from . import savitskygolay
 from . import sde
 from . import phase
+from . import coherence # Import after multitaper
 
 import warnings
 import numpy as np
 import scipy.stats
 import scipy.interpolate as ip
 import neurotools.util.array as narray 
+
 from scipy.signal.signaltools import fftconvolve,hilbert
 from scipy.signal import butter, filtfilt, lfilter
 from scipy.interpolate import interp1d
 from scipy.special import ndtri
 from scipy.stats import rankdata
+
 from neurotools.util.array import find
 
 

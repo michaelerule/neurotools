@@ -37,58 +37,9 @@ from scipy.stats.stats import describe
 from neurotools.util.array import find
 from sklearn.decomposition import FactorAnalysis
 
-def nrmse(estimate,true,axis=None):
-    '''
-    Normalized root mean-squared error.
-    
-    Parameters
-    ----------
-    estimate : array-like
-        Estimated data values
-    true: array-like
-        True data values
-        
-    Other Parameters
-    ----------------
-    axis: int; default None
-        Array axis along which to operate.
-    
-    Returns
-    -------
-    result: np.float64
-        Root-mean-squared error between
-        `estiamte` and `true`, normalized by the variance
-        of `true`.
-    '''
-    X1,X2 = estimate,true
-    v1 = np.var(X1,axis=axis)
-    v2 = np.var(X2,axis=axis)
-    normalize = v2**-0.5#(v2*v2)**-0.25
-    return np.mean((X1-X2)**2,axis=axis)**0.5*normalize
 
-def weighted_avg_and_std(values, weights):
-    """
-    Return the weighted average and standard deviation.
-    values, weights -- Numpy ndarrays with the same shape.
-    
-    Parameters
-    ----------
-    values: np.array
-        Array of values for which to compute (μ,σ)
-        weighted summary statistics
-    weights: np.array
-        Weights for each value        
-    
-    Returns
-    -------
-    mean: np.float64
-        Weighted mean
-    sigma: np.float64
-        Weighted standard deviation
-    """
-    average  = np.average(values, weights=weights)
-    variance = np.average((values-average)**2,weights=weights)
-    return average, np.sqrt(variance)
+############################################################
+# For crossvalidation
 
 def partition_data(x,y,NFOLD=3):
     '''
@@ -193,52 +144,6 @@ def partition_trials_for_crossvalidation(x,K,shuffle=False):
     if len(result)!=K:
         raise ValueError('Could not divide N=%d trials into K=%d blocks'%(N,K))
     return result
-    
-def polar_error(x,xh,units='degrees',mode='L1'):
-    '''
-    Compute error for polar measurements, 
-    wrapping the circular variable appropriately.
-
-    Parameters
-    ----------
-    x: array-like
-        true valies (in degrees)
-    hx: array-like
-        estimated values (in degrees)
-
-    Other Parameters
-    ----------------
-    units: str, default "degrees"
-        Polar units to use. Either "radians" or "degrees"
-    mode: str, default 'L1'
-        Error method to use. Either 'L1' (mean absolute error) or 
-        'L2' (root mean-squared error)
-
-    Returns
-    -------
-    err:
-        Circularly-wrapped error
-    '''
-    x  = np.array(x).ravel()
-    xh = np.array(xh).ravel()
-    e  = np.abs(x-xh)
-    k  = {'radians':np.pi,'degrees':180}[units]
-    e[e>k] = 2*k-e[e>k]
-    if mode=='L1':
-        return np.mean(np.abs(e))
-    if mode=='L2':
-        return np.mean(np.abs(e)**2)**.5
-    raise ValueError('Mode should be either "L1" or "L2"')
-
-error_functions = {
-    'correlation':lambda x,xh: scipy.stats.stats.pearsonr(x,xh)[0],
-    'L2'         :lambda x,xh: np.mean((x-xh)**2)**0.5,
-    'L1'         :lambda x,xh: np.mean(np.abs(x-xh)),
-    'L1_degrees' :lambda x,xh: polar_error(x,xh,mode='L1',units='degrees'),
-    'L2_degrees' :lambda x,xh: polar_error(x,xh,mode='L2',units='degrees'),
-    'L1_radians' :lambda x,xh: polar_error(x,xh,mode='L1',units='radians'),
-    'L2_radians' :lambda x,xh: polar_error(x,xh,mode='L2',units='radians')
-}
 
 def add_constant(data,axis=None):
     '''
@@ -258,7 +163,7 @@ def add_constant(data,axis=None):
     if axis is None:
         if not len(data.shape)==2:
             raise ValueError(
-            'Expected a Nsamples x Nfeatures 2D array')
+            'Expected a NSAMPLES×NFEATURES 2D array')
         Nsamples,Nfeatures = data.shape
         # Default/old behavior from before axis argument was added
         return np.concatenate([
@@ -374,8 +279,9 @@ def trial_crossvalidated_least_squares(a,b,K,
         trainA = np.concatenate(a[train])
         trainB = np.concatenate(b[train])
         x[k]   = regress(trainA,trainB)
-        # Trials might be shuffled, so we predict them one-by-one
-        # Then assign them to their correct slot to preserve original order.
+        # Trials might be shuffled, so we predict them
+        # one-by-one, then assign them to their correct 
+        # slot to preserve original order.
         for i in groups[k]:
             Bhat[i] = a[i].dot(x[k])
 
@@ -385,7 +291,10 @@ def trial_crossvalidated_least_squares(a,b,K,
 
     # Apply error function within each crossvalidation block
     efn  = error_functions[errmethod]
-    errs = [efn(np.concatenate(b[g]),np.concatenate(Bhat[g])) for g in groups]
+    errs = [
+        efn(np.concatenate(b[g]),np.concatenate(Bhat[g])) 
+        for g in groups
+    ]
 
     return x,np.concatenate(Bhat),errs
 
@@ -578,19 +487,181 @@ def crossvalidated_least_squares(a,b,K,regress=None,reg=1e-10,blockshuffle=None)
     rms = np.sqrt(np.mean((np.array(b)-np.array(predict))**2))
     return x,np.array(predict),cc,rms
 
+
+
+
+
+
+    
+
+
+    
+############################################################
+# Error measures
+
+def fraction_explained_deviance(L,L0,Ls):
+    '''
+    Calculate the fraction explained deviance, which is
+    the analogue of the linear-Gaussian r² for 
+    Generalized Linear Models (GLMs)
+    
+    Parameters
+    ----------
+    L: np.float32
+        Model likelihood(s) evaluated on held-out test data.
+    L0: np.float32
+        Baseline likelihood, calculated by using the 
+        test-data's mean-rate as a prediction.
+    Ls: np.float32
+        Saturated model likelihood(s) calculated by using
+        the true labels as the estimated values
+        
+    Returns
+    -------
+    r²: np.array
+        normalized explained deviance
+    '''
+    if not Ls.shape==L0.shape: raise ValueError((
+        'Expected Ls and L0 to have the same shape, '
+        'got %s and %s, respectively.')%(Ls.shape,L0.shape))
+    if L.shape<=L0.shape:
+        return (L-L0)/(Ls-L0)
+    else:
+        spare = len(L.shape)-len(L0.shape)
+        theslice = (slice(None,None,None),)*len(L0.shape)\
+                 + (None,)*spare
+        #print(np.shape(L),np.shape(L0),np.shape(Ls),theslice)
+        return (L-L0[theslice])/(Ls-L0)[theslice]
+        
+def nrmse(estimate,true,axis=None):
+    '''
+    Normalized root mean-squared error.
+    
+    Parameters
+    ----------
+    estimate : array-like
+        Estimated data values
+    true: array-like
+        True data values
+        
+    Other Parameters
+    ----------------
+    axis: int; default None
+        Array axis along which to operate.
+    
+    Returns
+    -------
+    result: np.float64
+        Root-mean-squared error between
+        `estiamte` and `true`, normalized by the variance
+        of `true`.
+    '''
+    X1,X2 = estimate,true
+    v1 = np.var(X1,axis=axis)
+    v2 = np.var(X2,axis=axis)
+    normalize = v2**-0.5#(v2*v2)**-0.25
+    return np.mean((X1-X2)**2,axis=axis)**0.5*normalize
+    
+def polar_error(x,xh,units='degrees',mode='L1'):
+    '''
+    Compute error for polar measurements, 
+    wrapping the circular variable appropriately.
+
+    Parameters
+    ----------
+    x: array-like
+        true valies (in degrees)
+    hx: array-like
+        estimated values (in degrees)
+
+    Other Parameters
+    ----------------
+    units: str, default "degrees"
+        Polar units to use. Either "radians" or "degrees"
+    mode: str, default 'L1'
+        Error method to use. Either 'L1' (mean absolute error) or 
+        'L2' (root mean-squared error)
+
+    Returns
+    -------
+    err:
+        Circularly-wrapped error
+    '''
+    x  = np.array(x).ravel()
+    xh = np.array(xh).ravel()
+    e  = np.abs(x-xh)
+    k  = {'radians':np.pi,'degrees':180}[units]
+    e[e>k] = 2*k-e[e>k]
+    if mode=='L1':
+        return np.mean(np.abs(e))
+    if mode=='L2':
+        return np.mean(np.abs(e)**2)**.5
+    raise ValueError('Mode should be either "L1" or "L2"')
+
+error_functions = {
+    'correlation':lambda x,xh: scipy.stats.stats.pearsonr(x,xh)[0],
+    'L2'         :lambda x,xh: np.mean((x-xh)**2)**0.5,
+    'L1'         :lambda x,xh: np.mean(np.abs(x-xh)),
+    'L1_degrees' :lambda x,xh: polar_error(x,xh,mode='L1',units='degrees'),
+    'L2_degrees' :lambda x,xh: polar_error(x,xh,mode='L2',units='degrees'),
+    'L1_radians' :lambda x,xh: polar_error(x,xh,mode='L1',units='radians'),
+    'L2_radians' :lambda x,xh: polar_error(x,xh,mode='L2',units='radians')
+}
+
+
+
+
+
+
+
+    
+
+
+    
+############################################################
+# Statistical summaries
+
+def weighted_avg_and_std(values, weights):
+    """
+    Return the weighted average and standard deviation.
+    values, weights -- Numpy ndarrays with the same shape.
+    
+    Parameters
+    ----------
+    values: np.array
+        Array of values for which to compute (μ,σ)
+        weighted summary statistics
+    weights: np.array
+        Weights for each value        
+    
+    Returns
+    -------
+    mean: np.float64
+        Weighted mean
+    sigma: np.float64
+        Weighted standard deviation
+    """
+    average  = np.average(values, weights=weights)
+    variance = np.average((values-average)**2,
+        weights=weights)
+    return average, np.sqrt(variance)
+
 def print_stats(g,name='',prefix=''):
     '''
-    computes, prints, and returns
-    
-        mean
-        median
-        minimum
-        maximum
+    computes, prints, and returns mean, median, minimum, 
+    and maximum.
         
     Parameters
     ----------
     g: 1D np.array
         List of samples
+        
+    Returns
+    -------
+    mean: np.array
+    median: np.array
+    minimum: np.array
+    maximum: np.array
     '''
     #mode = modefind.modefind(g,0)
     mn   = np.mean(g)
@@ -615,14 +686,14 @@ def outliers(x,percent=10,side='both'):
     percent : number
         percent between 0 and 100 to remove
     side : str
-        'left' 'right' or 'both'. Default is 'both'. Remove extreme
-        values from the left / right / both sides of the data
+        'left' 'right' or 'both'. Default is 'both'. Remove 
+        extreme values from the left / right / both sides of the data
         distribution. If both, the percent is halved and removed
         from both the left and the right
 
     Returns
     -------
-    ndarray:
+    :np.bool
         Boolean array of same shape as x indicating outliers
     '''
     N = len(x)
@@ -649,17 +720,17 @@ def reject_outliers(x,percent=10,side='both'):
     percent : number
         percent between 0 and 100 to remove
     side : str
-        'left' 'right' or 'both'. Default is 'both'. Remove extreme
-        values from the left / right / both sides of the data
-        distribution. If both, the percent is halved and removed
-        from both the left and the right
+        'left' 'right' or 'both'. Default is 'both'. Remove 
+        extreme values from the left / right / both sides 
+        of the data distribution. If both, the percent is 
+        halved and removed from both the left and the right.
     Returns
     -------
-    ndarray
+    :np.ndarray
         Values with outliers removed
-    kept
+    kept: np.int32
         Indecies of values kept
-    removed
+    removed: np.int32
         Indecies of values removed
     '''
     N = len(x)
@@ -668,108 +739,6 @@ def reject_outliers(x,percent=10,side='both'):
     to_keep   = find(remove==False)
     return x[to_keep], to_keep, to_remove
     
-def pca(x,n_keep=None,rank_deficient=False):
-    '''
-    w,v = pca(x,n_keep=None)
-    Performs PCA on data x, keeping the first n_keep dimensions
-    
-    Parameters
-    ----------
-    x: ndarray
-        Nsamples x Nfeatures array on which to perform PCA
-    n_keep : int
-        Number of principle components to retain
-        
-    Returns
-    -------
-    w : weights (eigenvalues)
-    v : eigenvector (principal components)
-    '''
-    if not rank_deficient:
-        if not (x.shape[1]<=x.shape[0]):
-            raise ValueError('There appear to be more dimensions than samples,'+
-                             ' input array shuld have shape Nsamples x'+
-                             ' Nfeatures. Set rank_deficient=True to force PCA'+
-                             ' with fewer samples than features.')
-    else:
-        if not (x.shape[0]<=x.shape[1]):
-            raise ValueError('Rank deficient is set, but input does not appear'+
-                             ' to be rank deficient?')
-    cov = x.T.dot(x)
-    w,v = scipy.linalg.eig(cov)
-    o   = np.argsort(-w)
-    w,v = w[o].real,v[:,o].real
-    if n_keep is None: n_keep = len(w)
-    w,v = w[:n_keep],v[:,:n_keep]
-    return w,v
-
-def covariance(x,y=None,sample_deficient=False,reg=0.0,centered=True):
-    '''
-    Covariance matrix for `Nsamples` x `Nfeatures` matrix.
-    Data are *not* centered before computing covariance.
-    
- 
-    Parameters
-    ----------
-    x : Nsamples x Nfeatures array-like
-        Array of input features
-        
-    Other parameters
-    ----------------
-    y : Nsamples x Nyfeatures array-like
-        Array of input features
-    sample_deficient: bool, default False
-        Whether the data contains fewer samples than it does features. 
-        If False (the default), routine will raise a `ValueError`.
-    reg: positive scalar, default 0
-        Diagonal regularization to add to the covariance
-    centered: boolean, default True
-        Whether to subtract the means from the data before taking the
-        covariace.
-    
-    Returns
-    -------
-    C : np.array
-        Sample covariance matrix
-    '''
-    x = np.array(x)
-    Nsamples,Nfeatures = x.shape
-    if not sample_deficient and Nfeatures>Nsamples:
-        raise ValueError('x should be Nsample x Nfeature where Nsamples >= Nfeatures');
-    if centered:
-        x = x - np.mean(x,axis=0)[None,:]
-
-    # Covariance of x
-    if y is None:
-        #if np.all(np.isfinite(x)): 
-        C = x.T.dot(x)/Nsamples
-        #else:
-        #    C = np.zeros((Nfeatures,Nfeatures))
-        #    for i in range(Nfeatures):
-        #        C[i,i+1:] = np.nanmean(x[:,i:i+1]*x[:,i+1:],axis=0)
-        #    C = C+C.T
-        #    for i in range(Nfeatures):
-        #        C[i,i]    = np.nanvar (x[:,i])
-        R = np.eye(Nfeatures)*reg
-        return C+R
-    
-    # Cross-covariance between x and y
-    y = np.array(y)
-    if len(y.shape)==1:
-        y = np.array([y]).T
-    Nysamples,Nyfeatures = y.shape
-    if not Nysamples==Nsamples:
-        raise ValueError('1st dimension of x and y (# of samples) should be the same')
-    if not abs(reg)<1e-12:
-        raise ValueError('Cross-covariance does not support non-zero regularization')
-    if centered:
-        y = y - np.mean(y,axis=0)[None,:]
-    
-    C = x.T.dot(y)/Nsamples
-    return C
-    
-            
-
 class Description:
     '''
     quick statistical description
@@ -827,7 +796,7 @@ class Description:
             if stat in abbreviations:
                 result.append('%s:%s '%(abbreviations[stat],shortscientific(value)))
         return ' '.join(result)
-        
+
 
 try:
     import statsmodels.api as sm
@@ -868,40 +837,124 @@ except:
           'Some glm routines will not work')
     
 
-def fraction_explained_deviance(L,L0,Ls):
+
+
+
+
+    
+############################################################
+# Covariance and factor analysis
+    
+def pca(x,n_keep=None,rank_deficient=False):
     '''
-    Calculate the fraction explained deviance, which is
-    the analogue of the linear-Gaussian r² for 
-    Generalized Linear Models (GLMs)
+    `w,v = pca(x,n_keep=None)`
+    Performs PCA on data `x`, keeping the first `n_keep `
+    dimensions
     
     Parameters
     ----------
-    L: np.float32
-        Model likelihood(s) evaluated on held-out test data.
-    L0: np.float32
-        Baseline likelihood, calculated by using the 
-        test-data's mean-rate as a prediction.
-    Ls: np.float32
-        Saturated model likelihood(s) calculated by using
-        the true labels as the estimated values
+    x: ndarray
+        NSAMPLES×NFEATURES array on which to perform PCA
+    n_keep : int
+        Number of principle components to retain
         
     Returns
     -------
-    r²: normalized explained deviance
+    w : weights (eigenvalues)
+    v : eigenvector (principal components)
     '''
-    if not Ls.shape==L0.shape: raise ValueError((
-        'Expected Ls and L0 to have the same shape, '
-        'got %s and %s, respectively.')%(Ls.shape,L0.shape))
-    if L.shape<=L0.shape:
-        return (L-L0)/(Ls-L0)
+    if not rank_deficient:
+        if not (x.shape[1]<=x.shape[0]):
+            raise ValueError(
+             'There are more dimensions than samples,'
+             ' input array shuld have shape Nsamples x'
+             ' Nfeatures. Set rank_deficient=True to force'
+             ' PCA with fewer samples than features.')
     else:
-        spare = len(L.shape)-len(L0.shape)
-        theslice = (slice(None,None,None),)*len(L0.shape)\
-                 + (None,)*spare
-        #print(np.shape(L),np.shape(L0),np.shape(Ls),theslice)
-        return (L-L0[theslice])/(Ls-L0)[theslice]
-        
+        if not (x.shape[0]<=x.shape[1]):
+            raise ValueError(
+             'Rank deficient is set, but input doesn\'t'
+             ' look rank deficient?')
+    cov = x.T.dot(x)
+    w,v = scipy.linalg.eig(cov)
+    o   = np.argsort(-w)
+    w,v = w[o].real,v[:,o].real
+    if n_keep is None: n_keep = len(w)
+    w,v = w[:n_keep],v[:,:n_keep]
+    return w,v
 
+def covariance(x,y=None,
+    sample_deficient=False,
+    reg=0.0,
+    centered=True):
+    '''
+    Covariance matrix for `Nsamples` x `Nfeatures` matrix.
+    Data are *not* centered before computing covariance.
+ 
+    Parameters
+    ----------
+    x : NSAMPLES×NFEATURES array-like
+        Array of input features
+        
+    Other parameters
+    ----------------
+    y : Nsamples x Nyfeatures array-like
+        Array of input features
+    sample_deficient: bool, default False
+        Whether the data contains fewer samples than it does 
+        features. 
+        If False (the default), 
+        routine will raise a `ValueError`.
+    reg: positive scalar, default 0
+        Diagonal regularization to add to the covariance
+    centered: boolean, default True
+        Whether to subtract the means from the data before taking the
+        covariace.
+    
+    Returns
+    -------
+    C : np.array
+        Sample covariance matrix
+    '''
+    x = np.array(x)
+    Nsamples,Nfeatures = x.shape
+    if not sample_deficient and Nfeatures>Nsamples:
+        raise ValueError('x should be Nsample x Nfeature '
+            'where Nsamples >= Nfeatures')
+    if centered:
+        x = x - np.mean(x,axis=0)[None,:]
+
+    # Covariance of x
+    if y is None:
+        #if np.all(np.isfinite(x)): 
+        C = x.T.dot(x)/Nsamples
+        #else:
+        #    C = np.zeros((Nfeatures,Nfeatures))
+        #    for i in range(Nfeatures):
+        #        C[i,i+1:] = np.nanmean(x[:,i:i+1]*x[:,i+1:],axis=0)
+        #    C = C+C.T
+        #    for i in range(Nfeatures):
+        #        C[i,i]    = np.nanvar (x[:,i])
+        R = np.eye(Nfeatures)*reg
+        return C+R
+    
+    # Cross-covariance between x and y
+    y = np.array(y)
+    if len(y.shape)==1:
+        y = np.array([y]).T
+    Nysamples,Nyfeatures = y.shape
+    if not Nysamples==Nsamples:
+        raise ValueError('1st dimension of x and y (# of '
+            'samples) should be the same')
+    if not abs(reg)<1e-12:
+        raise ValueError('Cross-covariance does not '
+            'support non-zero regularization')
+    if centered:
+        y = y - np.mean(y,axis=0)[None,:]
+    
+    C = x.T.dot(y)/Nsamples
+    return C
+    
 def get_factor_analysis(X,NFACTORS):
     '''
     Wrapper to fit factor analysis model, extract the model,
@@ -939,11 +992,11 @@ def get_factor_analysis(X,NFACTORS):
     #F     = F[order,:]
     return Y,Sigma,F,lmbda,fa
 
-
 def project_factors(X,F,S):
     '''
-    Project observations X with noise variances S onto latent factors F.
-    This uses the same argument/return conventions as scipy's factor analysis.
+    Project observations X with noise variances S onto 
+    latent factors F. This uses the same argument/return 
+    conventions as scipy's factor analysis.
     
     Parameters
     ----------
@@ -960,7 +1013,6 @@ def project_factors(X,F,S):
     FP = F*P
     Px = np.eye(Nfactors) + FP.dot(F.T)
     return lstsq(Px,FP.dot(X.T))[0].T
-
 
 def predict_latent(fa,predict_from,X):
     '''
@@ -995,7 +1047,6 @@ def predict_latent(fa,predict_from,X):
     # Predict means
     Xthat = scipy.linalg.lstsq(pPx,FPf.dot(Xf.T))[0]
     return Xthat
-
 
 def factor_predict(fa,predict_from,predict_to,X):
     '''
@@ -1043,12 +1094,11 @@ def factor_predict(fa,predict_from,predict_to,X):
     Xthat   = Ft.T.dot(latents)
 
     # Predict variance
-    #iFf = numpy.linalg.pinv(Ff)
-    #Sf  = np.diag(S[predict_from])
     St  = np.diag(S[predict_to])
-    #M   = lstsq(Ff,Ft)[0]
-    #Xtc = M.T.dot(Sf).dot(M)+St
-
     Xtc = Ft.T.dot(scipy.linalg.lstsq(pPx,Ft)[0]) + St
 
     return Xthat,Xtc
+    
+
+
+

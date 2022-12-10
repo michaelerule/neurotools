@@ -110,8 +110,12 @@ def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0,alpha=0.05):
     corrected = dict(zip(labels,zip(pvals,reject)))
     return corrected
 
+
 def correct_pvalues(pvalue_dictionary,verbose=0,alpha=0.05):
     '''
+    This is a convenience wrapper for 
+    `statsmodels.sandbox.stats.multicomp.multipletests`
+    
     This corrects for multiple comparisons using the
     Benjamini-Hochberg procedure, using either the 
     variance for positive dependence or no dependence,
@@ -130,6 +134,7 @@ def correct_pvalues(pvalue_dictionary,verbose=0,alpha=0.05):
         correlations, entries as `label -> pvalue, reject`
     '''
     try:
+        # Version for dictionary input
         labels, pvals = zip(*pvalue_dictionary.items())
         reject, pvals_corrected, alphacSidak, alphacBonf = \
           statsmodels.sandbox.stats.multicomp.multipletests(
@@ -143,12 +148,61 @@ def correct_pvalues(pvalue_dictionary,verbose=0,alpha=0.05):
     except:
         # Version for array input
         pvals = np.float32(pvalue_dictionary)
+        shape = pvals.shape
+        pvals = pvals.ravel()
         reject, pvals_corrected, alphacSidak, alphacBonf = \
           statsmodels.sandbox.stats.multicomp.multipletests(
             pvals, alpha=alpha, method='fdr_bh')
-        return pvals_corrected, reject
+        return pvals_corrected.reshape(shape), reject.reshape(shape)
+
+
+from neurotools.util.time import progress_bar
+
+def bootstrap_statistic(
+    statistic, 
+    population, 
+    ntrials=1000,
+    show_progress=False):
+    '''
+    Re-sample a statistical estimator from a single 
+    population to estimate the estimator's uncertainty.
     
+    Parameters
+    ----------
+    statistic: function
+        Function accepting elements in `population` and
+        returning an object reflecting a statistical 
+        estimator 
+    population: iterable
+        Values in the test population.
     
+    Other Parameters
+    ----------------
+    ntrials: positive int; default 1000
+        Number of random samples to use
+    
+    Returns
+    --------
+    samples: list
+        Length `ntrials` list of return-vales from 
+        `statistic()` evaluated on bootstrap samples
+        `population` with replacement.
+    '''
+    population = [*population]
+    n = len(population)
+    
+    iterator = range(ntrials)
+    if show_progress:
+        iterator = progress_bar(iterator)
+
+    return [
+        statistic([
+            population[i]
+            for i in random.choice(n,n,replace=True)
+            ]) 
+        for i in iterator
+    ]
+
 
 def bootstrap_statistic_two_sided(
     statistic, 
@@ -463,5 +517,146 @@ def bootstrap_compare_mean(
     '''
     return bootstrap_compare_statistic_two_sided_parallel(
         mean, popA, popB, NA, NB, ntrials)
+
+
+
+
+def bootstrap_in_blocks(
+    variables,
+    blocklength,
+    nsamples=1,
+    replace=True,
+    seed=None):
+    '''
+    Chop dataset into blocks, then re-compose it, 
+    sampling these blocks randomly with replacement. 
     
+    This is used to compute bootstrap confidence intervals.
     
+    If `blocklength doesn't evenly divide the number of 
+    time samples, then we include an extra block, but 
+    truncate the resulting timeseries to match the length
+    of the original data. 
+    
+    This casts all `variables` to `np.float32`.
+    
+    Parameters
+    ----------
+    variables: list of np.float32
+        List of arrays. 
+        The first dimension of each array is time samples 
+        and should be the same length for all variables.
+    blocklength: int
+        Length of blocks for block-bootstrap-resample
+        
+    Other Parameters
+    ----------------
+    nsamples: positive int; default 1
+        Number of bootstrap samples to generate. 
+    replace: boolean; default True
+        Whether to sample with or without replacement.
+        Setting this to false implements a shuffle test,
+        rather than a bootstrap. 
+    seed: int or None; default None
+        If not `None`, use `seed` to set the state of 
+        `np.random`
+        If `None`, continue with current state.
+        
+    Returns
+    -------
+    result: list of np.float32
+    '''
+
+    # Validate arguments
+    blocklength = int(blocklength)
+    if blocklength<=1:
+        raise ValueError((
+            'Block length should be >1, got %d')
+            %blocklength)
+    variables = [np.float32(v) for v in variables]
+    ntimes    = {v.shape[0] for v in variables}
+    if not len(ntimes)==1:
+        raise ValueError((
+        'Expected all variables to have the same shape, got'
+        '%s')%[*map(np.shape,variables)])
+    ntimes = [*ntimes][0]
+
+    if not seed is None:
+        np.random.seed(seed)
+            
+    if replace:
+        '''
+        If sampling with replacement, we draw an extra
+        sample then truncate.
+        If blocklen doesn't evenly divide ntimes, the
+        final partial block is skipped. 
+        '''
+        # Separate data into blocks
+        nblocks = int(ntimes//blocklength)
+        blocks  = np.empty(nblocks,dtype=object)
+        for i in range(nblocks):
+            a = i*blocklength
+            b = a+blocklength
+            blocks[i] = [v[a:b,...] for v in variables]
+        # Re-sample with replacement
+        def sample():
+            p = np.random.choice(
+                np.arange(nblocks),
+                nblocks+1,
+                replace=replace)
+            return [np.concatenate(v,axis=0)[:ntimes,...] 
+                    for v in zip(*blocks[p])]
+    else:
+        '''
+        If permuting (sampling without replacement), 
+        we leave the final partial block and shuffle
+        it. 
+        '''
+        # Separate data into blocks
+        nblocks = int(ntimes//blocklength)+1
+        blocks  = np.empty(nblocks,dtype=object)
+        for i in range(nblocks):
+            a = i*blocklength
+            b = a+blocklength
+            blocks[i] = [v[a:b,...] for v in variables]
+        # Re-sample with replacement
+        def sample():
+            p = np.random.choice(
+                np.arange(nblocks),
+                nblocks,
+                replace=replace)
+            return [np.concatenate(v,axis=0) 
+                    for v in zip(*blocks[p])]
+
+    return [sample() for i in range(nsamples)]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

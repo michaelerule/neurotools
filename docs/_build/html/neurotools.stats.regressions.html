@@ -92,9 +92,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="neurotools.stats.html">neurotools.stats package</a> &raquo;</li>
-      <li>neurotools.stats.regressions module</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="neurotools.stats.html">neurotools.stats package</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.regressions module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/neurotools.stats.regressions.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -261,6 +261,59 @@ scipy.optimize documentation for details.</p>
 <dd class="field-odd"><p>array-like</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.regressions.cubic_spline_regression">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.regressions.</span></span><span class="sig-name descname"><span class="pre">cubic_spline_regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NBOOTSTRAP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/regressions.html#cubic_spline_regression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.regressions.cubic_spline_regression" title="Permalink to this definition"></a></dt>
+<dd><p>Bivariate x→y cubic spline regression with bootstrap
+convidence intervals.</p>
+<p>Splines are spaced according to the points in
+<cite>x_eval</cite>, not <cite>x</cite>.</p>
+<p>Depends on the <cite>cr()</cite> function in the <cite>patsy</cite> package.</p>
+<section id="parametrs">
+<h2>Parametrs<a class="headerlink" href="#parametrs" title="Permalink to this heading"></a></h2>
+<dl class="simple">
+<dt>x: length NSAMPLES iterable of scalars</dt><dd><p>Independent variable</p>
+</dd>
+<dt>y: length NSAMPLES iterable of scalars</dt><dd><p>Dependent variable</p>
+</dd>
+<dt>x_eval: iterable of scalars</dt><dd><p>Points at which to evalute the resulting model.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">param df</dt>
+<dd class="field-odd"><p>Degrees of freedom for cubic spline regression.</p>
+</dd>
+<dt class="field-even">type df</dt>
+<dd class="field-even"><p>int&gt;0; default 5</p>
+</dd>
+<dt class="field-odd">param NBOOTSTRAP</dt>
+<dd class="field-odd"><p>Number of samples to use for bootstrap</p>
+</dd>
+<dt class="field-even">type NBOOTSTRAP</dt>
+<dd class="field-even"><p>int&gt;0; default 1000</p>
+</dd>
+<dt class="field-odd">param reg</dt>
+<dd class="field-odd"><p>Regularization for linear least squares</p>
+</dd>
+<dt class="field-even">type reg</dt>
+<dd class="field-even"><p>positive float; default 1e-15</p>
+</dd>
+<dt class="field-odd">param show_progress</dt>
+<dd class="field-odd"><p>Show progress bar while sampling bootstrap</p>
+</dd>
+<dt class="field-even">type show_progress</dt>
+<dd class="field-even"><p>boolean; default False</p>
+</dd>
+<dt class="field-odd">returns</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_hat</strong> (<em>np.float32</em>) – Smooted curve evaluated at <cite>x_eval</cite></p></li>
+<li><p><strong>samples</strong> (<em>np.float32</em>) – NBOOTSTRAP × len(x_eval) bootstrap samples.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 </section>

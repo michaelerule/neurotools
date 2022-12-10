@@ -156,15 +156,15 @@ def trim_mask(mask):
 
 def mask_crop(x,mask,fill_nan=True):
     '''
-    Set pixels in x where mask is False to NaN,
+    Set pixels in `x` where `mask` is `False` to `NaN`,
     and then remove empty rows and columns.
     
     Parameters
     ----------
     x: 2D np.float32
     mask: 2D np.bool
-    fill_nan: bool
-        Whether to fill "false" values with NaN; default is true
+    fill_nan: bool; default True
+        Whether to fill "false" values with NaN
     '''
     if fill_nan:
         x = maskout(x,mask)
@@ -175,8 +175,8 @@ def mask_crop(x,mask,fill_nan=True):
 
 def to_image(x,mask):
     '''
-    Assign list of values `x` to locations in `mask` that are True,
-    in row-major order.
+    Assign list of values `x` to locations in `mask` that 
+    are `True`, in row-major order.
     
     Parameters
     ----------

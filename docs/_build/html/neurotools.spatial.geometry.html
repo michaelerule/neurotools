@@ -86,9 +86,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="neurotools.spatial.html">neurotools.spatial package</a> &raquo;</li>
-      <li>neurotools.spatial.geometry module</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="neurotools.spatial.html">neurotools.spatial package</a></li>
+      <li class="breadcrumb-item active">neurotools.spatial.geometry module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/neurotools.spatial.geometry.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,20 +100,25 @@
              
   <section id="module-neurotools.spatial.geometry">
 <span id="neurotools-spatial-geometry-module"></span><h1>neurotools.spatial.geometry module<a class="headerlink" href="#module-neurotools.spatial.geometry" title="Permalink to this heading"></a></h1>
-<p>Collected functions from 2018–2023 concerning analyses of 2D data.</p>
-<p>These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.</p>
+<p>Collected functions from 2018–2023
+concerning analyses of 2D data.</p>
+<p>These routines work on 2D (x,y) points encoded as
+complex z=x+iy numbers.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.geometry.p2z">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.geometry.</span></span><span class="sig-name descname"><span class="pre">p2z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">py</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/geometry.html#p2z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.geometry.p2z" title="Permalink to this definition"></a></dt>
-<dd><p>Ensure that a numpy array contains (x,y) points encoded as z = x+iy,
+<dd><p>Ensure that a numpy array contains (x,y) points
+encoded as z = x+iy,
 or convert two arrays (x,y) int z = x+iy format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>px</strong> (<em>np.array</em>) – <dl class="simple">
 <dt>x coordinate or points, or, if py is None</dt><dd><ul>
-<li><p>complex z=x + iy array (in which case this function is a noop)</p></li>
-<li><p>array with on dimension length 2 containing (px,py)</p></li>
+<li><p>complex z=x + iy array (in which case this
+function is a noop)</p></li>
+<li><p>array with on dimension length 2
+containing (px,py)</p></li>
 </ul>
 </dd>
 </dl>
@@ -130,12 +135,15 @@ or convert two arrays (x,y) int z = x+iy format.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.geometry.polar_smooth_contour">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.geometry.</span></span><span class="sig-name descname"><span class="pre">polar_smooth_contour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/geometry.html#polar_smooth_contour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.geometry.polar_smooth_contour" title="Permalink to this definition"></a></dt>
-<dd><p>Smooth the radial and angular components of a closed, circular,
-non-self-intersecting contour <cite>z</cite> in the complex plane.</p>
-<p>To avoid coodinate singularity, <cite>z</cite> should not intersect its own centroid.</p>
-<p>Smoothing is accomplished in terms of adjacent samples, and the kernel
-standard deviation has units of samples. See <cite>resample_convex_hull</cite> to
-convert a convex shape with irregular angular sampling to one with regular
+<dd><p>Smooth the radial and angular components of a closed,
+circular, non-self-intersecting contour <cite>z</cite> in the
+complex plane.</p>
+<p>To avoid coodinate singularity, <cite>z</cite> should not
+intersect its own centroid.</p>
+<p>Smoothing is accomplished in terms of adjacent samples,
+and the kernel standard deviation has units of samples.
+See <cite>resample_convex_hull</cite> to convert a convex shape
+with irregular angular sampling to one with regular
 angular sampling for better results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -150,24 +158,37 @@ angular sampling for better results.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.geometry.convex_hull">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.geometry.</span></span><span class="sig-name descname"><span class="pre">convex_hull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">py</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/geometry.html#convex_hull"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.geometry.convex_hull" title="Permalink to this definition"></a></dt>
-<dd><p>A wrapper for scipy.spatial.ConvexHull that returns points as z=x+iy</p>
+<dd><p>A wrapper for scipy.spatial.ConvexHull that returns
+points as z=x+iy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>px</strong> – </p></li>
+<li><p><strong>py</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.geometry.convex_hull_from_mask">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.geometry.</span></span><span class="sig-name descname"><span class="pre">convex_hull_from_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ntheta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/geometry.html#convex_hull_from_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.geometry.convex_hull_from_mask" title="Permalink to this definition"></a></dt>
-<dd><p>Extract convex hull containing all pixels in a 2D boolean array that are
-True. The array x is interpreted as a (rows,cols) matrix where row number
-is the y coordinate and col number is the x coordinate.</p>
+<dd><p>Extract convex hull containing all pixels in a 2D
+boolean array that are <cite>True</cite>. The array <cite>x</cite> is
+interpreted as a (rows,cols) matrix where row number
+is the <cite>y</cite> coordinate and col number is the <cite>x</cite>
+coordinate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>2D np.bool</em>) – </p></li>
-<li><p><strong>Ntheta</strong> (<em>positive int</em>) – If not None, the resulting hull will be resampled at Ntheta uniform
-angular intervals around the centroid</p></li>
-<li><p><strong>sigma</strong> (<em>positive float</em>) – If not None, resulting hull will be smoothed in polar coordinates
-by a circular Gaussian kernel with standard deviation sigma, where
-sigma is expressed in DEGRESS</p></li>
+<li><p><strong>Ntheta</strong> (<em>positive int</em>) – If not None, the resulting hull will be resampled
+at <cite>Ntheta</cite> uniform angular intervals around the
+centroid.</p></li>
+<li><p><strong>sigma</strong> (<em>positive float</em>) – If not None, resulting hull will be smoothed in
+polar coordinates
+by a circular Gaussian kernel with standard
+deviation <cite>sigma</cite> (in DEGRESS).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -182,10 +203,14 @@ sigma is expressed in DEGRESS</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.geometry.resample_convex_hull">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.geometry.</span></span><span class="sig-name descname"><span class="pre">resample_convex_hull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ntheta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/geometry.html#resample_convex_hull"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.geometry.resample_convex_hull" title="Permalink to this definition"></a></dt>
-<dd><p>Resample a convex shape at uniform angular intervals around its centroid</p>
+<dd><p>Resample a convex shape at uniform angular intervals
+around its centroid</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Ntheta</strong> (<em>positive int; default 60</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> – </p></li>
+<li><p><strong>Ntheta</strong> (<em>positive int; default 60</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -193,7 +218,8 @@ sigma is expressed in DEGRESS</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.geometry.in_hull">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.geometry.</span></span><span class="sig-name descname"><span class="pre">in_hull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hull</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/geometry.html#in_hull"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.geometry.in_hull" title="Permalink to this definition"></a></dt>
-<dd><p>Determine if the list of points P lies inside a convex hull
+<dd><p>Determine if the list of points P lies inside a convex
+hull
 credit: <a class="reference external" href="https://stackoverflow.com/a/52405173/900749">https://stackoverflow.com/a/52405173/900749</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -66,10 +66,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-          <li><a href="../signal.html">neurotools.signal</a> &raquo;</li>
-      <li>neurotools.signal.multitaper</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../signal.html">neurotools.signal</a></li>
+      <li class="breadcrumb-item active">neurotools.signal.multitaper</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,21 +94,20 @@
 
 <span class="c1"># Suppress warnings from numpy/spectrum</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">neurotools.util.getfftw</span> <span class="k">as</span> <span class="nn">fft</span>
-<span class="kn">from</span> <span class="nn">neurotools.jobs.ndecorator</span> <span class="kn">import</span> <span class="n">memoize</span>
-<span class="kn">from</span> <span class="nn">neurotools.jobs</span> <span class="kn">import</span> <span class="n">parallel</span>
-
-<span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">signal</span> <span class="k">as</span> <span class="n">sig</span>
+<span class="kn">from</span> <span class="nn">neurotools.util</span> <span class="kn">import</span> <span class="n">getfftw</span> <span class="k">as</span> <span class="n">fft</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.jobs.ndecorator</span> <span class="kn">import</span> <span class="n">memoize</span>
+<span class="kn">from</span> <span class="nn">neurotools.jobs</span>            <span class="kn">import</span> <span class="n">parallel</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">spectrum.mtm</span> <span class="kn">import</span> <span class="n">dpss</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">dpss</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please install the spectrum module, e.g.</span><span class="se">\n\t</span><span class="s2">pip install spectrum&quot;</span><span class="p">)</span>
-
 
 <div class="viewcode-block" id="dpss_cached"><a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.dpss_cached">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">dpss_cached</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="n">half_bandwidth_parameter</span><span class="p">):</span>

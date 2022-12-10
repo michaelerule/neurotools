@@ -66,9 +66,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>neurotools.util.time</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">neurotools.util.time</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -119,6 +119,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">_%H%M%S&#39;</span><span class="p">)</span></div>
 
+
 <span class="n">__GLOBAL_TIC_TIME__</span> <span class="o">=</span> <span class="kc">None</span>
 <div class="viewcode-block" id="tic"><a class="viewcode-back" href="../../../neurotools.util.time.html#neurotools.util.time.tic">[docs]</a><span class="k">def</span> <span class="nf">tic</span><span class="p">(</span><span class="n">doprint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; </span>
@@ -127,11 +128,13 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    doprint : bool</span>
+<span class="sd">    doprint: bool</span>
 <span class="sd">        if True, print elapsed time. Else, return it.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    t: int</span>
+<span class="sd">        `current_milli_time()`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
@@ -154,14 +157,15 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    doprint : bool</span>
+<span class="sd">    doprint: bool</span>
 <span class="sd">        if True, print elapsed time. Else, return it.</span>
+<span class="sd">    prefix: str</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    t : number</span>
+<span class="sd">    t: number</span>
 <span class="sd">        Current timestamp</span>
-<span class="sd">    dt : number</span>
+<span class="sd">    dt: number</span>
 <span class="sd">        Time since the last call to the tic() or toc() function.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">__GLOBAL_TIC_TIME__</span>
@@ -180,14 +184,14 @@
 
 <div class="viewcode-block" id="waitfor"><a class="viewcode-back" href="../../../neurotools.util.time.html#neurotools.util.time.waitfor">[docs]</a><span class="k">def</span> <span class="nf">waitfor</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Wait for t milliseconds</span>
+<span class="sd">    Spin-wait for t milliseconds.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
+<span class="sd">    t: posive number</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">t</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Time `t` should be positive.&#39;</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">current_milli_time</span><span class="p">()</span><span class="o">&lt;</span><span class="n">t</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">return</span> <span class="n">current_milli_time</span><span class="p">()</span></div>

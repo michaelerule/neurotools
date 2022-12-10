@@ -16,11 +16,12 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from . import color as ncl
+
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-import neurotools.graphics.color as ncl
 import traceback
 
 acton_cm_data = [

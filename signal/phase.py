@@ -14,7 +14,7 @@ from __future__ import print_function
 import numpy as np
 from scipy.signal import hilbert
 
-import neurotools.signal as sig
+from .. import signal as sig
 from neurotools.util.array import find
 
 ############################################################

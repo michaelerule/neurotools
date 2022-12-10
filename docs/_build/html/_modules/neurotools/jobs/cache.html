@@ -66,9 +66,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>neurotools.jobs.cache</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">neurotools.jobs.cache</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -596,33 +596,34 @@
     <span class="n">hsh</span>  <span class="o">=</span> <span class="n">pieces</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pieces</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># The argument spec can be mapped uniquely to a file</span>
-        <span class="c1"># name by converting it to text, then converting </span>
-        <span class="c1"># this text to base64 to avoid issues with special </span>
-        <span class="c1"># characters. Passing the text representation </span>
-        <span class="c1"># through zlib preserves the uniqueness of the key, </span>
-        <span class="c1"># while reducing the overall size. This improves</span>
-        <span class="c1"># performance.</span>
-        <span class="k">if</span> <span class="n">base64encode</span><span class="p">:</span> <span class="n">key</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">urlsafe_b64decode</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">compressed</span>  <span class="p">:</span> <span class="n">key</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
-        <span class="k">if</span>   <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;repr&#39;</span>  <span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;json&#39;</span>  <span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;pickle&#39;</span><span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;human&#39;</span> <span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">human_decode</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-            <span class="s1">&#39;I support coding modes repr, json, and pickle;&#39;</span>
-            <span class="s1">&#39; I don</span><span class="se">\&#39;</span><span class="s1">t recognize coding mode </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">%</span><span class="n">mode</span><span class="p">)</span>
-        <span class="n">sig</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sig</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-            <span class="s1">&#39;Could not decode &quot;</span><span class="si">%s</span><span class="s1">&quot;; Please ensure that you&#39;</span>
-            <span class="s1">&#39;provide the file name without the file &#39;</span>
-            <span class="s1">&#39;extension&#39;</span><span class="p">)</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span></div>
-    
+    <span class="c1">#try:</span>
+    <span class="c1"># The argument spec can be mapped uniquely to a file</span>
+    <span class="c1"># name by converting it to text, then converting </span>
+    <span class="c1"># this text to base64 to avoid issues with special </span>
+    <span class="c1"># characters. Passing the text representation </span>
+    <span class="c1"># through zlib preserves the uniqueness of the key, </span>
+    <span class="c1"># while reducing the overall size. This improves</span>
+    <span class="c1"># performance.</span>
+    <span class="k">if</span> <span class="n">base64encode</span><span class="p">:</span> <span class="n">key</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">urlsafe_b64decode</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">compressed</span>  <span class="p">:</span> <span class="n">key</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    <span class="k">if</span>   <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;repr&#39;</span>  <span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;json&#39;</span>  <span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;pickle&#39;</span><span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;human&#39;</span> <span class="p">:</span> <span class="n">sig</span> <span class="o">=</span> <span class="n">human_decode</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
+        <span class="s1">&#39;I support coding modes repr, json, and pickle;&#39;</span>
+        <span class="s1">&#39; I don</span><span class="se">\&#39;</span><span class="s1">t recognize coding mode </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">%</span><span class="n">mode</span><span class="p">)</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sig</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    except:</span>
+<span class="sd">        raise ValueError((</span>
+<span class="sd">            &#39;Could not decode &quot;%s&quot;; Please ensure that you&#39;</span>
+<span class="sd">            &#39;provide the file name without the file &#39;</span>
+<span class="sd">            &#39;extension&#39;)%filename)</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
     
     
 <div class="viewcode-block" id="human_encode"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.human_encode">[docs]</a><span class="k">def</span> <span class="nf">human_encode</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
@@ -1246,7 +1247,11 @@
     <span class="k">return</span> <span class="n">hierarchical</span></div>
 
 
-<div class="viewcode-block" id="scan_cachedir"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.scan_cachedir">[docs]</a><span class="k">def</span> <span class="nf">scan_cachedir</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<div class="viewcode-block" id="scan_cachedir"><a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.scan_cachedir">[docs]</a><span class="k">def</span> <span class="nf">scan_cachedir</span><span class="p">(</span>
+    <span class="n">cachedir</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Retrieve all entries in `cachedir`, unpacking their </span>
 <span class="sd">    encoded arguments.</span>
@@ -1261,6 +1266,7 @@
 <span class="sd">    ----------------</span>
 <span class="sd">    method: str; default &#39;npy&#39;</span>
 <span class="sd">        Can be &#39;npy&#39; or &#39;mat&#39;</span>
+<span class="sd">    verbose: boolean; default False</span>
 <span class="sd">    **kw:</span>
 <span class="sd">        Forwarded to `file_string_to_signature()`; </span>
 <span class="sd">        See `file_string_to_signature()` for details.</span>
@@ -1275,17 +1281,83 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
         <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">method</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">cachedir</span><span class="p">):</span>
-        <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="o">==</span><span class="n">method</span><span class="p">:</span> <span class="k">continue</span>
-        <span class="n">args</span><span class="p">,</span> <span class="n">varargs</span> <span class="o">=</span> <span class="n">file_string_to_signature</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">str</span><span class="p">):</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,)</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">results</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">varargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">results</span></div>
 
+    <span class="n">argnames</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">results</span>  <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">invalid</span>  <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">cachedir</span><span class="p">):</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="o">==</span><span class="n">method</span><span class="p">:</span> <span class="k">continue</span>
+            
+            <span class="c1"># If this fails we can try to recover from the</span>
+            <span class="c1"># cached contents</span>
+            <span class="k">try</span><span class="p">:</span> 
+                <span class="n">args</span><span class="p">,</span> <span class="n">varargs</span> <span class="o">=</span> <span class="n">file_string_to_signature</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">str</span><span class="p">):</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,)</span>
+
+                <span class="c1"># Remember argument names, we might need </span>
+                <span class="c1"># these to recover signatures from files  </span>
+                <span class="c1"># whose filename-based decoding fails</span>
+                <span class="n">_argnames</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">argnames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">argnames</span> <span class="o">=</span> <span class="n">_argnames</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">argnames</span><span class="o">==</span><span class="n">_argnames</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;File </span><span class="si">%s</span><span class="s1"> argument &#39;</span>
+                        <span class="s1">&#39;names </span><span class="si">%s</span><span class="s1"> differs from previous &#39;</span>
+                        <span class="s1">&#39;argument names </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">%</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span><span class="n">_argnames</span><span class="p">,</span><span class="n">argnames</span><span class="p">))</span>
+
+                <span class="c1"># Save arguments as dictionary</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">varargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">zlib</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">invalid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;The following files could not be decoded:&#39;</span><span class="o">+</span>
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    &#39;</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">invalid</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> files could not be decoded&#39;</span><span class="o">%</span>\
+                <span class="nb">len</span><span class="p">(</span><span class="n">invalid</span><span class="p">))</span>
+            
+        <span class="c1"># Try to recover</span>
+        <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;.npy&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">argnames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No valid reference cache &#39;</span>
+                    <span class="s1">&#39;entry was available for identifying &#39;</span>
+                    <span class="s1">&#39;the function arguments; I would need &#39;</span>
+                    <span class="s1">&#39;the original function used to produce &#39;</span>
+                    <span class="s1">&#39;this cache to proceed.&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;Format is .npy; I will try recover&#39;</span>
+                <span class="s1">&#39; by inspecting file contents&#39;</span><span class="p">)</span>
+            <span class="n">double_failed</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">invalid</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">varargs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                        <span class="n">cachedir</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">f</span><span class="p">,</span><span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">argnames</span><span class="p">,</span><span class="n">args</span><span class="p">))</span>
+                    <span class="n">results</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">varargs</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">double_failed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1"> recovered&#39;</span><span class="o">%</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">invalid</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">double_failed</span><span class="p">),</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">invalid</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">double_failed</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> files irrecoverable&#39;</span><span class="o">%</span>\
+                    <span class="nb">len</span><span class="p">(</span><span class="n">double_failed</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
 </pre></div>
 
            </div>

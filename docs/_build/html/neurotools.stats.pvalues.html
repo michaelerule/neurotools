@@ -92,9 +92,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="neurotools.stats.html">neurotools.stats package</a> &raquo;</li>
-      <li>neurotools.stats.pvalues module</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="neurotools.stats.html">neurotools.stats package</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.pvalues module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/neurotools.stats.pvalues.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -183,7 +183,9 @@ entries as <cite>label -&gt; pvalue, reject</cite></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.pvalues.correct_pvalues">
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">correct_pvalues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pvalue_dictionary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#correct_pvalues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.correct_pvalues" title="Permalink to this definition"></a></dt>
-<dd><p>This corrects for multiple comparisons using the
+<dd><p>This is a convenience wrapper for
+<cite>statsmodels.sandbox.stats.multicomp.multipletests</cite></p>
+<p>This corrects for multiple comparisons using the
 Benjamini-Hochberg procedure, using either the
 variance for positive dependence or no dependence,
 whichever is more conservative.</p>
@@ -198,6 +200,32 @@ correlations, entries as <cite>label -&gt; pvalue, reject</cite></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.pvalues.bootstrap_statistic">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">bootstrap_statistic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#bootstrap_statistic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.bootstrap_statistic" title="Permalink to this definition"></a></dt>
+<dd><p>Re-sample a statistical estimator from a single
+population to estimate the estimator’s uncertainty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statistic</strong> (<em>function</em>) – Function accepting elements in <cite>population</cite> and
+returning an object reflecting a statistical
+estimator</p></li>
+<li><p><strong>population</strong> (<em>iterable</em>) – Values in the test population.</p></li>
+<li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>samples</strong> – Length <cite>ntrials</cite> list of return-vales from
+<cite>statistic()</cite> evaluated on bootstrap samples
+<cite>population</cite> with replacement.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -381,6 +409,42 @@ This should be no larger than the size of B.</p></li>
 <li><p><strong>pvalue</strong> (<em>float in [0,1]</em>) – Bootstrapped p-value</p></li>
 </ul>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.pvalues.bootstrap_in_blocks">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">bootstrap_in_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocklength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#bootstrap_in_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.bootstrap_in_blocks" title="Permalink to this definition"></a></dt>
+<dd><p>Chop dataset into blocks, then re-compose it,
+sampling these blocks randomly with replacement.</p>
+<p>This is used to compute bootstrap confidence intervals.</p>
+<p>If <a href="#id1"><span class="problematic" id="id2">`</span></a>blocklength doesn’t evenly divide the number of
+time samples, then we include an extra block, but
+truncate the resulting timeseries to match the length
+of the original data.</p>
+<p>This casts all <cite>variables</cite> to <cite>np.float32</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<em>list</em><em> of </em><em>np.float32</em>) – List of arrays.
+The first dimension of each array is time samples
+and should be the same length for all variables.</p></li>
+<li><p><strong>blocklength</strong> (<em>int</em>) – Length of blocks for block-bootstrap-resample</p></li>
+<li><p><strong>nsamples</strong> (<em>positive int; default 1</em>) – Number of bootstrap samples to generate.</p></li>
+<li><p><strong>replace</strong> (<em>boolean; default True</em>) – Whether to sample with or without replacement.
+Setting this to false implements a shuffle test,
+rather than a bootstrap.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em> or </em><em>None; default None</em>) – If not <cite>None</cite>, use <cite>seed</cite> to set the state of
+<cite>np.random</cite>
+If <cite>None</cite>, continue with current state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of np.float32</p>
 </dd>
 </dl>
 </dd></dl>

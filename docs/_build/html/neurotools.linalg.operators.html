@@ -78,9 +78,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="neurotools.linalg.html">neurotools.linalg package</a> &raquo;</li>
-      <li>neurotools.linalg.operators module</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="neurotools.linalg.html">neurotools.linalg package</a></li>
+      <li class="breadcrumb-item active">neurotools.linalg.operators module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/neurotools.linalg.operators.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -267,12 +267,97 @@ one-dimensional domain of lenght <cite>N</cite></p>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.linalg.operators.differentiator">
-<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.operators.</span></span><span class="sig-name descname"><span class="pre">differentiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/operators.html#differentiator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.operators.differentiator" title="Permalink to this definition"></a></dt>
-<dd><p>Fourier space discrete differentiaion</p>
+<dt class="sig sig-object py" id="neurotools.linalg.operators.circular_derivative_operator">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.operators.</span></span><span class="sig-name descname"><span class="pre">circular_derivative_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/operators.html#circular_derivative_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.operators.circular_derivative_operator" title="Permalink to this definition"></a></dt>
+<dd><p>Circulat discete differentiation in the frequeincy
+domain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>N</strong> (<em>int</em>) – Size of the domain</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Fourier transform of the circular discrete
+derivative.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>N×N np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.operators.truncated_derivative_operator">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.operators.</span></span><span class="sig-name descname"><span class="pre">truncated_derivative_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/operators.html#truncated_derivative_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.operators.truncated_derivative_operator" title="Permalink to this definition"></a></dt>
+<dd><p>Discrete derivative operator, projecting from N to
+N-1 dimensions (spatial domain).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>N</strong> (<em>int</em>) – Size of the domain</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Matrix D such that Dx = Δx</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(N-1)×N np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.operators.terminated_derivative_operator">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.operators.</span></span><span class="sig-name descname"><span class="pre">terminated_derivative_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/operators.html#terminated_derivative_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.operators.terminated_derivative_operator" title="Permalink to this definition"></a></dt>
+<dd><p>Discrete derivative, using {-1,1} at endpoints and
+½{-1,0,1} in the interior.</p>
+<p>This operator will have two zero eigenvalues for <cite>N</cite>
+even and three zero eigenvalues for <cite>N</cite> odd.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>N</strong> (<em>int</em>) – Size of the domain</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Matrix D such that Dx = Δx</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>N×N np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.operators.pad1up">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.operators.</span></span><span class="sig-name descname"><span class="pre">pad1up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/operators.html#pad1up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.operators.pad1up" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolation operator going from N to N+1 samples.
+Used to re-sample the discrete derivative to preserve
+dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>N</strong> (<em>int</em>) – Size of the domain</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>N×(N-1) np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.linalg.operators.spaced_derivative_operator">
+<span class="sig-prename descclassname"><span class="pre">neurotools.linalg.operators.</span></span><span class="sig-name descname"><span class="pre">spaced_derivative_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/linalg/operators.html#spaced_derivative_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.linalg.operators.spaced_derivative_operator" title="Permalink to this definition"></a></dt>
+<dd><p>Discrete derivative, upsampled via linear interpolation
+to preserve dimension.</p>
+<p>This will have 1 zero eigenvalue for odd N and two
+zero eigenvalues for even N.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>N</strong> (<em>int</em>) – Size of the domain</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>N×N np.float32</p>
 </dd>
 </dl>
 </dd></dl>

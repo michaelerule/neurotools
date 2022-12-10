@@ -13,21 +13,20 @@ from __future__ import print_function
 
 # Suppress warnings from numpy/spectrum
 import warnings
-
 import numpy as np
-import neurotools.util.getfftw as fft
-from neurotools.jobs.ndecorator import memoize
-from neurotools.jobs import parallel
-
-import neurotools.signal as sig
 import scipy.linalg
+
+from .. import signal as sig
+from neurotools.util import getfftw as fft
+
+from neurotools.jobs.ndecorator import memoize
+from neurotools.jobs            import parallel
 
 try:
     from spectrum.mtm import dpss
 except:
     def dpss(*args):
         raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
-
 
 @memoize
 def dpss_cached(length,half_bandwidth_parameter):

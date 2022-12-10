@@ -519,13 +519,17 @@ def nearPSDRebonatoJackel(A,epsilon=1e-10):
 
 def cinv(X,repair=False):
     '''
-    Invert positive matrix $X$ using cholesky factorization. The function
-    `numpy.linalg.cholesky` is aliased as `chol` in this library, in 
-    analogy to matlab. `chol` returns a upper-triangular matrix such
-    that $L = \operatorname{chol}(X)$ and $X = L^T L$. The inverse of
+    Invert positive matrix $X$ using cholesky factorization.
+    The function `numpy.linalg.cholesky` is aliased as 
+    `chol` in this library, in analogy to matlab. `chol` 
+    returns a upper-triangular matrix such that 
+    $L = \operatorname{chol}(X)$ and $X = L^T L$. 
+    The inverse of
     $X$ is $X^{-1} = (L^T L)^{-1} = L^{-1} L^{-T}$. 
     
-    This routine uses [LAPACK dtrtri](http://www.netlib.org/lapack/explore-html/da/dba/group__double_o_t_h_e_rcomputational_ga97c5ddb103f5f6bc2dc060886aaf2ffc.html#ga97c5ddb103f5f6bc2dc060886aaf2ffc)
+    This routine uses 
+    [LAPACK dtrtri](
+    http://www.netlib.org/lapack/explore-html/da/dba/group__double_o_t_h_e_rcomputational_ga97c5ddb103f5f6bc2dc060886aaf2ffc.html#ga97c5ddb103f5f6bc2dc060886aaf2ffc)
     . See also [scipy.linalg.lapack.dtrtri](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dtrtri.html#scipy.linalg.lapack.dtrtri).
         
     Parameters

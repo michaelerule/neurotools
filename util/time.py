@@ -39,6 +39,7 @@ def now():
     '''
     return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
+
 __GLOBAL_TIC_TIME__ = None
 def tic(doprint=True,prefix=''):
     ''' 
@@ -47,11 +48,13 @@ def tic(doprint=True,prefix=''):
     
     Parameters
     ----------
-    doprint : bool
+    doprint: bool
         if True, print elapsed time. Else, return it.
     
     Returns
     -------
+    t: int
+        `current_milli_time()`
     '''
     global __GLOBAL_TIC_TIME__
     t = current_milli_time()
@@ -74,14 +77,15 @@ def toc(doprint=True,prefix=''):
     
     Parameters
     ----------
-    doprint : bool
+    doprint: bool
         if True, print elapsed time. Else, return it.
+    prefix: str
     
     Returns
     -------
-    t : number
+    t: number
         Current timestamp
-    dt : number
+    dt: number
         Time since the last call to the tic() or toc() function.
     '''
     global __GLOBAL_TIC_TIME__
@@ -100,14 +104,14 @@ def toc(doprint=True,prefix=''):
 
 def waitfor(t):
     '''
-    Wait for t milliseconds
+    Spin-wait for t milliseconds.
     
     Parameters
     ----------
-    
-    Returns
-    -------
+    t: posive number
     '''
+    if t<0:
+        raise ValueError('Time `t` should be positive.')
     while current_milli_time()<t:
         pass
     return current_milli_time()

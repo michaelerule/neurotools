@@ -29,6 +29,8 @@ from os.path    import expanduser
 from matplotlib import cm
 
 # Some custom colors, just for fun! 
+
+# Bridget Riley's "Gather Painting" has perfect colors
 WHITE      = np.float32(mpl.colors.to_rgb('#f1f0e9'))
 RUST       = np.float32(mpl.colors.to_rgb('#eb7a59'))
 OCHRE      = np.float32(mpl.colors.to_rgb('#eea300'))
@@ -36,24 +38,50 @@ AZURE      = np.float32(mpl.colors.to_rgb('#5aa0df'))
 TURQUOISE  = np.float32(mpl.colors.to_rgb('#00bac9'))
 TEAL       = np.float32(mpl.colors.to_rgb('#00bac9'))
 BLACK      = np.float32(mpl.colors.to_rgb('#44525c'))
+GATHER     = [WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK]
+
+# Mauve and Moss round-out and complement the Gather pallet
+MAUVE      = np.float32(mpl.colors.to_rgb('#b56ab6'))
+MOSS       = np.float32(mpl.colors.to_rgb('#77ae64'))
+
+# Other colors (just OK)
 YELLOW     = np.float32(mpl.colors.to_rgb('#efcd2b'))
 INDIGO     = np.float32(mpl.colors.to_rgb('#606ec3'))
 VIOLET     = np.float32(mpl.colors.to_rgb('#8d5ccd'))
-MAUVE      = np.float32(mpl.colors.to_rgb('#b56ab6'))
 MAGENTA    = np.float32(mpl.colors.to_rgb('#cc79a7'))
 CHARTREUSE = np.float32(mpl.colors.to_rgb('#b59f1a'))
-MOSS       = np.float32(mpl.colors.to_rgb('#77ae64'))
 VIRIDIAN   = np.float32(mpl.colors.to_rgb('#11be8d'))
 CRIMSON    = np.float32(mpl.colors.to_rgb('#b41d4d'))
+
+# I liked Virginia Rutten's color scheme
 GOLD       = np.float32(mpl.colors.to_rgb('#ffd92e'))
 TAN        = np.float32(mpl.colors.to_rgb('#765931'))
 SALMON     = np.float32(mpl.colors.to_rgb('#fa8c61'))
 GRAY       = np.float32(mpl.colors.to_rgb('#b3b3b3'))
 LICHEN     = np.float32(mpl.colors.to_rgb('#63c2a3'))
-RUTTEN  = [GOLD,TAN,SALMON,GRAY,LICHEN]
-GATHER  = [WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK]
-COLORS  = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]
-CYCLE   = [BLACK,RUST,TURQUOISE,OCHRE,AZURE,MAUVE,YELLOW,INDIGO]
+RUTTEN     = [GOLD,TAN,SALMON,GRAY,LICHEN]
+
+# Sometimes, we need to match Matlab colors
+MATLAB_BLUE   = np.float32([0.0000, 0.4470, 0.7410])
+MATLAB_RUST   = np.float32([0.8500, 0.3250, 0.0980])
+MATLABE_OCHRE = np.float32([0.9290, 0.6940, 0.1250])
+MATLAB_MAUVE  = np.float32([0.4940, 0.1840, 0.5560])
+MATLAB_MOSS   = np.float32([0.4660, 0.6740, 0.1880])
+MATLAB_AZURE  = np.float32([0.3010, 0.7450, 0.9330])
+MATLAB_UMBER  = np.float32([0.6350, 0.0780, 0.1840])
+
+# The old matlab colors
+MATLAB_BLUE_OLD  = np.float32([0, 0, 1])
+MATLAB_GREEN_OLD = np.float32([0, 0.5, 0])
+MATLAB_RED_OLD   = np.float32([1, 0, 0])
+MATLAB_TEAL_OLD  = np.float32([0, 0.75, 0.75])
+MATLAB_MAUVE_OLD = np.float32([0.75, 0, 0.75])
+MATLAB_OCHRE_OLD = np.float32([0.75, 0.75, 0])
+MATLAB_BLACK_OLD = np.float32([0.25, 0.25, 0.25])
+
+# Set line propert cycle for Matplotlib
+COLORS     = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]
+CYCLE      = [BLACK,RUST,TURQUOISE,OCHRE,AZURE,MAUVE,YELLOW,INDIGO]
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CYCLE)
 
 ######################################################################
@@ -674,6 +702,7 @@ def bit16_print_color(c):
     
     Returns
     -------
+    bin(tuple_to_bit16(c))
     '''
     return bin(tuple_to_bit16(c))
 
@@ -684,12 +713,6 @@ def show_fast_pallet():
     the standard 3.2-inch TFT touch-screen breakout. Restricts colors that
     can be sent with a single write to one port. 16-bit color mode with
     low and high bytes identical. 
-    
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     plt.figure(figsize=(5,5),facecolor=(1,)*4)
     ax=plt.subplot(111)
@@ -713,11 +736,6 @@ def show_fast_pallet():
 
 def show_complete_fast_pallet():
     '''
-    Parameters
-    ----------
-    
-    Returns
-    -------
     '''
     plt.figure(figsize=(10,5),facecolor=(1,)*4)
     ax=plt.subplot(111)
@@ -842,4 +860,54 @@ show_hex_pallet([
 #define FAST_WHITE   0b0b1111010011110100
 '''
 
+
+
+def lighten(color,amount=0.2):
+    '''
+    Ligten a color by blending it with white.
+    
+    Parameters
+    ----------
+    color: matplotlib.color
+        Matplotlib color to lighten
+    amount: float in [0,1]; default 0.2
+        Amount of white to blend with color
+        
+    Returns
+    -------
+    np.float32
+        Length-3 RGB tuple. 
+        Alpha is discarded.
+    ''' 
+    color = np.float32(mpl.colors.to_rgb(color))
+    amount = np.clip(float(amount),0,1)
+    color = 1.0 * amount + (1-amount) * color
+    return color
+
+def darken(color,amount=0.2):
+    '''
+    Darken a color by blending it with black.
+    
+    Parameters
+    ----------
+    color: matplotlib.color
+        Matplotlib color to lighten
+    amount: float in [0,1]; default 0.2
+        Amount of black to blend with color
+        
+    Returns
+    -------
+    np.float32
+        Length-3 RGB tuple. 
+        Alpha is discarded.
+    ''' 
+    color = np.float32(mpl.colors.to_rgb(color))
+    amount = np.clip(float(amount),0,1)
+    color = (1-amount) * color
+    return color
+    
+    
+    
+    
+    
 

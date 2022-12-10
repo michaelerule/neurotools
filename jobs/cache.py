@@ -516,33 +516,34 @@ def file_string_to_signature(
     hsh  = pieces[-2]
     name = '.'.join(pieces[:-3])
 
-    try:
-        # The argument spec can be mapped uniquely to a file
-        # name by converting it to text, then converting 
-        # this text to base64 to avoid issues with special 
-        # characters. Passing the text representation 
-        # through zlib preserves the uniqueness of the key, 
-        # while reducing the overall size. This improves
-        # performance.
-        if base64encode: key = base64.urlsafe_b64decode(
-            (key+'='*10).encode('UTF-8'))
-        if compressed  : key = zlib.decompress(key)
-        key = key.decode()
-        if   mode=='repr'  : sig = ast.literal_eval(key)
-        elif mode=='json'  : sig = json.loads(key)
-        elif mode=='pickle': sig = pickle.loads(key)
-        elif mode=='human' : sig = human_decode(key)
-        else: raise ValueError((
-            'I support coding modes repr, json, and pickle;'
-            ' I don\'t recognize coding mode %s')%mode)
-        sig = neurotools.jobs.ndecorator.sanitize(sig)
-        return sig
+    #try:
+    # The argument spec can be mapped uniquely to a file
+    # name by converting it to text, then converting 
+    # this text to base64 to avoid issues with special 
+    # characters. Passing the text representation 
+    # through zlib preserves the uniqueness of the key, 
+    # while reducing the overall size. This improves
+    # performance.
+    if base64encode: key = base64.urlsafe_b64decode(
+        (key+'='*10).encode('UTF-8'))
+    if compressed  : key = zlib.decompress(key)
+    key = key.decode()
+    if   mode=='repr'  : sig = ast.literal_eval(key)
+    elif mode=='json'  : sig = json.loads(key)
+    elif mode=='pickle': sig = pickle.loads(key)
+    elif mode=='human' : sig = human_decode(key)
+    else: raise ValueError((
+        'I support coding modes repr, json, and pickle;'
+        ' I don\'t recognize coding mode %s')%mode)
+    sig = neurotools.jobs.ndecorator.sanitize(sig)
+    return sig
+    '''
     except:
         raise ValueError((
             'Could not decode "%s"; Please ensure that you'
             'provide the file name without the file '
             'extension')%filename)
-    
+    '''
     
     
 def human_encode(sig):
@@ -1166,7 +1167,11 @@ def hierarchical_cacher(fast_to_slow,
     return hierarchical
 
 
-def scan_cachedir(cachedir,method="npy",**kw):
+def scan_cachedir(
+    cachedir,
+    method="npy",
+    verbose=False,
+    **kw):
     '''
     Retrieve all entries in `cachedir`, unpacking their 
     encoded arguments.
@@ -1181,6 +1186,7 @@ def scan_cachedir(cachedir,method="npy",**kw):
     ----------------
     method: str; default 'npy'
         Can be 'npy' or 'mat'
+    verbose: boolean; default False
     **kw:
         Forwarded to `file_string_to_signature()`; 
         See `file_string_to_signature()` for details.
@@ -1195,14 +1201,80 @@ def scan_cachedir(cachedir,method="npy",**kw):
     '''
     if not method.startswith('.'):
         method = '.'+method
-    results = {}
-    for f in os.listdir(cachedir):
-        name, ext = os.path.splitext(f)
-        if not ext==method: continue
-        args, varargs = file_string_to_signature(name,**kw)
-        if len(args)==2 and isinstance(args[0],str):
-            args = (args,)
-        args = dict(args)
-        results[f] = (args,varargs)
-    return results
 
+    argnames = None
+    results  = {}
+    invalid  = []
+    for f in os.listdir(cachedir):
+            name, ext = os.path.splitext(f)
+            if not ext==method: continue
+            
+            # If this fails we can try to recover from the
+            # cached contents
+            try: 
+                args, varargs = file_string_to_signature(
+                    name,**kw)
+                
+                if len(args)==2 and isinstance(args[0],str):
+                    args = (args,)
+
+                # Remember argument names, we might need 
+                # these to recover signatures from files  
+                # whose filename-based decoding fails
+                _argnames,_ = zip(*args)
+                if argnames is None:
+                    argnames = _argnames
+                elif not argnames==_argnames:
+                    raise ValueError(('File %s argument '
+                        'names %s differs from previous '
+                        'argument names %s')%(
+                        f,_argnames,argnames))
+
+                # Save arguments as dictionary
+                args = dict(args)
+                results[f] = (args,varargs)
+            except zlib.error as e:
+                invalid.append(f)
+    
+    if len(invalid):
+        if verbose:
+            warnings.warn(
+                'The following files could not be decoded:'+
+                '\n    '+'\n    '.join(invalid))
+        else:
+            warnings.warn(
+                '%d files could not be decoded'%\
+                len(invalid))
+            
+        # Try to recover
+        if method=='.npy':
+            if argnames is None:
+                raise ValueError('No valid reference cache '
+                    'entry was available for identifying '
+                    'the function arguments; I would need '
+                    'the original function used to produce '
+                    'this cache to proceed.')
+            warnings.warn(
+                'Format is .npy; I will try recover'
+                ' by inspecting file contents')
+            double_failed = []
+            for f in invalid:
+                try:
+                    args, varargs = np.load(
+                        cachedir+os.sep+f,allow_pickle=True
+                    )[0]
+                    args = dict(zip(argnames,args))
+                    results[f] = (args,varargs)
+                except:
+                    double_failed.append(f)
+            warnings.warn(
+                '%d/%d recovered'%(
+                    len(invalid)-len(double_failed),
+                    len(invalid))
+            )
+            if len(double_failed):
+                warnings.warn(
+                    '%d files irrecoverable'%\
+                    len(double_failed))
+
+    return results

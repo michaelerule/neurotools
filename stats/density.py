@@ -13,7 +13,7 @@ from __future__ import print_function
 
 from scipy.stats import gaussian_kde
 
-import neurotools.signal as sig
+from .. import signal as sig
 import numpy as np
 import scipy
 
@@ -141,6 +141,7 @@ def adaptive_density_grid(grid,x,k=10,eps=0.01,fill=None,kind='linear'):
 
 def gridhist(ngrid,width,points):
     '''
+    Obsolete;
     Please use numpy.histogram2d instead!
     '''
     quantized = np.int32(points*ngrid/width)
@@ -148,3 +149,13 @@ def gridhist(ngrid,width,points):
     for (x,y) in quantized:
         counts[x,y]+=1
     return counts
+
+
+
+
+
+
+
+
+
+

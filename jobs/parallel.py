@@ -8,6 +8,7 @@ from __future__ import with_statement
 from __future__ import division
 from __future__ import print_function
 
+import multiprocessing
 from multiprocessing import Process, Pipe, cpu_count
 import traceback
 try:
@@ -18,7 +19,7 @@ except ImportError as ie:
 
 import numpy as np
 import traceback, warnings
-import sys
+import os,sys
 import signal
 import threading
 import functools
@@ -580,3 +581,24 @@ def parallel_error_handling(f):
             info = traceback.format_exc()
             return RuntimeError(info, exc)
     return parallel_helper
+    
+    
+    
+def limit_cores(CORES_PER_THREAD=1): 
+    '''
+    Control the number of cores used by linear algebra
+    backends.
+    '''
+    from   threadpoolctl import threadpool_info,threadpool_limits
+    keys = [
+        'MKL_NUM_THREADS',
+        'NUMEXPR_NUM_THREADS',
+        'OMP_NUM_THREADS ',
+        'OPENBLAS_NUM_THREADS',
+        'VECLIB_MAXIMUM_THREADS']
+    for k in keys: os.environ[k] = str(CORES_PER_THREAD)
+    os.environ["XLA_FLAGS"] = \
+    "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=%d"\
+    %CORES_PER_THREAD
+    threadpool_limits(limits=CORES_PER_THREAD, user_api='blas')
+    NCORES = multiprocessing.cpu_count()

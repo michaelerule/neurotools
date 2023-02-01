@@ -152,7 +152,11 @@ def convex_hull(px,py=None):
     return points[verts]@[1,1j]
 
 
-def convex_hull_from_mask(x,Ntheta=None,sigma=None):
+def convex_hull_from_mask(
+    x,
+    Ntheta=None,
+    sigma=None,
+    close=True):
     '''
     Extract convex hull containing all pixels in a 2D 
     boolean array that are `True`. The array `x` is 
@@ -175,6 +179,10 @@ def convex_hull_from_mask(x,Ntheta=None,sigma=None):
         polar coordinates
         by a circular Gaussian kernel with standard 
         deviation `sigma` (in DEGRESS).
+    close: boolean; default True
+        Whenter to repeat the first point in the convext
+        hull at the end so that it can be plotted directly
+        as a closed contour. 
     
     Returns
     -------
@@ -195,6 +203,8 @@ def convex_hull_from_mask(x,Ntheta=None,sigma=None):
             ' resolution'
             )%(sigma,Ntheta))
         q = polar_smooth_contour(q,sigma/360.0*Ntheta)
+    if close:
+        q = np.concatenate([q,[q[0]]])
     return q
 
 

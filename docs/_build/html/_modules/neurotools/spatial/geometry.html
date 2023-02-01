@@ -68,7 +68,6 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-          <li class="breadcrumb-item"><a href="../spatial.html">neurotools.spatial</a></li>
       <li class="breadcrumb-item active">neurotools.spatial.geometry</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -104,7 +103,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="p2z"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.p2z">[docs]</a><span class="k">def</span> <span class="nf">p2z</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Ensure that a numpy array contains (x,y) points </span>
 <span class="sd">    encoded as z = x+iy,</span>
 <span class="sd">    or convert two arrays (x,y) int z = x+iy format.</span>
@@ -162,7 +161,7 @@
 <span class="c1"># Operator abuse;</span>
 <span class="nd">@ntools</span><span class="o">.</span><span class="n">piper</span>
 <span class="k">def</span> <span class="nf">z2p</span><span class="p">(</span><span class="n">pz</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert complex points to 2D (x,y) points</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -181,7 +180,7 @@
 
 
 <div class="viewcode-block" id="polar_smooth_contour"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.polar_smooth_contour">[docs]</a><span class="k">def</span> <span class="nf">polar_smooth_contour</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth the radial and angular components of a closed, </span>
 <span class="sd">    circular, non-self-intersecting contour `z` in the </span>
 <span class="sd">    complex plane. </span>
@@ -213,7 +212,7 @@
 
 
 <div class="viewcode-block" id="convex_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull">[docs]</a><span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A wrapper for scipy.spatial.ConvexHull that returns </span>
 <span class="sd">    points as z=x+iy.</span>
 <span class="sd">    </span>
@@ -233,8 +232,12 @@
     <span class="k">return</span> <span class="n">points</span><span class="p">[</span><span class="n">verts</span><span class="p">]</span><span class="o">@</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="n">j</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="convex_hull_from_mask"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull_from_mask">[docs]</a><span class="k">def</span> <span class="nf">convex_hull_from_mask</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="convex_hull_from_mask"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull_from_mask">[docs]</a><span class="k">def</span> <span class="nf">convex_hull_from_mask</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">Ntheta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extract convex hull containing all pixels in a 2D </span>
 <span class="sd">    boolean array that are `True`. The array `x` is </span>
 <span class="sd">    interpreted as a (rows,cols) matrix where row number </span>
@@ -256,6 +259,10 @@
 <span class="sd">        polar coordinates</span>
 <span class="sd">        by a circular Gaussian kernel with standard </span>
 <span class="sd">        deviation `sigma` (in DEGRESS).</span>
+<span class="sd">    close: boolean; default True</span>
+<span class="sd">        Whenter to repeat the first point in the convext</span>
+<span class="sd">        hull at the end so that it can be plotted directly</span>
+<span class="sd">        as a closed contour. </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -276,11 +283,13 @@
             <span class="s1">&#39; resolution&#39;</span>
             <span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span><span class="n">Ntheta</span><span class="p">))</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">polar_smooth_contour</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">sigma</span><span class="o">/</span><span class="mf">360.0</span><span class="o">*</span><span class="n">Ntheta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">q</span><span class="p">,[</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]]])</span>
     <span class="k">return</span> <span class="n">q</span></div>
 
 
 <div class="viewcode-block" id="resample_convex_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.resample_convex_hull">[docs]</a><span class="k">def</span> <span class="nf">resample_convex_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Resample a convex shape at uniform angular intervals </span>
 <span class="sd">    around its centroid</span>
 <span class="sd">    </span>
@@ -316,7 +325,7 @@
     
     
 <div class="viewcode-block" id="in_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.in_hull">[docs]</a><span class="k">def</span> <span class="nf">in_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">hull</span><span class="p">):</span> 
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Determine if the list of points P lies inside a convex </span>
 <span class="sd">    hull</span>
 <span class="sd">    credit: https://stackoverflow.com/a/52405173/900749</span>

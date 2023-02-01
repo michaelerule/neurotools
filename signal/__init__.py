@@ -107,6 +107,29 @@ def circular_gaussian_smooth(x,sigma):
     f = np.fft.fft(g)
     return np.fft.fftshift(np.fft.ifft(np.fft.fft(x)*f).real)
 
+def mirrored_gaussian_smooth(x,sigma):
+    '''
+    Smooth signal `x` with Gaussian of standard deviation 
+    `sigma`, using reflected boundary conditions.
+    
+    
+    Parameters
+    ----------
+    x: np.array
+        1D array-like signal
+    sigma: positive float
+        Standard deviation
+
+    Returns
+    -------
+    smoothed signal
+    '''
+    x = np.float32(x)
+    N = x.shape[0]
+    x = np.concatenate([x[::-1,...],x])
+    x = circular_gaussian_smooth(x,sigma)
+    return x[N:,...]
+
 def circular_gaussian_smooth_2D(x,sigma):
     '''
     Smooth signal x with gaussian of standard deviation sigma
@@ -142,7 +165,10 @@ def circular_gaussian_smooth_2D(x,sigma):
     f = np.fft.fft2(np.fft.fftshift(g))
     
     # convolution via 2D FFT
-    return np.fft.ifft2(np.fft.fft2(x)*f).real
+    result = np.fft.ifft2(np.fft.fft2(x)*f)
+    if not np.any(np.iscomplex(x)):
+        result = result.real
+    return result
 
 
 
@@ -1165,13 +1191,18 @@ def local_peak_within(freqs,cc,fa,fb):
     i     = peaks[argmax(cc[peaks])]
     return i, freqs[i], cc[i]
     
-def local_maxima(x):
+def local_maxima(x,include_endpoints=False):
     '''
     Detect local maxima in a 1D signal.
 
     Parameters
     ----------
     x: np.array
+    
+    Other Parameters
+    ----------------
+    include_endpoints: bool; default False
+        Whether to include endpoints as local maxima.
     
     Returns
     -------
@@ -1181,9 +1212,15 @@ def local_maxima(x):
         Values of `x` at these local maxima.
     '''
     t = np.where(np.diff(np.sign(np.diff(x)))<0)[0]+1
+    if include_endpoints:
+        if x[0]>x[1]:
+            t = np.concatenate([[0],t])
+        if x[-1]>x[-2]:
+            t = np.concatenate([t,[len(x)-1]])
     return t,x[t]
 
-def local_minima(x):
+
+def local_minima(x,include_endpoints=False):
     '''
     Detect local minima in a 1D signal.
 
@@ -1198,7 +1235,8 @@ def local_minima(x):
     x[t]: np.array
         Values of `x` at these local minima.
     '''
-    t,x = local_maxima(-x)
+    t,x = local_maxima(-x,
+        include_endpoints=include_endpoints)
     return t,-x
 
 def peak_within(freqs,spectrum,fa,fb):
@@ -1249,9 +1287,205 @@ def interpmax1d(x):
         return i
 
 
+def peak_fwhm(
+    x,
+    max_fraction=0.5,
+    include_fraction=0.5,
+    include_endpoints=True,
+    ):
+    '''
+    Extract full-width-half-maximum information from 
+    the peaks (local maxima) in a series.
+
+    This will extract the width of peaks at half
+    maximum (or some other fraction given by 
+    `max_fraction`). 
+
+    If the nearest valley (trough, local minimum) is 
+    higher than half-maximum, this will be used as a 
+    boundary for the peak instead.
+
+    Parameters
+    ----------
+    x: 1D np.array
+        1D spectrum
+
+    Other Parameters
+    ----------------
+    max_fraction: float ∈(0,1); default 0.5
+        Height fraction at which to take the peak
+        width. The default is 0.5 for "half maximum".
+    include_fraction: float ∈(0,1); default 0.5
+        Exclude peaks shorter than include_fraction
+        times the tallest peak.
+    include_endpoints: bool; default True
+        Whether to include endpoints as local maxima.
+
+    Returns
+    -------
+    peak_index:  1D np.int32
+        Index into `x` of each peak
+    peak_height: 1D np.float32
+        Value of `x` at each peak
+    peak_width:  1D np.int32
+        Width of peak at `max_fraction` height
+    peak_start:  1D np.int32
+        Start of peak above `max_fraction` height
+    peak_stop:   1D np.int32
+        End of peak above `max_fraction` height
+    '''
+
+    # Get peaks and troughs in spectrum
+    wheremax, maxvals = local_maxima(x,
+        include_endpoints=include_endpoints)
+    wheremin, minvals = local_minima(x,
+        include_endpoints=include_endpoints)
+
+    # Get troughs below, above each peak (if any)
+    lower   = [
+        wheremin[wheremin< i][-1] 
+        if any(wheremin< i) else None 
+        for i in wheremax
+    ]
+    upper   = [
+        wheremin[wheremin>=i][ 0] 
+        if any(wheremin>=i) else None 
+        for i in wheremax
+    ]
+
+    # Get peak half maximum
+    halfmax = max_fraction * maxvals
+
+    # Get global maximum; Only use peaks at least half as tall
+    maxmax  = np.max(maxvals)
+    maxthr  = np.max(local_maxima(x,include_endpoints=True)[1])*include_fraction
+
+    # Consider each peak and its adjacent endpoints
+    peak_info = []
+    for i,(imax,maxv,a,b) in enumerate(zip(wheremax,maxvals,lower,upper)):
+        if x[imax]<maxthr: continue
+        # If endpoints are missing, used start/end
+        if a is None: a = 0
+        if b is None: b = len(x)-1
+        # Figure out how much of the signal is above half-max
+        above = np.where(x>=halfmax[i])[0]
+        below = np.where(x< halfmax[i])[0]
+        # Tight boundaries
+        if any(below>imax): b = min(b,np.min(below[below>imax]))
+        if any(below<imax): a = max(a,np.max(below[below<imax]))
+        peak_info.append((imax,maxv,b-a,a,b))
+
+    if len(peak_info):
+        i,v,w,a,b = zip(*peak_info)
+    else:
+        i,v,w,a,b = [],[],[],[],[]
+    return np.int32(i),np.float32(v),\
+           np.int32(w),np.int32(a),np.int32(b)
 
 
+def quadratic_peakinfo(x):
+    '''
+    Parameters
+    ----------
+    x: 1D np.array
+        1D spectrum
+        
+    Returns
+    -------
+    ti: np.float32
+        Interpolated index of each peak
+    v: np.float32
+        Interpolated value at each peak
+    inflect_below: np.float32
+        Inflection point below each peak or NaN if None
+    inflect_above: np.float32
+        Inflection point abobe each peak or NaN if None
+    trough_below: np.float32
+        Trough below each peak or NaN if None
+    trough_above: np.float32
+        Trough above each peak or NaN if None
+    (c2,c1,c0): np.float32
+        Quadratic, linear, and constant coefficiets of 
+        local quadratic fit, NaN if peak is poorly 
+        localized.
+    '''
+    
+    N = len(x)
 
+    # Get first derivative to find peaks
+    slope  = np.diff(x)
+    dsigns = np.diff(np.float32(slope>0))
+    zsigns = find(dsigns!=0)
+    # Linearly interpolate to find zero crossing
+    y1 = slope[zsigns]
+    y2 = slope[zsigns+1]
+    tp = zsigns + y1/(y1-y2) + 0.5
+
+    # Get inflection points where curvature changes sign
+    curvature = np.diff(x,2)
+    dsign = np.diff(np.float32(curvature>0))
+    zsign = find(dsign!=0)
+    # Linearly interpolate to find zero crossing
+    y1 = curvature[zsign]
+    y2 = curvature[zsign+1]
+    tc = zsign + y1/(y1-y2) + 1
+
+    # identify peaks vs troughs based on curvature
+    # (endpoints as special cases)
+    c_interp = scipy.interpolate._interpolate.interp1d(
+        np.arange(N-2)+1.0,
+        curvature)
+    maxima = []
+    minima = []
+    for t in tp:
+        if t<1:     is_peak = x[0]>x[1]
+        elif t>N-2: is_peak = x[-1]>x[-2]
+        else:       is_peak = c_interp(t)<0
+        if is_peak: maxima.append(t)
+        else:       minima.append(t)
+    if x[ 0]>x[ 1] and np.min(maxima)>1.0: maxima = [0]+maxima
+    if x[-1]>x[-2] and np.max(maxima)<N-2: maxima = maxima+[N-1]
+    if x[ 0]<x[ 1] and np.min(minima)>1.0: minima = [0]+minima
+    if x[-1]<x[-2] and np.max(minima)<N-2: minima = minima+[N-1]
+    maxima = np.float32(sorted(maxima))
+    minima = np.float32(sorted(minima))
+
+    # Peakinfo with nice interpolation
+    peakinfo = []
+    x_interp = scipy.interpolate._interpolate.interp1d(np.arange(N),x)
+    for ipeak,ti in enumerate(maxima):
+
+        # minimum below and above
+        c = minima[minima<ti]
+        c = np.max(c) if len(c) else np.NaN
+        d = minima[minima>ti]
+        d = np.min(d) if len(d) else np.NaN
+
+        # Inflection below and above
+        a = tc[tc<ti]
+        a = np.max(a) if len(a) else np.NaN
+        b = tc[tc>ti]
+        b = np.min(b) if len(b) else np.NaN
+        if a<=c: a=np.NaN
+        if b>=d: b=np.NaN
+
+        # Quadratic fit for proper peaks
+        c2,c1,c0 = np.NaN,np.NaN,np.NaN
+        v = x_interp(ti)
+        if np.isfinite(a) and np.isfinite(b):
+            lower = ti+(a-ti)*.7
+            upper = ti+(b-ti)*.7
+            lower = np.clip(int(round(lower)),0,N-1)
+            upper = np.clip(int(round(upper)),0,N-1)
+            if upper>lower:
+                ii = np.arange(lower,upper+1)
+                c2,c1,c0 = np.polyfit(ii,x[lower:upper+1],2)
+                
+
+        peakinfo.append((ti,v,a,b,c,d,c2,c1,c0))
+    peakinfo = np.float32(peakinfo)
+    ti,v,a,b,c,d,c2,c1,c0 = peakinfo.T
+    return ti,v,a,b,c,d,[*zip(c2,c1,c0)]
 
 
 

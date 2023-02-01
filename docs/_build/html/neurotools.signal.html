@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.gaussian_kernel"><code class="docutils literal notranslate"><span class="pre">gaussian_kernel()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.gaussian_smooth"><code class="docutils literal notranslate"><span class="pre">gaussian_smooth()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.circular_gaussian_smooth"><code class="docutils literal notranslate"><span class="pre">circular_gaussian_smooth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.mirrored_gaussian_smooth"><code class="docutils literal notranslate"><span class="pre">mirrored_gaussian_smooth()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.circular_gaussian_smooth_2D"><code class="docutils literal notranslate"><span class="pre">circular_gaussian_smooth_2D()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.nonnegative_bandpass_filter"><code class="docutils literal notranslate"><span class="pre">nonnegative_bandpass_filter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.bandpass_filter"><code class="docutils literal notranslate"><span class="pre">bandpass_filter()</span></code></a></li>
@@ -97,6 +98,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.local_minima"><code class="docutils literal notranslate"><span class="pre">local_minima()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.peak_within"><code class="docutils literal notranslate"><span class="pre">peak_within()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.interpmax1d"><code class="docutils literal notranslate"><span class="pre">interpmax1d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.peak_fwhm"><code class="docutils literal notranslate"><span class="pre">peak_fwhm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.quadratic_peakinfo"><code class="docutils literal notranslate"><span class="pre">quadratic_peakinfo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.unitscale"><code class="docutils literal notranslate"><span class="pre">unitscale()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.topercentiles"><code class="docutils literal notranslate"><span class="pre">topercentiles()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zeromean"><code class="docutils literal notranslate"><span class="pre">zeromean()</span></code></a></li>
@@ -203,6 +206,7 @@
 <li class="toctree-l1"><a class="reference internal" href="neurotools.signal.phase.html">neurotools.signal.phase module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.phase.html#neurotools.signal.phase.amp"><code class="docutils literal notranslate"><span class="pre">amp()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.phase.html#neurotools.signal.phase.ifreq"><code class="docutils literal notranslate"><span class="pre">ifreq()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.phase.html#neurotools.signal.phase.unwrapped_angle"><code class="docutils literal notranslate"><span class="pre">unwrapped_angle()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.phase.html#neurotools.signal.phase.pdiff"><code class="docutils literal notranslate"><span class="pre">pdiff()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.phase.html#neurotools.signal.phase.rewrap"><code class="docutils literal notranslate"><span class="pre">rewrap()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.phase.html#neurotools.signal.phase.pghilbert"><code class="docutils literal notranslate"><span class="pre">pghilbert()</span></code></a></li>
@@ -285,6 +289,24 @@ sigma, using edge-clamped boundary conditions.</p>
 <dd><p>Smooth signal <cite>x</cite> with Gaussian of standard deviation
 <cite>sigma</cite>,
 Circularly wrapped using Fourier transform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – 1D array-like signal</p></li>
+<li><p><strong>sigma</strong> (<em>positive float</em>) – Standard deviation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>smoothed signal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.mirrored_gaussian_smooth">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">mirrored_gaussian_smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#mirrored_gaussian_smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.mirrored_gaussian_smooth" title="Permalink to this definition"></a></dt>
+<dd><p>Smooth signal <cite>x</cite> with Gaussian of standard deviation
+<cite>sigma</cite>, using reflected boundary conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -996,11 +1018,14 @@ the frequency range [fa,fb].</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.local_maxima">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_maxima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_maxima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_maxima" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_maxima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_endpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_maxima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_maxima" title="Permalink to this definition"></a></dt>
 <dd><p>Detect local maxima in a 1D signal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – </p></li>
+<li><p><strong>include_endpoints</strong> (<em>bool; default False</em>) – Whether to include endpoints as local maxima.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
@@ -1014,7 +1039,7 @@ the frequency range [fa,fb].</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.local_minima">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_minima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_minima" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">local_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_endpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#local_minima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.local_minima" title="Permalink to this definition"></a></dt>
 <dd><p>Detect local minima in a 1D signal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1060,6 +1085,65 @@ dspguru.com/dsp/howtos/how-to-interpolate-fft-peak</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float; Interpolated index of global maximum in <cite>x</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.peak_fwhm">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">peak_fwhm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_endpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#peak_fwhm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.peak_fwhm" title="Permalink to this definition"></a></dt>
+<dd><p>Extract full-width-half-maximum information from
+the peaks (local maxima) in a series.</p>
+<p>This will extract the width of peaks at half
+maximum (or some other fraction given by
+<cite>max_fraction</cite>).</p>
+<p>If the nearest valley (trough, local minimum) is
+higher than half-maximum, this will be used as a
+boundary for the peak instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1D np.array</em>) – 1D spectrum</p></li>
+<li><p><strong>max_fraction</strong> (<em>float ∈</em><em>(</em><em>0</em><em>,</em><em>1</em><em>)</em><em>; default 0.5</em>) – Height fraction at which to take the peak
+width. The default is 0.5 for “half maximum”.</p></li>
+<li><p><strong>include_fraction</strong> (<em>float ∈</em><em>(</em><em>0</em><em>,</em><em>1</em><em>)</em><em>; default 0.5</em>) – Exclude peaks shorter than include_fraction
+times the tallest peak.</p></li>
+<li><p><strong>include_endpoints</strong> (<em>bool; default True</em>) – Whether to include endpoints as local maxima.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>peak_index</strong> (<em>1D np.int32</em>) – Index into <cite>x</cite> of each peak</p></li>
+<li><p><strong>peak_height</strong> (<em>1D np.float32</em>) – Value of <cite>x</cite> at each peak</p></li>
+<li><p><strong>peak_width</strong> (<em>1D np.int32</em>) – Width of peak at <cite>max_fraction</cite> height</p></li>
+<li><p><strong>peak_start</strong> (<em>1D np.int32</em>) – Start of peak above <cite>max_fraction</cite> height</p></li>
+<li><p><strong>peak_stop</strong> (<em>1D np.int32</em>) – End of peak above <cite>max_fraction</cite> height</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.quadratic_peakinfo">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">quadratic_peakinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#quadratic_peakinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.quadratic_peakinfo" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>1D np.array</em>) – 1D spectrum</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ti</strong> (<em>np.float32</em>) – Interpolated index of each peak</p></li>
+<li><p><strong>v</strong> (<em>np.float32</em>) – Interpolated value at each peak</p></li>
+<li><p><strong>inflect_below</strong> (<em>np.float32</em>) – Inflection point below each peak or NaN if None</p></li>
+<li><p><strong>inflect_above</strong> (<em>np.float32</em>) – Inflection point abobe each peak or NaN if None</p></li>
+<li><p><strong>trough_below</strong> (<em>np.float32</em>) – Trough below each peak or NaN if None</p></li>
+<li><p><strong>trough_above</strong> (<em>np.float32</em>) – Trough above each peak or NaN if None</p></li>
+<li><p><strong>(c2,c1,c0)</strong> (<em>np.float32</em>) – Quadratic, linear, and constant coefficiets of
+local quadratic fit, NaN if peak is poorly
+localized.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>

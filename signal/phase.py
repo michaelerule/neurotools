@@ -67,6 +67,20 @@ def ifreq(x,Fs=1000,mode='pad'):
         return fix_derivative(pg)
     assert 0
     
+def unwrapped_angle(z):
+    '''
+    Get the argument of a complex timeseries with phase
+    unwrapping.
+    
+    Parameters
+    ----------
+    z: np.complex64
+    '''
+    theta  = np.angle(z)
+    theta0 = theta[0]
+    dtheta = pdiff(theta)
+    return np.concatenate([[theta0],theta0+np.cumsum(dtheta)])
+    
 def pdiff(x):
     '''
     Take the derivative of a sequence of phases.

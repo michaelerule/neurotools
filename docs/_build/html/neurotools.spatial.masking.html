@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="neurotools.spatial.phase module" href="neurotools.spatial.phase.html" />
+    <link rel="next" title="neurotools.spatial.peaks module" href="neurotools.spatial.peaks.html" />
     <link rel="prev" title="neurotools.spatial.kernels module" href="neurotools.spatial.kernels.html" /> 
 </head>
 
@@ -57,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.geometry.html">neurotools.spatial.geometry module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.kernels.html">neurotools.spatial.kernels module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">neurotools.spatial.masking module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.peaks.html">neurotools.spatial.peaks module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.phase.html">neurotools.spatial.phase module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.points.html">neurotools.spatial.points module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.spiking.html">neurotools.spatial.spiking module</a></li>
@@ -203,7 +204,8 @@ is z = irow + 1j * icol</p>
 <dt class="sig sig-object py" id="neurotools.spatial.masking.trim_mask">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">trim_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#trim_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.trim_mask" title="Permalink to this definition"></a></dt>
 <dd><p>Remove empty edges of boolean mask.
-See <cite>mask_crop(array,mask)</cite> to use a mask to trim another array.</p>
+See <cite>mask_crop(array,mask)</cite> to use a mask to trim
+another array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mask</strong> (<em>2D np.bool</em>) – </p>
@@ -216,6 +218,8 @@ See <cite>mask_crop(array,mask)</cite> to use a mask to trim another array.</p>
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">mask_crop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#mask_crop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.mask_crop" title="Permalink to this definition"></a></dt>
 <dd><p>Set pixels in <cite>x</cite> where <cite>mask</cite> is <cite>False</cite> to <cite>NaN</cite>,
 and then remove empty rows and columns.</p>
+<p>See <cite>trim_mask(mask)</cite> to crop out empty rows, columns
+from a mask.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -229,7 +233,7 @@ and then remove empty rows and columns.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.masking.to_image">
-<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#to_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.to_image" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.masking.</span></span><span class="sig-name descname"><span class="pre">to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/masking.html#to_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.masking.to_image" title="Permalink to this definition"></a></dt>
 <dd><p>Assign list of values <cite>x</cite> to locations in <cite>mask</cite> that
 are <cite>True</cite>, in row-major order.</p>
 <dl class="field-list simple">
@@ -237,6 +241,9 @@ are <cite>True</cite>, in row-major order.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>1D np.array</em>) – </p></li>
 <li><p><strong>mask</strong> (<em>2D np.bool</em>) – </p></li>
+<li><p><strong>full</strong> (<em>float; default np.NaN</em>) – Fill value for regions outside the mask</p></li>
+<li><p><strong>crop</strong> (<em>bool; default False</em>) – Whether to remove empty rows/cols of the resulting
+image.</p></li>
 </ul>
 </dd>
 </dl>
@@ -249,7 +256,7 @@ are <cite>True</cite>, in row-major order.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="neurotools.spatial.kernels.html" class="btn btn-neutral float-left" title="neurotools.spatial.kernels module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="neurotools.spatial.phase.html" class="btn btn-neutral float-right" title="neurotools.spatial.phase module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="neurotools.spatial.peaks.html" class="btn btn-neutral float-right" title="neurotools.spatial.peaks module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

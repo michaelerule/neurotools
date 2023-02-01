@@ -68,7 +68,6 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-          <li class="breadcrumb-item"><a href="../spatial.html">neurotools.spatial</a></li>
       <li class="breadcrumb-item active">neurotools.spatial.points</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -82,12 +81,11 @@
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Collected functions from 2018--2023 concerning analyses of 2D data.</span>
+<span class="sd">Collected functions from 2018--2023 concerning analyses of </span>
+<span class="sd">2D data.</span>
 
-<span class="sd">These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.</span>
-
-<span class="sd">These routines are completely untested and may duplicate functionality</span>
-<span class="sd">found elsehwere. </span>
+<span class="sd">Most of these routines work on 2D (x,y) points encoded as </span>
+<span class="sd">complex z=x+iy numbers.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
@@ -100,7 +98,7 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
 
 <div class="viewcode-block" id="p2c"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.p2c">[docs]</a><span class="k">def</span> <span class="nf">p2c</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert a point in terms of a length-2 iterable into </span>
 <span class="sd">    a complex number</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -114,7 +112,7 @@
     <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="c2p"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.c2p">[docs]</a><span class="k">def</span> <span class="nf">c2p</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">    Convert complex-valued np.array with (shape) into a 2×(shape)</span>
 <span class="sd">    np.float32 array.</span>
 <span class="sd">    </span>
@@ -126,7 +124,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="to_xypoint"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.to_xypoint">[docs]</a><span class="k">def</span> <span class="nf">to_xypoint</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert possible complex (x,y) point intoformation</span>
 <span class="sd">    into float32 (x,y) points.</span>
 <span class="sd">    </span>
@@ -158,7 +156,7 @@
     <span class="k">return</span> <span class="n">z</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">which</span><span class="p">,</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="closest"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.closest">[docs]</a><span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="n">point</span><span class="p">,</span><span class="n">otherpoints</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">inf</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find nearest (x,y) point witin a collection of </span>
 <span class="sd">    other points, with maximum distance `radius`</span>
 <span class="sd">    </span>
@@ -198,7 +196,7 @@
     <span class="k">return</span> <span class="kc">None</span><span class="p">,</span><span class="n">full</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">NaN</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">),</span><span class="n">NaN</span></div>
 
 <div class="viewcode-block" id="pair_neighbors"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.pair_neighbors">[docs]</a><span class="k">def</span> <span class="nf">pair_neighbors</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">inf</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -255,9 +253,10 @@
     <span class="n">keep</span>  <span class="o">=</span> <span class="n">delta</span><span class="o">&lt;</span><span class="n">radius</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="n">int32</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">edges</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">pairs</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">delta</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span></div>
-    
+
+
 <div class="viewcode-block" id="paired_distances"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.paired_distances">[docs]</a><span class="k">def</span> <span class="nf">paired_distances</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculate pairwise distances between two sets of </span>
 <span class="sd">    (x,y) points encoded as x+iy complex numbers</span>
 <span class="sd">    </span>
@@ -277,6 +276,157 @@
     <span class="n">z1</span><span class="p">,</span><span class="n">z2</span> <span class="o">=</span> <span class="n">z1</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">z2</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">distance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z1</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">-</span><span class="n">z2</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>
     <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">s1</span><span class="o">+</span><span class="n">s2</span><span class="p">))</span></div>
+    
+    
+
+<div class="viewcode-block" id="assign_to_regions"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.assign_to_regions">[docs]</a><span class="k">def</span> <span class="nf">assign_to_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span><span class="n">points</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Assign 2D `points` to Voronoi `regions`, returning the</span>
+<span class="sd">    indecies into `regions` for each point in `points`</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    regions: 2 × NREGIONS np.float32</span>
+<span class="sd">        (x,y) coordinates of Vornoi region centers</span>
+<span class="sd">    points: 2 × NPOINTS np.float32</span>
+<span class="sd">        (x,y) points to assign to regions</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    indecies: NPOINTS np.int32</span>
+<span class="sd">        Index into `regions` for each point    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">regions</span> <span class="o">=</span> <span class="n">p2c</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+    <span class="n">points</span>  <span class="o">=</span> <span class="n">p2c</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">regions</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">-</span><span class="n">points</span><span class="p">[</span><span class="kc">None</span><span class="p">,:]),</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="collect_in_regions"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.collect_in_regions">[docs]</a><span class="k">def</span> <span class="nf">collect_in_regions</span><span class="p">(</span>
+    <span class="n">regions</span><span class="p">,</span>
+    <span class="n">points</span><span class="p">,</span>
+    <span class="n">return_indecies</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Bin points to Voronoi regions, returning a list of</span>
+<span class="sd">    (x,y) points in each region.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    regions: 2×NREGIONS np.float32</span>
+<span class="sd">        (x,y) coordinates of Vornoi region centers</span>
+<span class="sd">    points: 2×NPOINTS np.float32</span>
+<span class="sd">        (x,y) points to assign to regions</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    return_indecies: boolean; default False</span>
+<span class="sd">        Whether to additionally return the index</span>
+<span class="sd">        into the `NPOINTS` assigned to each region</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    allocated: list</span>
+<span class="sd">        Length `NREGIONS` list of 2 × NPOINTSINREGION</span>
+<span class="sd">        np.float32 arrays</span>
+<span class="sd">    indecies: list</span>
+<span class="sd">        **Returned only if `return_indecies=True`;**</span>
+<span class="sd">        Length `NREGIONS` list of NPOINTSINREGION</span>
+<span class="sd">        np.int32 arrays, each containing the indecies </span>
+<span class="sd">        into the length-`NPOINTS` array assigned to</span>
+<span class="sd">        each region in `regions.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">assign_to_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">assigned</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">points</span><span class="p">[:,</span><span class="n">i</span><span class="o">==</span><span class="n">j</span><span class="p">]</span> 
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">regions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="k">if</span> <span class="n">return_indecies</span><span class="p">:</span>
+        <span class="n">indecies</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="n">j</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">regions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="k">return</span> <span class="n">assigned</span><span class="p">,</span> <span class="n">indecies</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">assigned</span></div>
+
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<div class="viewcode-block" id="gaussian_from_points"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.gaussian_from_points">[docs]</a><span class="k">def</span> <span class="nf">gaussian_from_points</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get the mean and (sample) covariance of a point cloud. </span>
+<span class="sd">    </span>
+<span class="sd">    Note: we suppress warnings here because returning NaNs</span>
+<span class="sd">    for an empty point set is entirely reasonable, and </span>
+<span class="sd">    simplifies code elsewhere. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points: NDIM × NPOINTS np.float32</span>
+<span class="sd">        Point data.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    μ: NDIM np.float32</span>
+<span class="sd">        Mean</span>
+<span class="sd">    Σ: NDIM × NDIM np.float32</span>
+<span class="sd">        Sample covariance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span>
+            <span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;invalid value encountered in divide&#39;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span>
+            <span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;Mean of empty slice.&#39;</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">ndim</span><span class="p">,</span> <span class="n">npoints</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">μ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">Δ</span> <span class="o">=</span> <span class="n">points</span> <span class="o">-</span> <span class="n">μ</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span>
+        <span class="n">Σ</span> <span class="o">=</span> <span class="p">(</span><span class="n">Δ</span><span class="nd">@Δ</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="n">npoints</span>
+        <span class="k">return</span> <span class="n">μ</span><span class="p">,</span><span class="n">Σ</span></div>
+
+
+<div class="viewcode-block" id="collect_gaussians"><a class="viewcode-back" href="../../../neurotools.spatial.points.html#neurotools.spatial.points.collect_gaussians">[docs]</a><span class="k">def</span> <span class="nf">collect_gaussians</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Return the mean and covariance of points within </span>
+<span class="sd">    each Voronoi region. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    means: np.float32</span>
+<span class="sd">    sigmas: np.float32</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">means</span><span class="p">,</span><span class="n">sigmas</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span>
+        <span class="n">gaussian_from_points</span><span class="p">,</span>
+        <span class="n">collect_in_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="p">)])</span>
+    <span class="c1"># Collect all ellipses to plot </span>
+    <span class="n">ellipses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_means</span><span class="p">,</span><span class="n">_sigmas</span> <span class="o">=</span> <span class="p">[],[]</span> <span class="c1"># μ,Σ, dropping ones with NaN</span>
+    
+    <span class="n">means</span><span class="p">,</span><span class="n">sigmas</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span>
+        <span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span> 
+        <span class="k">for</span> <span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">means</span><span class="p">,</span><span class="n">sigmas</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">mu</span><span class="p">))</span>
+    <span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">means</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">sigmas</span><span class="p">)</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </pre></div>
 
            </div>

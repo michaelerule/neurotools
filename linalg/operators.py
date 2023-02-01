@@ -89,7 +89,16 @@ def adjacency2D(L,H=None,circular=True):
 def laplacian2D(L,H=None,circular=True,mask=None,boundary='dirichlet'):
     '''
     Build a discrete Laplacian operator.
-    This is uses an approximatelly radially-symmetric Laplacian in a 3×3 cell
+    
+    This is uses an approximately radially-symmetric 
+    Laplacian in a 3×3 neighborhood.
+    
+    If a `mask` is provided, this supports a
+    `'neumann'` boundary condition, which amounts to 
+    clamping the derivative to zero at the boundary, 
+    and a `'dirichlet'` boundary condition,
+    which amounts to clamping the values to zero at
+    the boundary. 
     
     Parameters
     ----------
@@ -129,10 +138,10 @@ def laplacian2D(L,H=None,circular=True,mask=None,boundary='dirichlet'):
     Ad = adjacency2D(W,H,circular)
         
     if boundary == 'n':
-        # We get a reflecting boundary if we remove neighbors first
-        if mask is None:
-            Ad[~mask.ravel(),:] = Ad[:,~mask.ravel()] = 0
-        Lp = Ad - np.diag(sum(Ad,0))
+        # We get a mirrored boundary if we remove neighbors first
+        Ad[~mask.ravel(),:] = Ad[:,~mask.ravel()] = 0
+        if not mask is None:
+            Lp = Ad - np.diag(sum(Ad,0))
     elif boundary =='d':
         # We get a zero boundary if we remove neighbors after
         Lp = Ad - np.diag(sum(Ad,0))

@@ -263,7 +263,7 @@ def to_indices(x):
         'contains non-integer numbers?')
         
 
-def onehot(ids):
+def onehot(ids,dense=False,n=None):
     '''
     Generate so-called "one-hot"
     representation of class labels from 
@@ -272,6 +272,15 @@ def onehot(ids):
     Parameters
     ----------
     ids: np.array
+    
+    Other Parameters
+    ----------------
+    dense: boolean; default False
+        Whether to create missing labels. 
+        Ignored if the parameter `n` is specified.
+    n: int or None; default None
+        Total number of labels. If None, will default
+        to the largest value in `ids`.
     
     Returns
     -------
@@ -282,6 +291,25 @@ def onehot(ids):
     '''
     ids      = np.array(ids)
     labels   = sorted(list(set(ids)))
+    
+    if not n is None or dense:
+        if not np.allclose(labels,np.int32(labels)):
+            raise ValueError(
+            'The options `dense` and `n` only work when '
+            'using integer labels. The content of `ids` '
+            'does not look like integers')
+        labels = np.int32(labels)
+        ids    = np.int32(ids)
+        maxid  = np.max(ids)
+        if n is None:
+            n = maxid+1
+        if maxid>=n:
+            raise ValueError((
+                'The parameter `n` was set to %d, but '
+                '`ids` contained the value %d; Ids must '
+                'be <= `n`.')%(n,maxid))
+        labels = np.arange(maxid+1)
+        
     nsamples = len(ids)
     nlabels  = len(labels)
     r = np.zeros((nlabels,nsamples))
@@ -298,6 +326,7 @@ def _take_axis_slice(shape,axis,index):
     before = axis
     after  = ndims-1-axis
     return (np.s_[:],)*before + (index,) + (np.s_[:],)*after
+
 
 def _take_axis(x,axis,index):
     # Redundant to existing numpy functions TODO remove

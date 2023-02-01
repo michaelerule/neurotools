@@ -1387,29 +1387,35 @@ def good_colorbar(vmin=None,
     width=15,
     labelpad=10,
     fontsize=10,
-    vscale=1.0,
-    va='c'):
+    labelsize=None,
+    scale=1.0,
+    va='c',
+    ha='c'):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\mathrm{\mu V}^2$'
 
     Parameters:
-        vmin     (number)  : min value for colormap
-        vmax     (number)  : mac value for colormap
-        cmap     (colormap): what colormap to use
-        title    (string)  : Units for colormap
-        ax       (axis)    : optional, defaults to plt.gca(). axis to which to add colorbar
-        sideways (bool)    : Flips the axis label sideways
-        border   (bool)    : Draw border around colormap box? 
-        spacing  (number)  : distance from axis in pixels. defaults to 5
-        width    (number)  : width of colorbar in pixels. defaults to 15
-        labelpad (number)  : padding between colorbar and title in pixels, defaults to 10
-        fontsize (number)  : label font size, defaults to 12
-        vscale   (float)   : height adjustment relative to parent axis, defaults to 1.0
-        va       (str)     : vertical alignment; "bottom" ('b'), "center" ('c'), or "top" ('t')
+        vmin      (number)  : min value for colormap
+        vmax      (number)  : mac value for colormap
+        cmap      (colormap): what colormap to use
+        title     (string)  : Units for colormap
+        ax        (axis)    : optional, defaults to plt.gca(). axis to which to add colorbar
+        sideways  (bool)    : Flips the axis label sideways
+        border    (bool)    : Draw border around colormap box? 
+        spacing   (number)  : distance from axis in pixels. defaults to 5
+        width     (number)  : width of colorbar in pixels. defaults to 15
+        labelpad  (number)  : padding between colorbar and title in pixels, defaults to 10
+        fontsize  (number)  : title font size, defaults to 10
+        labelsize (number)  : tick label font size, defaults to `fontsize`
+        scale     (float)   : height adjustment relative to parent axis, defaults to 1.0
+        va        (str)     : vertical alignment; "bottom" ('b'), "center" ('c'), or "top" ('t')
+        ha        (str)     : horizontal alignment; "left" ('l'), "center" ('c'), or "right" ('r')
     Returns:
         axis: colorbar axis
     '''
+    if labelsize is None:
+        labelsize = fontsize
     if type(vmin)==matplotlib.image.AxesImage:
         img  = vmin
         cmap = img.get_cmap()
@@ -1418,36 +1424,59 @@ def good_colorbar(vmin=None,
         ax   = img.axes
     oldax = plt.gca() #remember previously active axis
     if ax is None: ax=plt.gca()
-    SPACING = pixels_to_xfigureunits(spacing,ax=ax)
-    CWIDTH  = pixels_to_xfigureunits(width,ax=ax)
-    # manually add colorbar axes 
-    bb = ax.get_position()
-    x,y,w,h,r,b = bb.xmin,bb.ymin,bb.width,bb.height,bb.xmax,bb.ymax
-    y0 = {
-        'b':lambda:b-h,
-        'c':lambda:b-(h+h*vscale)/2,
-        't':lambda:b-h*vscale
-    }[va[0]]()
-    cax = plt.axes((r+SPACING,y0,CWIDTH,h*vscale),frameon=True)
-    plt.sca(cax)
-    plt.imshow(np.array([np.linspace(vmax,vmin,100)]).T,
-        extent=(0,1,vmin,vmax),
-        aspect='auto',
-        origin='upper',
-        cmap=cmap)
-    nox()
-    nicey()
-    cax.yaxis.tick_right()
+    
+    # Determine units based on axis dimensions
     if sideways:
+        SPACING = pixels_to_yfigureunits(spacing,ax=ax)
+        CWIDTH  = pixels_to_yfigureunits(width,ax=ax)
+    else:
+        SPACING = pixels_to_xfigureunits(spacing,ax=ax)
+        CWIDTH  = pixels_to_xfigureunits(width,ax=ax)
+
+    # Get axis bounding box information    
+    bb = ax.get_position()
+    x,y,w,h,r,l,t,b = bb.xmin,bb.ymin,bb.width,bb.height,bb.xmax,bb.xmin,bb.ymax,bb.ymin
+
+    if sideways:
+        # Alignment codes for horizontal colorbars
+        x0 = {
+            'l':lambda:l,
+            'c':lambda:l+(w-w*scale)/2,
+            'r':lambda:l+(w-w*scale)
+        }[ha.lower()[0]]()
+        cax = plt.axes((x0,b-SPACING,w*scale,CWIDTH),frameon=border)
+        plt.sca(cax)
+        plt.imshow(np.array([np.linspace(vmin,vmax,100)]),
+            extent=(vmin,vmax,0,1),
+            aspect='auto',
+            origin='upper',
+            cmap=cmap)
+        noy()
+        nicex()
         plt.text(
-            xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
-            np.mean(ylim()),
+            np.mean(xlim()),
+            ylim()[1]-pixels_to_yunits(labelpad,ax=cax),
             title,
             fontsize=fontsize,
             rotation=0,
-            horizontalalignment='left',
-            verticalalignment  ='center')
+            horizontalalignment='center',
+            verticalalignment  ='top')
     else:
+        # Alignment codes for vertical colorbars
+        y0 = {
+            'b':lambda:b-h,
+            'c':lambda:b-(h+h*scale)/2,
+            't':lambda:b-h*scale
+        }[va.lower()[0]]()
+        cax = plt.axes((r+SPACING,y0,CWIDTH,h*scale),frameon=border)
+        plt.sca(cax)
+        plt.imshow(np.array([np.linspace(vmax,vmin,100)]).T,
+            extent=(0,1,vmin,vmax),
+            aspect='auto',
+            origin='upper',
+            cmap=cmap)
+        nox()
+        nicey()
         plt.text(
             xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
             np.mean(ylim()),
@@ -1456,11 +1485,12 @@ def good_colorbar(vmin=None,
             rotation=90,
             horizontalalignment='left',
             verticalalignment  ='center')
-    # Hide ticks
-    #noaxis()
-    cax.tick_params('both', length=0, width=0, which='major')
-    cax.yaxis.set_label_position("right")
-    cax.yaxis.tick_right()
+        cax.yaxis.set_label_position("right")
+        cax.yaxis.tick_right()
+
+    cax.tick_params('both', length=0, width=0, 
+        labelsize=labelsize, which='major')
+
     plt.sca(oldax) #restore previously active axis
     return cax
 
@@ -1784,17 +1814,34 @@ def stderrplot(m,v,color='k',alpha=0.1,smooth=None,lw=1.5,
         plot(m-e,':',lw=lw*0.5,color=color)
         plot(m+e,':',lw=lw*0.5,color=color)    
 
-def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None,side='left'):
+def yscalebar(
+    ycenter,
+    yheight,
+    label,
+    x=None,
+    color='k',
+    fontsize=9,
+    ax=None,
+    side='left',
+    pad=2
+    ):
     '''
     Add vertical scale bar to plot
     
     Parameters
     ----------
-    Returns
-    -------
+    ycenter
+    yheight
+    label
+    
     Other Parameters
     ----------------
-    ax : axis, if None (default), uses the current axis.
+    x: number default None
+    color: default 'k'
+    fontsize: default 9
+    ax: default None
+    side: default 'left'
+    pad: default 2
     '''
     yspan = [ycenter-yheight/2.0,ycenter+yheight/2.0]
     if ax is None:
@@ -1809,14 +1856,14 @@ def yscalebar(ycenter,yheight,label,x=None,color='k',fontsize=9,ax=None,side='le
         lw=1,
         clip_on=False)
     if side=='left':
-        plt.text(x-pixels_to_xunits(2),np.mean(yspan),label,
+        plt.text(x-pixels_to_xunits(pad),np.mean(yspan),label,
             rotation=90,
             fontsize=fontsize,
             horizontalalignment='right',
             verticalalignment='center',
             clip_on=False)
     else:
-        plt.text(x+pixels_to_xunits(2),np.mean(yspan),label,
+        plt.text(x+pixels_to_xunits(pad),np.mean(yspan),label,
             rotation=90,
             fontsize=fontsize,
             horizontalalignment='left',
@@ -3102,7 +3149,35 @@ def confidencebox(x,y,
             y = np.mean(cap.get_ydata())
             cap.set_ydata(y + np.array([-w/2,w/2]))
 
-
+    
+def anatomy_axis(
+    x0,
+    y0,
+    dx=15,
+    dy=None,
+    tx=4,
+    ty=None,
+    l='M',
+    r='L',
+    u='A',
+    d='P',
+    fontsize=8
+    ):
+    '''
+    Draw an anatomical axis crosshairs on the current axis.
+    '''
+    if dy is None: dy=dx
+    if ty is None: ty=tx
+    dx = px2x(dx)
+    dy = px2y(dy)
+    tx = px2x(tx)
+    ty = px2y(ty)
+    plt.plot([x0-dx,x0+dx],[y0,y0],color='k',lw=0.6,clip_on=False)
+    plt.plot([x0,x0],[y0-dy,y0+dy],color='k',lw=0.6,clip_on=False)
+    plt.text(x0+dx+tx,y0,r,fontsize=fontsize,ha='left',va='center',clip_on=False)
+    plt.text(x0-dx-tx,y0,l,fontsize=fontsize,ha='right',va='center',clip_on=False)
+    plt.text(x0,y0+dy+ty,u,fontsize=fontsize,ha='center',va='bottom',clip_on=False)
+    plt.text(x0,y0-dy-ty,d,fontsize=fontsize,ha='center',va='top',clip_on=False)
 
 
 

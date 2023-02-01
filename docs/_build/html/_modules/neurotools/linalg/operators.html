@@ -98,7 +98,7 @@
 <span class="kn">from</span> <span class="nn">neurotools.util.functions</span> <span class="kn">import</span> <span class="n">sexp</span>
 
 <div class="viewcode-block" id="adjacency1D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.adjacency1D">[docs]</a><span class="k">def</span> <span class="nf">adjacency1D</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    1D adjacency matrix.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -120,7 +120,7 @@
 
 
 <div class="viewcode-block" id="laplacian1D_circular"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplacian1D_circular">[docs]</a><span class="k">def</span> <span class="nf">laplacian1D_circular</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Laplacian operator on a closed, discrete, one-dimensional domain</span>
 <span class="sd">    of length `N`, with circularly-wrapped boundary condition.</span>
 
@@ -139,7 +139,7 @@
 
     
 <div class="viewcode-block" id="adjacency2D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.adjacency2D">[docs]</a><span class="k">def</span> <span class="nf">adjacency2D</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    2D adjacency matrix in 3x3 neighborhood.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -167,9 +167,18 @@
 
 
 <div class="viewcode-block" id="laplacian2D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplacian2D">[docs]</a><span class="k">def</span> <span class="nf">laplacian2D</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">boundary</span><span class="o">=</span><span class="s1">&#39;dirichlet&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Build a discrete Laplacian operator.</span>
-<span class="sd">    This is uses an approximatelly radially-symmetric Laplacian in a 3×3 cell</span>
+<span class="sd">    </span>
+<span class="sd">    This is uses an approximately radially-symmetric </span>
+<span class="sd">    Laplacian in a 3×3 neighborhood.</span>
+<span class="sd">    </span>
+<span class="sd">    If a `mask` is provided, this supports a</span>
+<span class="sd">    `&#39;neumann&#39;` boundary condition, which amounts to </span>
+<span class="sd">    clamping the derivative to zero at the boundary, </span>
+<span class="sd">    and a `&#39;dirichlet&#39;` boundary condition,</span>
+<span class="sd">    which amounts to clamping the values to zero at</span>
+<span class="sd">    the boundary. </span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -209,10 +218,10 @@
     <span class="n">Ad</span> <span class="o">=</span> <span class="n">adjacency2D</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">circular</span><span class="p">)</span>
         
     <span class="k">if</span> <span class="n">boundary</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
-        <span class="c1"># We get a reflecting boundary if we remove neighbors first</span>
-        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">Ad</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),:]</span> <span class="o">=</span> <span class="n">Ad</span><span class="p">[:,</span><span class="o">~</span><span class="n">mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">Lp</span> <span class="o">=</span> <span class="n">Ad</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">Ad</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># We get a mirrored boundary if we remove neighbors first</span>
+        <span class="n">Ad</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),:]</span> <span class="o">=</span> <span class="n">Ad</span><span class="p">[:,</span><span class="o">~</span><span class="n">mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Lp</span> <span class="o">=</span> <span class="n">Ad</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">Ad</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
     <span class="k">elif</span> <span class="n">boundary</span> <span class="o">==</span><span class="s1">&#39;d&#39;</span><span class="p">:</span>
         <span class="c1"># We get a zero boundary if we remove neighbors after</span>
         <span class="n">Lp</span> <span class="o">=</span> <span class="n">Ad</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">Ad</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
@@ -221,7 +230,7 @@
     <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">Lp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="adjacency2D_circular"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.adjacency2D_circular">[docs]</a><span class="k">def</span> <span class="nf">adjacency2D_circular</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Adjacency matric on a closed NxN domain with circularly-wrapped boundary.</span>
 
 <span class="sd">    Parameters</span>
@@ -238,7 +247,7 @@
     <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">kronsum</span><span class="p">(</span><span class="n">A1d</span><span class="p">,</span><span class="n">A1d</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="adjacency2d_rotational"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.adjacency2d_rotational">[docs]</a><span class="k">def</span> <span class="nf">adjacency2d_rotational</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    2D adjacency matrix with nonzero weights for corner neighbors to improve</span>
 <span class="sd">    rotational symmetry. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -248,7 +257,7 @@
     <span class="k">return</span> <span class="n">A2d_cross</span><span class="o">*</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="o">+</span><span class="n">A2d_corner</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span></div>
 
 <div class="viewcode-block" id="laplacian1D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplacian1D">[docs]</a><span class="k">def</span> <span class="nf">laplacian1D</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Laplacian operator on a closed, discrete, one-dimensional domain</span>
 <span class="sd">    of length `N`</span>
 
@@ -268,7 +277,7 @@
     <span class="k">return</span> <span class="n">L</span></div>
 
 <div class="viewcode-block" id="laplacianFT1D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplacianFT1D">[docs]</a><span class="k">def</span> <span class="nf">laplacianFT1D</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    N : int</span>
@@ -291,7 +300,7 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="wienerFT1D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.wienerFT1D">[docs]</a><span class="k">def</span> <span class="nf">wienerFT1D</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Square-root covariance operator for standard 1D Wiener process</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -307,7 +316,7 @@
     <span class="k">return</span> <span class="n">sqrtcov</span></div>
 
 <div class="viewcode-block" id="diffuseFT1D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.diffuseFT1D">[docs]</a><span class="k">def</span> <span class="nf">diffuseFT1D</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fourier transform of a Gaussian smoothing kernel</span>
 
 <span class="sd">    Parameters</span>
@@ -324,7 +333,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span><span class="o">.</span><span class="n">real</span></div>
 
 <div class="viewcode-block" id="flatcov"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.flatcov">[docs]</a><span class="k">def</span> <span class="nf">flatcov</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    </span>
@@ -339,7 +348,7 @@
     <span class="k">return</span> <span class="n">sums</span> <span class="o">/</span> <span class="n">N</span></div>
 
 <div class="viewcode-block" id="delta"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.delta">[docs]</a><span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    </span>
@@ -356,7 +365,7 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="circular_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.circular_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">circular_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Circulat discete differentiation in the frequeincy</span>
 <span class="sd">    domain.</span>
 <span class="sd">    </span>
@@ -379,7 +388,7 @@
     <span class="k">return</span> <span class="n">bp</span><span class="o">.</span><span class="n">flot32</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="truncated_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.truncated_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">truncated_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Discrete derivative operator, projecting from N to </span>
 <span class="sd">    N-1 dimensions (spatial domain). </span>
 <span class="sd">    </span>
@@ -396,7 +405,7 @@
     <span class="k">return</span> <span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="terminated_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.terminated_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">terminated_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Discrete derivative, using {-1,1} at endpoints and</span>
 <span class="sd">    ½{-1,0,1} in the interior. </span>
 <span class="sd">    </span>
@@ -421,7 +430,7 @@
     <span class="k">return</span> <span class="n">D</span></div>
 
 <div class="viewcode-block" id="pad1up"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.pad1up">[docs]</a><span class="k">def</span> <span class="nf">pad1up</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Interpolation operator going from N to N+1 samples.</span>
 <span class="sd">    Used to re-sample the discrete derivative to preserve</span>
 <span class="sd">    dimension. </span>
@@ -447,7 +456,7 @@
     <span class="k">return</span> <span class="n">D</span></div>
 
 <div class="viewcode-block" id="spaced_derivative_operator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.spaced_derivative_operator">[docs]</a><span class="k">def</span> <span class="nf">spaced_derivative_operator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Discrete derivative, upsampled via linear interpolation</span>
 <span class="sd">    to preserve dimension. </span>
 <span class="sd">    </span>
@@ -469,7 +478,7 @@
 
 
 <div class="viewcode-block" id="integrator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.integrator">[docs]</a><span class="k">def</span> <span class="nf">integrator</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    N : int</span>
@@ -484,7 +493,7 @@
     <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">delta</span></div>
 
 <div class="viewcode-block" id="covfrom"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.covfrom">[docs]</a><span class="k">def</span> <span class="nf">covfrom</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    </span>
@@ -498,7 +507,7 @@
     <span class="k">return</span> <span class="n">covmat</span></div>
 
 <div class="viewcode-block" id="oucov"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.oucov">[docs]</a><span class="k">def</span> <span class="nf">oucov</span><span class="p">(</span><span class="n">ssvar</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    </span>
@@ -511,7 +520,7 @@
     <span class="k">return</span> <span class="n">covariance</span></div>
 
 <div class="viewcode-block" id="gaussian1DblurOperator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.gaussian1DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian1DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">truncate</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns a 1D Gaussan blur operator of size n</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -544,7 +553,7 @@
     <span class="k">return</span> <span class="n">op</span></div>
 
 <div class="viewcode-block" id="circular1DblurOperator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.circular1DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">circular1DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">truncate</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns a circular 1D Gaussan blur operator of size n</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -579,7 +588,7 @@
     <span class="k">return</span> <span class="n">op</span> <span class="o">@</span> <span class="n">x</span> <span class="o">@</span> <span class="n">ou</span><span class="o">.</span><span class="n">T</span></div>
 
 <div class="viewcode-block" id="gaussian2DblurOperator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.gaussian2DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian2DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns a 2D Gaussan blur operator for a n x n sized domain</span>
 <span class="sd">    Constructed as a tensor product of two 1d blurs of size n</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -599,7 +608,7 @@
     <span class="k">return</span> <span class="n">op</span></div>
     
 <div class="viewcode-block" id="cosine_kernel"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.cosine_kernel">[docs]</a><span class="k">def</span> <span class="nf">cosine_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    raised cosine basis kernel, normalized such that it integrates to 1</span>
 <span class="sd">    centered at zero. Time is rescaled so that the kernel spans from</span>
 <span class="sd">    -2 to 2</span>
@@ -608,7 +617,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">piecewise</span><span class="p">(</span><span class="n">x</span><span class="p">,[</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">],[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="log_cosine_basis"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.log_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">log_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate overlapping log-cosine basis elements</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -631,7 +640,7 @@
     <span class="k">return</span> <span class="n">kernels</span></div>
 
 <div class="viewcode-block" id="make_cosine_basis"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.make_cosine_basis">[docs]</a><span class="k">def</span> <span class="nf">make_cosine_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">min_interval</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Build N logarightmically spaced cosine basis functions</span>
 <span class="sd">    spanning L samples, with a peak resolution of min_interval</span>
 <span class="sd">    </span>

@@ -57,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.geometry.html">neurotools.spatial.geometry module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.kernels.html">neurotools.spatial.kernels module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.masking.html">neurotools.spatial.masking module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.peaks.html">neurotools.spatial.peaks module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.phase.html">neurotools.spatial.phase module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">neurotools.spatial.points module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.spatial.spiking.html">neurotools.spatial.spiking module</a></li>
@@ -100,10 +101,10 @@
              
   <section id="module-neurotools.spatial.points">
 <span id="neurotools-spatial-points-module"></span><h1>neurotools.spatial.points module<a class="headerlink" href="#module-neurotools.spatial.points" title="Permalink to this heading"></a></h1>
-<p>Collected functions from 2018–2023 concerning analyses of 2D data.</p>
-<p>These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.</p>
-<p>These routines are completely untested and may duplicate functionality
-found elsehwere.</p>
+<p>Collected functions from 2018–2023 concerning analyses of
+2D data.</p>
+<p>Most of these routines work on 2D (x,y) points encoded as
+complex z=x+iy numbers.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.spatial.points.p2c">
 <span class="sig-prename descclassname"><span class="pre">neurotools.spatial.points.</span></span><span class="sig-name descname"><span class="pre">p2c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/points.html#p2c"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.points.p2c" title="Permalink to this definition"></a></dt>
@@ -205,6 +206,93 @@ if there is no match within radius</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.float32 with shape z1.shape+z2.shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spatial.points.assign_to_regions">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.points.</span></span><span class="sig-name descname"><span class="pre">assign_to_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/points.html#assign_to_regions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.points.assign_to_regions" title="Permalink to this definition"></a></dt>
+<dd><p>Assign 2D <cite>points</cite> to Voronoi <cite>regions</cite>, returning the
+indecies into <cite>regions</cite> for each point in <cite>points</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions</strong> (<em>2 × NREGIONS np.float32</em>) – (x,y) coordinates of Vornoi region centers</p></li>
+<li><p><strong>points</strong> (<em>2 × NPOINTS np.float32</em>) – (x,y) points to assign to regions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>indecies</strong> – Index into <cite>regions</cite> for each point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NPOINTS np.int32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spatial.points.collect_in_regions">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.points.</span></span><span class="sig-name descname"><span class="pre">collect_in_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_indecies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/points.html#collect_in_regions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.points.collect_in_regions" title="Permalink to this definition"></a></dt>
+<dd><p>Bin points to Voronoi regions, returning a list of
+(x,y) points in each region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions</strong> (<em>2×NREGIONS np.float32</em>) – (x,y) coordinates of Vornoi region centers</p></li>
+<li><p><strong>points</strong> (<em>2×NPOINTS np.float32</em>) – (x,y) points to assign to regions</p></li>
+<li><p><strong>return_indecies</strong> (<em>boolean; default False</em>) – Whether to additionally return the index
+into the <cite>NPOINTS</cite> assigned to each region</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>allocated</strong> (<em>list</em>) – Length <cite>NREGIONS</cite> list of 2 × NPOINTSINREGION
+np.float32 arrays</p></li>
+<li><p><strong>indecies</strong> (<em>list</em>) – <strong>Returned only if `return_indecies=True`;</strong>
+Length <cite>NREGIONS</cite> list of NPOINTSINREGION
+np.int32 arrays, each containing the indecies
+into the length-<cite>NPOINTS</cite> array assigned to
+each region in <a href="#id1"><span class="problematic" id="id2">`</span></a>regions.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spatial.points.gaussian_from_points">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.points.</span></span><span class="sig-name descname"><span class="pre">gaussian_from_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/points.html#gaussian_from_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.points.gaussian_from_points" title="Permalink to this definition"></a></dt>
+<dd><p>Get the mean and (sample) covariance of a point cloud.</p>
+<p>Note: we suppress warnings here because returning NaNs
+for an empty point set is entirely reasonable, and
+simplifies code elsewhere.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>NDIM × NPOINTS np.float32</em>) – Point data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>μ</strong> (<em>NDIM np.float32</em>) – Mean</p></li>
+<li><p><strong>Σ</strong> (<em>NDIM × NDIM np.float32</em>) – Sample covariance</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.spatial.points.collect_gaussians">
+<span class="sig-prename descclassname"><span class="pre">neurotools.spatial.points.</span></span><span class="sig-name descname"><span class="pre">collect_gaussians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/spatial/points.html#collect_gaussians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.spatial.points.collect_gaussians" title="Permalink to this definition"></a></dt>
+<dd><p>Return the mean and covariance of points within
+each Voronoi region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>means</strong> (<em>np.float32</em>)</p></li>
+<li><p><strong>sigmas</strong> (<em>np.float32</em>)</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>

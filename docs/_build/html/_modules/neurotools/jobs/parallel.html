@@ -88,6 +88,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">cpu_count</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="k">try</span><span class="p">:</span>
@@ -98,7 +99,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -115,7 +116,7 @@
 <span class="n">reference_globals</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span>
 
 <div class="viewcode-block" id="parmap"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.parmap">[docs]</a><span class="k">def</span> <span class="nf">parmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parallel implmenetation of map using multiprocessing</span>
 
 <span class="sd">    Parameters</span>
@@ -178,13 +179,13 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="pararraymap"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.pararraymap">[docs]</a><span class="k">def</span> <span class="nf">pararraymap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parmap wrapper for common use-case with Numpy</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">parmap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">problems</span><span class="p">),</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="parmap_dict"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.parmap_dict">[docs]</a><span class="k">def</span> <span class="nf">parmap_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">problems</span><span class="p">,</span><span class="n">leavefree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    </span>
@@ -352,7 +353,7 @@
     <span class="k">return</span> <span class="n">nme</span><span class="p">,</span><span class="n">src</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">nrg</span></div>
   
 <div class="viewcode-block" id="eval_from_cached"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.eval_from_cached">[docs]</a><span class="k">def</span> <span class="nf">eval_from_cached</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Attempts to recompile a function from its source code, and store the</span>
 <span class="sd">    compiled result in the global dictionary `__indirect_eval_fallback_cache`.</span>
 <span class="sd">    It then attempts to call the function on the provided arguments.</span>
@@ -397,7 +398,7 @@
     <span class="k">return</span> <span class="n">i</span><span class="p">,</span><span class="n">eval_from_cached</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">args</span><span class="p">)</span></div>
 
 <span class="k">def</span> <span class="nf">__parimap_builtin</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">jobs</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Attempt to use multiprocessing parallel map &#39;as directed&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">indirect_jobs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">f</span><span class="p">,</span><span class="n">args</span><span class="p">)</span> <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">]</span>
@@ -417,7 +418,7 @@
     <span class="n">allow_fallback</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parallel map routine. </span>
 
 <span class="sd">    In some cases and on some systems, user-defind functions don&#39;t work with</span>
@@ -524,7 +525,7 @@
     <span class="c1"># Try to store function in global dictionary then reset workers.</span>
     <span class="k">if</span> <span class="n">allow_fallback</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            Fallback solution by storing function in global scope, then restarting</span>
 <span class="sd">            the worker threads (who then should be able to see the function) </span>
 <span class="sd">            &#39;&#39;&#39;</span>
@@ -567,7 +568,7 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to execute parallel map&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="close_pool"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.close_pool">[docs]</a><span class="k">def</span> <span class="nf">close_pool</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Safely halts the worker-pool. If worker threads are stuck, </span>
 <span class="sd">    then this function will hang. On the other hand, it avoids doing </span>
 <span class="sd">    anything violent to close workers. </span>
@@ -618,7 +619,7 @@
         <span class="k">del</span> <span class="n">mypool</span></div>
 
 <div class="viewcode-block" id="reset_pool"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.reset_pool">[docs]</a><span class="k">def</span> <span class="nf">reset_pool</span><span class="p">(</span><span class="n">leavefree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Safely halts and restarts the worker-pool. If worker threads are stuck, </span>
 <span class="sd">    then this function will hang. On the other hand, it avoids doing </span>
 <span class="sd">    anything violent to close workers. </span>
@@ -641,7 +642,7 @@
     <span class="n">mypool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">NCPU</span><span class="o">-</span><span class="n">leavefree</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="parallel_error_handling"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.parallel_error_handling">[docs]</a><span class="k">def</span> <span class="nf">parallel_error_handling</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    We can&#39;t really use exception handling in parallel calls.</span>
 <span class="sd">    This is a wrapper to just catch errors to prevent them from</span>
 <span class="sd">    propagating up.</span>
@@ -660,6 +661,27 @@
             <span class="n">info</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
             <span class="k">return</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parallel_helper</span></div>
+    
+    
+    
+<div class="viewcode-block" id="limit_cores"><a class="viewcode-back" href="../../../neurotools.jobs.parallel.html#neurotools.jobs.parallel.limit_cores">[docs]</a><span class="k">def</span> <span class="nf">limit_cores</span><span class="p">(</span><span class="n">CORES_PER_THREAD</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span> 
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Control the number of cores used by linear algebra</span>
+<span class="sd">    backends.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span>   <span class="nn">threadpoolctl</span> <span class="kn">import</span> <span class="n">threadpool_info</span><span class="p">,</span><span class="n">threadpool_limits</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;NUMEXPR_NUM_THREADS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OMP_NUM_THREADS &#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OPENBLAS_NUM_THREADS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;VECLIB_MAXIMUM_THREADS&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">CORES_PER_THREAD</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;XLA_FLAGS&quot;</span><span class="p">]</span> <span class="o">=</span> \
+    <span class="s2">&quot;--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=</span><span class="si">%d</span><span class="s2">&quot;</span>\
+    <span class="o">%</span><span class="n">CORES_PER_THREAD</span>
+    <span class="n">threadpool_limits</span><span class="p">(</span><span class="n">limits</span><span class="o">=</span><span class="n">CORES_PER_THREAD</span><span class="p">,</span> <span class="n">user_api</span><span class="o">=</span><span class="s1">&#39;blas&#39;</span><span class="p">)</span>
+    <span class="n">NCORES</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

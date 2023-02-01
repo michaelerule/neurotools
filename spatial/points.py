@@ -1,12 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 '''
-Collected functions from 2018--2023 concerning analyses of 2D data.
+Collected functions from 2018--2023 concerning analyses of 
+2D data.
 
-These routines work on 2D (x,y) points encoded as complex z=x+iy numbers.
-
-These routines are completely untested and may duplicate functionality
-found elsehwere. 
+Most of these routines work on 2D (x,y) points encoded as 
+complex z=x+iy numbers.
 '''
 from __future__ import absolute_import
 from __future__ import with_statement
@@ -174,7 +173,8 @@ def pair_neighbors(z1,z2,radius=inf):
     keep  = delta<radius
     edges = int32([a,b])
     return edges.T[keep], pairs.T[keep], delta[keep]
-    
+
+
 def paired_distances(z1,z2):
     '''
     Calculate pairwise distances between two sets of 
@@ -196,3 +196,154 @@ def paired_distances(z1,z2):
     z1,z2 = z1.ravel(),z2.ravel()
     distance = abs(z1[:,None]-z2[None,:])
     return distance.reshape(*(s1+s2))
+    
+    
+
+def assign_to_regions(regions,points):
+    '''
+    Assign 2D `points` to Voronoi `regions`, returning the
+    indecies into `regions` for each point in `points`
+    
+    Parameters
+    ----------
+    regions: 2 × NREGIONS np.float32
+        (x,y) coordinates of Vornoi region centers
+    points: 2 × NPOINTS np.float32
+        (x,y) points to assign to regions
+        
+    Returns
+    -------
+    indecies: NPOINTS np.int32
+        Index into `regions` for each point    
+    '''
+    regions = p2c(regions)
+    points  = p2c(points)
+    return np.argmin(abs(regions[:,None]-points[None,:]),0)
+
+
+def collect_in_regions(
+    regions,
+    points,
+    return_indecies=False):
+    '''
+    Bin points to Voronoi regions, returning a list of
+    (x,y) points in each region.
+    
+    Parameters
+    ----------
+    regions: 2×NREGIONS np.float32
+        (x,y) coordinates of Vornoi region centers
+    points: 2×NPOINTS np.float32
+        (x,y) points to assign to regions
+        
+    Other Parameters
+    ----------------
+    return_indecies: boolean; default False
+        Whether to additionally return the index
+        into the `NPOINTS` assigned to each region
+    
+    Returns
+    -------
+    allocated: list
+        Length `NREGIONS` list of 2 × NPOINTSINREGION
+        np.float32 arrays
+    indecies: list
+        **Returned only if `return_indecies=True`;**
+        Length `NREGIONS` list of NPOINTSINREGION
+        np.int32 arrays, each containing the indecies 
+        into the length-`NPOINTS` array assigned to
+        each region in `regions.
+    '''
+    i = assign_to_regions(regions,points)
+    assigned = [
+        points[:,i==j] 
+        for j in range(regions.shape[1])]
+    if return_indecies:
+        indecies = [
+            np.where(i==j)[0]
+            for j in range(regions.shape[1])]
+        return assigned, indecies
+    else:
+        return assigned
+
+
+import warnings
+def gaussian_from_points(points):
+    '''
+    Get the mean and (sample) covariance of a point cloud. 
+    
+    Note: we suppress warnings here because returning NaNs
+    for an empty point set is entirely reasonable, and 
+    simplifies code elsewhere. 
+    
+    Parameters
+    ----------
+    points: NDIM × NPOINTS np.float32
+        Point data.
+        
+    Returns
+    -------
+    μ: NDIM np.float32
+        Mean
+    Σ: NDIM × NDIM np.float32
+        Sample covariance
+    '''
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            'ignore', r'invalid value encountered in divide')
+        warnings.filterwarnings(
+            'ignore', r'Mean of empty slice.')
+        points = np.float32(points)
+        ndim, npoints = points.shape
+        μ = np.mean(points,1)
+        Δ = points - μ[:,None]
+        Σ = (Δ@Δ.T)/npoints
+        return μ,Σ
+
+
+def collect_gaussians(regions, s):
+    '''
+    Return the mean and covariance of points within 
+    each Voronoi region. 
+    
+    Returns
+    -------
+    means: np.float32
+    sigmas: np.float32
+    '''
+    means,sigmas = zip(*[*map(
+        gaussian_from_points,
+        collect_in_regions(regions, s)
+    )])
+    # Collect all ellipses to plot 
+    ellipses = []
+    _means,_sigmas = [],[] # μ,Σ, dropping ones with NaN
+    
+    means,sigmas = zip(*[
+        (mu,sigma) 
+        for (mu,sigma) in zip(means,sigmas)
+        if np.all(np.isfinite(sigma)) and np.all(np.isfinite(mu))
+    ])
+    
+    return np.float32(means), np.float32(sigmas)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

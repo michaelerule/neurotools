@@ -590,7 +590,7 @@ def wheremax(a):
     tuple : 
         Tuple of indecies indicating the maximum element
     '''
-    return np.unravel_index(a.argmax(), a.shape)
+    return np.unravel_index(np.nanargmax(a), np.shape(a))
 
 def wheremin(a):
     '''
@@ -607,9 +607,9 @@ def wheremin(a):
     tuple : 
         Tuple of indecies indicating the minimum element
     '''
-    return np.unravel_index(a.argmin(), a.shape)
+    return np.unravel_index(np.nanargmin(a), np.shape(a))
     
-def reglstsq(X, Y, reg=1e-15, transposed=False):
+def reglstsq(X, Y, reg=1e-15, suppress_transpose_error=False):
     '''
     Regularized least squares. 
     Solves Y=XM for M with L2 regularization
@@ -627,6 +627,9 @@ def reglstsq(X, Y, reg=1e-15, transposed=False):
     ----------------
     reg : positive float
         Small positive L2 regularization, default is 1e-15
+    suppress_transpose_error: boolean; default False
+        Set this to `True` to fit regression models with
+        more dimensions than training examples. 
         
     Returns
     -------
@@ -645,12 +648,12 @@ def reglstsq(X, Y, reg=1e-15, transposed=False):
     # N: number of samples
     # K: number of features
     N,K = X.shape
-    if K>N and not transposed:
+    if K>N and not suppress_transpose_error:
         raise ValueError('First argument has more dimensions than training examples. Is it transposed?')
     # L: number of samples (should match N)
     # M: number of features
     L,M = Y.shape
-    if K>N and not transposed:
+    if K>N and not suppress_transpose_error:
         raise ValueError('Second argument has more dimensions than training examples. Is it transposed?')
     if not N==L:
         raise ValueError('Number of training samples should match in X and Y')

@@ -12,10 +12,13 @@ from . import dendron
 from . import image
 from . import matplotlib
 from . import plot
-from . import pygame
 from . import ztransform_plot_helpers
 
 # Don't import these, they will be pulled in by plot
 #from . import colormaps
 #from . import color
 #from . import fabio_maps
+
+# Don't load this automatically
+#from . import pygame
+

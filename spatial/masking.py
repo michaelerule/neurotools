@@ -142,7 +142,8 @@ def maskout(x,mask,**kwargs):
 def trim_mask(mask):
     '''
     Remove empty edges of boolean mask.
-    See `mask_crop(array,mask)` to use a mask to trim another array.
+    See `mask_crop(array,mask)` to use a mask to trim 
+    another array.
     
     Parameters
     ----------
@@ -159,6 +160,9 @@ def mask_crop(x,mask,fill_nan=True):
     Set pixels in `x` where `mask` is `False` to `NaN`,
     and then remove empty rows and columns.
     
+    See `trim_mask(mask)` to crop out empty rows, columns 
+    from a mask.
+    
     Parameters
     ----------
     x: 2D np.float32
@@ -173,7 +177,7 @@ def mask_crop(x,mask,fill_nan=True):
     return x[a:b+1,c:d+1]
 
 
-def to_image(x,mask):
+def to_image(x,mask,fill=np.NaN,crop=False):
     '''
     Assign list of values `x` to locations in `mask` that 
     are `True`, in row-major order.
@@ -182,11 +186,21 @@ def to_image(x,mask):
     ----------
     x: 1D np.array
     mask: 2D np.bool
+    
+    Other Parameters
+    ----------------
+    full: float; default np.NaN
+        Fill value for regions outside the mask
+    crop: bool; default False
+        Whether to remove empty rows/cols of the resulting
+        image.
     '''
     mask = as_mask(mask)
     x = np.array(x)
-    q = np.zeros(mask.shape,x.dtype)
+    q = np.full(mask.shape,fill,dtype=x.dtype)
     q[mask] = x
+    if crop:
+        q = mask_crop(q,mask)
     return q
 
     

@@ -5,9 +5,9 @@
 
 These are python routines for statistical modeling in computational neuroscience that I've collected over the years. 
 
-Much of the project is "research" (i.e. poor) quality and unstable, but some of the modules are stable and useful.  
+This is "research code" (poor quality, untested), but some modules are stable and useful.  
 
-This project is not to be confused with the [Neurotools project for neural simulation](http://neuralensemble.org/NeuroTools/). 
+Not to be confused with the [Neurotools project for neural simulation](http://neuralensemble.org/NeuroTools/). 
 
 When not otherwise specified this project and associated content is licensed under the [Creative Commons Attribution Non Commercial Share Alike 3.0 license](https://creativecommons.org/licenses/by-nc-sa/3.0/) [(full license)](https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode)
 

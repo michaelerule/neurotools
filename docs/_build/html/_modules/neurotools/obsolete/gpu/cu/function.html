@@ -11,10 +11,9 @@
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../../_static/doctools.js"></script>
         <script src="../../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.obsolete.gpu.cu.function</li>
       <li class="wy-breadcrumbs-aside">
@@ -132,7 +135,7 @@
 <span class="c1">##############################################################################</span>
 
 <div class="viewcode-block" id="format"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.format">[docs]</a><span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is a kernel source auto-formatter. It mostly just does auto-indent</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;//&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;@&#39;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
@@ -162,7 +165,7 @@
     <span class="k">return</span> <span class="n">newcode</span></div>
 
 <div class="viewcode-block" id="printKernel"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.printKernel">[docs]</a><span class="k">def</span> <span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This prints out a kernel source with line numbers</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">code</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
@@ -178,7 +181,7 @@
         
 <div class="viewcode-block" id="gpubin"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpubin">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">gpubin</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;This is a small wrapper to simplify calling binary r = a op b kernels. It automates creation of the result array&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;This is a small wrapper to simplify calling binary r = a op b kernels. It automates creation of the result array&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">ll</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="n">r</span><span class="o">=</span><span class="n">gpuarray</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="n">fun</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
@@ -189,7 +192,7 @@
     
 <div class="viewcode-block" id="gpumap"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpumap">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">gpumap</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is a small wrapper to simplify creation of b[i] = f(a[i]) map </span>
 <span class="sd">    kernels. The map function is passed in as a string representing a CUDA </span>
 <span class="sd">    expression. The dollar sign $ should denote the argument variable. A </span>
@@ -208,7 +211,7 @@
 
 <div class="viewcode-block" id="gpuintmap"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpuintmap">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">gpuintmap</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;This is the same thing as gpumap except for integer datatypes&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;This is the same thing as gpumap except for integer datatypes&#39;&#39;&#39;</span>
     <span class="n">exp</span> <span class="o">=</span> <span class="s2">&quot;z[i]=&quot;</span><span class="o">+</span><span class="n">expsub</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
     <span class="n">map_kern</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span><span class="n">ElementwiseKernel</span><span class="p">(</span><span class="s2">&quot;int *x, int *z&quot;</span><span class="p">,</span><span class="n">exp</span><span class="p">,</span><span class="s2">&quot;map_kern&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -221,7 +224,7 @@
 
 <div class="viewcode-block" id="gpumapeq"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpumapeq">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">gpumapeq</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;This is a small wrapper to simplify creation of a[i] = f(a[i]) map </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;This is a small wrapper to simplify creation of a[i] = f(a[i]) map </span>
 <span class="sd">    kernels. The map function is passed in as a string representing a CUDA </span>
 <span class="sd">    expression. The dollar sign $ should denote the argument variable. The</span>
 <span class="sd">    result is assigned into the original array, so no new memory is </span>
@@ -258,7 +261,7 @@
 
 <div class="viewcode-block" id="gpubinaryeq"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.gpubinaryeq">[docs]</a><span class="nd">@memoize</span>  
 <span class="k">def</span> <span class="nf">gpubinaryeq</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This wrapper simplified the creation of kernels executing operators</span>
 <span class="sd">    like `{&#39;+=&#39;,&#39;-=&#39;,&#39;*=&#39;,&#39;/=&#39;}`. That is, binary operators that assign the</span>
 <span class="sd">    result to the left operator. This is to suppliment the functionality of</span>
@@ -280,7 +283,7 @@
     
     
 <div class="viewcode-block" id="guessGPUType"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.guessGPUType">[docs]</a><span class="k">def</span> <span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;At the moment, this returns numpy.float32 for Python floats and </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;At the moment, this returns numpy.float32 for Python floats and </span>
 <span class="sd">    numpy.int32 for python integers, and is otherwise undefined&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
@@ -296,7 +299,7 @@
         
 <div class="viewcode-block" id="ezkern"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.function.html#neurotools.obsolete.gpu.cu.function.ezkern">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">ezkern</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is my easy kernel wrapper. This function accepts a header ( the</span>
 <span class="sd">    list of arguments ), a body ( the core of the loop ), and optionally</span>
 <span class="sd">    a block of helper function code. The core loop should reference &quot;tid&quot; as</span>

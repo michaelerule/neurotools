@@ -11,10 +11,9 @@
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../../_static/doctools.js"></script>
         <script src="../../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.obsolete.gpu.cu.sequence</li>
       <li class="wy-breadcrumbs-aside">
@@ -94,11 +97,11 @@
 <span class="sd">&#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="GPUSequenceAutoDetect"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.GPUSequenceAutoDetect">[docs]</a><span class="k">def</span> <span class="nf">GPUSequenceAutoDetect</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">thresh</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">gpuint</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
     <span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *distances, int t, float thresh, int *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        int   ia    = tid%t;</span>
 <span class="sd">        int   ib    = tid/t;</span>
 <span class="sd">        int   l     = 0;</span>
@@ -124,7 +127,7 @@
 
 
 <div class="viewcode-block" id="GPUPointAutoDistance"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.GPUPointAutoDistance">[docs]</a><span class="k">def</span> <span class="nf">GPUPointAutoDistance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    limit to 5-13k timestep for 256x256 sim</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -135,7 +138,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">w</span><span class="o">=</span><span class="n">t</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">kern1</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int n, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        int outx = tid%t;</span>
 <span class="sd">        int outy = tid/t;</span>
 <span class="sd">        float *inx = &amp;data[n*outx];</span>
@@ -148,7 +151,7 @@
 <span class="sd">        out[tid]=sumsq/n;</span>
 <span class="sd">        &#39;&#39;&#39;</span><span class="p">)(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
     <span class="n">kern2</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *in, int k, int w, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        int index = (tid%w)+(tid/w)*t;</span>
 <span class="sd">        float sumsq = 0.0f;</span>
 <span class="sd">        for (int i=0; i&lt;k; i++) {   </span>
@@ -164,7 +167,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">out2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GPUAutometric"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.GPUAutometric">[docs]</a><span class="k">def</span> <span class="nf">GPUAutometric</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    limit to 5-13k timestep for 256x256 sim</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -174,7 +177,7 @@
 <span class="sd">        data (int):t*n data matrix, n is inner dimension</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">kern</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int n, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        int outx = tid%t;</span>
 <span class="sd">        int outy = tid/t;</span>
 <span class="sd">        float *inx = &amp;data[n*outx];</span>
@@ -191,7 +194,7 @@
     <span class="k">return</span> <span class="n">cpu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GPUMagmetric"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.GPUMagmetric">[docs]</a><span class="k">def</span> <span class="nf">GPUMagmetric</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    limit to 5-13k timestep for 256x256 sim</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -201,7 +204,7 @@
 <span class="sd">        data (int):t*n data matrix, n is inner dimension</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">kern</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int n, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        float *inx = &amp;data[n*(tid%t)];</span>
 <span class="sd">        float *iny = &amp;data[n*(tid/t)];</span>
 <span class="sd">        float sum = 0.0f;</span>
@@ -213,7 +216,7 @@
     <span class="k">return</span> <span class="n">cpu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GPUDotmetric"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.GPUDotmetric">[docs]</a><span class="k">def</span> <span class="nf">GPUDotmetric</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    limit to 5-13k timestep for 256x256 sim</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -223,7 +226,7 @@
 <span class="sd">        data (int):t*n data matrix, n is inner dimension</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">kern</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int n, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        float *inx = &amp;data[n*(tid%t)];</span>
 <span class="sd">        float *iny = &amp;data[n*(tid/t)];</span>
 <span class="sd">        float sum = 0.0f;</span>
@@ -236,7 +239,7 @@
 
 <div class="viewcode-block" id="deltamag"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.deltamag">[docs]</a><span class="k">def</span> <span class="nf">deltamag</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
     <span class="n">kern</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        out[tid]=data[tid%t]-data[tid/t];</span>
 <span class="sd">        &#39;&#39;&#39;</span><span class="p">)(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">gpu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
@@ -245,7 +248,7 @@
     
 <div class="viewcode-block" id="summag"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.summag">[docs]</a><span class="k">def</span> <span class="nf">summag</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
     <span class="n">kern</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        out[tid]=data[tid%t]+data[tid/t];</span>
 <span class="sd">        &#39;&#39;&#39;</span><span class="p">)(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">gpu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
@@ -263,7 +266,7 @@
     <span class="n">s</span><span class="o">=</span><span class="n">t</span><span class="o">-</span><span class="n">rad</span>
     <span class="n">out</span><span class="o">=</span><span class="n">gpu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
     <span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data,int r,float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        float sum=0;</span>
 <span class="sd">        for (int i=0; i&lt;r; i++) sum+=data[tid+i];</span>
 <span class="sd">        out[tid]=sum/r;</span>
@@ -276,7 +279,7 @@
     <span class="n">out</span><span class="o">=</span><span class="n">gpu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">sum</span><span class="p">([(</span><span class="n">i</span><span class="o">+</span><span class="mf">.5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">rad</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mf">.5</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">rad</span><span class="p">)])</span>
     <span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data,int r,float norm,float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        float sum=0;</span>
 <span class="sd">        for (int i=0; i&lt;r; i++){</span>
 <span class="sd">            float w=i+0.5;</span>
@@ -288,7 +291,7 @@
 
 <div class="viewcode-block" id="mulmag"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.mulmag">[docs]</a><span class="k">def</span> <span class="nf">mulmag</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
     <span class="n">kern</span><span class="o">=</span><span class="n">kernel</span><span class="p">(</span><span class="s1">&#39;float *data, int t, float *out&#39;</span><span class="p">,</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        out[tid]=data[tid%t]*data[tid/t];</span>
 <span class="sd">        &#39;&#39;&#39;</span><span class="p">)(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">gpu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
@@ -296,7 +299,7 @@
     <span class="k">return</span> <span class="n">cpu</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="FrameEater"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.sequence.html#neurotools.obsolete.gpu.cu.sequence.FrameEater">[docs]</a><span class="k">def</span> <span class="nf">FrameEater</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">maxframes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    TODO: document</span>
 <span class="sd">    </span>
 <span class="sd">    file format : list of float images</span>

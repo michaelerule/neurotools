@@ -32,3 +32,4 @@ from . import string
 from . import system
 from . import time
 from . import tools
+from . import pandas

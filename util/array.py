@@ -141,11 +141,55 @@ def complex_to_nan(x,value=np.NaN):
     x[np.iscomplex(x)]=value
     return x.real
 
+def verify_axes(x,axis):
+    # Get shape of the array
+    x      = np.array(x)
+    xshape = np.shape(x)
+    naxes  = len(xshape)
+    # Convert axis argument into an int32 array      
+    if isinstance(axis,int): axis = np.int32([axis])
+    else: axis = np.int32([*axis])
+    # Check is in range    
+    max_axis = naxes-1
+    min_axis = -naxes
+    if np.any((axis>max_axis)|(axis<min_axis)):
+        raise ValueError(
+            'An axis %s is out of range for shape %s'%(axis,xshape)
+        )
+    if len({*axis})<len(axis):
+        raise ValueError(
+            'axes %s contains duplicates'%(axis,)
+        )
+    # Convert negative axis index to positive        
+    axis = axis % naxes
+    return axis
+
+def axes_complement(x,axes):
+    '''
+    Set of all axes indeces for ``x`` not contained in ``axes``.
+    '''
+    # Get shape of the array
+    x      = np.array(x)
+    xshape = np.shape(x)
+    naxes  = len(xshape)
+    axes   = verify_axes(x,axes)
+    other_axes = {*range(naxes)} - {*axes}
+    return tuple(list(other_axes))
+
+def reslice(naxes,expand_into):
+    '''
+    Generate a slice object to expand an array along
+    ``expand_into`` to broadcast with an array with ``naxes``
+    dimenstions.
+    '''
+    return tuple([
+        None if a in expand_into else np.s_[:] 
+        for a in range(naxes)])
 
 def make_rebroadcast_slice(x,axis=0,verbose=False):
     '''
     Generate correct slice object for broadcasting 
-    stastistics averaged over the given axis back to the
+    stastistics averaged over the given axis(es) back to the
     original shape.
     
     Parameters
@@ -154,26 +198,25 @@ def make_rebroadcast_slice(x,axis=0,verbose=False):
     
     Other Parameters
     ----------------
-    axis: int; default 0
+    axis: int or tuple; default 0
     verbose: boolean; default False
     '''
-    x = np.array(x)
-    naxes = len(np.shape(x))
+    
+    # Get the actual shape of the array
+    x      = np.array(x)
+    xshape = np.shape(x)
+    naxes  = len(xshape)
+
+    axis = verify_axes(x,axis)
+
+    # Broadcast None over the axes that were collapsed
+    theslice = reslice(naxes,axis)
+    
     if verbose:
         print('x.shape=',np.shape(x))
         print('naxes=',naxes)
-    if axis<0:
-        axis=naxes+axis
-    if axis==0:
-        theslice = (None,Ellipsis)
-    elif axis==naxes-1:
-        theslice = (Ellipsis,None)
-    else:
-        a = axis
-        b = naxes - a - 1
-        theslice = (np.s_[:],)*a + (None,) + (np.s_[:],)*b
-    if verbose:
         print('axis=',axis)
+        print('slice=',theslice)
     return theslice
 
 
@@ -503,12 +546,46 @@ def widths_to_centers(widths,startat=0):
     edges = widths_to_edges(widths,startat=startat)
     return centers(edges)
 
-
 def extract(zerod):
     '''
-    Extract a zero-dimensional array.
-    There is probably a better way to do this but it is
-    poorly documented. 
+    Extract the scalar value from zero-dimensional 
+    ``np.ndarray``.
     '''
     return np.array(zerod).reshape(1)[0]
+
+
+def binspace(start,stop,nbins,eps=1e-9):
+    b = np.linspace(0,100,nbins+1)
+    b[0] -=eps
+    b[-1]+=eps
+    return b
+
+
+def binto(x,y,start,stop,nbins=50):
+    b = binspace(0,100,nbins)
+    i = np.digitize(x,b)
+    return [y[i==j] for j in range(nbins)]
+
+
+def remove_nonincreasing(x,y):
+    keep = np.where(np.diff(y)>=0)[0]
+    return x[keep], y[keep]
+
+
+def remove_nans(*args):
+    args = [*map(np.array,args)]
+    if len(args)==1 and len(np.shape(args[0]))==2:
+        return np.array(remove_nans(*args[0]))
+    else:
+        ok = np.all([np.isfinite(a) for a in args],axis=0)
+        if len(args)>1:
+            return [np.array(a)[ok] for a in args]
+        return np.array(args[0])[ok]
+
+
+
+
+
+
+
 

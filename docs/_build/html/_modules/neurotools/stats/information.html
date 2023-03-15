@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
       <li class="breadcrumb-item active">neurotools.stats.information</li>
@@ -93,94 +96,744 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">neurotools.signal</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-
-<div class="viewcode-block" id="DKL_discrete"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.DKL_discrete">[docs]</a><span class="k">def</span> <span class="nf">DKL_discrete</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Compute KL divergence between discrete distributions</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    P : np.array</span>
-<span class="sd">        Vector of probabilities</span>
-<span class="sd">    Q : np.array</span>
-<span class="sd">        Vector of probabilities</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    DKL : float</span>
-<span class="sd">        KL divergence from P to Q</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="o">!=</span><span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-        <span class="s1">&#39;Arrays P and Q must be the same shape&#39;</span><span class="p">)</span>
-    <span class="n">P</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="n">P</span><span class="p">)</span>
-    <span class="n">P</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
-    <span class="n">Q</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span><span class="n">Q</span><span class="p">)</span>
-    <span class="n">Q</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">P</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span></div>
-    
-
-<div class="viewcode-block" id="discrete_entropy_samples"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete_entropy_samples">[docs]</a><span class="k">def</span> <span class="nf">discrete_entropy_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Entropy is in nats</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    samples : array-like</span>
-<span class="sd">        1D array-like iterable of samples. Samples can be of any type, but</span>
-<span class="sd">        must be hashable. </span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">        Shannon entropy of samples</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
-        <span class="n">counts</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
-    <span class="k">return</span> <span class="n">discrete_entropy_distribution</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
-
-<div class="viewcode-block" id="discrete_entropy_distribution"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete_entropy_distribution">[docs]</a><span class="k">def</span> <span class="nf">discrete_entropy_distribution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">minp</span><span class="o">=</span><span class="mf">1e-19</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : array like numeric</span>
-<span class="sd">        List of frequencies or counts</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">        Shannon entropy of discrete distribution with observed `counts`</span>
-<span class="sd">    </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">p</span><span class="p">[</span><span class="n">p</span><span class="o">&lt;</span><span class="n">minp</span><span class="p">]</span> <span class="o">=</span> <span class="n">minp</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">total</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">))</span><span class="o">/</span><span class="n">total</span></div>
-
-
-<div class="viewcode-block" id="regularized_discrete_entropy"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.regularized_discrete_entropy">[docs]</a><span class="k">def</span> <span class="nf">regularized_discrete_entropy</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Specify that samples come from a set of size N</span>
-<span class="sd">    Some examples might not be observed</span>
-<span class="sd">    Use a bound on their probability to compute entropy</span>
-<span class="sd">    </span>
-<span class="sd">    Maybe extrapolate the energy density?</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span></div>
-    
-
 <span class="kn">from</span> <span class="nn">neurotools.stats.distributions</span> <span class="kn">import</span> <span class="n">poisson_pdf</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="kn">import</span> <span class="n">unitsum</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="kn">import</span> <span class="n">verify_axes</span><span class="p">,</span> <span class="n">axes_complement</span><span class="p">,</span> <span class="n">reslice</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">circulant</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">piper</span>
+<span class="nd">@piper</span>
+<span class="k">def</span> <span class="nf">bits_to_nats</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">b</span> <span class="c1">#2**b = e**n</span>
+<span class="nd">@piper</span>
+<span class="k">def</span> <span class="nf">nats_to_bits</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span><span class="o">*</span><span class="n">n</span> <span class="c1">#2**b = e**n</span>
+<span class="n">b2n</span> <span class="o">=</span> <span class="n">bits_to_nats</span>
+<span class="n">n2b</span> <span class="o">=</span> <span class="n">nats_to_bits</span>
+
+<span class="k">def</span> <span class="nf">_masked_log</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="o">!=</span><span class="mi">0</span><span class="p">))</span>
+
+<div class="viewcode-block" id="discrete"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete">[docs]</a><span class="k">class</span> <span class="nc">discrete</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Collected methods for calculating biased information-theoretic</span>
+<span class="sd">    quantities directly from discrete (categorical) probability</span>
+<span class="sd">    distributions. </span>
+<span class="sd">    These have never been fully tested.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="discrete.DKL"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.DKL">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">DKL</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute KL divergence D(P||Q) </span>
+<span class="sd">        between discrete distributions ``P`` and ``Q`.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        P : np.array</span>
+<span class="sd">            Vector of probabilities</span>
+<span class="sd">        Q : np.array</span>
+<span class="sd">            Vector of probabilities</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        DKL : float</span>
+<span class="sd">            KL divergence from P to Q</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">!=</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Arrays P and Q must be the same shape&#39;</span><span class="p">)</span>
+        <span class="n">Q</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">Q</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Q cannot contain zeros&#39;</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="o">*</span><span class="p">(</span><span class="n">_masked_log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Q</span><span class="p">)),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="discrete.H"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.H">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Sample entropy ``-Σ p ln(p)`` in nats.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p: array-like numeric</span>
+<span class="sd">            List of frequencies or counts</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :float</span>
+<span class="sd">            Shannon entropy of discrete distribution </span>
+<span class="sd">            with observed `counts`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">_masked_log</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Test code</span>
+<span class="sd">        print(n2b&lt;&lt;discrete.H([1,1]),&#39;?=&#39;,1)</span>
+<span class="sd">        print(n2b&lt;&lt;discrete.H([1,1,1,1]),&#39;?=&#39;,2)</span>
+<span class="sd">        print(n2b&lt;&lt;discrete.H([2,1,1]),&#39;?=&#39;,3/2)</span>
+<span class="sd">        1.0 ?= 1</span>
+<span class="sd">        2.0 ?= 2</span>
+<span class="sd">        1.4999999999999998 ?= 1.5</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+    
+<div class="viewcode-block" id="discrete.H_samples"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.H_samples">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">H_samples</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">samples</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Calculate sample entropy ``-Σ p ln(p)`` (in nats)</span>
+<span class="sd">        from a list of samples.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        samples : array-like</span>
+<span class="sd">            1D array-like iterable of samples. Samples can be of any type, but</span>
+<span class="sd">            must be hashable. </span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Shannon entropy of samples</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+            <span class="n">counts</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+        
+<div class="viewcode-block" id="discrete.Hcond"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.Hcond">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Hcond</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Conditional entropy :math:`H_{y|x}`. </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p: array-like numeric</span>
+<span class="sd">            List of frequencies or counts</span>
+<span class="sd">        axis: tuple</span>
+<span class="sd">            List of axes corresponding to ``y`` in </span>
+<span class="sd">            :math:`H_{y|x}`. </span>
+<span class="sd">            Remaining axes presumed to correspond to ``x``.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :float</span>
+<span class="sd">            Shannon entropy of discrete distribution </span>
+<span class="sd">            with observed `counts`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;p should be at least 2D&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;p has more than two dimensions; &#39;</span>
+                    <span class="s1">&#39;please specify the list of axes corresponding &#39;</span>
+                    <span class="s1">&#39;to one of the variables of interest to calculate &#39;</span>
+                    <span class="s1">&#39;joint conditional entropy&#39;</span><span class="p">)</span>
+            <span class="c1"># Default to the first axis otherwise</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span>
+        
+        <span class="n">Px</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">Pygx</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">Px</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Pygx</span><span class="o">*</span><span class="n">_masked_log</span><span class="p">(</span><span class="n">Pygx</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)))</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Test code</span>
+<span class="sd">        # row, column</span>
+<span class="sd">        # H_{y|x}</span>
+<span class="sd">        # columns are conditioned variable</span>
+<span class="sd">        # rows are conditional probabilities</span>
+<span class="sd">        p_test = [</span>
+<span class="sd">            [1,1,1,1],</span>
+<span class="sd">            [1,1,1,1],</span>
+<span class="sd">            [2,2,2,2]</span>
+<span class="sd">        ]</span>
+<span class="sd">        print(n2b&lt;&lt;discrete.Hcond(p_test,0),&#39;?=&#39;,3/2)</span>
+<span class="sd">        print(n2b&lt;&lt;discrete.Hcond(p_test,1),&#39;?=&#39;,2)</span>
+<span class="sd">        1.4999999999999998 ?= 1.5</span>
+<span class="sd">        2.0 ?= 2</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="discrete.I"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.I">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">I</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">axes2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Mutual information from a discrete PDF</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p: np.ndarray</span>
+<span class="sd">            Array of probabilities or counts, at lest two dimensional.</span>
+<span class="sd">        axes1: tuple</span>
+<span class="sd">            List of axes corresponding to the first set of variables.       </span>
+<span class="sd">        axes2: tuple</span>
+<span class="sd">            List of axes corresponding to the second set of variables.       </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;p should be at least 2D&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Validate first set of axes</span>
+        <span class="k">if</span> <span class="n">axes1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;p has more than two dimensions; &#39;</span>
+                    <span class="s1">&#39;please specify the list of axes corresponding &#39;</span>
+                    <span class="s1">&#39;to one of the variables of interest to calculate &#39;</span>
+                    <span class="s1">&#39;joint mutual information&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">axes2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;If you want to use `axes2` to specify the &#39;</span>
+                    <span class="s1">&#39;axes for the second variable, please also pass &#39;</span>
+                    <span class="s1">&#39;`axes` to indicate the axes for the first&#39;</span><span class="p">)</span>
+            <span class="c1"># Default to the first axis otherwise</span>
+            <span class="n">axes1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span>
+            
+        <span class="c1"># Validate second set of axes</span>
+        <span class="k">if</span> <span class="n">axes2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes2</span> <span class="o">=</span> <span class="n">axes_complement</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">({</span><span class="o">*</span><span class="n">axes1</span><span class="p">}</span><span class="o">&amp;</span><span class="p">{</span><span class="o">*</span><span class="n">axes2</span><span class="p">}):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
+                <span class="s1">&#39;Lists of axes (</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">) for first and second &#39;</span>
+                <span class="s1">&#39;variables overlap.&#39;</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">axes2</span><span class="p">,</span><span class="n">axes2</span><span class="p">))</span>
+
+        <span class="n">axes12</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">axes1</span><span class="p">)</span><span class="o">+</span><span class="nb">tuple</span><span class="p">(</span><span class="n">axes2</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes12</span><span class="p">)</span>
+
+        <span class="c1"># Marginal entropies</span>
+        <span class="c1"># TODO: better way?</span>
+        <span class="n">ax2less1</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes_complement</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes1</span><span class="p">))</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axes2</span><span class="p">]</span>
+        <span class="n">ax1less2</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes_complement</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes2</span><span class="p">))</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axes1</span><span class="p">]</span>
+        <span class="n">Hy</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes1</span><span class="p">),</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ax2less1</span><span class="p">))</span>
+        <span class="n">Hx</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes2</span><span class="p">),</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ax1less2</span><span class="p">))</span>
+        
+        <span class="c1"># Joint entropy</span>
+        <span class="n">Hxy</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes12</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Hx</span> <span class="o">+</span> <span class="n">Hy</span> <span class="o">-</span> <span class="n">Hxy</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        p_test = [</span>
+<span class="sd">            [1,1,1,1],</span>
+<span class="sd">            [1,1,1,1],</span>
+<span class="sd">            [2,2,2,2]</span>
+<span class="sd">        ]</span>
+<span class="sd">        print(n2b&lt;&lt;I(p_test),&#39;?=&#39;,0)</span>
+<span class="sd">        p_test = [</span>
+<span class="sd">            [1,1,2,4],</span>
+<span class="sd">            [1,2,4,1],</span>
+<span class="sd">            [2,4,1,1],</span>
+<span class="sd">            [4,1,1,2],</span>
+<span class="sd">        ]</span>
+<span class="sd">        print(n2b&lt;&lt;I(p_test),&#39;?=&#39;,.25)</span>
+<span class="sd">        0.0 ?= 0</span>
+<span class="sd">        0.25000000000000006 ?= 0.25</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="discrete.shuffle"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.shuffle">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Replace the joint density for the variables</span>
+<span class="sd">        in ``axes`` with the product of their marginals, </span>
+<span class="sd">        all conditioned on any remaining variables not</span>
+<span class="sd">        included in ``axes``.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Ensure normalized</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        <span class="n">naxes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="n">others</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">({</span><span class="o">*</span><span class="n">axes</span><span class="p">}</span><span class="o">-</span><span class="p">{</span><span class="n">i</span><span class="p">})</span>
+            <span class="n">q</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">others</span><span class="p">)[</span><span class="n">reslice</span><span class="p">(</span><span class="n">naxes</span><span class="p">,</span><span class="n">others</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">q</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        p = [[[1,2],</span>
+<span class="sd">              [2,4]],</span>
+<span class="sd">             [[1,4],</span>
+<span class="sd">              [2,2]</span>
+<span class="sd">             ]]</span>
+<span class="sd">        p = array(p).transpose(1,2,0)</span>
+<span class="sd">        discrete.shuffle(p)</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+    
+<div class="viewcode-block" id="discrete.Ishuff"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.Ishuff">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Ishuff</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The shuffled information between</span>
+<span class="sd">        (neuron₁, neuron₂, stimulus),</span>
+<span class="sd">        in nats.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p: np.ndarray</span>
+<span class="sd">            a 3D array of joint probabilities.</span>
+<span class="sd">            The first two axes should index neuronal responses. </span>
+<span class="sd">            The third axis should index the extrinsic covariate.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">),</span><span class="n">axes</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        p = [</span>
+<span class="sd">            [[1,2],</span>
+<span class="sd">             [2,4]],</span>
+<span class="sd">            [[1,2],</span>
+<span class="sd">             [2,4]]</span>
+<span class="sd">            ]</span>
+<span class="sd">        p = array(p).transpose(1,2,0)</span>
+<span class="sd">        print(Ishuff(p))</span>
+<span class="sd">        p = [</span>
+<span class="sd">            [[1,2],</span>
+<span class="sd">             [2,4]],</span>
+<span class="sd">            [[2,4],</span>
+<span class="sd">             [2,1]]</span>
+<span class="sd">            ]</span>
+<span class="sd">        p = array(p).transpose(1,2,0)</span>
+<span class="sd">        print(n2b&lt;&lt;Ishuff(p))</span>
+<span class="sd">        print(n2b&lt;&lt;cls.I(p,(0,1)))</span>
+<span class="sd">        0.0</span>
+<span class="sd">        0.09005577569707414</span>
+<span class="sd">        0.11809427883737673</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="discrete.ΔIshuff"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.ΔIshuff">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ΔIshuff</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Mutual information between </span>
+<span class="sd">        (neuron₁, neuron₂) and (stimulus),</span>
+<span class="sd">        relative to a conditionally-shuffled</span>
+<span class="sd">        baseline where</span>
+<span class="sd">        P(neuron₁, neuron₂)</span>
+<span class="sd">        is replaced by</span>
+<span class="sd">        P(neuron₁) P(neuron₂),</span>
+<span class="sd">        in nats.</span>
+<span class="sd">        </span>
+<span class="sd">        Naïve calculation of </span>
+<span class="sd">        Latham and Nirenberg equation (2).</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span> <span class="o">-</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Ishuff</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="discrete.ΔI"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.ΔI">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ΔI</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Mutual information between </span>
+<span class="sd">        (neuron₁, neuron₂) and (stimulus),</span>
+<span class="sd">        Minus the mutual information</span>
+<span class="sd">        I(neuron₁, stimulus) and</span>
+<span class="sd">        I(neuron₂, stimulus).</span>
+<span class="sd">        </span>
+<span class="sd">        Naïve calculation of </span>
+<span class="sd">        Latham and Nirenberg equation (5)</span>
+<span class="sd">        from </span>
+<span class="sd">        Brenner et al., 2000; </span>
+<span class="sd">        Machens et al., 2001; </span>
+<span class="sd">        Schneidman et al., 2003.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        
+        <span class="c1"># Separate axes into stimulus and neuron dimensions</span>
+        <span class="n">neur</span> <span class="o">=</span> <span class="n">axes</span>
+        <span class="n">stim</span> <span class="o">=</span> <span class="n">axes_complement</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        
+        <span class="c1"># Marginals for stimulus s and neurons r</span>
+        <span class="n">Ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">neur</span><span class="p">)</span>
+        <span class="n">Pr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">stim</span><span class="p">)</span>
+        
+        <span class="c1"># Joint stim|neurons</span>
+        <span class="n">Psgr</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">stim</span><span class="p">)</span>
+
+        <span class="c1"># Conditionally shuffled neuronal responses</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        
+        <span class="c1"># Shuffled (joint) stim|neurons</span>
+        <span class="n">Psgrshuff</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">stim</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">DKL</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">q</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="discrete.ΔInoise"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.ΔInoise">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ΔInoise</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :math:`I_{r_1,r_2;s} - I^{\\text{shuffle}}_{r_1,r2;s}`.</span>
+<span class="sd">        </span>
+<span class="sd">        Naïve calculation of </span>
+<span class="sd">        Schneidman, Bialek, Berry (2003) equation (14).</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">Isr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        <span class="n">Jsr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Ishuff</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Isr</span> <span class="o">-</span> <span class="n">Jsr</span></div>
+    
+<div class="viewcode-block" id="discrete.ΔIsig"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.ΔIsig">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ΔIsig</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :math:`I_{r_1,r_2;s} - I^{\\text{shuffle}}_{r_1,r2;s}`.</span>
+<span class="sd">        </span>
+<span class="sd">        Naïve calculation of </span>
+<span class="sd">        Schneidman, Bialek, Berry (2003) equation (15).</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="bp">cls</span><span class="o">.</span><span class="n">Ishuff</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">others</span> <span class="ow">in</span> <span class="n">circulant</span><span class="p">(</span><span class="n">axes</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">others</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+    
+<div class="viewcode-block" id="discrete.syn"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.syn">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">syn</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Mutual information between </span>
+<span class="sd">        (neuron₁, neuron₂) and (stimulus),</span>
+<span class="sd">        Minus the mutual information</span>
+<span class="sd">        I(neuron₁, stimulus) and</span>
+<span class="sd">        I(neuron₂, stimulus).</span>
+<span class="sd">        </span>
+<span class="sd">        Naïve calculation of </span>
+<span class="sd">        Latham and Nirenberg equation (4)</span>
+<span class="sd">        from </span>
+<span class="sd">        Brenner et al., 2000; </span>
+<span class="sd">        Machens et al., 2001; </span>
+<span class="sd">        Schneidman et al., 2003.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">others</span> <span class="ow">in</span> <span class="n">circulant</span><span class="p">(</span><span class="n">axes</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">result</span> <span class="o">-=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="nb">tuple</span><span class="p">(</span><span class="n">others</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+    
+<div class="viewcode-block" id="discrete.syn2"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.syn2">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">syn2</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Naïve calculation of </span>
+<span class="sd">        Schneidman, Bialek, Berry (2003) equation (11).</span>
+<span class="sd">        </span>
+<span class="sd">        This should match ``discrete.syn``</span>
+<span class="sd">        </span>
+<span class="sd">        This is fixed: p should be 3D with axes (0,1) the neurons</span>
+<span class="sd">        and axis 2 the stimulus</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        
+        <span class="c1"># Mutual information for bivariate neuron marginal</span>
+        <span class="n">Ineur_marginal</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+        
+        <span class="c1"># Average mutual information over stimuli</span>
+        <span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>   
+        <span class="n">Ineur_stim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ps</span><span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,(</span><span class="mi">0</span><span class="p">,),(</span><span class="mi">1</span><span class="p">,)))</span>
+        
+        <span class="k">return</span> <span class="n">Ineur_stim</span> <span class="o">-</span> <span class="n">Ineur_marginal</span></div></div>
+        
+
 <div class="viewcode-block" id="poisson_entropy_nats"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.poisson_entropy_nats">[docs]</a><span class="k">def</span> <span class="nf">poisson_entropy_nats</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Approximate the entropy of a Poisson distribution in nats</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Approximate entropy of a Poisson distribution in nats</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l: positive float</span>
+<span class="sd">        Poisson rate parameter</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cutoff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">l</span><span class="p">)))</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">poisson_pdf</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">cutoff</span><span class="p">),</span><span class="n">l</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">discrete_entropy_distribution</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="betapr"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.betapr">[docs]</a><span class="k">def</span> <span class="nf">betapr</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Baysian estimation of rate `p` in Bernoulli trials.</span>
+<span class="sd">    This returns the posterior median for `p` given </span>
+<span class="sd">    `k` positive examples from `N` trials, using Jeffery&#39;s</span>
+<span class="sd">    prior. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    k: in or np.int23</span>
+<span class="sd">        Number of observations for each state</span>
+<span class="sd">    N: positive int</span>
+<span class="sd">        ``N&gt;k`` total observations</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    p: float or np.float32</span>
+<span class="sd">        Estiamted probability or probability per bin, if</span>
+<span class="sd">        ``k`` is a ``np.int32`` array. Probabilities are</span>
+<span class="sd">        normalized to sum to 1.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">.5</span> <span class="o">+</span> <span class="n">k</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mf">.5</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">*=</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+
+<div class="viewcode-block" id="beta_regularized_histogram_mutual_information"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.beta_regularized_histogram_mutual_information">[docs]</a><span class="k">def</span> <span class="nf">beta_regularized_histogram_mutual_information</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">,</span>
+    <span class="n">nb</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-9</span><span class="p">,</span>
+    <span class="n">plo</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="mf">97.5</span><span class="p">,</span>
+    <span class="n">nshuffle</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">nbootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A quick and dirt mutual information estimator. </span>
+<span class="sd">    </span>
+<span class="sd">    The result will depend on the bin size but a quick</span>
+<span class="sd">    suffle control provides a useful chance level. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: iterable&lt;number&gt;</span>
+<span class="sd">        Samples for first variable ``x``</span>
+<span class="sd">    y: iterable&lt;number&gt;</span>
+<span class="sd">        Samples for second variable ``y``</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    nb: positive int; default 4</span>
+<span class="sd">        Number of bins. I suggest 3-10.</span>
+<span class="sd">    eps: small positive float; default 1e-9</span>
+<span class="sd">    plo: number ∈(0,100); default 2.5</span>
+<span class="sd">    phi: number ∈(0,100); default 97.5</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Ixy: float</span>
+<span class="sd">        Histogram-based MI estimate </span>
+<span class="sd">        `Ixy = Hx + Hy - Hxy`</span>
+<span class="sd">    IΔ: float</span>
+<span class="sd">        Shuffle-adjust MI </span>
+<span class="sd">        `IΔ = np.median(Hx+Hy) - Hxy`</span>
+<span class="sd">    pvalue: float</span>
+<span class="sd">        p-value for significant MI from the shuffle test</span>
+<span class="sd">    lo: float</span>
+<span class="sd">        The boostrap `plo` percentil of `IΔ`</span>
+<span class="sd">    hi: float</span>
+<span class="sd">        The boostrap `phi` percentil of `IΔ`</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1">#x = nanrankdata(x)</span>
+    <span class="c1">#y = nanrankdata(y)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">uniformize</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    
+    <span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">eps</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nb</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="o">/</span><span class="n">nb</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">eps</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">n0</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="n">nb</span>
+    <span class="n">n</span>  <span class="o">=</span> <span class="n">n0</span><span class="o">+</span><span class="n">j</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nb</span><span class="o">**</span><span class="mi">2</span><span class="p">)])</span>
+    <span class="n">k</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span><span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,)[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">Hxy</span><span class="o">=</span> <span class="n">betaH</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">H0</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span> <span class="c1"># Hx = Hy = -nb*(1/nb)*np.log(1/nb)</span>
+    <span class="n">Ixy</span> <span class="o">=</span> <span class="n">H0</span> <span class="o">-</span> <span class="n">Hxy</span>
+
+    <span class="c1"># Shuffle control</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">shuff</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nshuffle</span><span class="p">):</span>
+        <span class="n">n2</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">n0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span><span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,)[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">betaH</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">pvalue</span> <span class="o">=</span> <span class="n">betapr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">e</span><span class="o">&lt;</span><span class="n">Hxy</span><span class="p">),</span><span class="n">nshuffle</span><span class="p">)</span>
+    <span class="n">IΔ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">-</span> <span class="n">Hxy</span>
+    
+    <span class="c1"># Bootstrap uncertainty</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">shuff</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbootstrap</span><span class="p">):</span>
+        <span class="n">n2</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span><span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,)[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">betapr</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">betaH</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+    <span class="n">Ib</span> <span class="o">=</span> <span class="n">H0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">lo</span><span class="p">,</span><span class="n">hi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">Ib</span><span class="p">,[</span><span class="n">plo</span><span class="p">,</span><span class="n">phi</span><span class="p">])</span><span class="o">-</span><span class="p">(</span><span class="n">Ixy</span><span class="o">-</span><span class="n">IΔ</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">Ixy</span><span class="p">,</span> <span class="n">IΔ</span><span class="p">,</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span></div>
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
+<div class="viewcode-block" id="JointCategoricalDistribution"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.JointCategoricalDistribution">[docs]</a><span class="k">class</span> <span class="nc">JointCategoricalDistribution</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">counts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">joined</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">kept</span>  <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">states</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">nstate</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></div>
+
+<div class="viewcode-block" id="joint"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.joint">[docs]</a><span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="n">nstates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">remove_empty</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert a list of samples from several categorical</span>
+<span class="sd">    variables in a single, new categorical variable. </span>
+
+<span class="sd">    This drops marginal states not present in any variable</span>
+<span class="sd">    (which may not be what you want)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Collect arguments (each argument one variable)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="n">a</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">remove_empty</span><span class="p">:</span>
+        <span class="c1"># Convert discrete states to numeric labels for each variable</span>
+        <span class="c1"># `states` contains the list of unique values</span>
+        <span class="c1"># `index`  says the value # of each sample </span>
+        <span class="n">states</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">return_inverse</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># I will trust that you&#39;ve given me integer counts</span>
+        <span class="k">if</span> <span class="n">nstates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="n">nstates</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nstates</span><span class="p">]</span>
+        <span class="n">index</span>  <span class="o">=</span> <span class="n">args</span>
+        
+    <span class="k">if</span> <span class="n">nstates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Count the number of states in each variable</span>
+        <span class="n">nstates</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span><span class="n">states</span><span class="p">)]</span>
+    
+    <span class="c1"># Encode each joint state as an integer</span>
+    <span class="c1"># i.e. flatten joint space</span>
+    <span class="c1"># (Equivalently: could have run `unique` on the</span>
+    <span class="c1"># vectors of states)</span>
+    <span class="n">joined</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nstates</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="n">joined</span> <span class="o">=</span> <span class="n">joined</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="n">i</span>
+    
+    <span class="k">if</span> <span class="n">remove_empty</span><span class="p">:</span>
+        <span class="c1"># Count each state</span>
+        <span class="n">kept</span><span class="p">,</span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">joined</span><span class="p">,</span><span class="n">return_counts</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nkept</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">nstates</span><span class="p">)</span>
+        <span class="n">kept</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nkept</span><span class="p">)</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">joined</span><span class="p">,</span><span class="n">minlength</span><span class="o">=</span><span class="n">nkept</span><span class="p">)</span>
+   
+    <span class="k">return</span> <span class="n">JointCategoricalDistribution</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">joined</span><span class="p">,</span> <span class="n">kept</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">nstates</span><span class="p">)</span></div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<div class="viewcode-block" id="dirichlet_density"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density">[docs]</a><span class="k">class</span> <span class="nc">dirichlet_density</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Model empirical (sampled) densities of categorical</span>
+<span class="sd">    variables using a Dirichlet prior. </span>
+<span class="sd">    </span>
+<span class="sd">    The default prior is α = 1/k, where</span>
+<span class="sd">    k is the number of states. This makes things behave</span>
+<span class="sd">    nicer under marginalization. Specify bias=0.5 if </span>
+<span class="sd">    you want Jeffreys prior. </span>
+<span class="sd">    </span>
+<span class="sd">    These are biased. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="dirichlet_density.joint_model"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.joint_model">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">joint_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build dirichlet model of joint categorical distribution</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">dirichlet</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
+        <span class="k">if</span> <span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dirichlet</span><span class="p">(</span><span class="n">counts</span><span class="o">+</span><span class="n">bias</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="dirichlet_density.p"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.p">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">.5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Expected probabilty</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="o">*</span><span class="n">samples</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
+        <span class="k">if</span> <span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+        <span class="n">α</span>  <span class="o">=</span> <span class="n">counts</span> <span class="o">+</span> <span class="n">bias</span>
+        <span class="n">α0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">α</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">α</span><span class="o">/</span><span class="n">α0</span></div>
+    
+<div class="viewcode-block" id="dirichlet_density.lnp"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.lnp">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">lnp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">.5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Expected log-probability </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">digamma</span> <span class="k">as</span> <span class="n">ψ</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="o">*</span><span class="n">samples</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
+        <span class="k">if</span> <span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+        <span class="n">α</span>  <span class="o">=</span> <span class="n">counts</span> <span class="o">+</span> <span class="n">bias</span>
+        <span class="n">α0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">α</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ψ</span><span class="p">(</span><span class="n">α</span><span class="p">)</span> <span class="o">-</span> <span class="n">ψ</span><span class="p">(</span><span class="n">α0</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="dirichlet_density.plnp"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.plnp">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">plnp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="o">*</span><span class="n">samples</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Expected p*ln(p) </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">digamma</span> <span class="k">as</span> <span class="n">ψ</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="o">*</span><span class="n">samples</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
+        <span class="k">if</span> <span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+        <span class="n">α</span>  <span class="o">=</span> <span class="n">counts</span> <span class="o">+</span> <span class="n">bias</span>
+        <span class="n">α0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">α</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">α</span><span class="o">/</span><span class="n">α0</span><span class="o">*</span><span class="p">(</span><span class="n">ψ</span><span class="p">(</span><span class="n">α</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">ψ</span><span class="p">(</span><span class="n">α0</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="dirichlet_density.H"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.H">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="o">*</span><span class="n">samples</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Expected &lt;-p*ln(p)&gt; </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">plnp</span><span class="p">(</span><span class="o">*</span><span class="n">samples</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="dirichlet_density.I"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.I">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">I</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Mutual information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">H</span>
+        <span class="k">return</span> <span class="n">H</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="o">+</span> <span class="n">H</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="o">-</span> <span class="n">H</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        # debug/explore code</span>
+<span class="sd">        i1 = randint(0,5,1000)</span>
+<span class="sd">        i2 = randint(0,5,1000)</span>
+<span class="sd">        print(dd.H(i1,i2), dd.H(i1)+dd.H(i2))</span>
+<span class="sd">        print(dd.H(i1,i2,bias=.5), dd.H(i1,bias=.5)+dd.H(i1,bias=.5))</span>
+<span class="sd">        print(dd.H(i1,i2,bias=0), dd.H(i1,bias=0)+dd.H(i1,bias=0))</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="dirichlet_density.redundancy"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.redundancy">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">redundancy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        For ``(x1,x2,y)`` calculate</span>
+<span class="sd">        ``I(x1,y) + I(x2,y) - I(joint(x1,x2),y)``.</span>
+<span class="sd">        </span>
+<span class="sd">        positive: redundant</span>
+<span class="sd">        zero: independent</span>
+<span class="sd">        negative: synergistic</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">x12</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">joined</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span>
+        <span class="k">return</span> <span class="n">I</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="o">+</span> <span class="n">I</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="o">-</span> <span class="n">I</span><span class="p">(</span><span class="n">x12</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="dirichlet_density.foo"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.foo">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">nstate</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div></div>
+    
+        
+
+        
+        
 </pre></div>
 
            </div>

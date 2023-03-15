@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.stats.tests &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.tests</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.stats.tests</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Additional hypothesis-testing routines to supplement</span>
+<span class="sd">``scipy.stats`` and ``statsmodels``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">statsmodels</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="kn">import</span> <span class="n">find</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span> 
+
+
+
+<span class="kn">from</span> <span class="nn">neurotools.stats.information</span> <span class="kn">import</span> <span class="n">betapr</span>
+<div class="viewcode-block" id="two_tailed_sampled_test"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.two_tailed_sampled_test">[docs]</a><span class="k">def</span> <span class="nf">two_tailed_sampled_test</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Directly test whether a population ``delta``</span>
+<span class="sd">    is above or below zero more than chance. </span>
+<span class="sd">    This is for use</span>
+<span class="sd">    with bootstrap/shuffle tests when stronger assumptions</span>
+<span class="sd">    may be inaccurate or risk false-positives.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="c1"># This is very under-powered?</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;You probably don</span><span class="se">\&#39;</span><span class="s1">t want to use this &#39;</span>
+            <span class="s1">&#39;with fewer than 100 samples.&#39;</span><span class="p">)</span>
+    <span class="n">k0</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">delta</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">k1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">delta</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">k0</span><span class="p">,</span><span class="n">k1</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;There probably aren</span><span class="se">\&#39;</span><span class="s1">t enough samples&#39;</span><span class="p">)</span>
+    <span class="n">pr1gtr0</span> <span class="o">=</span> <span class="n">betapr</span><span class="p">(</span><span class="n">k0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+    <span class="n">pr0gtr1</span> <span class="o">=</span> <span class="n">betapr</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">delta</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+    <span class="n">pvalue</span>  <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">pr1gtr0</span><span class="p">,</span> <span class="n">pr0gtr1</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">pvalue</span></div>
+
+
+<div class="viewcode-block" id="ZTestResult"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.ZTestResult">[docs]</a><span class="k">class</span> <span class="nc">ZTestResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">z</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">pvalue</span><span class="p">:</span> <span class="nb">float</span></div>
+<div class="viewcode-block" id="ztest_from_moments"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.ztest_from_moments">[docs]</a><span class="k">def</span> <span class="nf">ztest_from_moments</span><span class="p">(</span><span class="n">μ1</span><span class="p">,</span><span class="n">s1</span><span class="p">,</span><span class="n">μ2</span><span class="p">,</span><span class="n">s2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculate z-test given moments from two samples. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">Δ</span> <span class="o">=</span> <span class="n">μ1</span> <span class="o">-</span> <span class="n">μ2</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">s2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">Δ</span><span class="o">/</span><span class="n">S</span>
+    <span class="n">pvalue</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ZTestResult</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">pvalue</span><span class="p">)</span></div>
+
+
+<span class="kn">import</span> <span class="nn">neurotools.stats</span>
+<div class="viewcode-block" id="WeightedTtestResult"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.WeightedTtestResult">[docs]</a><span class="k">class</span> <span class="nc">WeightedTtestResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">t</span><span class="p">:</span><span class="nb">float</span>
+    <span class="n">pvalue</span><span class="p">:</span><span class="nb">float</span>
+    <span class="n">dof</span><span class="p">:</span><span class="nb">float</span>
+    <span class="n">alternative</span><span class="p">:</span><span class="nb">str</span>
+    <span class="n">sem</span><span class="p">:</span><span class="nb">float</span>
+    <span class="n">mu</span><span class="p">:</span><span class="nb">float</span>
+    <span class="n">s</span><span class="p">:</span><span class="nb">float</span></div>
+<div class="viewcode-block" id="weighted_ttest_1samp"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.weighted_ttest_1samp">[docs]</a><span class="k">def</span> <span class="nf">weighted_ttest_1samp</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">w</span><span class="p">,</span>
+    <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Test if mean of independent samples ``x``</span>
+<span class="sd">    with weights ``w`` is different from zero using</span>
+<span class="sd">    a to-tailed one-sample t-test. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">n</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="c1"># Effective sample size</span>
+    <span class="n">dof</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span>       <span class="c1"># Degrees of freedom</span>
+    <span class="n">μ</span><span class="p">,</span><span class="n">σ</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">weighted_avg_and_std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">s</span>   <span class="o">=</span> <span class="n">σ</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="c1"># sample s.d.</span>
+    <span class="n">sem</span> <span class="o">=</span> <span class="n">s</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>       <span class="c1"># standard error</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">μ</span><span class="o">/</span><span class="n">sem</span>                <span class="c1"># score</span>
+    <span class="k">if</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;two-sided&#39;</span><span class="p">:</span>
+        <span class="n">pvalue</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">dof</span><span class="p">)</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;greater&#39;</span><span class="p">:</span>
+        <span class="n">pvalue</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">dof</span><span class="p">)</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;less&#39;</span><span class="p">:</span>
+        <span class="n">pvalue</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">dof</span><span class="p">)</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">WeightedTtestResult</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">pvalue</span><span class="p">,</span><span class="n">dof</span><span class="p">,</span><span class="n">alternative</span><span class="p">,</span><span class="n">sem</span><span class="p">,</span><span class="n">μ</span><span class="p">,</span><span class="n">s</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="beta_propotion_test"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.beta_propotion_test">[docs]</a><span class="k">def</span> <span class="nf">beta_propotion_test</span><span class="p">(</span>
+    <span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span>
+    <span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span>
+    <span class="n">npts</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="n">eps</span>  <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    (experimental)</span>
+<span class="sd">    </span>
+<span class="sd">    Use a Beta distribution model to determine whether</span>
+<span class="sd">    two propotions are significantly different. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a1: positive int</span>
+<span class="sd">        Number of items in category 0, group 1</span>
+<span class="sd">    b1: positive int</span>
+<span class="sd">        Number of items in category 1, group 1</span>
+<span class="sd">    a2: positive int</span>
+<span class="sd">        Number of items in category 0, group 2</span>
+<span class="sd">    b2: positive int</span>
+<span class="sd">        Number of items in category 1, group 2</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mudelta: float</span>
+<span class="sd">        When positive: The probability of being in the </span>
+<span class="sd">        second category is larger for the second group, </span>
+<span class="sd">        compared to the first. </span>
+<span class="sd">    p: float</span>
+<span class="sd">        Two-tailed p-value for significant diffierence</span>
+<span class="sd">        in rates between the groups. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">beta</span>
+
+    <span class="c1"># Model count data using beta distribution</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="n">beta</span><span class="p">(</span><span class="n">eps</span><span class="o">+</span><span class="n">a1</span><span class="p">,</span> <span class="n">eps</span><span class="o">+</span><span class="n">b1</span><span class="p">)</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="n">beta</span><span class="p">(</span><span class="n">eps</span><span class="o">+</span><span class="n">a2</span><span class="p">,</span> <span class="n">eps</span><span class="o">+</span><span class="n">b2</span><span class="p">)</span>
+
+    <span class="c1"># Integrate to get distr. of differences</span>
+    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">npts</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pdelta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">ll</span><span class="p">),</span> <span class="n">d2</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">ll</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">pdelta</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdelta</span><span class="p">)</span>
+
+    <span class="c1"># average difference</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">npts</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mudelta</span> <span class="o">=</span> <span class="n">l2</span><span class="nd">@pdelta</span>
+
+    <span class="c1"># P value</span>
+    <span class="k">if</span> <span class="n">mudelta</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdelta</span><span class="p">[</span><span class="n">l2</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdelta</span><span class="p">[</span><span class="n">l2</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">mudelta</span><span class="p">,</span><span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="cohen_d"><a class="viewcode-back" href="../../../neurotools.stats.tests.html#neurotools.stats.tests.cohen_d">[docs]</a><span class="k">def</span> <span class="nf">cohen_d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculate Cohen&#39;s d effect-size summary for independent</span>
+<span class="sd">    samples from two unpaired populations.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">dof</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="n">vx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanvar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanvar</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">v</span>  <span class="o">=</span> <span class="p">((</span><span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">vx</span> <span class="o">+</span> <span class="p">(</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">vy</span><span class="p">)</span> <span class="o">/</span> <span class="n">dof</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="c1"># Cohen, Jacob (1988).</span>
+    <span class="c1"># Sawilowsky, S (2009)</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.20</span><span class="p">,</span><span class="mf">0.50</span><span class="p">,</span><span class="mf">0.80</span><span class="p">,</span><span class="mf">1.20</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span>
+    <span class="n">sizenames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Very small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Medium&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Large&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Very large&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Huge&#39;</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="p">),</span><span class="n">bins</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">sizenames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

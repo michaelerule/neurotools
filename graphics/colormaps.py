@@ -23,6 +23,22 @@ import traceback
 
 from neurotools.graphics.fabio_maps import *
 
+
+############################################################
+# Qualitative periodic map
+def register_phasor_map(lag=-np.pi/2):
+    h = np.linspace(0,2*np.pi,257)[:-1] + (np.pi+np.pi/4)
+    R = (np.cos(h)*.5+.5)
+    G = np.cos(h+lag)*.5+.5
+    B = np.roll(np.abs(R-G)*.75,int(np.round(np.pi/10*256/(2*np.pi))))
+    phasor = mcolors.ListedColormap(np.float32([R,G*.8,B]).T,'phasor')
+    import warnings
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore")
+        matplotlib.colormaps.register(phasor,force=True)
+    return phasor
+phasor = register_phasor_map()
+
 ############################################################
 # Isoluminance hue wheel color map
 # pip install husl

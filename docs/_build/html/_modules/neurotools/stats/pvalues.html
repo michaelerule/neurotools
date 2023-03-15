@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
       <li class="breadcrumb-item active">neurotools.stats.pvalues</li>
@@ -99,9 +102,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
 <span class="kn">from</span> <span class="nn">neurotools.util.array</span> <span class="kn">import</span> <span class="n">find</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span> 
+
 
 <div class="viewcode-block" id="benjamini_hochberg_positive_correlations"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.benjamini_hochberg_positive_correlations">[docs]</a><span class="k">def</span> <span class="nf">benjamini_hochberg_positive_correlations</span><span class="p">(</span><span class="n">pvalues</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Derived from the following matlab code from Wilson Truccolo</span>
 <span class="sd">    </span>
 <span class="sd">        function [pID,pN] = fdr(p,q)</span>
@@ -162,8 +168,9 @@
     <span class="n">pN</span>  <span class="o">=</span> <span class="n">pvalues</span><span class="p">[</span><span class="n">pN</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pN</span> <span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="c1">#pvalues[0]</span>
     <span class="k">return</span> <span class="n">pID</span><span class="p">,</span> <span class="n">pN</span></div>
 
+
 <div class="viewcode-block" id="correct_pvalues_positive_dependent"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.correct_pvalues_positive_dependent">[docs]</a><span class="k">def</span> <span class="nf">correct_pvalues_positive_dependent</span><span class="p">(</span><span class="n">pvalue_dictionary</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Benjamini-Hochberg multiple-comparison correction</span>
 <span class="sd">    assuming positive dependence.</span>
 <span class="sd">    </span>
@@ -193,7 +200,7 @@
 
 
 <div class="viewcode-block" id="correct_pvalues"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.correct_pvalues">[docs]</a><span class="k">def</span> <span class="nf">correct_pvalues</span><span class="p">(</span><span class="n">pvalue_dictionary</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is a convenience wrapper for </span>
 <span class="sd">    `statsmodels.sandbox.stats.multicomp.multipletests`</span>
 <span class="sd">    </span>
@@ -244,7 +251,7 @@
     <span class="n">population</span><span class="p">,</span> 
     <span class="n">ntrials</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
     <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Re-sample a statistical estimator from a single </span>
 <span class="sd">    population to estimate the estimator&#39;s uncertainty.</span>
 <span class="sd">    </span>
@@ -290,7 +297,7 @@
     <span class="n">test_population</span><span class="p">,</span> 
     <span class="n">null_population</span><span class="p">,</span> 
     <span class="n">ntrials</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate the probability that `statistic` is </span>
 <span class="sd">    significantly **larger** in `test_population` </span>
 <span class="sd">    compared to `null_population` using bootstrap </span>
@@ -338,7 +345,7 @@
 
 <div class="viewcode-block" id="bootstrap_median"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_median">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_median</span><span class="p">(</span>
     <span class="n">test_population</span><span class="p">,</span> <span class="n">null_population</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue for difference in medians using bootstrapping</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -364,7 +371,7 @@
 
 <div class="viewcode-block" id="bootstrap_mean"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_mean">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_mean</span><span class="p">(</span>
     <span class="n">test_population</span><span class="p">,</span> <span class="n">null_population</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue for difference in means using </span>
 <span class="sd">    bootstrapping.</span>
 <span class="sd">    </span>
@@ -390,7 +397,7 @@
 
 <div class="viewcode-block" id="bootstrap_compare_statistic_two_sided"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_statistic_two_sided</span><span class="p">(</span>
     <span class="n">statistic</span><span class="p">,</span> <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue using bootstrapping</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -435,7 +442,7 @@
 
 
 <span class="k">def</span> <span class="nf">__sample_parallel_helper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Helper function used by</span>
 <span class="sd">    `bootstrap_compare_statistic_two_sided_parallel()`.</span>
 <span class="sd">    </span>
@@ -482,7 +489,7 @@
 <div class="viewcode-block" id="bootstrap_compare_statistic_two_sided_parallel"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided_parallel">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_statistic_two_sided_parallel</span><span class="p">(</span>
     <span class="n">statistic</span><span class="p">,</span> <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> 
     <span class="n">NA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue using bootstrapping</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -531,7 +538,7 @@
 <div class="viewcode-block" id="bootstrap_compare_median"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_median">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_median</span><span class="p">(</span>
     <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> 
     <span class="n">NA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue for difference in medians using </span>
 <span class="sd">    bootstrapping.</span>
 <span class="sd">    </span>
@@ -567,7 +574,7 @@
 <div class="viewcode-block" id="bootstrap_compare_mean"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_compare_mean">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_compare_mean</span><span class="p">(</span>
     <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> 
     <span class="n">NA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ntrials</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Estimate pvalue for difference in means using </span>
 <span class="sd">    bootstrapping.</span>
 <span class="sd">    </span>
@@ -600,15 +607,13 @@
         <span class="n">mean</span><span class="p">,</span> <span class="n">popA</span><span class="p">,</span> <span class="n">popB</span><span class="p">,</span> <span class="n">NA</span><span class="p">,</span> <span class="n">NB</span><span class="p">,</span> <span class="n">ntrials</span><span class="p">)</span></div>
 
 
-
-
 <div class="viewcode-block" id="bootstrap_in_blocks"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.bootstrap_in_blocks">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_in_blocks</span><span class="p">(</span>
     <span class="n">variables</span><span class="p">,</span>
     <span class="n">blocklength</span><span class="p">,</span>
     <span class="n">nsamples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Chop dataset into blocks, then re-compose it, </span>
 <span class="sd">    sampling these blocks randomly with replacement. </span>
 <span class="sd">    </span>
@@ -666,7 +671,7 @@
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
             
     <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        If sampling with replacement, we draw an extra</span>
 <span class="sd">        sample then truncate.</span>
 <span class="sd">        If blocklen doesn&#39;t evenly divide ntimes, the</span>
@@ -688,7 +693,7 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="n">ntimes</span><span class="p">,</span><span class="o">...</span><span class="p">]</span> 
                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">blocks</span><span class="p">[</span><span class="n">p</span><span class="p">])]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        If permuting (sampling without replacement), </span>
 <span class="sd">        we leave the final partial block and shuffle</span>
 <span class="sd">        it. </span>
@@ -712,23 +717,56 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsamples</span><span class="p">)]</span></div>
 
 
+<div class="viewcode-block" id="nancorrect"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.nancorrect">[docs]</a><span class="k">def</span> <span class="nf">nancorrect</span><span class="p">(</span><span class="n">pvalues</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;fdr_tsbh&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Wrapper for </span>
+<span class="sd">    ``multipletests(pvalues,alpha,method=&#39;fdr_tsbh&#39;)``</span>
+<span class="sd">    in </span>
+<span class="sd">    ``statsmodels.stats.multitest``</span>
+<span class="sd">    that gracefully handles ``NaN``.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pvalues: np.float32</span>
+<span class="sd">        List of p-values to correct</span>
+<span class="sd">    alpha: float in (0,1); default 0.05</span>
+<span class="sd">        False-discovery rate to correct for</span>
+<span class="sd">    method: str; default &#39;fdr_tsbh&#39;</span>
+<span class="sd">        Method to use with ``multipletests()``.</span>
+<span class="sd">        The default is a two-stage Benjamini-Hochberg.</span>
+<span class="sd">        see</span>
+<span class="sd">        ``statsmodels.stats.multitest.multipletests``</span>
+<span class="sd">        for more options. </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    reject: np.bool</span>
+<span class="sd">    corrected_pvalues: np.float32</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">pvalues</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">pvalues</span><span class="p">)</span>
+    <span class="n">ok</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">pvalues</span><span class="p">)</span>
+    <span class="n">corrected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">pvalues</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+    <span class="n">reject</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">pvalues</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">statsmodels</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">multitest</span><span class="o">.</span><span class="n">multipletests</span><span class="p">(</span>
+            <span class="n">pvalues</span><span class="p">[</span><span class="n">ok</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span><span class="c1">#[0]</span>
+        <span class="n">reject</span>   <span class="p">[</span><span class="n">ok</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="n">corrected</span><span class="p">[</span><span class="n">ok</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">reject</span><span class="p">,</span> <span class="n">corrected</span></div>
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="viewcode-block" id="atac"><a class="viewcode-back" href="../../../neurotools.stats.pvalues.html#neurotools.stats.pvalues.atac">[docs]</a><span class="k">def</span> <span class="nf">atac</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Aggregate p-values using Cauchey distribution model</span>
+<span class="sd">    (invariant to the degrees of freedom and therefore</span>
+<span class="sd">    conservative with potenitally correlated p-values). </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
 
 
 

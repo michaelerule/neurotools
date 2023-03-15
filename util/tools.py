@@ -56,31 +56,23 @@ def varexists(varname):
     return False
 
 def nowarn():
-    '''
-    TODO: merge warning control with something more standard
-    '''
+    # TODO: merge warning control with something more standard
     global SUPPRESS_WARNINGS
     SUPPRESS_WARNINGS=True
 
 def okwarn():
-    '''
-    TODO: merge warning control with something more standard
-    '''
+    # TODO: merge warning control with something more standard
     global SUPPRESS_WARNINGS
     SUPPRESS_WARNINGS=False
 
 def dowarn(*a,**kw):
-    '''
-    TODO: merge warning control with something more standard
-    '''
+    # TODO: merge warning control with something more standard
     if varexists('SUPPRESS_WARNINGS'):
         return not SUPPRESS_WARNINGS
     else: return True
 
 def warn(*a,**kw):
-    '''
-    TODO: merge warning control with something more standard
-    '''
+    # TODO: merge warning control with something more standard
     if dowarn(*a,**kw): print(' '.join(map(str,a)))
 
 # todo: make these separate
@@ -168,33 +160,58 @@ class piper():
     
     '''
     def __init__(self,operation):
-        self.operation=operation
+        self.operation = operation
         self._IS_EMITTER_=True
-    def __or__(self,other):
-        return self.operation(other)
-    def __and__(self,other):
-        return self.operation(other)
+        
+    # Transparent passthrough to callable
+    def __call__(self,*args,**kwargs):
+        return self.operation(*args,**kwargs)
+    
+    # Left-acting function composition
+    # (foo @ bar)(a) → foo(bar(a))
+    def _composewith(self,f):
+        @piper
+        def wrapped(*args,**kwargs):
+            return self.operation(
+                f(*args,**kwargs)
+            )
+        return wrapped
+    def __and__(self,f):
+        return self._composewith(f)
+    def __pow__(self,f):
+        return self._composewith(f)
+    def __matmul__(self,f):
+        return self._composewith(f)
+        
+    # Left running pipes
+    # this < b << c
     def __lt__(self,other):
-        return self.operation(other)
-    def __rlt__(self,other):
+        if isinstance(other,piper):
+            return self._composewith(other)
         return self.operation(other)
     def __lshift__(self,other):
+        if isinstance(other,piper):
+            return self._composewith(other)
         return self.operation(other)
-    def __rlshift__(self,other):
-        return self.operation(other)
-    def __le__(self,other):
-        return self.operation(other)
-    def __rshift__(self,other):
-        return self.operation(other)
+        
+    # Right running pipes
+    # a >> b > this
     def __rgt__(self,other):
         return self.operation(other)
+    def __rrshift__(self,other):
+        return self.operation(other)
+    
+    # Posix pipes
+    # a | this
     def __ror__(self,other):
         return self.operation(other)
-    def __call__(self,other):
-        return self.operation(other)
-    def __pow__(self,other):
-        return self.operation(other)
-    def __matmul__(self,other):
+    
+    # Backwards posix pipes
+    # (shouldn't have this; backwards comapt only)
+    # this | a
+    def __or__(self,other):
+        if isinstance(other,piper):
+            return self._composewith(other)
         return self.operation(other)
 
 @robust_decorator
@@ -388,27 +405,6 @@ def restoreContext():
         if n not in __saved_context__:
             del sys.modules[__name__].__dict__[n]
 
-def camel2underscore(s):
-    '''
-    http://stackoverflow.com/questions/1175208/
-    elegant-python-function-to-convert-camelcase-to-camel-case
-    '''
-    import re
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-
-def underscore2camel(s):
-    '''
-    http://stackoverflow.com/questions/4303492/
-    how-can-i-simplify-this-conversion-from-underscore-to-camelcase-in-python
-    '''
-    def camelcase():
-        yield str.lower
-        while True:
-            yield str.capitalize
-    c = camelcase()
-    return "".join(c.next()(x) if x else '_' for x in s.split("_"))
-
 def getVariable(path,var):
     '''
     Reads a variable from a .mat or .hdf5 file
@@ -428,11 +424,51 @@ def getVariable(path,var):
     raise ValueError('Path is neither .mat nor .hdf5')
 
 
-class stuff:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-    def add(self,**kwargs):
-        self.__dict__.update(kwargs)
+class TolerantDict(dict):
+    def __or__(self, other):
+        if hasattr(other,'_asdict'):
+            other = other._asdict()
+        return TolerantDict(super().__or__(other))
+    def __ror__(self, other):
+        if hasattr(other,'_asdict'):
+            other = other._asdict()
+        return TolerantDict(super().__ror__(other))
+
+
+import sys
+def yank(argnames):
+    '''
+    Turns a string of whitespace-delimited variable names
+    ``'name1 name2 ...'`` 
+    accessible in the local or global scope
+    into a dictionary 
+    ``{'name1':name1, ...}``.
+    
+    .. doctest::
         
+        >>> c = 3
+        >>> def foo():
+        >>>     a=1
+        >>>     b=2
+        >>>     return yank('a b c')
+        >>> foo()
+        {'a': 1, 'b': 2, 'c': 3}
         
-        
+    Parameters
+    ----------
+    argnames: str
+        A single string containing all variable
+        identifiers to grab, delimited by whitespace.
+    '''
+    argnames = argnames.split()
+    f = sys._getframe().f_back
+    result = {}
+    for a in argnames:
+        if a in f.f_locals:    result[a] = f.f_locals[a]
+        elif a in f.f_globals: result[a] = f.f_globals[a]
+        else: raise RuntimeError((
+                'Variable `%s` not found in either local '
+                'or gloabl scope')%a)
+    return TolerantDict(result)
+
+

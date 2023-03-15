@@ -11,6 +11,7 @@ Submodules
    neurotools.util.functions
    neurotools.util.getfftw
    neurotools.util.hdfmat
+   neurotools.util.pandas
    neurotools.util.string
    neurotools.util.system
    neurotools.util.time

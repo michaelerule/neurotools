@@ -24,6 +24,8 @@ Submodules
    neurotools.stats.modefind
    neurotools.stats.pvalues
    neurotools.stats.regressions
+   neurotools.stats.shuffleL2explore
+   neurotools.stats.tests
 
 Module contents
 ---------------

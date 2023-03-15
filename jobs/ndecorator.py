@@ -67,25 +67,29 @@ def listit(t):
 
 def tupleit(t):
     '''
-    Converts nested list to nested tuple
+    Recursively convert nested iteable to nested tuple.
     
     Parameters
     ----------
+    t: iterable
     
     Returns
     -------
+    result: tuple
     '''
     return tuple(map(tupleit, t)) if isinstance(t, (list, tuple)) else t
 
+
 def sanitize(sig,mode='liberal'):
     '''
-    Converts an argument signature into a standard format. 
-    Lists will be converted to tuples. Non-hashable types 
-    will cause an error.
+    Recursively convert an argument signature into a 
+    standard format. 
+    Lists will be converted to tuples. 
+    Non-hashable types will cause an error.
 
-    "strict" mode requires that all data be numeric 
+    "strict" mode requires data be numeric 
     primitives or strings containing "very safe" chracters 
-    a-zA-Z0-9 and space.
+    ``a-zA-Z0-9`` and space.
     
     Parameters
     ----------
@@ -110,6 +114,8 @@ def sanitize(sig,mode='liberal'):
         sig = np.array(sig)
         return sanitize(sig)
     
+    # This branch is used for
+    # inspect.ArgSpec instances
     if isinstance(sig, (list,tuple)):
         if len(sig)<=0: return ()
         if len(sig)==1: return sanitize(sig[0],mode=mode)
@@ -117,6 +123,7 @@ def sanitize(sig,mode='liberal'):
             for s in sig)
     
     if __PYTHON_2__ and isinstance(sig,(unicode,)):
+        print(__PYTHON_2__)
         return sanitize(str(sig),mode=mode)
     
     if isinstance(sig, (dict,)):
@@ -176,8 +183,8 @@ def summarize_function(f):
 def argument_signature(function,*args,**kwargs):
     '''
     Convert the function arguments and values to a unique 
-    set. Throws ValueError if the provided arguments cannot 
-    match argspec.
+    tuple. Throws ValueError if the provided arguments cannot 
+    match the function's argspec.
     
     Parameters
     ----------
@@ -193,8 +200,17 @@ def argument_signature(function,*args,**kwargs):
     sig: tuple
     '''
     named_store = {} # map from parameter names to values
-    named,vargname,kwargname,defaults = inspect.getargspec(
-        function)
+    try:
+        named,vargname,kwargname,defaults = \
+            inspect.getargspec(function)
+    except DeprecationWarning:
+        result = inspect.getfullargspec(function)
+        named     = result.args
+        vargname  = result.varargs
+        kwargname = result.varkw
+        defaults  = result.defaults
+
+        
     # Pattern matching can give rise to lists in the
     # "named" variable returned here. We need to convert
     # these to something hashable.

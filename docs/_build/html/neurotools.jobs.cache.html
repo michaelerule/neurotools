@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.jobs.cache module &mdash; Neurotools 2 documentation</title>
@@ -12,10 +12,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -30,15 +29,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Neurotools
-            <img src="_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Neurotools
+              <img src="_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -93,7 +96,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="neurotools.jobs.html">neurotools.jobs package</a></li>
       <li class="breadcrumb-item active">neurotools.jobs.cache module</li>
       <li class="wy-breadcrumbs-aside">
@@ -109,73 +112,19 @@
 <span id="neurotools-jobs-cache-module"></span><h1>neurotools.jobs.cache module<a class="headerlink" href="#module-neurotools.jobs.cache" title="Permalink to this heading"></a></h1>
 <p>Functions related to disk caching (memoization)</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.jobs.cache.function_hash_with_subroutines">
-<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">function_hash_with_subroutines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#function_hash_with_subroutines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.function_hash_with_subroutines" title="Permalink to this definition"></a></dt>
-<dd><p>Functions may change if their subroutines change. This
-function computes a hash value that is sensitive to
-changes in the source code, docstring, argument
-specification, name, module, and subroutines.</p>
-<p>This is a recursive procedure with a fair amount of
-overhead. To allow for the possibility of mutual
-recursion, subroutines are excluded from the hash if
-the function has already been visited.</p>
-<p>This does not use the built-in hash function for
-functions in python.</p>
-<p>Is memoization possible? Making memoization compatible
-with graceful handling of potentially complex mutually
-recurrent call structures is tricky. Each function
-generates a call tree, which does not expand a node if
-it is already present in the call tree structure.
-Therefore there are many possible hash values for an
-intermediate function depending on how far it’s call
-tree gets expanded, which depends on what has been
-expanded and encountered so far. Therefore, we cannot
-cache these intermediate values.</p>
-<p>Note: the topology of a mutually recurrent call
-structure cannot change without changing the source
-code of at least one function in the call graph?
-So it suffices to (1) hash the subroutines, (2)
-expand the call graph (potentially excluding standard
-and system library functions), (3) grab the non-
-recursive hash for each of these functions,
-and (4) then generate the subroutine dependent hash by
-combining the non-recursive hash with the hash of a
-datastructure representing the subroutine “profile”
-obtained from the call graph.</p>
-<p>We assume that any decorators wrapping the function do
-not modify it’s computation, and can safely be stripped.</p>
-<p>Note that this function cannot detect changes in
-effective function behavior that result from changes
-in global variables or mutable scope that has been
-closed over.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force</strong> (<em>boolean</em>) – force muse be true, otherwise this function will
-fail with a warning.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Hash of function</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.get_source">
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">get_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#get_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.get_source" title="Permalink to this definition"></a></dt>
 <dd><p>Extracts and returns the source code of a function
 (if it exists).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>f</strong> (<em>function</em>) – Function for which to extract source code</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>String containing the source code of
 the passed function</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -184,67 +133,30 @@ the passed function</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.function_hash_no_subroutines">
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">function_hash_no_subroutines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#function_hash_no_subroutines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.function_hash_no_subroutines" title="Permalink to this definition"></a></dt>
-<dd><p>See function_hash_with_subroutines.
+<dd><p>See <code class="docutils literal notranslate"><span class="pre">function_hash_with_subroutines</span></code>.
 This hash value is based on the</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Undecorated source code</p></li>
 <li><p>Docstring</p></li>
-<li><p>function name</p></li>
-<li><p>module name</p></li>
-<li><p>function argument specification</p></li>
+<li><p>Function name</p></li>
+<li><p>Nodule name</p></li>
+<li><p>Function argument specification</p></li>
 </ol>
 </div></blockquote>
-<p>Note that this function cannot detect changes in
-effective function behavior as a result of changes in
-subroutines, global variables, or mutable scope that
-has been closed over.</p>
+<p>This function cannot detect changes in function behavior as a result of
+changes in subroutines, global variables, or closures over mutable objects.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>f</strong> (<em>function</em>) – Function for which to generate a hash value</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Hash value that depends on the function. Hash is
 constructed such that changes in function source
 code and some dependencies will also generate a
 different hash.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.jobs.cache.base64hash">
-<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">base64hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#base64hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.base64hash" title="Permalink to this definition"></a></dt>
-<dd><p>Retrieve a base-64 encoded has for an object</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>object</em>) – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>code</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.jobs.cache.base64hash2byte">
-<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">base64hash2byte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#base64hash2byte"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.base64hash2byte" title="Permalink to this definition"></a></dt>
-<dd><p>Retrieve first two bytes of a base-64 encoded has for
-an object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>object</em>) – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>code</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -253,27 +165,32 @@ an object.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.function_signature">
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">function_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#function_signature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.function_signature" title="Permalink to this definition"></a></dt>
-<dd><p>Generates identifier used to locate cache corresponding
-to a particular function.</p>
-<p>We want to be able to cache results to dist to memoize
-across different instances and over time. However, if
-the code for the underlying function changes, checking
-whether the change is meaningful is almost impossible.</p>
-<p>Caches can also become invalid if the behavior of
-subroutines change, quite tricky!</p>
-<p>For now, we’ll check that the function module, name,
-argspec, source, and file are the same. Note that
-module and name identify which cache, and source, file,
-and argspec validate that the function has not changed
-significantly.</p>
+<dd><p>Generates string identifying the cache folder for function <code class="docutils literal notranslate"><span class="pre">f</span></code>.</p>
+<p>We want to cache results to disk. However, these cached
+results will be invalid if the source code changes. It is hard
+to detect this accurately in Python.
+Cache entries can also become invalid if the behavior of
+subroutines change. To address this, the cache folder name includes
+a hash that depends on the function’s</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>module,</p></li>
+<li><p>name,</p></li>
+<li><p>argspec,</p></li>
+<li><p>source, and</p></li>
+<li><p>file.</p></li>
+</ul>
+</div></blockquote>
+<p>If any of these change, the chache folder will as well. This reduces
+the chances of retrieving stale / invalid cached results.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>f</strong> (<em>function</em>) – </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>name+’.’+code</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -295,18 +212,14 @@ compatible with most file systems.</p>
 <li><p>No more than 255 characters in file string</p></li>
 <li><p>For windows compatibility try to limit it to
 260 character total pathlength</p></li>
-<li><dl class="simple">
-<dt>These characters should be avoided:</dt><dd><p><cite>/&lt;&gt;:”|?*,&#64;#={}’&amp;</cite>!%$. ASCII 0..31`</p>
-</dd>
-</dl>
-</li>
+<li><p>These characters should be avoided: <code class="docutils literal notranslate"><span class="pre">\/&lt;&gt;:&quot;|?*,&#64;#={}'&amp;`!%$.</span> <span class="pre">ASCII</span> <span class="pre">0..31</span></code></p></li>
 </ul>
 </div></blockquote>
 <p>The easiest way to avoid problematic characters without
 restricting the input is to re-encode as base 64.</p>
-<p>The following modes are supported:</p>
-<p><strong>repr:</strong> Uses repr and
-ast.literal_eval(node_or_string) to serialize the
+<p><strong>The following modes are supported:</strong></p>
+<p><strong>repr:</strong> Uses <code class="docutils literal notranslate"><span class="pre">repr</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ast.literal_eval(node_or_string)</span></code> to serialize the
 argument signature. This is safe, but restricts the
 types permitted as paramteters.</p>
 <p><strong>json:</strong> Uses json to serialize the argument signature.
@@ -325,11 +238,11 @@ Experimental.</p>
 <p>Compression is on by defaut
 Signatures are base64 encoded by default</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>f</strong> (<em>str</em>) – Function being called</p></li>
 <li><p><strong>sig</strong> – <p>Cleaned-up function arguments created by
-<cite>neurotools.jobs.ndecorator.argument_signature()</cite>
+<code class="docutils literal notranslate"><span class="pre">neurotools.jobs.ndecorator.argument_signature()</span></code>
 A tuple of:</p>
 <blockquote>
 <div><dl class="simple">
@@ -342,7 +255,7 @@ arguments (“varargs”), if any.</p>
 </dl>
 </div></blockquote>
 </p></li>
-<li><p><strong>mode</strong> (<em>str; default 'repr'</em>) – Can be <cite>‘repr’</cite> <cite>‘json’</cite> <cite>‘pickle’</cite> <cite>‘human’</cite>.</p></li>
+<li><p><strong>mode</strong> (<em>str; default 'repr'</em>) – Can be <code class="docutils literal notranslate"><span class="pre">'repr'</span></code> <code class="docutils literal notranslate"><span class="pre">'json'</span></code> <code class="docutils literal notranslate"><span class="pre">'pickle'</span></code> <code class="docutils literal notranslate"><span class="pre">'human'</span></code>.</p></li>
 <li><p><strong>compressed</strong> (<em>boolean; default True</em>) – Compress the resulting signature usingzlib?</p></li>
 <li><p><strong>base64encode</strong> (<em>boolean; default True</em>) – Base-64 encode the resulting signature?</p></li>
 <li><p><strong>truncate</strong> (<em>boolean; default True</em>) – Truncate file names that are too long?
@@ -351,10 +264,10 @@ may still serve as an identified with a low
 collision probability.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>filename</strong></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -365,8 +278,8 @@ collision probability.</p></li>
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">file_string_to_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'repr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base64encode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#file_string_to_signature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.file_string_to_signature" title="Permalink to this definition"></a></dt>
 <dd><p>Extracts the argument key from the compressed
 representation in a cache filename entry. Inverse of
-<cite>signature_to_file_string()</cite>.</p>
-<p>The <cite>filename</cite> should be provided as a string, without
+<code class="docutils literal notranslate"><span class="pre">signature_to_file_string()</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">filename</span></code> should be provided as a string, without
 the file extension.</p>
 <p>The following modes are supported:</p>
 <p><strong>repr:</strong> Uses repr and
@@ -393,20 +306,20 @@ Experimental.</p>
 <p>Compression is on by default
 Signatures are base64 encoded by default</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – Encoded filename, as a string, <em>without</em> the file
 extension</p></li>
-<li><p><strong>mode</strong> (<em>str; default 'repr'</em>) – Can be <cite>‘repr’</cite> <cite>‘json’</cite> <cite>‘pickle’</cite> <cite>‘human’</cite>.</p></li>
-<li><p><strong>compressed</strong> (<em>boolean; default True</em>) – Whether <cite>zlib</cite> was used to compress this function
+<li><p><strong>mode</strong> (<em>str; default 'repr'</em>) – Can be <code class="docutils literal notranslate"><span class="pre">'repr'</span></code> <code class="docutils literal notranslate"><span class="pre">'json'</span></code> <code class="docutils literal notranslate"><span class="pre">'pickle'</span></code> <code class="docutils literal notranslate"><span class="pre">'human'</span></code>.</p></li>
+<li><p><strong>compressed</strong> (<em>boolean; default True</em>) – Whether <code class="docutils literal notranslate"><span class="pre">zlib</span></code> was used to compress this function
 call signature</p></li>
 <li><p><strong>base64encode</strong> (<em>boolean; default  True</em>) – Whether this function call signature was base-65
 encoded.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p><strong>sig</strong> – Function arguments created by
-<cite>neurotools.jobs.ndecorator.argument_signature()</cite>
+<code class="docutils literal notranslate"><span class="pre">neurotools.jobs.ndecorator.argument_signature()</span></code>
 A tuple of:</p>
 <blockquote>
 <div><dl class="simple">
@@ -420,7 +333,7 @@ arguments (“varargs”), if any.</p>
 </div></blockquote>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested tuple</p>
 </dd>
 </dl>
@@ -431,13 +344,13 @@ arguments (“varargs”), if any.</p>
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">human_encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#human_encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.human_encode" title="Permalink to this definition"></a></dt>
 <dd><p>Formats an argument signature for saving as file name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sig</strong> (<em>nested tuple</em>) – Argument signature as a safe nested tuple</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>result</strong> – Human-readable argument-signature filename</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -448,13 +361,13 @@ arguments (“varargs”), if any.</p>
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">human_decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#human_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.human_decode" title="Permalink to this definition"></a></dt>
 <dd><p>Formats the argument signature for saving as file name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – Human-readable argument-signature filename</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>sig</strong> – Argument signature as a nested tuple</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested tuple</p>
 </dd>
 </dl>
@@ -462,20 +375,20 @@ arguments (“varargs”), if any.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.get_cache_path">
-<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">get_cache_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#get_cache_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.get_cache_path" title="Permalink to this definition"></a></dt>
-<dd><p>Locate the directory path for function <cite>f</cite> within the
-<cite>__neurotools_cache__</cite> path <cite>cache_root</cite>.</p>
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">get_cache_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#get_cache_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.get_cache_path" title="Permalink to this definition"></a></dt>
+<dd><p>Locate the directory path for function <code class="docutils literal notranslate"><span class="pre">f</span></code> within the
+<code class="docutils literal notranslate"><span class="pre">__neurotools_cache__</span></code> path <code class="docutils literal notranslate"><span class="pre">cache_root</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cache_root</strong> (<em>str</em>) – Path to root of the <cite>__neurotools__</cite> cache</p></li>
+<li><p><strong>cache_root</strong> (<em>str</em>) – Path to root of the <code class="docutils literal notranslate"><span class="pre">__neurotools__</span></code> cache</p></li>
 <li><p><strong>f</strong> (<em>function</em>) – Cached function object</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>path</strong></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -484,24 +397,24 @@ arguments (“varargs”), if any.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.locate_cached">
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">locate_cached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#locate_cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.locate_cached" title="Permalink to this definition"></a></dt>
-<dd><p>Locate a specific cache entry within <cite>cache_root</cite> for
-function <cite>f</cite> cached with method <cite>method</cite>, and called
-with arguments <cite>*args</cite> and keyword arguments <cite>**kwargs</cite>.</p>
+<dd><p>Locate a specific cache entry within <code class="docutils literal notranslate"><span class="pre">cache_root</span></code> for
+function <code class="docutils literal notranslate"><span class="pre">f</span></code> cached with method <code class="docutils literal notranslate"><span class="pre">method</span></code>, and called
+with arguments <code class="docutils literal notranslate"><span class="pre">*args</span></code> and keyword arguments <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cache_root</strong> (<em>str</em>) – directory/path as string</p></li>
 <li><p><strong>f</strong> (<em>function</em>) – Function being cached</p></li>
-<li><p><strong>method</strong> (<em>str</em>) – Cache file extension e.g. <cite>“.npy”</cite>, “<cite>.mat</cite>”, etc.</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Cache file extension e.g. <code class="docutils literal notranslate"><span class="pre">&quot;npy&quot;</span></code>, “<code class="docutils literal notranslate"><span class="pre">mat</span></code>”, etc.</p></li>
 <li><p><strong>args</strong> (<em>iterable</em>) – function parameters</p></li>
 <li><p><strong>kwargs</strong> (<em>dict</em>) – function keyword arguments</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>fn</strong> (<em>str</em>) – File name of cache entry without extension</p></li>
 <li><p><strong>sig</strong> (<em>tuple</em>) – Tuple of (args,kwargs) info from
-<cite>argument_signature()</cite></p></li>
+<code class="docutils literal notranslate"><span class="pre">argument_signature()</span></code></p></li>
 <li><p><strong>path</strong> (<em>str</em>) – Directory containing cache file</p></li>
 <li><p><strong>filename</strong> (<em>str</em>) – File name with extension</p></li>
 <li><p><strong>location</strong> (<em>str</em>) – Full absolute path to cache entry</p></li>
@@ -514,10 +427,10 @@ with arguments <cite>*args</cite> and keyword arguments <cite>**kwargs</cite>.</
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.validate_for_matfile">
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">validate_for_matfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#validate_for_matfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.validate_for_matfile" title="Permalink to this definition"></a></dt>
-<dd><p>Verify that the nested tuple <cite>x</cite>, which contains the
+<dd><p>Verify that the nested tuple <code class="docutils literal notranslate"><span class="pre">x</span></code>, which contains the
 arguments to a function call, can be safely stored
-in a Matlab matfile (<cite>.mat</cite>).</p>
-<table class="colwidths-auto docutils align-default" id="id1">
+in a Matlab matfile (<code class="docutils literal notranslate"><span class="pre">.mat</span></code>).</p>
+<table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Numpy types: these should be compatible</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Type</p></th>
@@ -570,10 +483,10 @@ in a Matlab matfile (<cite>.mat</cite>).</p>
 </tbody>
 </table>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>nested tuple</em>) – Arguments to a function</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>boolean</p>
 </dd>
 </dl>
@@ -584,7 +497,7 @@ in a Matlab matfile (<cite>.mat</cite>).</p>
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">validate_for_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#validate_for_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.validate_for_numpy" title="Permalink to this definition"></a></dt>
 <dd><p>Check whether an array-like object can safely be stored
 in a numpy archive.</p>
-<table class="colwidths-auto docutils align-default" id="id2">
+<table class="docutils align-default" id="id2">
 <caption><span class="caption-text">Numpy types: these should be compatible</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Type</p></th>
@@ -637,14 +550,14 @@ in a numpy archive.</p>
 </tbody>
 </table>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>object</em>) – array-like object;</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the data in <cite>x</cite> can be safely stored in a
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the data in <code class="docutils literal notranslate"><span class="pre">x</span></code> can be safely stored in a
 Numpy archive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>boolean</p>
 </dd>
 </dl>
@@ -657,7 +570,7 @@ Numpy archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.disk_cacher">
-<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">disk_cacher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_mutable_bindings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CACHE_IDENTIFIER</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__neurotools_cache__'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#disk_cacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.disk_cacher" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">disk_cacher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_fast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_mutable_bindings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__neurotools_cache__'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#disk_cacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.disk_cacher" title="Permalink to this definition"></a></dt>
 <dd><p>Decorator to memoize functions to disk.
 Currying pattern here where cache_location creates
 decotrators.</p>
@@ -697,7 +610,7 @@ arguments when retrieved from the cache.</p>
 <p>hdf5: Not yet implemented.</p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cache_location</strong> (<em>str</em>) – Path to disk cache</p></li>
 <li><p><strong>method</strong> (<em>str; default 'npy'</em>) – Storange format for caches.
@@ -713,13 +626,13 @@ Experimental, do not use.</p></li>
 over mutable scope. Such functions are more likely
 to return different results for the same arguments,
 leading to invalid cached values.</p></li>
-<li><p><strong>CACHE_IDENTIFIER</strong> (<em>str; default '.__neurotools_cache__'</em>) – subdirectory name for disk cache.</p></li>
+<li><p><strong>cache_identifier</strong> (<em>str; default 'neurotools_cache'</em>) – subdirectory name for disk cache.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>cached</strong> – TODO</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>disk cacher object</p>
 </dd>
 </dl>
@@ -727,18 +640,18 @@ leading to invalid cached values.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.hierarchical_cacher">
-<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">hierarchical_cacher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast_to_slow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_mutable_bindings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CACHE_IDENTIFIER</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.__neurotools_cache__'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#hierarchical_cacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.hierarchical_cacher" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">hierarchical_cacher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast_to_slow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_mutable_bindings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'neurotools_cache'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#hierarchical_cacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.hierarchical_cacher" title="Permalink to this definition"></a></dt>
 <dd><p>Construct a filesystem cache defined in terms of a
 hierarchy from faster to slower (fallback) caches.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fast_to_slow</strong> (<em>tuple</em><em> of </em><em>strings</em>) – list of filesystem paths for disk caches in order
 from the fast (default or main) cache to slower.</p></li>
-<li><p><strong>method</strong> (<em>string</em><em>, </em><em>default 'npy'</em>) – cache storing method;</p></li>
+<li><p><strong>method</strong> (string, default <code class="docutils literal notranslate"><span class="pre">'npy'</span></code>) – cache storing method;</p></li>
 <li><p><strong>write_back</strong> (<em>bool</em><em>, </em><em>default True</em>) – whether to automatically copy newly computed cache
 values to the slower caches</p></li>
-<li><p><strong>verbose</strong> (bool, defaults to <cite>False</cite>) – whether to print detailed logging iformation to
+<li><p><strong>verbose</strong> (bool, defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>) – whether to print detailed logging iformation to
 standard out when manipulating the cache</p></li>
 <li><p><strong>allow_mutable_bindings</strong> (<em>bool</em><em>, </em><em>default False</em>) – If true, then “unsafe” namespace bindings, for
 example user-defined functions, will be allowed in
@@ -747,15 +660,15 @@ subroutines, and those subroutines change, the disk
 cacher cannot detect the implementation different.
 Consequentially, it cannot tell whether old cached
 values are invalid.</p></li>
-<li><p><strong>CACHE_IDENTIFIER</strong> (<em>str</em><em>, </em><em>default '.__neurotools_cache__'</em>) – (sub)folder name to store cached results</p></li>
+<li><p><strong>cache_identifier</strong> (<em>str</em><em>, </em><em>default 'neurotools_cache'</em>) – (sub)folder name to store cached results</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>hierarchical</strong> – A hierarchical disk-caching decorator that can be
 used to memoize functions to the specified disk
 caching hierarchy.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>decorator</p>
 </dd>
 </dl>
@@ -764,27 +677,165 @@ caching hierarchy.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.jobs.cache.scan_cachedir">
 <span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">scan_cachedir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cachedir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#scan_cachedir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.scan_cachedir" title="Permalink to this definition"></a></dt>
-<dd><p>Retrieve all entries in <cite>cachedir</cite>, unpacking their
+<dd><p>Retrieve all entries in <code class="docutils literal notranslate"><span class="pre">cachedir</span></code>, unpacking their
 encoded arguments.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cachedir</strong> (<em>str</em>) – Cache directory to scan, e.g.
-<cite>__neurotools_cache__/…/…/…/somefunction</cite></p></li>
-<li><p><strong>method</strong> (<em>str; default 'npy'</em>) – Can be ‘npy’ or ‘mat’</p></li>
+<code class="docutils literal notranslate"><span class="pre">__neurotools_cache__/…/…/…/somefunction</span></code></p></li>
+<li><p><strong>method</strong> (str; default <code class="docutils literal notranslate"><span class="pre">'npy'</span></code>) – Can be <code class="docutils literal notranslate"><span class="pre">'npy'</span></code> or <code class="docutils literal notranslate"><span class="pre">'mat'</span></code></p></li>
 <li><p><strong>verbose</strong> (<em>boolean; default False</em>) – </p></li>
-<li><p><strong>**kw</strong> – Forwarded to <cite>file_string_to_signature()</cite>;
-See <cite>file_string_to_signature()</cite> for details.</p></li>
+<li><p><strong>**kw</strong> – Forwarded to <code class="docutils literal notranslate"><span class="pre">file_string_to_signature()</span></code>;
+See <code class="docutils literal notranslate"><span class="pre">file_string_to_signature()</span></code> for details.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><cite>filename -&gt; (args,varags)</cite> dictionary, where
-<cite>args</cite> is a <cite>parameter_name -&gt; value</cite> dictionary
-and <cite>varargs</cite> is a list of extra arguments, if
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">filename</span> <span class="pre">-&gt;</span> <span class="pre">(args,varags)</span></code> dictionary, where
+<code class="docutils literal notranslate"><span class="pre">args</span></code> is a <code class="docutils literal notranslate"><span class="pre">parameter_name</span> <span class="pre">-&gt;</span> <span class="pre">value</span></code> dictionary
+and <code class="docutils literal notranslate"><span class="pre">varargs</span></code> is a list of extra arguments, if
 any.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.cache.base64hash">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">base64hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#base64hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.base64hash" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a base-64 encoded hash for an object.
+This uses the built-in <code class="docutils literal notranslate"><span class="pre">encode</span></code> function to convert an object to
+<code class="docutils literal notranslate"><span class="pre">utf-8</span></code>, then calls <code class="docutils literal notranslate"><span class="pre">hashlib.sha224(ss).digest()</span></code> to create a hash,
+finally packaging the result in base-64.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>object</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>code</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.cache.base64hash2byte">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">base64hash2byte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#base64hash2byte"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.base64hash2byte" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve first two bytes of a base-64 encoded has for
+an object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>object</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>code</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.cache.function_hash_with_subroutines">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">function_hash_with_subroutines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#function_hash_with_subroutines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.function_hash_with_subroutines" title="Permalink to this definition"></a></dt>
+<dd><p>Functions may change if their subroutines change. This
+function computes a hash value that is sensitive to
+changes in the source code, docstring, argument
+specification, name, module, and subroutines.</p>
+<p>This is a recursive procedure with a fair amount of
+overhead. To allow for the possibility of mutual
+recursion, subroutines are excluded from the hash if
+the function has already been visited.</p>
+<p>This does not use the built-in hash function for
+functions in python.</p>
+<p><strong>Ongoing development notes</strong></p>
+<p><em>Is memoization possible?</em> Making memoization compatible
+with graceful handling of potentially complex mutually
+recurrent call structures is tricky. Each function
+generates a call tree, which does not expand a node if
+it is already present in the call tree structure.
+Therefore there are many possible hash values for an
+intermediate function depending on how far it’s call
+tree gets expanded, which depends on what has been
+expanded and encountered so far. Therefore, we cannot
+cache these intermediate values.</p>
+<p><em>Note:</em> the topology of a mutually recurrent call
+structure cannot change without changing the source
+code of at least one function in the call graph?
+So it suffices to (1) hash the subroutines, (2)
+expand the call graph (potentially excluding standard
+and system library functions), (3) grab the non-
+recursive hash for each of these functions,
+and (4) then generate the subroutine dependent hash by
+combining the non-recursive hash with the hash of a
+datastructure representing the subroutine “profile”
+obtained from the call graph.</p>
+<p>We assume that any decorators wrapping the function do
+not modify it’s computation, and can safely be stripped.</p>
+<p>Note that this function cannot detect changes in
+effective function behavior that result from changes
+in global variables or mutable scope that has been
+closed over.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>force</strong> (<em>boolean</em>) – force muse be true, otherwise this function will
+fail with a warning.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hash of function</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.cache.combine_caches">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">combine_caches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#combine_caches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.combine_caches" title="Permalink to this definition"></a></dt>
+<dd><p>Merge all cache folders for function <code class="docutils literal notranslate"><span class="pre">f</span></code>
+by copying cache files into the current cache folder.</p>
+<p>Usually, the existence of multiple cache folders
+indicates that cache files were generated using
+versions of <code class="docutils literal notranslate"><span class="pre">f</span></code> with different source code. However,
+you may want to merge caches if you are certain that
+such changes code did not change the function’s
+behavior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cache_root</strong> (<em>str</em>) – path to the top-level cache directory</p></li>
+<li><p><strong>f</strong> (<em>function</em>) – cached function to merge</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.jobs.cache.exists">
+<span class="sig-prename descclassname"><span class="pre">neurotools.jobs.cache.</span></span><span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/jobs/cache.html#exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.jobs.cache.exists" title="Permalink to this definition"></a></dt>
+<dd><p>Check if a cached result for <code class="docutils literal notranslate"><span class="pre">f(*args,**kwargs)</span></code>
+of type <code class="docutils literal notranslate"><span class="pre">method</span></code> exists in cache <code class="docutils literal notranslate"><span class="pre">cache_root</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cache_root</strong> (<em>str</em>) – directory/path as string</p></li>
+<li><p><strong>f</strong> (<em>function</em>) – Function being cached</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Cache file extension e.g. <code class="docutils literal notranslate"><span class="pre">&quot;npy&quot;</span></code>, “<code class="docutils literal notranslate"><span class="pre">mat</span></code>”, etc.</p></li>
+<li><p><strong>args</strong> (<em>iterable</em>) – function parameters</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – function keyword arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the cache file exists</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>boolean</p>
 </dd>
 </dl>
 </dd></dl>

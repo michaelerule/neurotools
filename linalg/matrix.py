@@ -519,19 +519,9 @@ def nearPSDRebonatoJackel(A,epsilon=1e-10):
 
 def cinv(X,repair=False):
     '''
-    Invert positive matrix $X$ using cholesky factorization.
-    The function `numpy.linalg.cholesky` is aliased as 
-    `chol` in this library, in analogy to matlab. `chol` 
-    returns a upper-triangular matrix such that 
-    $L = \operatorname{chol}(X)$ and $X = L^T L$. 
-    The inverse of
-    $X$ is $X^{-1} = (L^T L)^{-1} = L^{-1} L^{-T}$. 
-    
-    This routine uses 
-    [LAPACK dtrtri](
-    http://www.netlib.org/lapack/explore-html/da/dba/group__double_o_t_h_e_rcomputational_ga97c5ddb103f5f6bc2dc060886aaf2ffc.html#ga97c5ddb103f5f6bc2dc060886aaf2ffc)
-    . See also [scipy.linalg.lapack.dtrtri](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lapack.dtrtri.html#scipy.linalg.lapack.dtrtri).
-        
+    Invert positive matrix ``X`` using cholesky factorization and 
+    LAPACK's ``dtrtri`` function.
+
     Parameters
     ----------
     X : np.array
@@ -542,7 +532,7 @@ def cinv(X,repair=False):
     Returns
     -------
     matrix :
-        The inverse of $X$ computed using Cholesky factorization
+        The inverse of ``X`` computed using Cholesky factorization
     '''
     try:
         ch = chol(X)
@@ -565,6 +555,15 @@ def cinv(X,repair=False):
         else:
             raise ValueError('lapack.dtrtri encountered zero diagonal element at %d'%info)
     return ich.dot(ich.T)
+    '''
+    The function `numpy.linalg.cholesky` is aliased as 
+    `chol` in this library, in analogy to matlab. `chol` 
+    returns a upper-triangular matrix such that 
+    $L = \operatorname{chol}(X)$ and $X = L^T L$. 
+    The inverse of
+    $X$ is $X^{-1} = (L^T L)^{-1} = L^{-1} L^{-T}$. 
+    '''
+    
 
 from scipy.linalg import solve_triangular as stri
 
@@ -930,3 +929,18 @@ def match_covariance(Q,x,verbose=False,sample_deficient=False):
         print('Matching error     is',np.mean(np.abs(C-Q)**2)**0.5)
         print('L2 data distortion is',np.mean(np.abs(x1-x2)**2)**0.5)
     return x2
+    
+    
+    
+from scipy.linalg import cholesky as chol
+from scipy.linalg.lapack import dtrtri
+def get_whitener(S):
+    # covariance transform
+    # S = ULU'
+    # x = Uq
+    # q = inv(U)q
+    U = chol(S,lower=True)   #q=UU'
+    V = dtrtri(U,lower=1)[0] #inv(q)=V'V
+    return V
+    
+

@@ -29,6 +29,7 @@ import json
 import base64
 import zlib
 import hashlib
+import shutil
 
 from collections import defaultdict
 from pickle import UnpicklingError
@@ -48,83 +49,6 @@ from   neurotools.jobs.filenames import is_dangerous_filename
 from   neurotools.jobs.filenames import check_filename
 
 from pathlib import Path
-
-@neurotools.jobs.ndecorator.memoize
-def function_hash_with_subroutines(f,force=False):
-    '''
-    Functions may change if their subroutines change. This 
-    function computes a hash value that is sensitive to 
-    changes in the source code, docstring, argument 
-    specification, name, module, and subroutines.
-
-    This is a recursive procedure with a fair amount of 
-    overhead. To allow for the possibility of mutual 
-    recursion, subroutines are excluded from the hash if 
-    the function has already been visited.
-
-    This does not use the built-in hash function for 
-    functions in python.
-
-    Is memoization possible? Making memoization compatible 
-    with graceful handling of potentially complex mutually 
-    recurrent call structures is tricky. Each function 
-    generates a call tree, which does not expand a node if
-    it is already present in the call tree structure. 
-    Therefore there are many possible hash values for an 
-    intermediate function depending on how far it's call 
-    tree gets expanded, which depends on what has been 
-    expanded and encountered so far. Therefore, we cannot
-    cache these intermediate values.
-
-    Note: the topology of a mutually recurrent call 
-    structure cannot change without changing the source 
-    code of at least one function in the call graph? 
-    So it suffices to (1) hash the subroutines, (2) 
-    expand the call graph (potentially excluding standard 
-    and system library functions), (3) grab the non-
-    recursive hash for each of these functions, 
-    and (4) then generate the subroutine dependent hash by 
-    combining the non-recursive hash with the hash of a 
-    datastructure representing the subroutine "profile" 
-    obtained from the call graph.
-    
-    We assume that any decorators wrapping the function do 
-    not modify it's computation, and can safely be stripped.
-
-    Note that this function cannot detect changes in 
-    effective function behavior that result from changes 
-    in global variables or mutable scope that has been 
-    closed over.
-    
-    Parameters
-    ----------
-    force: boolean
-        force muse be true, otherwise this function will 
-        fail with a warning. 
-    
-    Returns
-    -------
-    :str
-        Hash of function
-    '''
-    if not force:
-        raise NotImplementedError(
-        'It is not possible to hash a function reliably')
-
-    # repeatedly expand list of subroutines
-    to_expand = {f}
-    expanded  = set()
-    while len(to_expand)>0:
-        new_subroutines = set()
-        for g in to_expand: 
-            new_subroutines|=get_subroutines(g)
-        expanded |= to_expand
-        to_expand = new_subroutines - expanded
-    # we now have a set, we need to provide some ordering 
-    # over that set sort the hash values and hash that
-    return hash(tuple(sorted(map(
-        function_hash_no_subroutines,expanded))))
-
 
 def get_source(f):
     '''
@@ -153,19 +77,17 @@ def get_source(f):
 @neurotools.jobs.ndecorator.memoize
 def function_hash_no_subroutines(f):
     '''
-    See function_hash_with_subroutines. 
+    See ``function_hash_with_subroutines``. 
     This hash value is based on the
 
      1. Undecorated source code
      2. Docstring
-     3. function name
-     4. module name
-     5. function argument specification
+     3. Function name
+     4. Nodule name
+     5. Function argument specification
 
-    Note that this function cannot detect changes in 
-    effective function behavior as a result of changes in 
-    subroutines, global variables, or mutable scope that 
-    has been closed over.
+    This function cannot detect changes in function behavior as a result of 
+    changes in subroutines, global variables, or closures over mutable objects.
     
     Parameters
     ----------
@@ -189,68 +111,25 @@ def function_hash_no_subroutines(f):
     return hash((
         module,name,docstring,source,argspec,subroutines))
 
-def base64hash(obj):
-    '''
-    Retrieve a base-64 encoded has for an object
-    
-    Parameters
-    ----------
-    obj: object
-    
-    Returns
-    -------
-    code: str
-    '''
-    try:
-        ss = ss.encode('UTF-8')
-    except:
-        ss = repr(obj).encode('UTF-8')
-    code = base64.urlsafe_b64encode(\
-            str(hashlib.sha224(ss).digest()).encode('UTF-8')
-        ).decode().replace('=','')
-    return code
-
-def base64hash2byte(obj):
-    '''
-    Retrieve first two bytes of a base-64 encoded has for 
-    an object.
-    
-    Parameters
-    ----------
-    obj: object
-    
-    Returns
-    -------
-    code: str
-    '''
-    try:
-        ss = ss.encode('UTF-8')
-    except:
-        ss = repr(obj).encode('UTF-8')
-    bytes = hashlib.sha224(ss).digest()
-    code = base64.urlsafe_b64encode(\
-            str(bytes[:2]).encode('UTF-8')
-        ).decode().replace('=','')
-    return code
-
 def function_signature(f):
     '''
-    Generates identifier used to locate cache corresponding 
-    to a particular function.
+    Generates string identifying the cache folder for function ``f``.
 
-    We want to be able to cache results to dist to memoize 
-    across different instances and over time. However, if 
-    the code for the underlying function changes, checking 
-    whether the change is meaningful is almost impossible.
-
-    Caches can also become invalid if the behavior of 
-    subroutines change, quite tricky!
-
-    For now, we'll check that the function module, name, 
-    argspec, source, and file are the same. Note that 
-    module and name identify which cache, and source, file,
-    and argspec validate that the function has not changed
-    significantly.
+    We want to cache results to disk. However, these cached
+    results will be invalid if the source code changes. It is hard
+    to detect this accurately in Python. 
+    Cache entries can also become invalid if the behavior of 
+    subroutines change. To address this, the cache folder name includes
+    a hash that depends on the function's
+    
+     - module,
+     - name, 
+     - argspec,
+     - source, and
+     - file.
+     
+    If any of these change, the chache folder will as well. This reduces
+    the chances of retrieving stale / invalid cached results.
 
     Parameters
     ----------
@@ -275,15 +154,23 @@ def function_signature(f):
     docstring = inspect.getdoc(f)
     name      = f.__name__
     module    = f.__module__
-    argspec   = neurotools.jobs.ndecorator.sanitize(
-        inspect.getargspec(f))
-
+    
+    try:
+        argspec = inspect.getargspec(f)
+    except DeprecationWarning:
+        result    = inspect.getfullargspec(f)
+        named     = result.args
+        vargname  = result.varargs
+        kwargname = result.varkw
+        defaults  = result.defaults
+        argspec = (named,vargname,kwargname,defaults)
+        
+    argspec   = neurotools.jobs.ndecorator.sanitize(argspec)
     identity  = (module,name)
     signature = (docstring,source,argspec)
     name = '.'.join(identity)
     code = base64hash2byte((identity,signature))
     return name+'.'+code
-   
 
 def signature_to_file_string(f,sig,
     mode='repr',
@@ -306,16 +193,15 @@ def signature_to_file_string(f,sig,
      - No more than 255 characters in file string
      - For windows compatibility try to limit it to 
        260 character total pathlength
-     - These characters should be avoided:
-        `\/<>:"|?*,@#={}'&`!%$. ASCII 0..31`
+     - These characters should be avoided: ``\/<>:"|?*,@#={}'&`!%$. ASCII 0..31``
 
     The easiest way to avoid problematic characters without
     restricting the input is to re-encode as base 64.
 
-    The following modes are supported:
+    **The following modes are supported:**
 
-    **repr:** Uses repr and 
-    ast.literal_eval(node_or_string) to serialize the 
+    **repr:** Uses ``repr`` and 
+    ``ast.literal_eval(node_or_string)`` to serialize the 
     argument signature. This is safe, but restricts the 
     types permitted as paramteters.
 
@@ -344,7 +230,7 @@ def signature_to_file_string(f,sig,
         Function being called
     sig:
         Cleaned-up function arguments created by
-        `neurotools.jobs.ndecorator.argument_signature()`
+        ``neurotools.jobs.ndecorator.argument_signature()``
         A tuple of:
             args: tuple
                 A tuple consisting of a list of
@@ -356,7 +242,7 @@ def signature_to_file_string(f,sig,
     Other Parameters
     ----------------
     mode: str; default 'repr'
-        Can be `'repr'` `'json'` `'pickle'` `'human'`.
+        Can be ``'repr'`` ``'json'`` ``'pickle'`` ``'human'``.
     compressed: boolean; default True
         Compress the resulting signature usingzlib?
     base64encode: boolean; default True
@@ -447,9 +333,9 @@ def file_string_to_signature(
     '''
     Extracts the argument key from the compressed 
     representation in a cache filename entry. Inverse of 
-    `signature_to_file_string()`.
+    ``signature_to_file_string()``.
     
-    The `filename` should be provided as a string, without
+    The ``filename`` should be provided as a string, without
     the file extension.
 
     The following modes are supported:
@@ -490,9 +376,9 @@ def file_string_to_signature(
     Other Parameters
     ----------------
     mode: str; default 'repr'
-        Can be `'repr'` `'json'` `'pickle'` `'human'`.
+        Can be ``'repr'`` ``'json'`` ``'pickle'`` ``'human'``.
     compressed: boolean; default True
-        Whether `zlib` was used to compress this function
+        Whether ``zlib`` was used to compress this function
         call signature
     base64encode: boolean; default  True
         Whether this function call signature was base-65
@@ -502,7 +388,7 @@ def file_string_to_signature(
     -------
     sig: nested tuple
         Function arguments created by
-        `neurotools.jobs.ndecorator.argument_signature()`
+        ``neurotools.jobs.ndecorator.argument_signature()``
         A tuple of:
             args: tuple
                 A tuple consisting of a list of
@@ -512,9 +398,9 @@ def file_string_to_signature(
                 arguments ("varargs"), if any.
     '''
     pieces = filename.split('.')
-    key  = pieces[-1]
-    hsh  = pieces[-2]
-    name = '.'.join(pieces[:-3])
+    key    = pieces[-1]
+    hsh    = pieces[-2]
+    name   = '.'.join(pieces[:-3])
 
     #try:
     # The argument spec can be mapped uniquely to a file
@@ -592,15 +478,15 @@ def human_decode(key):
         sig,mode='strict')
     return sig
 
-def get_cache_path(cache_root,f):
+def get_cache_path(cache_root,f,*args,**kwargs):
     '''
-    Locate the directory path for function `f` within the
-    `__neurotools_cache__` path `cache_root`.
+    Locate the directory path for function ``f`` within the
+    ``__neurotools_cache__`` path ``cache_root``.
     
     Parameters
     ----------
     cache_root: str
-        Path to root of the `__neurotools__` cache
+        Path to root of the ``__neurotools__`` cache
     f: function
         Cached function object
         
@@ -621,9 +507,9 @@ def get_cache_path(cache_root,f):
 
 def locate_cached(cache_root,f,method,*args,**kwargs):
     '''
-    Locate a specific cache entry within `cache_root` for
-    function `f` cached with method `method`, and called
-    with arguments `*args` and keyword arguments `**kwargs`.
+    Locate a specific cache entry within ``cache_root`` for
+    function ``f`` cached with method ``method``, and called
+    with arguments ``*args`` and keyword arguments ``**kwargs``.
     
     Parameters
     ----------
@@ -632,7 +518,7 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     f: function
         Function being cached
     method: str
-        Cache file extension e.g. `".npy"`, "`.mat`", etc. 
+        Cache file extension e.g. ``"npy"``, "``mat``", etc. 
     args: iterable
         function parameters
     kwargs: dict
@@ -644,7 +530,7 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
         File name of cache entry without extension
     sig: tuple
         Tuple of (args,kwargs) info from 
-        `argument_signature()`
+        ``argument_signature()``
     path: str
         Directory containing cache file    
     filename: str
@@ -652,6 +538,7 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     location: str
         Full absolute path to cache entry
     '''
+    while method.startswith('.'): method=method[1:]
     sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
             mode        ='repr',
@@ -668,9 +555,9 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
 
 def validate_for_matfile(x):
     '''
-    Verify that the nested tuple `x`, which contains the
+    Verify that the nested tuple ``x``, which contains the
     arguments to a function call, can be safely stored 
-    in a Matlab matfile (`.mat`).
+    in a Matlab matfile (``.mat``).
     
     .. table:: Numpy types: these should be compatible
         :widths: auto
@@ -756,7 +643,7 @@ def validate_for_numpy(x):
     Returns
     -------
     :boolean
-        True if the data in `x` can be safely stored in a 
+        True if the data in ``x`` can be safely stored in a 
         Numpy archive
     '''
     safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
@@ -794,7 +681,7 @@ def disk_cacher(
     skip_fast  = False,
     verbose    = False,
     allow_mutable_bindings=False,
-    CACHE_IDENTIFIER='__neurotools_cache__'):
+    cache_identifier='__neurotools_cache__'):
     '''
     Decorator to memoize functions to disk.
     Currying pattern here where cache_location creates 
@@ -853,7 +740,7 @@ def disk_cacher(
         over mutable scope. Such functions are more likely
         to return different results for the same arguments, 
         leading to invalid cached values.
-    CACHE_IDENTIFIER: str; default '.__neurotools_cache__'
+    cache_identifier: str; default 'neurotools_cache'
         subdirectory name for disk cache.
     
     Returns
@@ -864,17 +751,17 @@ def disk_cacher(
     VALID_METHODS = ('pickle','mat','npy')
     assert method in VALID_METHODS
     cache_location = os.path.abspath(cache_location)+os.sep
-    cache_root     = cache_location+CACHE_IDENTIFIER
+    cache_root     = cache_location+cache_identifier
     neurotools.util.tools.ensure_dir(cache_location)
     neurotools.util.tools.ensure_dir(cache_root)
     
     def cached(f):
         '''
-        The `disk_cacher` function constructs a decorator 
-        `cached` that can be used to wrap functions to 
-        memoize their results to disk. `cached` returns the
-        `decorated` object which is constructed by
-        calling the inner function `wrapped`.
+        The ``disk_cacher`` function constructs a decorator 
+        ``cached`` that can be used to wrap functions to 
+        memoize their results to disk. ``cached`` returns the
+        ``decorated`` object which is constructed by
+        calling the inner function ``wrapped``.
         
             cached <-- disk_cacher(location,...)
             caching_function <-- cached(somefunction)
@@ -1010,12 +897,12 @@ def disk_cacher(
             Parameters
             ----------
             *args
-                Arguments forward to the `locate_cached` 
+                Arguments forward to the ``locate_cached`` 
                 function. Matching cache entries will be 
                 deleted.
             **kwargs
                 Keyword arguments forward to the 
-                `locate_cached` function Matching cache 
+                ``locate_cached`` function Matching cache 
                 entries will be deleted.
             '''
             for method in VALID_METHODS:
@@ -1057,7 +944,7 @@ def disk_cacher(
         def locate(f,*args,**kwargs):
             '''
             A version of the decorator that simply locates 
-            the cache file. The result of `locate_cached` is
+            the cache file. The result of ``locate_cached`` is
             returned directly. It is a tuple:
             
                 (fn,sig,path,filename,location)
@@ -1068,7 +955,7 @@ def disk_cacher(
                 File name of cache entry without extension
             sig: tuple
                 Tuple of (args,kwargs) info from 
-                `argument_signature()`
+                ``argument_signature()``
             path:str
                 Directory containing cache file    
             filename: str  
@@ -1096,7 +983,7 @@ def hierarchical_cacher(fast_to_slow,
         write_back=True,
         verbose=False,
         allow_mutable_bindings=False,
-        CACHE_IDENTIFIER ='.__neurotools_cache__'):
+        cache_identifier ='neurotools_cache'):
     '''
     Construct a filesystem cache defined in terms of a 
     hierarchy from faster to slower (fallback) caches.
@@ -1109,12 +996,12 @@ def hierarchical_cacher(fast_to_slow,
         
     Other Parameters
     ----------------
-    method: string, default 'npy'
+    method: string, default ``'npy'``
         cache storing method;
     write_back : bool, default True
         whether to automatically copy newly computed cache 
         values to the slower caches
-    verbose : bool, defaults to `False`
+    verbose : bool, defaults to ``False``
         whether to print detailed logging iformation to 
         standard out when manipulating the cache
     allow_mutable_bindings : bool, default False
@@ -1125,7 +1012,7 @@ def hierarchical_cacher(fast_to_slow,
         cacher cannot detect the implementation different.
         Consequentially, it cannot tell whether old cached 
         values are invalid. 
-    CACHE_IDENTIFIER : str, default '.__neurotools_cache__'
+    cache_identifier : str, default 'neurotools_cache'
         (sub)folder name to store cached results
     
     Returns
@@ -1145,7 +1032,7 @@ def hierarchical_cacher(fast_to_slow,
                 write_back             = write_back,
                 verbose                = verbose,
                 allow_mutable_bindings = allow_mutable_bindings,
-                CACHE_IDENTIFIER       = CACHE_IDENTIFIER)(f)
+                cache_identifier       = cache_identifier)(f)
             all_cachers.append(f)
         # use write-back only on the fast cache
         location = slow_to_fast[-1]
@@ -1154,7 +1041,7 @@ def hierarchical_cacher(fast_to_slow,
             write_back             = True,
             verbose                = verbose,
             allow_mutable_bindings = allow_mutable_bindings,
-            CACHE_IDENTIFIER       = CACHE_IDENTIFIER)(f)
+            cache_identifier       = cache_identifier)(f)
         def purge(*args,**kwargs):
             '''
             Purge each of the constituent cachers
@@ -1173,30 +1060,30 @@ def scan_cachedir(
     verbose=False,
     **kw):
     '''
-    Retrieve all entries in `cachedir`, unpacking their 
+    Retrieve all entries in ``cachedir``, unpacking their 
     encoded arguments.
     
     Parameters
     ----------
     cachedir: str
         Cache directory to scan, e.g. 
-        `__neurotools_cache__/…/…/…/somefunction`
+        ``__neurotools_cache__/…/…/…/somefunction``
     
     Other Parameters
     ----------------
-    method: str; default 'npy'
-        Can be 'npy' or 'mat'
+    method: str; default ``'npy'``
+        Can be ``'npy'`` or ``'mat'``
     verbose: boolean; default False
     **kw:
-        Forwarded to `file_string_to_signature()`; 
-        See `file_string_to_signature()` for details.
+        Forwarded to ``file_string_to_signature()``; 
+        See ``file_string_to_signature()`` for details.
         
     Returns
     -------
     :dict
-        `filename -> (args,varags)` dictionary, where
-        `args` is a `parameter_name -> value` dictionary
-        and `varargs` is a list of extra arguments, if 
+        ``filename -> (args,varags)`` dictionary, where
+        ``args`` is a ``parameter_name -> value`` dictionary
+        and ``varargs`` is a list of extra arguments, if 
         any.
     '''
     if not method.startswith('.'):
@@ -1278,3 +1165,194 @@ def scan_cachedir(
                     len(double_failed))
 
     return results
+    
+    
+    
+
+def base64hash(obj):
+    '''
+    Retrieve a base-64 encoded hash for an object.
+    This uses the built-in ``encode`` function to convert an object to
+    ``utf-8``, then calls ``hashlib.sha224(ss).digest()`` to create a hash,
+    finally packaging the result in base-64.
+    
+    Parameters
+    ----------
+    obj: object
+    
+    Returns
+    -------
+    code: str
+    '''
+    try:
+        ss = ss.encode('UTF-8')
+    except:
+        ss = repr(obj).encode('UTF-8')
+    code = base64.urlsafe_b64encode(\
+            str(hashlib.sha224(ss).digest()).encode('UTF-8')
+        ).decode().replace('=','')
+    return code
+
+def base64hash2byte(obj):
+    '''
+    Retrieve first two bytes of a base-64 encoded has for 
+    an object.
+    
+    Parameters
+    ----------
+    obj: object
+    
+    Returns
+    -------
+    code: str
+    '''
+    try:
+        ss = ss.encode('UTF-8')
+    except:
+        ss = repr(obj).encode('UTF-8')
+    bytes = hashlib.sha224(ss).digest()
+    code = base64.urlsafe_b64encode(\
+            str(bytes[:2]).encode('UTF-8')
+        ).decode().replace('=','')
+    return code
+    
+@neurotools.jobs.ndecorator.memoize
+def function_hash_with_subroutines(f,force=False):
+    '''
+    Functions may change if their subroutines change. This 
+    function computes a hash value that is sensitive to 
+    changes in the source code, docstring, argument 
+    specification, name, module, and subroutines.
+
+    This is a recursive procedure with a fair amount of 
+    overhead. To allow for the possibility of mutual 
+    recursion, subroutines are excluded from the hash if 
+    the function has already been visited.
+
+    This does not use the built-in hash function for 
+    functions in python.
+
+    **Ongoing development notes**
+
+    *Is memoization possible?* Making memoization compatible 
+    with graceful handling of potentially complex mutually 
+    recurrent call structures is tricky. Each function 
+    generates a call tree, which does not expand a node if
+    it is already present in the call tree structure. 
+    Therefore there are many possible hash values for an 
+    intermediate function depending on how far it's call 
+    tree gets expanded, which depends on what has been 
+    expanded and encountered so far. Therefore, we cannot
+    cache these intermediate values.
+
+    *Note:* the topology of a mutually recurrent call 
+    structure cannot change without changing the source 
+    code of at least one function in the call graph? 
+    So it suffices to (1) hash the subroutines, (2) 
+    expand the call graph (potentially excluding standard 
+    and system library functions), (3) grab the non-
+    recursive hash for each of these functions, 
+    and (4) then generate the subroutine dependent hash by 
+    combining the non-recursive hash with the hash of a 
+    datastructure representing the subroutine "profile" 
+    obtained from the call graph.
+    
+    We assume that any decorators wrapping the function do 
+    not modify it's computation, and can safely be stripped.
+
+    Note that this function cannot detect changes in 
+    effective function behavior that result from changes 
+    in global variables or mutable scope that has been 
+    closed over.
+    
+    Parameters
+    ----------
+    force: boolean
+        force muse be true, otherwise this function will 
+        fail with a warning. 
+    
+    Returns
+    -------
+    :str
+        Hash of function
+    '''
+    if not force:
+        raise NotImplementedError(
+        'It is not possible to hash a function reliably')
+
+    # repeatedly expand list of subroutines
+    to_expand = {f}
+    expanded  = set()
+    while len(to_expand)>0:
+        new_subroutines = set()
+        for g in to_expand: 
+            new_subroutines|=get_subroutines(g)
+        expanded |= to_expand
+        to_expand = new_subroutines - expanded
+    # we now have a set, we need to provide some ordering 
+    # over that set sort the hash values and hash that
+    return hash(tuple(sorted(map(
+        function_hash_no_subroutines,expanded))))
+        
+def combine_caches(cache_root,f):
+    '''
+    Merge all cache folders for function ``f`` 
+    by copying cache files into the current cache folder.
+    
+    Usually, the existence of multiple cache folders 
+    indicates that cache files were generated using 
+    versions of ``f`` with different source code. However, 
+    you may want to merge caches if you are certain that 
+    such changes code did not change the function's 
+    behavior.
+    
+    Parameters
+    ----------
+    cache_root: str
+        path to the top-level cache directory
+    f: function
+        cached function to merge
+    '''
+    fs = function_signature(f)
+    copy_to = fs.split('.')[-1]
+    parent = os.path.join(
+        cache_root,
+        os.sep.join(fs.split('.')[:2]))
+    copy_from = {*os.listdir(parent)} - {copy_to}
+    for fr in copy_from:
+        for fn in os.listdir(parent+os.sep+fr):
+            fto = parent+os.sep+copy_to+os.sep+fn
+            ffr = parent+os.sep+fr+os.sep+fn
+            if not os.path.exists(fto):
+                shutil.copy2(ffr,fto)
+    return copy_to
+                
+def exists(cache_root,f,method,*args,**kwargs):
+    '''
+    Check if a cached result for ``f(*args,**kwargs)`` 
+    of type ``method`` exists in cache ``cache_root``.
+    
+    Parameters
+    ----------
+    cache_root: str
+        directory/path as string
+    f: function
+        Function being cached
+    method: str
+        Cache file extension e.g. ``"npy"``, "``mat``", etc. 
+    args: iterable
+        function parameters
+    kwargs: dict
+        function keyword arguments
+    
+    Returns
+    -------
+    :boolean
+        True if the cache file exists
+    '''
+    return os.path.exists(
+        locate_cached(
+            cache_root,f,method,*args)[-1])
+                
+                
+                

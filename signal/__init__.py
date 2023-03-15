@@ -1570,12 +1570,45 @@ def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
     return x-(np.nanmean if ignore_nan else np.mean)(x,axis=axis)[theslice]
 
-def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
+def zeromedian(x,axis=0,verbose=False,ignore_nan=True):
+    '''
+    Remove the median trend from data
+    
+    Parameters
+    ----------
+    x : np.array
+        Data to remove mean trend from
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+        Axis over which to take the median; 
+        forwarded to np.mean axis parameter
+    
+    Returns
+    -------
+    x: np.array
+        Copy of x shifted so that median is zero.
+    '''
+    x = np.array(x)
+    if np.prod(x.shape)==0:
+        return x
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    return x-(np.nanmedian if ignore_nan else np.median)(x,axis=axis)[theslice]
+
+def zscore(
+    x,axis=0,
+    regularization=1e-30,
+    verbose=False,
+    ignore_nan=True,
+    ddof=0
+    ):
     '''
     Z-scores data, defaults to the first axis.
-    A regularization factor is added to the standard deviation to preven
-    numerical instability when the standard deviation is extremely small.
-    The default refularization is 1e-30.
+    
+    A regularization factor is added to the standard deviation to 
+    prevent numerical instability when the standard deviation is 
+    small. The default refularization is 1e-30.
     
     Parameters
     ----------
@@ -1589,21 +1622,63 @@ def zscore(x,axis=0,regularization=1e-30,verbose=False,ignore_nan=True):
     x: np.ndarray
         (x-mean(x))/std(x)
     '''
+    x = np.float32(x)
     x = zeromean(x,axis=axis,ignore_nan=ignore_nan)
     if np.prod(x.shape)==0:
         return x
     theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
-    ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis)+regularization
+    ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis,ddof=ddof)+regularization
+    return x/ss[theslice]
+
+def unitsum(
+    x,
+    axis=None,
+    verbose=False,
+    ignore_nan=True,
+    ddof=0
+    ):
+    '''
+    Normalize a np.ndarray to sum to 1. 
+    The default behavior is to act over all axes. 
+    
+    Parameters
+    ----------
+    x: np.ndarray
+        Array-like real-valued signal.
+    axis: int
+        Axis to zscore; default is 0.
+
+    Returns
+    -------
+    x: np.ndarray
+    '''
+    x = np.float64(x)
+    
+    # (I don't know how this happens, but ignore it if it does)
+    if np.prod(x.shape)==0: return x
+    
+    # Normalize jointly 
+    if axis is None: return x/np.sum(x)
+        
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    ss = (np.nansum if ignore_nan else np.sum)(x,axis=axis)
     return x/ss[theslice]
     
 def gaussianize(x,axis=-1,verbose=False):
     '''
     Use percentiles to force a timeseries to have a normal 
     distribution.
+    
+    Parameters
+    ----------
+    x: np.ndarray
+    axis: int; default -1
+    verbose: boolean; default False
     '''
     x = np.array(x)
     if np.prod(x.shape)==0: return x
-    return ndtri((rankdata(x,axis=axis))/(x.shape[axis]+1))
+    n = np.sum(np.isfinite(x),axis=axis)+1
+    return ndtri((rankdata(x,axis=axis,nan_policy='omit'))/n)
 
 def uniformize(x,axis=-1,killeps=None):
     '''
@@ -1645,23 +1720,63 @@ def uniformize(x,axis=-1,killeps=None):
         `uniformize()`
     '''
     x_ = np.float32(x)
-    if np.min(x_)<0.0:
+    if killeps and np.min(x_)<0.0:
         raise ValueError(
-            '`uniformize` was written for non-negative '
-            'values only and has some quirks that have been'
-            ' retained for backwards compatibility.')
+            'The `killeps` flag is presently only '
+            'supported for non-negative data. X contains '
+            'negative values.')
+            
+    # record number of missing values in the data
+    n0 = np.sum(np.isfinite(x_),axis=axis)
+        
+    # remove values within `eps` of zero
     if killeps is not None:
-        x_[np.abs(x)<killeps*std(x)] = NaN
-    ranks  = scipy.stats.rankdata(x_,axis=axis)
+        to_remove = np.abs(x)<killeps*std(x)
+        x_[to_remove] = NaN
     
-    # NaN end up ranked at the end (high ranks)
-    # Detect them and set their rank to zero, since
-    # these correspond to small clipped values.
-    used = np.sum(np.isfinite(x_))
-    ranks[ranks>used] = 0
+    # this will drop both non-finite values
+    # and any values close to zero that we've clipped
+    ranks = rankdata(x_,axis=axis,nan_policy='omit')
     
-    scaled = np.clip(ranks/used,0,1)
-    return scaled
+    
+    if killeps is not None:
+        # Detect them and set their rank to zero, since
+        # these correspond to small clipped values.
+        ranks[to_remove] = 0
+        p = np.clip(ranks/used,0,1)
+    else:
+        # We'll normalize ranks based on number of variables included
+        n = np.sum(np.isfinite(x_),axis=axis)
+        p = (ranks-0.5) / n
+    return p
+
+def normalize(t,method):
+    '''
+    Parameters
+    ----------
+    t: np.ndarray
+        Signal to normalize
+    method: str
+        'zeromean'
+        'zscore'
+        'gaussian'
+        'rank'
+        'percentile'
+    '''
+    t = np.array(t).ravel()
+    oldshape = t.shape
+    ok = np.isfinite(t)
+    t = t[ok]
+    if   method=='zeromean'  : t = zeromean(t)
+    if   method=='zeromedian': t = zeromedian(t)
+    elif method=='zscore'    : t = zscore(t)
+    elif method=='gaussian'  : t = gaussianize(t)
+    elif method=='rank'      : t = uniformize(t)
+    elif method=='percentile': t = uniformize(t)*100
+    result = np.full(oldshape,np.NaN,t.dtype)
+    result[ok] = t
+    return result.reshape(oldshape)
+
 
 def invert_uniformize(x,p,axis=-1,killeps=None):
     '''
@@ -1797,7 +1912,14 @@ def span(data):
         np.max(data)-np.min(data)
     '''
     data = np.array(data).ravel()
-    return np.max(data)-np.min(data)
+    return np.nanmax(data)-np.nanmin(data)
+    
+    
+def mintomax(x):
+    mnmx = tuple(np.nanpercentile(x,[0,100]))
+    print('%0.2f–%0.2f'%mnmx)
+    return mnmx
+
 
 def unit_length(x,axis=0):
     '''

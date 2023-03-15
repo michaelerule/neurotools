@@ -11,10 +11,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.signal</li>
       <li class="wy-breadcrumbs-aside">
@@ -1650,12 +1653,45 @@
     <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="zscore"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zscore">[docs]</a><span class="k">def</span> <span class="nf">zscore</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="zeromedian"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zeromedian">[docs]</a><span class="k">def</span> <span class="nf">zeromedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Remove the median trend from data</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : np.array</span>
+<span class="sd">        Data to remove mean trend from</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    axis : int or tuple, default None</span>
+<span class="sd">        Axis over which to take the median; </span>
+<span class="sd">        forwarded to np.mean axis parameter</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x: np.array</span>
+<span class="sd">        Copy of x shifted so that median is zero.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="zscore"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.zscore">[docs]</a><span class="k">def</span> <span class="nf">zscore</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">regularization</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Z-scores data, defaults to the first axis.</span>
-<span class="sd">    A regularization factor is added to the standard deviation to preven</span>
-<span class="sd">    numerical instability when the standard deviation is extremely small.</span>
-<span class="sd">    The default refularization is 1e-30.</span>
+<span class="sd">    </span>
+<span class="sd">    A regularization factor is added to the standard deviation to </span>
+<span class="sd">    prevent numerical instability when the standard deviation is </span>
+<span class="sd">    small. The default refularization is 1e-30.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1669,21 +1705,63 @@
 <span class="sd">    x: np.ndarray</span>
 <span class="sd">        (x-mean(x))/std(x)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">zeromean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">ignore_nan</span><span class="o">=</span><span class="n">ignore_nan</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
     <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-    <span class="n">ss</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">+</span><span class="n">regularization</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="n">ddof</span><span class="p">)</span><span class="o">+</span><span class="n">regularization</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">/</span><span class="n">ss</span><span class="p">[</span><span class="n">theslice</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="unitsum"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unitsum">[docs]</a><span class="k">def</span> <span class="nf">unitsum</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ignore_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Normalize a np.ndarray to sum to 1. </span>
+<span class="sd">    The default behavior is to act over all axes. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.ndarray</span>
+<span class="sd">        Array-like real-valued signal.</span>
+<span class="sd">    axis: int</span>
+<span class="sd">        Axis to zscore; default is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x: np.ndarray</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    
+    <span class="c1"># (I don&#39;t know how this happens, but ignore it if it does)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
+    
+    <span class="c1"># Normalize jointly </span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">narray</span><span class="o">.</span><span class="n">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nansum</span> <span class="k">if</span> <span class="n">ignore_nan</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">)(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">/</span><span class="n">ss</span><span class="p">[</span><span class="n">theslice</span><span class="p">]</span></div>
     
 <div class="viewcode-block" id="gaussianize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.gaussianize">[docs]</a><span class="k">def</span> <span class="nf">gaussianize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Use percentiles to force a timeseries to have a normal </span>
 <span class="sd">    distribution.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: np.ndarray</span>
+<span class="sd">    axis: int; default -1</span>
+<span class="sd">    verbose: boolean; default False</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
-    <span class="k">return</span> <span class="n">ndtri</span><span class="p">((</span><span class="n">rankdata</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span></div>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">ndtri</span><span class="p">((</span><span class="n">rankdata</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">))</span><span class="o">/</span><span class="n">n</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="uniformize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.uniformize">[docs]</a><span class="k">def</span> <span class="nf">uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
@@ -1725,23 +1803,63 @@
 <span class="sd">        `uniformize()`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">0.0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">killeps</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">0.0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;`uniformize` was written for non-negative &#39;</span>
-            <span class="s1">&#39;values only and has some quirks that have been&#39;</span>
-            <span class="s1">&#39; retained for backwards compatibility.&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;The `killeps` flag is presently only &#39;</span>
+            <span class="s1">&#39;supported for non-negative data. X contains &#39;</span>
+            <span class="s1">&#39;negative values.&#39;</span><span class="p">)</span>
+            
+    <span class="c1"># record number of missing values in the data</span>
+    <span class="n">n0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x_</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        
+    <span class="c1"># remove values within `eps` of zero</span>
     <span class="k">if</span> <span class="n">killeps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">x_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&lt;</span><span class="n">killeps</span><span class="o">*</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">NaN</span>
-    <span class="n">ranks</span>  <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">rankdata</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">to_remove</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&lt;</span><span class="n">killeps</span><span class="o">*</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_</span><span class="p">[</span><span class="n">to_remove</span><span class="p">]</span> <span class="o">=</span> <span class="n">NaN</span>
     
-    <span class="c1"># NaN end up ranked at the end (high ranks)</span>
-    <span class="c1"># Detect them and set their rank to zero, since</span>
-    <span class="c1"># these correspond to small clipped values.</span>
-    <span class="n">used</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x_</span><span class="p">))</span>
-    <span class="n">ranks</span><span class="p">[</span><span class="n">ranks</span><span class="o">&gt;</span><span class="n">used</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># this will drop both non-finite values</span>
+    <span class="c1"># and any values close to zero that we&#39;ve clipped</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">rankdata</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span><span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">)</span>
     
-    <span class="n">scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">ranks</span><span class="o">/</span><span class="n">used</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">scaled</span></div>
+    
+    <span class="k">if</span> <span class="n">killeps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Detect them and set their rank to zero, since</span>
+        <span class="c1"># these correspond to small clipped values.</span>
+        <span class="n">ranks</span><span class="p">[</span><span class="n">to_remove</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">ranks</span><span class="o">/</span><span class="n">used</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># We&#39;ll normalize ranks based on number of variables included</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x_</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">ranks</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">method</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: np.ndarray</span>
+<span class="sd">        Signal to normalize</span>
+<span class="sd">    method: str</span>
+<span class="sd">        &#39;zeromean&#39;</span>
+<span class="sd">        &#39;zscore&#39;</span>
+<span class="sd">        &#39;gaussian&#39;</span>
+<span class="sd">        &#39;rank&#39;</span>
+<span class="sd">        &#39;percentile&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">oldshape</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">ok</span><span class="p">]</span>
+    <span class="k">if</span>   <span class="n">method</span><span class="o">==</span><span class="s1">&#39;zeromean&#39;</span>  <span class="p">:</span> <span class="n">t</span> <span class="o">=</span> <span class="n">zeromean</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span>   <span class="n">method</span><span class="o">==</span><span class="s1">&#39;zeromedian&#39;</span><span class="p">:</span> <span class="n">t</span> <span class="o">=</span> <span class="n">zeromedian</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;zscore&#39;</span>    <span class="p">:</span> <span class="n">t</span> <span class="o">=</span> <span class="n">zscore</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;gaussian&#39;</span>  <span class="p">:</span> <span class="n">t</span> <span class="o">=</span> <span class="n">gaussianize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;rank&#39;</span>      <span class="p">:</span> <span class="n">t</span> <span class="o">=</span> <span class="n">uniformize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;percentile&#39;</span><span class="p">:</span> <span class="n">t</span> <span class="o">=</span> <span class="n">uniformize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">oldshape</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">[</span><span class="n">ok</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">oldshape</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="invert_uniformize"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.invert_uniformize">[docs]</a><span class="k">def</span> <span class="nf">invert_uniformize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">killeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
@@ -1877,7 +1995,14 @@
 <span class="sd">        np.max(data)-np.min(data)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="mintomax"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.mintomax">[docs]</a><span class="k">def</span> <span class="nf">mintomax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">mnmx</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">x</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%0.2f</span><span class="s1">–</span><span class="si">%0.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">mnmx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mnmx</span></div>
+
 
 <div class="viewcode-block" id="unit_length"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.unit_length">[docs]</a><span class="k">def</span> <span class="nf">unit_length</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>

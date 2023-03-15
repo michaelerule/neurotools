@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.jobs.initialize_system_cache</li>
       <li class="wy-breadcrumbs-aside">
@@ -109,18 +112,18 @@
 <span class="c1">######################################################################</span>
 <span class="c1"># Setup advanced memoization</span>
 
-<div class="viewcode-block" id="purge_ram_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ram_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ram_cache</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="purge_ram_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ram_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ram_cache</span><span class="p">(</span><span class="n">cache_identifier</span><span class="o">=</span><span class="s1">&#39;neurotools_cache&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Deletes the ramdisk cache. USE WITH CAUTION. </span>
 <span class="sd">    </span>
 <span class="sd">    This will `rm -rf` the entire  `ramdisk_location` and is EXTREMELY</span>
 <span class="sd">    dangerous. It has been disabled and now raises `NotImplementedError`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache purging is dangerous and has been disabled&#39;</span><span class="p">);</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span> <span class="o">+</span> <span class="n">ramdisk_location</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span><span class="p">)</span></div>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span> <span class="o">+</span> <span class="n">ramdisk_location</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">cache_identifier</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="purge_ssd_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ssd_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ssd_cache</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="purge_ssd_cache"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.purge_ssd_cache">[docs]</a><span class="k">def</span> <span class="nf">purge_ssd_cache</span><span class="p">(</span><span class="n">cache_identifier</span> <span class="o">=</span><span class="s1">&#39;neurotools_cache&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Deletes the SSD drive cache. USE WITH CAUTION.</span>
 <span class="sd">    </span>
 <span class="sd">    This will `rm -rf` the entire  `level2_location` and is EXTREMELY</span>
@@ -129,7 +132,7 @@
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache purging is dangerous and has been disabled&#39;</span><span class="p">);</span></div>
 
 <div class="viewcode-block" id="du"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.du">[docs]</a><span class="k">def</span> <span class="nf">du</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the disk usave (`du`) of a file</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -149,7 +152,7 @@
 <span class="n">default_ramdisk_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/.neurotools_ramdisk&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="reset_ramdisk"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.reset_ramdisk">[docs]</a><span class="k">def</span> <span class="nf">reset_ramdisk</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">override_ramdisk_location</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This will create a 500GB ramdisk on debian linux. This allows in RAM </span>
 <span class="sd">    inter-process communication using the filesystem metaphore. It should</span>
 <span class="sd">    be considered dangerous. It runs shell commands that</span>
@@ -195,20 +198,23 @@
         <span class="n">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
     <span class="c1"># </span>
 
-<div class="viewcode-block" id="launch_cache_synchronizers"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers">[docs]</a><span class="k">def</span> <span class="nf">launch_cache_synchronizers</span><span class="p">(</span><span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Inter-process communication is mediated via shared caches mapped onto</span>
-<span class="sd">    the file-system. If a collection of processes are distributed over</span>
-<span class="sd">    a large filesystem, they may need to share data. </span>
+<div class="viewcode-block" id="launch_cache_synchronizers"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.launch_cache_synchronizers">[docs]</a><span class="k">def</span> <span class="nf">launch_cache_synchronizers</span><span class="p">(</span><span class="n">cache_identifier</span> <span class="o">=</span><span class="s1">&#39;neurotools_cache&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    **Depricated**; now raises ``NotImplementedError``. </span>
 <span class="sd">    </span>
-<span class="sd">    This solution has been depricated. </span>
-<span class="sd">    It now raises a `NotImplementedError`. </span>
+<span class="sd">    Inter-process communication is mediated via shared </span>
+<span class="sd">    caches mapped onto the file-system. If a collection of </span>
+<span class="sd">    processes are distributed over a large filesystem, </span>
+<span class="sd">    they may need to share data. </span>
 <span class="sd">    </span>
-<span class="sd">    This solution originally spawned rsync jobs to keep a collection of</span>
-<span class="sd">    locations in the filesystem synchronized. This is bad for the following</span>
-<span class="sd">    reasons. Mis-configuration can lead to loss of data. Not all jobs</span>
-<span class="sd">    may need to share all cache values. It is far better to implement</span>
-<span class="sd">    some sort of lazy protocol. </span>
+<span class="sd">    **Notes:**</span>
+<span class="sd">    </span>
+<span class="sd">    This solution originally spawned ``rsync`` jobs to keep </span>
+<span class="sd">    a  collection of locations in the filesystem </span>
+<span class="sd">    synchronized. This is bad for the following reasons:</span>
+<span class="sd">     - Mis-configuration can lead to loss of data. </span>
+<span class="sd">     - Not all job need to share all cache values.</span>
+<span class="sd">     - This sort of synchronization should be done lazily. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">ramdisk_location</span><span class="p">,</span><span class="n">level2_location</span><span class="p">,</span><span class="n">level3_location</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;cache synchronization overwites files; this is dangerous and it has been disabled&#39;</span><span class="p">);</span>
@@ -216,9 +222,9 @@
     <span class="c1"># persistant, we need to run an rsync job to keep them synchronized.</span>
     <span class="n">disk_cache_hierarchy</span> <span class="o">=</span> <span class="p">(</span><span class="n">ramdisk_location</span><span class="p">,</span><span class="n">level2_location</span><span class="p">,</span><span class="n">level3_location</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">disk_cache_hierarchy</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">source</span>       <span class="o">=</span> <span class="n">disk_cache_hierarchy</span><span class="p">[</span><span class="n">level</span>  <span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span>
-        <span class="n">destination</span>  <span class="o">=</span> <span class="n">disk_cache_hierarchy</span><span class="p">[</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span>
-        <span class="n">destination</span> <span class="o">+</span> <span class="n">CACHE_IDENTIFIER</span>
+        <span class="n">source</span>       <span class="o">=</span> <span class="n">disk_cache_hierarchy</span><span class="p">[</span><span class="n">level</span>  <span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">cache_identifier</span>
+        <span class="n">destination</span>  <span class="o">=</span> <span class="n">disk_cache_hierarchy</span><span class="p">[</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">cache_identifier</span>
+        <span class="n">destination</span> <span class="o">+</span> <span class="n">cache_identifier</span>
         <span class="c1"># quiet rsync command in update-archive mode</span>
         <span class="n">rsync</span> <span class="o">=</span> <span class="s2">&quot;rsync -aqu &#39;</span><span class="si">%s</span><span class="s2">/&#39; &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="n">destination</span><span class="p">)</span>
         <span class="c1"># Run the synchronization jobs at idle level</span>
@@ -241,8 +247,8 @@
 
 <div class="viewcode-block" id="initialize_caches"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.initialize_caches">[docs]</a><span class="k">def</span> <span class="nf">initialize_caches</span><span class="p">(</span><span class="n">level1</span><span class="o">=</span><span class="n">default_ramdisk_location</span><span class="p">,</span><span class="n">level2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">CACHE_IDENTIFIER</span> <span class="o">=</span><span class="s1">&#39;.__neurotools_cache__&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="n">cache_identifier</span> <span class="o">=</span><span class="s1">&#39;neurotools_cache&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Static cache initialization code</span>
 <span class="sd">    This should be run with caution</span>
 <span class="sd">    </span>
@@ -325,7 +331,7 @@
             <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
             <span class="n">allow_mutable_bindings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">CACHE_IDENTIFIER</span><span class="o">=</span><span class="n">CACHE_IDENTIFIER</span><span class="p">)</span>
+            <span class="n">cache_identifier</span><span class="o">=</span><span class="n">cache_identifier</span><span class="p">)</span>
 
     <span class="c1"># Replace in-memory memoization with disk-cached memoization</span>
     <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">initialize_system_cache</span><span class="o">.</span><span class="n">old_memoize</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">memoize</span>
@@ -334,13 +340,13 @@
     <span class="n">neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">memoize</span>                  <span class="o">=</span> <span class="n">new_memoize</span></div>
 
 <div class="viewcode-block" id="cache_test"><a class="viewcode-back" href="../../../neurotools.jobs.initialize_system_cache.html#neurotools.jobs.initialize_system_cache.cache_test">[docs]</a><span class="k">def</span> <span class="nf">cache_test</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Run a test of the disk cache to see if everything is ok; Called if</span>
 <span class="sd">    this script is run as main. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># test encoding of function arguments as a string</span>
     <span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ok&#39;</span><span class="p">,),</span><span class="o">*</span><span class="n">vargs</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; This docstring should be preserved by the decorator &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; This docstring should be preserved by the decorator &#39;&#39;&#39;</span>
         <span class="n">e</span><span class="p">,</span><span class="n">f</span> <span class="o">=</span> <span class="n">vargs</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;k&#39;</span> <span class="ow">in</span> <span class="n">kw</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">State is:&#39;</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>

@@ -128,17 +128,6 @@ def getPHP(wf):
     h  = max(wf)
     return h/x
 
-
-def minmax(wf):
-    ''' 
-    Normalize waveform based on extrema 
-    '''
-    a = np.min(wf)
-    b = np.max(wf)
-    wf -= a
-    wf /= (b-a)
-    return wf
-
 def normalized_waveform(wf):
     wf = sig.upsample(sig.zscore(wf),5)
     wf = realign_special(wf)

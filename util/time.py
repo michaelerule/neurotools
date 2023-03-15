@@ -130,30 +130,32 @@ def progress_bar(x,N=None):
     N: int
         Expected length of iterable (if generator)
     '''
-    if N is None:
-        x = list(x)
-        N = len(x)
-    K = int(np.floor(np.log10(N)))+1
-    pattern = ' %%%dd/%d'%(K,N)
-    wait_til_ms = systime.time()*1000
-    for i,x in enumerate(x):
-        time_ms = systime.time()*1000
-        if time_ms>=wait_til_ms:
-            r = i*50/N
-            k = int(r)
-            q = ' ▏▎▍▌▋▊▉'[int((r-k)*8)]
-            print(
-                '\r['+
-                ('█'*k)+    
-                q+
-                (' '*(50-k-1))+
-                ']%3d%%'%(i*100//N)+
-                (pattern%i),
-                end='',
-                flush=True)
-            wait_til_ms = time_ms+1000
-        yield x
-    print('\r'+' '*70+'\r',end='',flush=True)
+    try:
+        if N is None:
+            x = list(x)
+            N = len(x)
+        K = int(np.floor(np.log10(N)))+1
+        pattern = ' %%%dd/%d'%(K,N)
+        wait_til_ms = systime.time()*1000
+        for i,x in enumerate(x):
+            time_ms = systime.time()*1000
+            if time_ms>=wait_til_ms:
+                r = i*50/N
+                k = int(r)
+                q = ' ▏▎▍▌▋▊▉'[int((r-k)*8)]
+                print(
+                    '\r['+
+                    ('█'*k)+    
+                    q+
+                    (' '*(50-k-1))+
+                    ']%3d%%'%(i*100//N)+
+                    (pattern%i),
+                    end='',
+                    flush=True)
+                wait_til_ms = time_ms+1000
+            yield x
+    finally:
+        print('\r'+' '*70+'\r',end='',flush=True)
 
 pbar = progress_bar
 pb   = progress_bar

@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.jobs.ndecorator</li>
       <li class="wy-breadcrumbs-aside">
@@ -131,7 +134,7 @@
         <span class="s1">&#39;advanced decorator functions missing&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="listit"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.listit">[docs]</a><span class="k">def</span> <span class="nf">listit</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts nested tuple to nested list</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -146,26 +149,30 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">listit</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="n">t</span></div>
 
 <div class="viewcode-block" id="tupleit"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.tupleit">[docs]</a><span class="k">def</span> <span class="nf">tupleit</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Converts nested list to nested tuple</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Recursively convert nested iteable to nested tuple.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    t: iterable</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    result: tuple</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">tupleit</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="n">t</span></div>
 
-<div class="viewcode-block" id="sanitize"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.sanitize">[docs]</a><span class="k">def</span> <span class="nf">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;liberal&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Converts an argument signature into a standard format. </span>
-<span class="sd">    Lists will be converted to tuples. Non-hashable types </span>
-<span class="sd">    will cause an error.</span>
 
-<span class="sd">    &quot;strict&quot; mode requires that all data be numeric </span>
+<div class="viewcode-block" id="sanitize"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.sanitize">[docs]</a><span class="k">def</span> <span class="nf">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;liberal&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Recursively convert an argument signature into a </span>
+<span class="sd">    standard format. </span>
+<span class="sd">    Lists will be converted to tuples. </span>
+<span class="sd">    Non-hashable types will cause an error.</span>
+
+<span class="sd">    &quot;strict&quot; mode requires data be numeric </span>
 <span class="sd">    primitives or strings containing &quot;very safe&quot; chracters </span>
-<span class="sd">    a-zA-Z0-9 and space.</span>
+<span class="sd">    ``a-zA-Z0-9`` and space.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -190,6 +197,8 @@
         <span class="n">sig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
     
+    <span class="c1"># This branch is used for</span>
+    <span class="c1"># inspect.ArgSpec instances</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
@@ -197,6 +206,7 @@
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sig</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">__PYTHON_2__</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,(</span><span class="n">unicode</span><span class="p">,)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">__PYTHON_2__</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sanitize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sig</span><span class="p">),</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,)):</span>
@@ -231,7 +241,7 @@
     <span class="k">return</span> <span class="n">sig</span></div>
 
 <div class="viewcode-block" id="summarize_function"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.summarize_function">[docs]</a><span class="k">def</span> <span class="nf">summarize_function</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Prints function information, </span>
 <span class="sd">    Used for debugging decorators.</span>
 <span class="sd">    </span>
@@ -254,10 +264,10 @@
 
 
 <div class="viewcode-block" id="argument_signature"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.argument_signature">[docs]</a><span class="k">def</span> <span class="nf">argument_signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert the function arguments and values to a unique </span>
-<span class="sd">    set. Throws ValueError if the provided arguments cannot </span>
-<span class="sd">    match argspec.</span>
+<span class="sd">    tuple. Throws ValueError if the provided arguments cannot </span>
+<span class="sd">    match the function&#39;s argspec.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -273,8 +283,17 @@
 <span class="sd">    sig: tuple</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">named_store</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># map from parameter names to values</span>
-    <span class="n">named</span><span class="p">,</span><span class="n">vargname</span><span class="p">,</span><span class="n">kwargname</span><span class="p">,</span><span class="n">defaults</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span>
-        <span class="n">function</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">named</span><span class="p">,</span><span class="n">vargname</span><span class="p">,</span><span class="n">kwargname</span><span class="p">,</span><span class="n">defaults</span> <span class="o">=</span> \
+            <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">DeprecationWarning</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="n">named</span>     <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">args</span>
+        <span class="n">vargname</span>  <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">varargs</span>
+        <span class="n">kwargname</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">varkw</span>
+        <span class="n">defaults</span>  <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">defaults</span>
+
+        
     <span class="c1"># Pattern matching can give rise to lists in the</span>
     <span class="c1"># &quot;named&quot; variable returned here. We need to convert</span>
     <span class="c1"># these to something hashable.</span>
@@ -349,7 +368,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="print_signature"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.print_signature">[docs]</a><span class="k">def</span> <span class="nf">print_signature</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Formats the argument signature for printing.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -366,9 +385,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">vargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">+</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">vargs</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="timed"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.timed">[docs]</a><span class="nd">@robust_decorator</span>
+<span class="nd">@robust_decorator</span>
 <span class="k">def</span> <span class="nf">timed</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Timer decorator: Modifies a function to reutrn </span>
 <span class="sd">    a tuple of (runtime, result).</span>
 <span class="sd">    </span>
@@ -390,12 +409,12 @@
     <span class="n">t0</span>     <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">current_milli_time</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">t1</span>     <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">current_milli_time</span><span class="p">()</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">),</span> <span class="n">result</span></div>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">),</span> <span class="n">result</span>
 
 <span class="n">__memoization_caches__</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 <div class="viewcode-block" id="clear_memoized"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.clear_memoized">[docs]</a><span class="k">def</span> <span class="nf">clear_memoized</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Clear the caches of all memoized functions</span>
 <span class="sd">    </span>
 <span class="sd">    Other Parameters</span>
@@ -410,7 +429,7 @@
         <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="memoize"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.memoize">[docs]</a><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Memoization decorator</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -440,7 +459,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.unwrap">[docs]</a><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Strips decorators from a decorated function, provided that the</span>
 <span class="sd">    decorators were so kind as to set the .__wrapped__ attribute</span>
 <span class="sd">    </span>
@@ -468,7 +487,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing the memoize decorator&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ok&#39;</span><span class="p">,),</span><span class="o">*</span><span class="n">vargs</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; This docstring should be preserved by the decorator &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; This docstring should be preserved by the decorator &#39;&#39;&#39;</span>
         <span class="n">e</span><span class="p">,</span><span class="n">f</span> <span class="o">=</span> <span class="n">vargs</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;k&#39;</span> <span class="ow">in</span> <span class="n">kw</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>

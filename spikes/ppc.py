@@ -468,8 +468,8 @@ def _temp_code_for_exploring_chance_level_delete_later():
 
 def ppc_chance_level(nSamples,nrandom,p,nTapers=1):
     '''
-    **Caution:** This underestimates chance level in the 
-    presence of Spike trian or LFP autocorrelations.
+    **Caution:** This underestimates chance level if 
+    spikes or the LFP signal are correlated in time.
     
     Parameters
     ----------

@@ -29,7 +29,7 @@ from neurotools.jobs import cache as neurotools_cache
 ######################################################################
 # Setup advanced memoization
 
-def purge_ram_cache(CACHE_IDENTIFIER='.__neurotools_cache__'):
+def purge_ram_cache(cache_identifier='neurotools_cache'):
     '''
     Deletes the ramdisk cache. USE WITH CAUTION. 
     
@@ -37,9 +37,9 @@ def purge_ram_cache(CACHE_IDENTIFIER='.__neurotools_cache__'):
     dangerous. It has been disabled and now raises `NotImplementedError`
     '''
     raise NotImplementedError('cache purging is dangerous and has been disabled');
-    os.system('rm -rf ' + ramdisk_location + os.sep + CACHE_IDENTIFIER)
+    os.system('rm -rf ' + ramdisk_location + os.sep + cache_identifier)
 
-def purge_ssd_cache(CACHE_IDENTIFIER ='.__neurotools_cache__'):
+def purge_ssd_cache(cache_identifier ='neurotools_cache'):
     '''
     Deletes the SSD drive cache. USE WITH CAUTION.
     
@@ -115,20 +115,23 @@ def reset_ramdisk(force=False,override_ramdisk_location=None):
         call(cmd)
     # 
 
-def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
+def launch_cache_synchronizers(cache_identifier ='neurotools_cache'):
     '''
-    Inter-process communication is mediated via shared caches mapped onto
-    the file-system. If a collection of processes are distributed over
-    a large filesystem, they may need to share data. 
+    **Depricated**; now raises ``NotImplementedError``. 
     
-    This solution has been depricated. 
-    It now raises a `NotImplementedError`. 
+    Inter-process communication is mediated via shared 
+    caches mapped onto the file-system. If a collection of 
+    processes are distributed over a large filesystem, 
+    they may need to share data. 
     
-    This solution originally spawned rsync jobs to keep a collection of
-    locations in the filesystem synchronized. This is bad for the following
-    reasons. Mis-configuration can lead to loss of data. Not all jobs
-    may need to share all cache values. It is far better to implement
-    some sort of lazy protocol. 
+    **Notes:**
+    
+    This solution originally spawned ``rsync`` jobs to keep 
+    a  collection of locations in the filesystem 
+    synchronized. This is bad for the following reasons:
+     - Mis-configuration can lead to loss of data. 
+     - Not all job need to share all cache values.
+     - This sort of synchronization should be done lazily. 
     '''
     global ramdisk_location,level2_location,level3_location
     raise NotImplementedError('cache synchronization overwites files; this is dangerous and it has been disabled');
@@ -136,9 +139,9 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
     # persistant, we need to run an rsync job to keep them synchronized.
     disk_cache_hierarchy = (ramdisk_location,level2_location,level3_location)
     for level in range(len(disk_cache_hierarchy)-1):
-        source       = disk_cache_hierarchy[level  ] + os.sep + CACHE_IDENTIFIER
-        destination  = disk_cache_hierarchy[level+1] + os.sep + CACHE_IDENTIFIER
-        destination + CACHE_IDENTIFIER
+        source       = disk_cache_hierarchy[level  ] + os.sep + cache_identifier
+        destination  = disk_cache_hierarchy[level+1] + os.sep + cache_identifier
+        destination + cache_identifier
         # quiet rsync command in update-archive mode
         rsync = "rsync -aqu '%s/' '%s' "%(source,destination)
         # Run the synchronization jobs at idle level
@@ -161,7 +164,7 @@ def launch_cache_synchronizers(CACHE_IDENTIFIER ='.__neurotools_cache__'):
 
 def initialize_caches(level1=default_ramdisk_location,level2=None,level3=None,force=False,
     verbose=False,
-    CACHE_IDENTIFIER ='.__neurotools_cache__'):
+    cache_identifier ='neurotools_cache'):
     '''
     Static cache initialization code
     This should be run with caution
@@ -245,7 +248,7 @@ def initialize_caches(level1=default_ramdisk_location,level2=None,level3=None,fo
             method='npy',
             allow_mutable_bindings=True,
             verbose=verbose,
-            CACHE_IDENTIFIER=CACHE_IDENTIFIER)
+            cache_identifier=cache_identifier)
 
     # Replace in-memory memoization with disk-cached memoization
     neurotools.jobs.initialize_system_cache.old_memoize = neurotools.jobs.ndecorator.memoize

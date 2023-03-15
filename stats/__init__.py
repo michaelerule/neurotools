@@ -28,6 +28,7 @@ from . import mixtures
 from . import modefind
 from . import pvalues
 from . import regressions
+from . import tests
 
 import numpy as np
 import scipy
@@ -49,9 +50,9 @@ def partition_data(x,y,NFOLD=3):
     
     Parameters
     ----------
-    x: np.array
+    x: Ncovariates × Nsamples np.array
         Independent variables
-    y: np.array
+    y: Npredicted × Nsamples np.array
         Dependent variables
     
     Other Parameters
@@ -75,10 +76,10 @@ def partition_data(x,y,NFOLD=3):
     for i in range(NFOLD):
         train  =  np.int32(np.concatenate(groups[[*({*range(NFOLD)}-{i})]]))
         test   =  np.int32(groups[i])
-        xtrain = x[:,train]
-        ytrain = y[:,train]
-        xtest  = x[:,test]
-        ytest  = y[:,test]
+        xtrain = x[...,train]
+        ytrain = y[...,train]
+        xtest  = x[...,test]
+        ytest  = y[...,test]
         yield xtrain,ytrain,xtest,ytest
 
 def partition_trials_for_crossvalidation(x,K,shuffle=False):
@@ -298,10 +299,14 @@ def trial_crossvalidated_least_squares(a,b,K,
 
     return x,np.concatenate(Bhat),errs
 
-def partition_data_for_crossvalidation(a,b,K):
+def partition_data_for_crossvalidation(
+    a,b,K,
+    discard_mean=False
+    ):
     '''
     For predicting B from A, partition both training and 
     testing data into K-fold cross-validation blocks.
+    This operates over the first axis of the array
 
     Parameters
     ----------
@@ -312,6 +317,11 @@ def partition_data_for_crossvalidation(a,b,K):
         dependent variables
     K : int
         Number of cross-validation blocks
+    
+    Other Parameters
+    ----------------
+    discard_mean: boolean; default False
+        Whether to remove the means from all variables.
     
     Returns
     -------
@@ -344,7 +354,15 @@ def partition_data_for_crossvalidation(a,b,K):
         # Testing data
         testB = b[start:stop,...]
         testA = a[start:stop,:  ]
+        
+        if discard_mean:
+            trainA -= np.mean(trainA,axis=0)
+            trainB -= np.mean(trainB,axis=0)
+            testA  -= np.mean(testA,axis=0)
+            testB  -= np.mean(testB,axis=0)
+        
         yield trainA,trainB,testA,testB
+
 
 def block_shuffle(x,blocksize=None):
     '''
@@ -561,43 +579,8 @@ def nrmse(estimate,true,axis=None):
     v2 = np.var(X2,axis=axis)
     normalize = v2**-0.5#(v2*v2)**-0.25
     return np.mean((X1-X2)**2,axis=axis)**0.5*normalize
-    
-def polar_error(x,xh,units='degrees',mode='L1'):
-    '''
-    Compute error for polar measurements, 
-    wrapping the circular variable appropriately.
 
-    Parameters
-    ----------
-    x: array-like
-        true valies (in degrees)
-    hx: array-like
-        estimated values (in degrees)
-
-    Other Parameters
-    ----------------
-    units: str, default "degrees"
-        Polar units to use. Either "radians" or "degrees"
-    mode: str, default 'L1'
-        Error method to use. Either 'L1' (mean absolute error) or 
-        'L2' (root mean-squared error)
-
-    Returns
-    -------
-    err:
-        Circularly-wrapped error
-    '''
-    x  = np.array(x).ravel()
-    xh = np.array(xh).ravel()
-    e  = np.abs(x-xh)
-    k  = {'radians':np.pi,'degrees':180}[units]
-    e[e>k] = 2*k-e[e>k]
-    if mode=='L1':
-        return np.mean(np.abs(e))
-    if mode=='L2':
-        return np.mean(np.abs(e)**2)**.5
-    raise ValueError('Mode should be either "L1" or "L2"')
-
+from neurotools.stats.circular import wrapped_circular_linear_error as polar_error
 error_functions = {
     'correlation':lambda x,xh: scipy.stats.stats.pearsonr(x,xh)[0],
     'L2'         :lambda x,xh: np.mean((x-xh)**2)**0.5,
@@ -1101,4 +1084,56 @@ def factor_predict(fa,predict_from,predict_to,X):
     
 
 
+
+
+
+
+
+
+
+############################################################
+# Recently added functions
+
+def nanrankdata(x,mode='fraction'):
+    '''
+    A variant of `rankdata` that handles NaNs better.
+    Returns normalized rank in (0,1) by default.    
+    
+    Parameters
+    ----------
+    x : iterable
+        Data to be ranked
+    mode: str; default 'fraction'
+        ``'fraction'``: return rank of non-NaN values in (0,1)
+        ``'percentile'``: return rank of non-NaN values in (0,100)
+        ``None``: return integer ranks (NaNs excluded)
+    '''
+    x = np.array(x)
+    s = x.shape
+    x = x.ravel()
+    ok = np.isfinite(x)
+    nfinite = sum(ok)
+    ranks = scipy.stats.rankdata(x,nan_policy='omit')
+    if mode=='fraction':
+        ranks = (ranks-.5)/nfinite
+    elif mode=='percentile':
+        ranks = (ranks-.5)/nfinite*100
+    else:
+        ranks = (ranks-.5)/nfinite*len(x)
+    return ranks.reshape(s)
+
+
+import neurotools.util.array
+def mean_confidence_interval(data, confidence=0.95):
+    data = neurotools.util.array.remove_nans(data)
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h
+    
+def minmax(x):
+    return tuple(np.nanpercentile(x,[0,100]))
+
+    
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.pvalues module &mdash; Neurotools 2 documentation</title>
@@ -12,10 +12,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -30,15 +29,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Neurotools
-            <img src="_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Neurotools
+              <img src="_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,6 +69,8 @@
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.modefind.html">neurotools.stats.modefind module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">neurotools.stats.pvalues module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.regressions.html">neurotools.stats.regressions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.shuffleL2explore.html">neurotools.stats.shuffleL2explore module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.tests.html">neurotools.stats.tests module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.stats.html#module-neurotools.stats">Module contents</a></li>
@@ -92,7 +97,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="neurotools.stats.html">neurotools.stats package</a></li>
       <li class="breadcrumb-item active">neurotools.stats.pvalues module</li>
       <li class="wy-breadcrumbs-aside">
@@ -144,13 +149,13 @@ pID = p(max(find(p&lt;=I/V*q/cVID)));
 pN = p(max(find(p&lt;=I/V*q/cVN)));</p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pvalues</strong> (<em>list</em>) – p-values to correct</p></li>
 <li><p><strong>alpha</strong> (<em>float in</em><em> (</em><em>0</em><em>,</em><em>1</em><em>)</em>) – target false-discovery rate</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>pID</em> – p-value threshold based on independence or positive dependence</p></li>
 <li><p><em>pN</em> – Nonparametric p-value threshold</p></li>
@@ -166,15 +171,15 @@ pN = p(max(find(p&lt;=I/V*q/cVN)));</p>
 <dd><p>Benjamini-Hochberg multiple-comparison correction
 assuming positive dependence.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pvalue_dictionary</strong> (<em>dict</em>) – <cite>label -&gt; pvalue</cite></p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Benjamini-Hochberg corrected dictionary assuming
 positive correlations,
 entries as <cite>label -&gt; pvalue, reject</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -190,15 +195,15 @@ Benjamini-Hochberg procedure, using either the
 variance for positive dependence or no dependence,
 whichever is more conservative.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pvalue_dictionary</strong> (<em>dict</em>) – <cite>label -&gt; pvalue</cite>
 This may also simply be a list of p-values.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Benjamini-Hochberg corrected dictionary
 correlations, entries as <cite>label -&gt; pvalue, reject</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -210,7 +215,7 @@ correlations, entries as <cite>label -&gt; pvalue, reject</cite></p>
 <dd><p>Re-sample a statistical estimator from a single
 population to estimate the estimator’s uncertainty.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>statistic</strong> (<em>function</em>) – Function accepting elements in <cite>population</cite> and
 returning an object reflecting a statistical
@@ -219,12 +224,12 @@ estimator</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>samples</strong> – Length <cite>ntrials</cite> list of return-vales from
 <cite>statistic()</cite> evaluated on bootstrap samples
 <cite>population</cite> with replacement.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
@@ -243,7 +248,7 @@ limited data. The number of data points in the test
 and null populations should be sufficiently large.
 I recommend no less than 20.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>statistic</strong> (<em>function</em>) – A function that accepts a resampled collection of
 data from the population and returns some
@@ -253,10 +258,10 @@ scalar statistic.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>pvalue</strong> – Bootstrapped p-value</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float in [0,1]</p>
 </dd>
 </dl>
@@ -267,17 +272,17 @@ scalar statistic.</p></li>
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">bootstrap_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">null_population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#bootstrap_median"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.bootstrap_median" title="Permalink to this definition"></a></dt>
 <dd><p>Estimate pvalue for difference in medians using bootstrapping</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>test_population</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in the test population.</p></li>
 <li><p><strong>null_population</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in the null population.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>pvalue</strong> – Bootstrapped p-value</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float in [0,1]</p>
 </dd>
 </dl>
@@ -289,17 +294,17 @@ scalar statistic.</p></li>
 <dd><p>Estimate pvalue for difference in means using
 bootstrapping.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>test_population</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in the test population.</p></li>
 <li><p><strong>null_population</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in the null population.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>pvalue</strong> – Bootstrapped p-value</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float in [0,1]</p>
 </dd>
 </dl>
@@ -310,7 +315,7 @@ bootstrapping.</p>
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">bootstrap_compare_statistic_two_sided</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#bootstrap_compare_statistic_two_sided"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided" title="Permalink to this definition"></a></dt>
 <dd><p>Estimate pvalue using bootstrapping</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>popA</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in population A.</p></li>
 <li><p><strong>popB</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in population B.</p></li>
@@ -320,7 +325,7 @@ scalar statistic.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>delta</strong> (<em>float</em>) – Mean difference  of statistic(A)-statistics(B)</p></li>
 <li><p><strong>pvalue</strong> (<em>float in [0,1]</em>) – Bootstrapped p-value</p></li>
@@ -335,7 +340,7 @@ scalar statistic.</p></li>
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">bootstrap_compare_statistic_two_sided_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#bootstrap_compare_statistic_two_sided_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.bootstrap_compare_statistic_two_sided_parallel" title="Permalink to this definition"></a></dt>
 <dd><p>Estimate pvalue using bootstrapping</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>statistic</strong> (<em>function</em>) – A function that accepts a resampled collection of
 data from the population and returns some
@@ -349,7 +354,7 @@ This should be no larger than the size of B.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>delta</strong> (<em>float</em>) – Mean difference  of statistic(A)-statistics(B)</p></li>
 <li><p><strong>pvalue</strong> (<em>float in [0,1]</em>) – Bootstrapped p-value</p></li>
@@ -365,7 +370,7 @@ This should be no larger than the size of B.</p></li>
 <dd><p>Estimate pvalue for difference in medians using
 bootstrapping.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>popA</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in population A.</p></li>
 <li><p><strong>popB</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in population B.</p></li>
@@ -376,7 +381,7 @@ This should be no larger than the size of B.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>delta</strong> (<em>float</em>) – Mean difference  of statistic(A)-statistics(B)</p></li>
 <li><p><strong>pvalue</strong> (<em>float in [0,1]</em>) – Bootstrapped p-value</p></li>
@@ -392,7 +397,7 @@ This should be no larger than the size of B.</p></li>
 <dd><p>Estimate pvalue for difference in means using
 bootstrapping.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>popA</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in population A.</p></li>
 <li><p><strong>popB</strong> (<em>list</em><em> of </em><em>samples</em>) – Values in population B.</p></li>
@@ -403,7 +408,7 @@ This should be no larger than the size of B.</p></li>
 <li><p><strong>ntrials</strong> (<em>positive int; default 1000</em>) – Number of random samples to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>delta</strong> (<em>float</em>) – Mean difference  of statistic(A)-statistics(B)</p></li>
 <li><p><strong>pvalue</strong> (<em>float in [0,1]</em>) – Bootstrapped p-value</p></li>
@@ -425,7 +430,7 @@ truncate the resulting timeseries to match the length
 of the original data.</p>
 <p>This casts all <cite>variables</cite> to <cite>np.float32</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variables</strong> (<em>list</em><em> of </em><em>np.float32</em>) – List of arrays.
 The first dimension of each array is time samples
@@ -440,13 +445,51 @@ rather than a bootstrap.</p></li>
 If <cite>None</cite>, continue with current state.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>result</strong></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of np.float32</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.pvalues.nancorrect">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">nancorrect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pvalues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_tsbh'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#nancorrect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.nancorrect" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper for
+<code class="docutils literal notranslate"><span class="pre">multipletests(pvalues,alpha,method='fdr_tsbh')</span></code>
+in
+<code class="docutils literal notranslate"><span class="pre">statsmodels.stats.multitest</span></code>
+that gracefully handles <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pvalues</strong> (<em>np.float32</em>) – List of p-values to correct</p></li>
+<li><p><strong>alpha</strong> (<em>float in</em><em> (</em><em>0</em><em>,</em><em>1</em><em>)</em><em>; default 0.05</em>) – False-discovery rate to correct for</p></li>
+<li><p><strong>method</strong> (<em>str; default 'fdr_tsbh'</em>) – Method to use with <code class="docutils literal notranslate"><span class="pre">multipletests()</span></code>.
+The default is a two-stage Benjamini-Hochberg.
+see
+<code class="docutils literal notranslate"><span class="pre">statsmodels.stats.multitest.multipletests</span></code>
+for more options.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>reject</strong> (<em>np.bool</em>)</p></li>
+<li><p><strong>corrected_pvalues</strong> (<em>np.float32</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.pvalues.atac">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.pvalues.</span></span><span class="sig-name descname"><span class="pre">atac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/pvalues.html#atac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.pvalues.atac" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregate p-values using Cauchey distribution model
+(invariant to the degrees of freedom and therefore
+conservative with potenitally correlated p-values).</p>
 </dd></dl>
 
 </section>

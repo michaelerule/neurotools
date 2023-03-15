@@ -43,7 +43,6 @@ from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 
 import scipy.stats
-import neurotools.stats.pvalues as pvalues
 
 try:
     import statsmodels
@@ -62,7 +61,7 @@ def simpleaxis(ax=None):
     
     Other Parameters
     -----------------
-    ax : maplotlib.Axis; default `plt.gca()`
+    ax: maplotlib.Axis; default ``plt.gca()``
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -78,7 +77,7 @@ def rightaxis(ax=None):
     
     Parameters
     ----------
-    ax : maplotlib.Axis; default `plt.gca()`
+    ax: maplotlib.Axis; default ``plt.gca()``
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -94,7 +93,7 @@ def simpleraxis(ax=None):
     
     Parameters
     ----------
-    ax : maplotlib.Axis; default `plt.gca()`
+    ax: maplotlib.Axis; default ``plt.gca()``
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -110,7 +109,7 @@ def simplerright(ax=None):
     
     Parameters
     ----------
-    ax : maplotlib.Axis; default `plt.gca()`
+    ax: maplotlib.Axis; default ``plt.gca()``
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -127,7 +126,7 @@ def noaxis(ax=None):
     
     Parameters
     ----------
-    ax : maplotlib.Axis; default `plt.gca()`
+    ax: maplotlib.Axis; default ``plt.gca()``
     '''
     if ax is None: ax=plt.gca()
     ax.spines['top'].set_visible(False)
@@ -136,13 +135,16 @@ def noaxis(ax=None):
     ax.spines['left'].set_visible(False)
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
+    ax.autoscale(enable=True, axis='x', tight=True)
 
 def nicey(**kwargs):
     '''
     Mark only the min/max value of y axis
     
-    Parameters
-    ----------
+    Other Parameters
+    ----------------
+    **kwargs:dict
+        Keyword arguments are forwarded to ``fudgey(**kwargs)``
     
     Returns
     -------
@@ -172,17 +174,33 @@ def nicex(**kwargs):
 def nicexy(xby=None,yby=None,**kwargs):
     '''
     Mark only the min/max value of y/y axis. 
-    See `nicex` and `nicey`
+    See ``nicex`` and ``nicey``
     '''
     nicex(by=xby,**kwargs)
     nicey(by=yby,**kwargs)
+
+def roundx(to=10):
+    '''
+    Round x axis limits to an integer multiple of ``to``.
+    '''
+    x0 = int(np.floor(plt.xlim()[0]/to))*to
+    x1 = int(np.ceil(plt.xlim()[1]/to))*to
+    plt.xlim(x0,x1)
+
+def roundy(to=10):
+    '''
+    Round y axis limits to an integer multiple of ``to``.
+    '''
+    y0 = int(np.floor(plt.ylim()[0]/to))*to
+    y1 = int(np.ceil(plt.ylim()[1]/to))*to
+    plt.ylim(y0,y1)
 
 def positivex():
     '''
     Sets the lower x limit to zero, and the upper limit to 
     the largest positive value un the current xlimit. 
     If the curent xlim() is negative, 
-    a `ValueError` is raised.
+    a ``ValueError`` is raised.
     '''
     top = np.max(xlim())
     if top<=0:
@@ -208,8 +226,8 @@ def positivey():
 
 def positivexy():
     '''
-    Remove negative range from both x and y axes. See `positivex` and
-    `positivey`
+    Remove negative range from both x and y axes. See ``positivex`` and
+    ``positivey``
     '''
     positivex()
     positivey()
@@ -220,8 +238,8 @@ def xylim(a,b,ax=None):
     
     Parameters
     ----------
-    a : lower limit
-    b : upper limit
+    a: lower limit
+    b: upper limit
     '''
     if ax==None: ax = plt.gca()
     ax.set_xlim(a,b)
@@ -260,11 +278,12 @@ def noy():
 
 def noxyaxes():
     '''
-    Hide all aspects of x and y axes. See `nox`, `noy`, and `noaxis`
+    Hide all aspects of x and y axes. See ``nox``, ``noy``, and ``noaxis``
     '''
     nox()
     noy()
     noaxis()
+    gca().set_frame_on(False)
     
 def noxlabels():
     '''
@@ -340,11 +359,11 @@ def force_aspect(aspect=1,a=None):
     '''
     Parameters
     ----------
-    aspect : aspect ratio
+    aspect: aspect ratio
     
     Other Parameters
     ----------------
-    a : matplotlib.Axis, default None
+    a: matplotlib.Axis, default None
         If None, uses gca()
     '''
     if a is None: a = plt.gca()
@@ -352,16 +371,28 @@ def force_aspect(aspect=1,a=None):
     y1,y2=a.get_ylim()
     a.set_aspect(np.abs((x2-x1)/(y2-y1))/aspect)
 
+def square_compare(hi=1,lo=0,**kwargs):
+    '''
+    Force an axis to be square and draw a diagonal 
+    line for comparing equality of `x` and `y` values.
+    '''
+    if lo>hi: lo,hi=hi,lo
+    simpleaxis()
+    plot([lo,hi],[lo,hi],**(dict(color='k',lw=.6)|kwargs)) 
+    xlim(lo,hi)
+    ylim(lo,hi) 
+    force_aspect()
+
 def get_aspect(aspect=1,a=None):
     '''
-    Returns
-    ----------
-    aspect : aspect ratio of current axis
-    
     Other Parameters
     ----------------
-    a : matplotlib.Axis, default None
+    a: matplotlib.Axis, default None
         If None, uses gca()
+    
+    Returns
+    -------
+    aspect: aspect ratio of current axis
     '''
     if a is None: a = plt.gca()
     x1,x2=a.get_xlim()
@@ -380,7 +411,7 @@ def match_image_aspect(im,ax=None):
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
     '''
     if ax  is None: ax  = plt.gca()
@@ -397,13 +428,12 @@ def match_image_aspect(im,ax=None):
 
 def unitaxes(a=None):
     '''
+    Set both `x` and `y` axis to span ``[0,1]``
+    
     Other Parameters
     ----------------
-    a : matplotlib.Axis, default None
+    a: matplotlib.Axis, default None
         If None, uses gca()
-        
-    Returns
-    -------
     '''
     if a is None: a=plt.gca()
     a.set_xlim(0,1)
@@ -417,13 +447,17 @@ def adjustmap(arraymap):
     '''
     Parameters
     ----------
+    arraymap: 2D np.array
     
     Returns
     -------
+    adjustmap: 
     '''
-    nrow,ncol = shape(arraymap)
+    nrow,ncol   = np.shape(arraymap)
     adjustedmap = np.array(arraymap)
-    available   = sorted(list(set([x for x in ravel(arraymap) if x>0])))
+    available   = sorted([*{*
+        [x for x in np.ravel(arraymap) if x>0]
+    }])
     for i,ch in enumerate(available):
         adjustedmap[arraymap==ch]=i
     return adjustedmap
@@ -434,16 +468,18 @@ def get_ax_size(ax=None,fig=None):
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    width: float
+    height: float
     '''
     if fig is None: fig = plt.gcf()
-    if ax is None: ax  = plt.gca()
+    if ax  is None: ax  = plt.gca()
     '''http://stackoverflow.com/questions/19306510/determine-matplotlib-axis-size-in-pixels'''
     fig  = plt.gcf()
     ax   = plt.gca()
@@ -459,16 +495,18 @@ def get_ax_pixel(ax=None,fig=None):
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    width: float
+    height: float
     '''
     if fig is None: fig = plt.gcf()
-    if ax is None: ax  = plt.gca()
+    if ax  is None: ax  = plt.gca()
     # w/h in pixels
     w,h = get_ax_size()
     # one px in axis units is the axis span div no. pix
@@ -476,25 +514,25 @@ def get_ax_pixel(ax=None,fig=None):
     dx = np.diff(xlim())[0]
     return dx/float(w),dy/float(h)
 
+
 def get_ax_pixel_ratio(ax=None,fig=None):
     '''
     Gets tha axis aspect ratio from pixel size
     
-    Parameters
-    ----------
-    
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    aspect_ratio: float
     '''
     a,b = get_ax_pixel(ax,fig)
     return a/b
+
 
 def pixels_to_xunits(n,ax=None,fig=None):
     '''
@@ -506,13 +544,14 @@ def pixels_to_xunits(n,ax=None,fig=None):
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
@@ -520,22 +559,26 @@ def pixels_to_xunits(n,ax=None,fig=None):
     dx  = np.diff(plt.xlim())[0]
     return n*dx/float(w)
 
+
 def yunits_to_pixels(n,ax=None,fig=None):
     '''
     Converts a measurement in units of the current y-axis to pixels
     
     Parameters
     ----------
+    n: number
+        y position in pixels
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
@@ -549,16 +592,19 @@ def xunits_to_pixels(n,ax=None,fig=None):
     
     Parameters
     ----------
+    n: number
+        x position in pixes
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
@@ -566,23 +612,27 @@ def xunits_to_pixels(n,ax=None,fig=None):
     dx = np.diff(xlim())[0]
     return n*float(w)/dx
 
+
 def pixels_to_yunits(n,ax=None,fig=None):
     '''
-    Converts a measurement in pixels to units of the current y-axis
-    scale
+    Converts a measurement in pixels to units of the 
+    current y-axis scale.
     
     Parameters
     ----------
+    n: number
+        number of pixels
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
@@ -590,51 +640,53 @@ def pixels_to_yunits(n,ax=None,fig=None):
     dy = np.diff(ylim())[0]
     return n*dy/float(h)
 
-def pixels_to_xfigureunits(n,ax=None,fig=None):
+
+def pixels_to_xfigureunits(n,fig=None):
     '''
     Converts a measurement in pixels to units of the current
-    figure width scale
+    figure width scale.
     
     Parameters
     ----------
+    n: number
+        x coordinate in pixels.
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
-        If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
-    if ax  is None: ax  = plt.gca()
     w_pixels = fig.get_size_inches()[0]*fig.dpi
     return n/float(w_pixels)
 
-def pixels_to_yfigureunits(n,ax=None,fig=None):
+def pixels_to_yfigureunits(n,fig=None):
     '''
     Converts a measurement in pixels to units of the current
-    figure height scale
+    figure height scale.
     
     Parameters
     ----------
+    n: number
+        y coordinate in pixels.
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
-        If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
-    if ax  is None: ax  = plt.gca()
     h_pixels = fig.get_size_inches()[1]*fig.dpi
     return n/float(h_pixels)
+
 
 def xfigureunits_to_pixels(n,ax=None,fig=None):
     '''
@@ -643,16 +695,19 @@ def xfigureunits_to_pixels(n,ax=None,fig=None):
 
     Parameters
     ----------
+    n: number
+        x coordinate in figure-width units
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
@@ -666,16 +721,19 @@ def yfigureunits_to_pixels(n,ax=None,fig=None):
     
     Parameters
     ----------
+    n: number
+        y coordinate in figure units
     
     Other Parameters
     ----------------
-    ax : matplotlib.Axis, default None
+    ax: matplotlib.Axis, default None
         If None, uses gca()
-    fig : matplotlib.Figure, default None
+    fig: matplotlib.Figure, default None
         If None, uses gcf()
     
     Returns
     -------
+    :float
     '''
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
@@ -692,8 +750,11 @@ def adjust_ylabel_space(n,ax=None):
     Parameters
     ----------
     n: float 
-        Desired value for `ax.yaxis.labelpad`
-    ax : axis, default None
+        Desired value for ``ax.yaxis.labelpad``
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
         If None, uses gca()
     '''
     if ax is None: ax=plt.gca()
@@ -705,8 +766,11 @@ def adjust_xlabel_space(n,ax=None):
     Parameters
     ----------
     n: float 
-        Desired value for `ax.xaxis.labelpad`
-    ax : axis, default None
+        Desired value for ``ax.xaxis.labelpad``
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
         If None, uses gca()
     '''
     if ax is None: ax=plt.gca()
@@ -718,34 +782,46 @@ def get_bbox(ax=None):
 
     Parameters
     ----------
-    ax : axis, default None
+    ax: axis, default None
         If None, uses gca()
+    
+    Returns
+    -------
+    x:float
+    y:float
+    w:float
+    h:float
     '''
     if ax is None: ax=plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
     return x,y,w,h
 
-def nudge_axis_y_pixels(dy,ax=None):
+def nudge_axis_y_pixels(dy,ax=None,fig=None):
     '''
-    moves axis dx pixels.
-    Direction of dx may depend on axis orientation.
+    Moves axis ``dx`` pixels.
+    Direction of ``dx`` may depend on axis orientation.
     Does not change axis height.
 
     Parameters
     ----------
-    dy : number
+    dy: number
         Amount (in pixels) to adjust by
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax=plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = -pixels_to_yfigureunits(float(dy),ax)
+    dy = -pixels_to_yfigureunits(float(dy),fig)
     ax.set_position((x,y-dy,w,h))
 
-def adjust_axis_height_pixels(dy,ax=None):
+def adjust_axis_height_pixels(dy,ax=None,fig=None):
     '''
     resize axis by dy pixels.
     Direction of dx may depends on axis orientation.
@@ -753,119 +829,220 @@ def adjust_axis_height_pixels(dy,ax=None):
     
     Parameters
     ----------
-    dy : number
+    dy: number
         Amount (in pixels) to adjust by
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax=plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    ax.set_position((x,y,w,h-pixels_to_yfigureunits(float(dy),ax)))
+    ax.set_position((x,y,w,h-pixels_to_yfigureunits(float(dy),fig)))
 
-def nudge_axis_y(dy,ax=None):
+def nudge_axis_y(dy,ax=None,fig=None):
     '''
     This does not change the height of the axis
 
     Parameters
     ----------
-    dy : number
+    dy: number
         Amount (in pixels) to adjust by
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = pixels_to_yfigureunits(dy,ax)
+    dy = pixels_to_yfigureunits(dy,fig)
     ax.set_position((x,y+dy,w,h))
 
-def nudge_axis_x(dx,ax=None):
+def nudge_axis_up(dy,ax=None):
+    nudge_axis_y(dy,ax)
+
+def nudge_axis_down(dy,ax=None):
+    nudge_axis_y(-dy,ax)
+
+def nudge_axis_x(dx,ax=None,fig=None):
     '''
-    This does not change the width of the axis
+    This does not change the width of the axis.
 
     Parameters
     ----------
-    dx : number
+    dx: number
         Amount (in pixels) to adjust axis
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dx = pixels_to_xfigureunits(dx,ax)
+    dx = pixels_to_xfigureunits(dx,fig)
     ax.set_position((x+dx,y,w,h))
 
-def expand_axis_x(dx,ax=None):
+def expand_axis_x(dx,ax=None,fig=None):
     '''
     Expands the width of the x axis
 
     Parameters
     ----------
-    dx : number
+    dx: number
         Amount (in pixels) to adjust x axis
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dx = pixels_to_xfigureunits(dx,ax)
+    dx = pixels_to_xfigureunits(dx,fig)
     ax.set_position((x,y,w+dx,h))
     
-def expand_axis_y(dy,ax=None):
+def expand_axis_y(dy,ax=None,fig=None):
     '''
     Adjusts the axis height, keeping the lower y-limit the 
     same.
 
     Parameters
     ----------
-    dy : number
+    dy: number
         Amount (in pixels) to adjust axis
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = pixels_to_yfigureunits(dy,ax)
+    dy = pixels_to_yfigureunits(dy,fig)
     ax.set_position((x,y,w,h+dy))
 
-def nudge_axis_baseline(dy,ax=None):
+def nudge_axis_baseline(dy,ax=None,fig=None):
     '''
-    Moves bottom limit of axis, keeping top limit the same
+    Moves bottom limit of axis, keeping top limit the same.
+    This will change the height of the y axis.
 
     Parameters
     ----------
-    dy : number
+    dy: number
         Amount (in pixels) to adjust axis
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dy = pixels_to_yfigureunits(dy,ax)
+    dy = pixels_to_yfigureunits(dy,fig)
     ax.set_position((x,y+dy,w,h-dy))
 
-def nudge_axis_left(dx,ax=None):
+def nudge_axis_top(dy,ax=None,fig=None):
+    '''
+    Moves top limit of axis, keeping bottom limit the same.
+    This will change the height of the y axis.
+
+    Parameters
+    ----------
+    dy: number
+        Amount (in pixels) to adjust axis
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
+    '''
+    if ax is None: ax = plt.gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dy = pixels_to_yfigureunits(dy,fig)
+    ax.set_position((x,y,w,h+dy))
+
+def nudge_axis_left(dx,ax=None,fig=None):
     '''
     Moves the left x-axis limit, keeping the right limit 
     intact. This changes the width of the plot.
 
     Parameters
     ----------
-    dx : number
+    dx: number
         Amount (in pixels) to adjust axis
-    ax : axis, default None
-        If None, uses gca()
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
     '''
     if ax is None: ax = plt.gca()
     bb = ax.get_position()
     x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
-    dx = pixels_to_xfigureunits(dx,ax)
+    dx = pixels_to_xfigureunits(dx,fig)
     ax.set_position((x+dx,y,w-dx,h))
+
+def nudge_axis_right(dx,ax=None,fig=None):
+    '''
+    Moves the right x-axis limit, keeping the left limit 
+    intact. This changes the width of the plot.
+
+    Parameters
+    ----------
+    dx: number
+        Amount (in pixels) to adjust axis
+        
+    Other Parameters
+    ----------------
+    ax: axis, default None
+        If None, uses ``gca()``
+    fig: figure, default NOne
+        If None, uses ``gcf()``
+    '''
+    if ax is None: ax = plt.gca()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dx = pixels_to_xfigureunits(dx,fig)
+    ax.set_position((x,y,w+dx,h))
+    
+def expand_axis_outward(dx,dy=None):
+    '''
+    Expand all edges of axis outward by ``dx`` pixels.
+    '''
+    if dy is None: dy = dx
+    ax = gca()
+    fig = gcf()
+    bb = ax.get_position()
+    x,y,w,h = bb.xmin,bb.ymin,bb.width,bb.height
+    dx = pixels_to_xfigureunits(dx,fig)
+    dy = pixels_to_yfigureunits(dy,fig)
+    ax.set_position((x-dx,y-dy,w+2*dx,h+2*dy))
     
 def fudgex(by=None,ax=None,doshow=False):
     '''
@@ -873,9 +1050,9 @@ def fudgex(by=None,ax=None,doshow=False):
 
     Parameters
     ----------
-    by : number of pixels
-    axis : axis object to change; defaults to current axis
-    dishow : boolean; if true, calls plt.show()
+    by: number of pixels
+    axis: axis object to change; defaults to current axis
+    dishow: boolean; if true, calls plt.show()
     '''
     if ax is None: ax=plt.gca()
     if by is None:
@@ -894,9 +1071,9 @@ def fudgey(by=None,ax=None,doshow=False):
 
     Parameters
     ----------
-    by : number of pixels
-    axis : axis object to change; defaults to current axis
-    dishow : boolean; if true, calls plt.show()
+    by: number of pixels
+    axis: axis object to change; defaults to current axis
+    dishow: boolean; if true, calls plt.show()
     '''
     if ax is None: ax=plt.gca()
     if by is None:
@@ -915,39 +1092,72 @@ def fudgexy(by=10,ax=None):
 
     Parameters
     ----------
-    by : number of pixels
-    axis : axis object to change; defaults to current axis
-    dishow : boolean; if true, calls plt.show()
+    by: number of pixels
+    axis: axis object to change; defaults to current axis
+    dishow: boolean; if true, calls plt.show()
     '''
     fudgex(by,ax)
     fudgey(by,ax)
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-def zoombox(ax1,ax2,xspan1=None,xspan2=None,draw_left=True,draw_right=True,lw=1,color='k'):
+def vtwin(ax1,ax2):
     '''
+    Assuming that ``ax2`` is directly below ``ax1``,
+    move ``ax2`` up to directly abut the base of ``ax1``.
+    (Used for making horizontal paired-histogram plots). 
+    
     Parameters
     ----------
-    ax1:
-    ax2:
-    xspan1:None
-    xspan2:None
-    draw_left:True
-    draw_right:True
-    lw:1
-    color:'k'
+    ax1: axis 1
+    ax2: axis 2
+    '''
+    bb = ax1.get_position()
+    x1,y1,w1,h1 = bb.xmin,bb.ymin,bb.width,bb.height
+    bb = ax2.get_position()
+    x2,y2,w2,h2 = bb.xmin,bb.ymin,bb.width,bb.height
+    dy = y1-(y2+h2)
+    ax2.set_position((x1,y2 + dy,w1,h2))
+    ax2.invert_yaxis()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+def zoombox(
+    ax1,ax2,
+    xspan1=None,xspan2=None,
+    draw_left=True,draw_right=True,
+    lw=1,color='k'):
+    '''
+    Draw lines on figure connecting two axes, to indicate
+    that one is a "zoomed in" version of the other. 
+    
+    The axes should be placed atop one another with the
+    "zoomed in" axis below for this to work.
+    
+    Parameters
+    ----------
+    ax1: axis
+        Axis to zoom in to
+    ax2: axis
+        Axis reflecting zoomed-in portion
+    xspan1: tuple; default None
+        ``(x_start, x_stop)`` span to connect on the 
+        first axis.
+    xspan2: tuple; default None
+        ``(x_start, x_stop)`` span to connect on the 
+        second axis.
+    draw_left: boolean; default True
+    draw_right: boolean; default True
+    lw: number; default 1
+    color: matplotlib color; default 'k'
     '''
     # need to do this to get the plot to ... update correctly
     draw()
@@ -971,7 +1181,7 @@ def zoombox(ax1,ax2,xspan1=None,xspan2=None,draw_left=True,draw_right=True,lw=1,
                                        transform=fig.transFigure,lw=lw,color=color)
         fig.lines.append(line)
     
-def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
+def shade_edges(edges,color=(0.5,0.5,0.5,0.5),**kwargs):
     '''
     Edges of the form (start,stop)
     Shades regions of graph defined by "edges"
@@ -984,64 +1194,99 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5)):
     a,b = ylim()
     c,d = xlim()
     for x1,x2 in zip(*edges):
-        print(x1,x2)
-        fill_between([x1,x2],[a,a],[b,b],color=color,lw=0)
+        fill_between([x1,x2],[a,a],[b,b],color=color,lw=0,**kwargs)
     ylim(a,b)
     xlim(c,d)
 
-def ybartext(x,t,c1,c2,**kwargs):
+def ybartext(
+    x,t,
+    c1='k',c2='w',
+    outline=False,
+    fontsize=12,
+    **kwargs):
     '''
+    Draws an ``axvline()`` spanning the *current*
+    y-axis limits (``ylim()``), with an appropriately
+    spaced (and optionally outlined) label at the top
+    left. 
+    
     Parameters
     ----------
-    y:
-    t:
-    c1:
-    c2:
+    y: number
+        Y position 
+    t: str
+    c1: matplotlib color; default 'k'
+        Text color.
+    c2: matplotlib color; default 'w'
+        Color of text outline, if ``outline=True``.
+    outline: boolean; default False
+        Whether to outline the text.
     
     Other Parameters
     ----------------
-    **kwargs: keyword arguments forwarded to plot() and text()
+    **kwargs: dict
+        keyword arguments forwarded to 
+        ``plot()`` and ``text()``.
     '''
     a,b = ylim()
-    outline = False
-    if 'outline' in kwargs:
-        outline = kwargs['outline']
-        del kwargs['outline']
-    plot([x,x],[a,b],**kwargs)
+    plot([x,x],[a,b],**(dict(lw=0.8,color='k')|kwargs))
     ylim(a,b)
     dx,dy = get_ax_pixel()
+    # Generate outline by drawing copies in the background
+    # There must be a better way?
     if outline:
         for ix in arange(-2,3)*dx:
             for iy in arange(-2,3)*dy:
                 text(ix+x,iy+ylim()[1]-dy*4,t,
                     rotation=90,
                     color=c2,
-                    horizontalalignment='right',
-                    verticalalignment='top',
-                    fontsize=12)
-    text(x,ylim()[1]-dy*2,t,
-        rotation=90,color=c1,fontsize=12,
-        horizontalalignment='right',verticalalignment='top')
+                    ha='right',
+                    va='top',
+                    fontsize=fontsize)
+    # Add text label
+    text(
+        x,
+        ylim()[1]-dy*2,
+        t,
+        rotation=90,
+        color=c1,
+        fontsize=fontsize,
+        ha='right',
+        va='top')
+    # Restore y limits
     ylim(a,b)
 
-def xbartext(y,t,c1,c2,**kwargs):
+def xbartext(
+    y,t,
+    c1='k',c2='w',
+    outline=False,
+    fontsize=12,
+    **kwargs):
     '''
+    Draws an ``axhline()`` spanning the *current*
+    x-axis limits (``xlim()``), with an appropriately
+    spacedd (and optionally outlined) label at the top
+    left. 
+    
     Parameters
     ----------
-    y:
-    t:
-    c1:
-    c2:
-
+    x: number
+        X position 
+    t: str
+    c1: matplotlib color; default 'k'
+        Text color.
+    c2: matplotlib color; default 'w'
+        Color of text outline, if ``outline=True``.
+    outline: boolean; default False
+        Whether to outline the text.
+    
     Other Parameters
     ----------------
-    **kwargs: keyword arguments forwarded to plot() and text()
+    **kwargs: dict
+        keyword arguments forwarded to 
+        ``plot()`` and ``text()``.
     '''
     a,b = xlim()
-    outline = False
-    if 'outline' in kwargs:
-        outline = kwargs['outline']
-        del kwargs['outline']
     text_kwargs = {}
     text_kwargs['horizontalalignment'] = 'left'
     text_kwargs['verticalalignment'] = 'bottom'
@@ -1089,7 +1334,7 @@ def nice_legend(*args,**kwargs):
     lg.get_frame().set_linewidth(0.0)
     return lg
 
-def right_legend(*args,**kwargs):
+def right_legend(*args,fudge=0.0,**kwargs):
     '''
     Legend outside the plot to the right.
 
@@ -1100,7 +1345,7 @@ def right_legend(*args,**kwargs):
     '''
     defaults = {
         'loc':'center left',
-        'bbox_to_anchor':(1,0.5),
+        'bbox_to_anchor':(1+fudge,0.5),
         }
     defaults.update(kwargs)
     lg = legend(*args,**defaults)
@@ -1137,13 +1382,25 @@ def base_legend(*args,fudge=-0.1,**kwargs):
     ----------------
     fudge: padding between legend and axis, default -0.1
     '''
-    y = fudge
-    defaults = {
+    lg = legend(*args,**{**{
         'loc':'upper center',
-        'bbox_to_anchor':(0.5,y),
-        }
-    defaults.update(kwargs)
-    lg = legend(*args,**defaults)
+        'bbox_to_anchor':(0.5,0.0+fudge),
+        },**kwargs})
+    lg.get_frame().set_linewidth(0.0)
+    return lg
+
+def top_legend(*args,fudge=0.1,**kwargs):
+    '''
+    Legend outside the plot on the top.
+
+    Other Parameters
+    ----------------
+    fudge: padding between legend and axis, default -0.1
+    '''
+    lg = legend(*args,**{**{
+        'loc':'lower center',
+        'bbox_to_anchor':(0.5,1.0+fudge),
+        },**kwargs})
     lg.get_frame().set_linewidth(0.0)
     return lg
 
@@ -1164,8 +1421,8 @@ def rangeover(data):
     
     Returns
     -------
-    : tuple
-        `np.min(data),np.max(data)`
+   : tuple
+        ``np.min(data),np.max(data)``
     '''
     return np.min(data),np.max(data)
 
@@ -1185,9 +1442,9 @@ def plotCWT(ff,cwt,aspect='auto',
     
     Parameters
     ----------
-    ff : numeric
+    ff: numeric
         frequencies
-    cwt : numeric
+    cwt: numeric
         wavelet transformed data (what orientation?)
     '''
     cwt  = np.squeeze(cwt)
@@ -1207,26 +1464,6 @@ def plotCWT(ff,cwt,aspect='auto',
     if dodraw:
         plt.draw()
         plt.show()
-
-def complex_axis(scale):
-    '''
-    Draws a nice complex-plane axis with LaTeX Re, Im labels and everything
-    
-    Parameters
-    ----------
-    scale: float
-    '''
-    xlim(-scale,scale)
-    ylim(-scale,scale)
-    nicexy()
-    ybartext(0,'$\Im(z)$','k','w',lw=1,color='k',outline=False)
-    xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
-    noaxis()
-    xlabel(u'μV',fontname='DejaVu Sans',fontsize=12)
-    ylabel(u'μV',fontname='DejaVu Sans',fontsize=12)
-    xticks(xticks()[0],fontsize=12)
-    yticks(yticks()[0],fontsize=12)
-    force_aspect()
 
 def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     '''
@@ -1329,16 +1566,16 @@ def plot_complex(z,vm=None,aspect='auto',ip='bicubic',
     Renders complex np.array as image, in polar form with magnitude mapped to
     lightness and hue mapped to phase.
 
-    :param z: 2D np.array of complex values
-    :param vm: max complex modulus. Default of None will use max(np.abs(z))
-    :param aspect: image aspect ratio. defaults auto
-    :param ip: interpolation mode to forward to imshow. defaults bicubic
-    :param extent: extents (dimensions) for imshow. defaults None.
-    :param previous: if available, output of a previous call to plot_complex
+   :param z: 2D np.array of complex values
+   :param vm: max complex modulus. Default of None will use max(np.abs(z))
+   :param aspect: image aspect ratio. defaults auto
+   :param ip: interpolation mode to forward to imshow. defaults bicubic
+   :param extent: extents (dimensions) for imshow. defaults None.
+   :param previous: if available, output of a previous call to plot_complex
         can be used to skirt replotting nuisances and update data directly,
         which should be a little faster.
 
-    :return img: a copy of the result of imshow, which can be reused in
+   :return img: a copy of the result of imshow, which can be reused in
         subsequent calls to speed things up, if animating a video
     '''
     z   = np.squeeze(z)
@@ -1376,9 +1613,11 @@ def animate_complex(z,vm=None,aspect='auto',ip='bicubic',
         p=plot_complex(frame,vm,aspect,ip,extent,onlyphase,p,origin)
 
 
-def good_colorbar(vmin=None,
+def good_colorbar(
+    vmin=None,
     vmax=None,
     cmap=None,
+    image=None,
     title='',
     ax=None,
     sideways=False,
@@ -1396,24 +1635,33 @@ def good_colorbar(vmin=None,
     r'$\mathrm{\mu V}^2$'
 
     Parameters:
-        vmin      (number)  : min value for colormap
-        vmax      (number)  : mac value for colormap
+        vmin      (number) : min value for colormap
+        vmax      (number) : mac value for colormap
         cmap      (colormap): what colormap to use
-        title     (string)  : Units for colormap
-        ax        (axis)    : optional, defaults to plt.gca(). axis to which to add colorbar
-        sideways  (bool)    : Flips the axis label sideways
-        border    (bool)    : Draw border around colormap box? 
-        spacing   (number)  : distance from axis in pixels. defaults to 5
-        width     (number)  : width of colorbar in pixels. defaults to 15
-        labelpad  (number)  : padding between colorbar and title in pixels, defaults to 10
-        fontsize  (number)  : title font size, defaults to 10
-        labelsize (number)  : tick label font size, defaults to `fontsize`
-        scale     (float)   : height adjustment relative to parent axis, defaults to 1.0
-        va        (str)     : vertical alignment; "bottom" ('b'), "center" ('c'), or "top" ('t')
-        ha        (str)     : horizontal alignment; "left" ('l'), "center" ('c'), or "right" ('r')
+        title     (string) : Units for colormap
+        ax        (axis)   : optional, defaults to plt.gca(). axis to which to add colorbar
+        sideways  (bool)   : Flips the axis label sideways
+        border    (bool)   : Draw border around colormap box? 
+        spacing   (number) : distance from axis in pixels. defaults to 5
+        width     (number) : width of colorbar in pixels. defaults to 15
+        labelpad  (number) : padding between colorbar and title in pixels, defaults to 10
+        fontsize  (number) : title font size, defaults to 10
+        labelsize (number) : tick label font size, defaults to ``fontsize``
+        scale     (float)  : height adjustment relative to parent axis, defaults to 1.0
+        va        (str)    : vertical alignment; "bottom" ('b'), "center" ('c'), or "top" ('t')
+        ha        (str)    : horizontal alignment; "left" ('l'), "center" ('c'), or "right" ('r')
     Returns:
         axis: colorbar axis
     '''
+    if not image is None:
+        if not (vmin is None and vmax is None and cmap is None):
+            raise ValueError(
+                'Passing an image object overrides the arguments '
+                '(vmin,vmax,cmap); leave these empty if setting the '
+                'image keyword.')
+        vmin, vmax = image.get_clim()
+        cmap = image.cmap
+        
     if labelsize is None:
         labelsize = fontsize
     if type(vmin)==matplotlib.image.AxesImage:
@@ -1427,11 +1675,11 @@ def good_colorbar(vmin=None,
     
     # Determine units based on axis dimensions
     if sideways:
-        SPACING = pixels_to_yfigureunits(spacing,ax=ax)
-        CWIDTH  = pixels_to_yfigureunits(width,ax=ax)
+        SPACING = pixels_to_yfigureunits(spacing)
+        CWIDTH  = pixels_to_yfigureunits(width)
     else:
-        SPACING = pixels_to_xfigureunits(spacing,ax=ax)
-        CWIDTH  = pixels_to_xfigureunits(width,ax=ax)
+        SPACING = pixels_to_xfigureunits(spacing)
+        CWIDTH  = pixels_to_xfigureunits(width)    
 
     # Get axis bounding box information    
     bb = ax.get_position()
@@ -1464,9 +1712,12 @@ def good_colorbar(vmin=None,
     else:
         # Alignment codes for vertical colorbars
         y0 = {
-            'b':lambda:b-h,
-            'c':lambda:b-(h+h*scale)/2,
-            't':lambda:b-h*scale
+            #'b':lambda:b-h,
+            #'c':lambda:b-(h+h*scale)/2,
+            #'t':lambda:b-h*scale
+            'b':lambda:b,
+            'c':lambda:b+(h-h*scale)/2,
+            't':lambda:b+(h-h*scale)
         }[va.lower()[0]]()
         cax = plt.axes((r+SPACING,y0,CWIDTH,h*scale),frameon=border)
         plt.sca(cax)
@@ -1496,27 +1747,29 @@ def good_colorbar(vmin=None,
 
 def complex_axis(scale):
     '''
-    Draws a nice complex-plane axis with LaTeX Re, Im labels and everything
-
+    Draws a nice complex-plane axis with LaTeX Re, Im labels.
+    
     Parameters
     ----------
+    scale: float
     '''
     xlim(-scale,scale)
     ylim(-scale,scale)
     nicexy()
-    fudgey()
     ybartext(0,'$\Im(z)$','k','w',lw=1,color='k',outline=False)
-    xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,ha='right')
+    xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
     noaxis()
-    xlabel(u'μV',fontname='DejaVu Sans')
-    ylabel(u'μV',fontname='DejaVu Sans')
+    xlabel(u'μV',fontname='DejaVu Sans',fontsize=12)
+    ylabel(u'μV',fontname='DejaVu Sans',fontsize=12)
+    xticks(xticks()[0],fontsize=12)
+    yticks(yticks()[0],fontsize=12)
     force_aspect()
 
 def subfigurelabel(x,fontsize=10,dx=39,dy=7,ax=None,bold=True,**kwargs):
     '''
     Parameters
     ----------
-    x : label
+    x: label
     '''
     if ax is None: ax = plt.gca()
     fontproperties = {
@@ -1539,7 +1792,7 @@ def sigbar(x1,x2,y,
     **kwargs):
     '''
     Draw a significance bar between positions
-    `x1` and `x2` at height `y`. 
+    ``x1`` and ``x2`` at height ``y``. 
     
     Parameters
     ----------
@@ -1563,7 +1816,7 @@ def sigbar(x1,x2,y,
     label_pvalue: boolean; default True
         Label p-value in scientific notation
     **kwargs:
-        Forwarded to the `plot()` command that draws the
+        Forwarded to the ``plot()`` command that draws the
         brace.
     '''
     dy = pixels_to_yunits(dy)
@@ -1594,9 +1847,9 @@ def hsigbar(y1,y2,x,
     
     Parameters
     ----------
-    y1 : float
-    y2 : float
-    x  : float
+    y1: float
+    y2: float
+    x : float
     
     Other Parameters
     ----------------
@@ -1611,7 +1864,7 @@ def hsigbar(y1,y2,x,
     label_pvalue: boolean; default True
         Label p-value in scientific notation
     **kwargs:
-        Forwarded to the `plot()` command that draws the
+        Forwarded to the ``plot()`` command that draws the
         brace.
     '''
     dx = pixels_to_xunits(dx)
@@ -1634,7 +1887,7 @@ def savefigure(name,stamp=True,**kwargs):
     
     Parameters
     ----------
-    name : string
+    name: string
         file name to save as (sans extension)
     '''
     # strip user-supplied extension if present
@@ -1675,14 +1928,14 @@ def round_to_precision(x,precision=1):
     
     Parameters
     ----------
-    x : scalar
+    x: scalar
         Number to round
-    precision : positive integer, default=1
+    precision: positive integer, default=1
         Number of digits to keep
     
     Returns
     -------
-    x : scalar
+    x: scalar
         Rounded number
     '''
     if x==0.0: return 0
@@ -1697,14 +1950,14 @@ def ceil_to_precision(x,precision=1):
     
     Parameters
     ----------
-    x : scalar
+    x: scalar
         Number to round
-    precision : positive integer, default=1
+    precision: positive integer, default=1
         Number of digits to keep
     
     Returns
     -------
-    x : scalar
+    x: scalar
         Rounded number
     -------
     '''
@@ -1721,14 +1974,14 @@ def floor_to_precision(x,precision=1):
     
     Parameters
     ----------
-    x : scalar
+    x: scalar
         Number to round
-    precision : positive integer, default=1
+    precision: positive integer, default=1
         Number of digits to keep
     
     Returns
     -------
-    x : scalar
+    x: scalar
         Rounded number
     '''
     if x==0.0: return 0
@@ -1769,13 +2022,13 @@ def Gaussian2D_covellipse(M,C,N=60,**kwargs):
 
     Parameters
     ----------
-    M : tuple of (x,y) coordinates for the mean
-    C : 2x2 np.array-like covariance matrix
-    N : optional, number of points in ellipse (default 60)
+    M: tuple of (x,y) coordinates for the mean
+    C: 2x2 np.array-like covariance matrix
+    N: optional, number of points in ellipse (default 60)
 
     Returns
     -------
-    xy : list of points in the ellipse
+    xy: list of points in the ellipse
     '''
     circle = np.exp(1j*np.linspace(0,2*pi,N+1))
     xy = np.array([circle.real,circle.imag])
@@ -1790,16 +2043,16 @@ def stderrplot(m,v,color='k',alpha=0.1,smooth=None,lw=1.5,
     
     Parameters
     ----------
-    m : mean
-    v : variance
+    m: mean
+    v: variance
     
     Other Parameters
     ----------------
-    color : 
+    color: 
         Plot color
-    alpha : 
+    alpha: 
         Shaded confidence alpha color blending value
-    smooth : int
+    smooth: int
         Number of samples over which to smooth the variance
     '''
     plot(m, color = color,lw=lw,label=label)
@@ -1938,10 +2191,10 @@ def covariance_crosshairs(S,p=0.8,draw_ellipse=True,draw_cross=True):
     '''
     For 2D Gaussians these are the confidence intervals
     p   | sigma
-    90  : 4.605
-    95  : 5.991
+    90 : 4.605
+    95 : 5.991
     97.5: 7.378
-    99  : 9.210
+    99 : 9.210
     99.5: 10.597
 
     Parameters
@@ -1965,7 +2218,7 @@ def draw_circle(radius,centX,centY,angle_,theta2_,
     '''
     Parameters
     ----------
-    ax : axis, if None (default), uses the current axis.
+    ax: axis, if None (default), uses the current axis.
     '''
     if ax is None: ax = plt.gca()
     arc = Arc([centX,centY],radius,radius,angle=angle_*180/np.pi,
@@ -1993,8 +2246,8 @@ def simple_arrow(x1,y1,x2,y2,ax=None,s=5,color='k',lw=1.5,**kwargs):
     
     Other Parameters
     ----------------
-    ax : axis, if None (default), uses the current axis.
-    s: float; passed as the `headlength` and `headwidth` arrow property.
+    ax: axis, if None (default), uses the current axis.
+    s: float; passed as the ``headlength`` and ``headwidth`` arrow property.
     width: float; line width
     color: matplotlib color
     '''
@@ -2010,7 +2263,7 @@ def simple_arrow(x1,y1,x2,y2,ax=None,s=5,color='k',lw=1.5,**kwargs):
 
 def inhibition_arrow(x1,y1,x2,y2,ax=None,width=0.5,color='k'):
     '''
-    Connect two points with a `T` (inhibition; braking) arrow.
+    Connect two points with a ``T`` (inhibition; braking) arrow.
     
     Parameters
     ----------
@@ -2021,7 +2274,7 @@ def inhibition_arrow(x1,y1,x2,y2,ax=None,width=0.5,color='k'):
 
     Other Parameters
     ----------------
-    ax : axis; if None (default), uses the current axis.
+    ax: axis; if None (default), uses the current axis.
     width: float; line width
     color: matplotlib color
     '''
@@ -2059,7 +2312,7 @@ def more_xticks(ax=None):
 
     Other Parameters
     ----------------
-    ax : axis, if None (default), uses the current axis.
+    ax: axis, if None (default), uses the current axis.
     '''
     if ax is None: ax = plt.gca()
     xticks     = ax.get_xticks()
@@ -2084,7 +2337,7 @@ def more_yticks(ax=None):
 
     Other Parameters
     ----------------
-    ax : axis, if None (default), uses the current axis.
+    ax: axis, if None (default), uses the current axis.
     '''
     if ax is None:
         ax = plt.gca()
@@ -2110,11 +2363,11 @@ def border_width(lw=0.4,ax=None):
 
     Parameters
     ----------
-    lw : line width of axis borders to use
+    lw: line width of axis borders to use
 
     Other Parameters
     ----------------
-    ax : axis, if None (default), uses the current axis.
+    ax: axis, if None (default), uses the current axis.
     '''
     if ax is None: ax = gca()
     [i.set_linewidth(lw) for i in ax.spines.values()]
@@ -2376,7 +2629,7 @@ def splitz(z,thr=1e-9):
     Split a 1D complex signal into real and imaginary 
     parts, setting components that are zero in either to 
     np.NaN. This lets us plot components separately without
-    overlap (see `plotz()`).
+    overlap (see ``plotz()``).
     
     Parameters
     ----------
@@ -2419,8 +2672,8 @@ __SAVE_LIMITS_PRIVATE_STORAGE__ = None
 def save_limits():
     '''
     Stash the current ((x0,x1),(y0,y1) axis limits in
-    `__SAVE_LIMITS_PRIVATE_STORAGE__`.
-    These can be restored later via `restore_limits()`
+    ``__SAVE_LIMITS_PRIVATE_STORAGE__``.
+    These can be restored later via ``restore_limits()``
     '''
     global __SAVE_LIMITS_PRIVATE_STORAGE__
     __SAVE_LIMITS_PRIVATE_STORAGE__ = (plt.xlim(),plt.ylim())
@@ -2429,7 +2682,7 @@ def save_limits():
 def restore_limits():
     '''
     Restore the ((x0,x1),(y0,y1) limits stored in 
-    `__SAVE_LIMITS_PRIVATE_STORAGE__`
+    ``__SAVE_LIMITS_PRIVATE_STORAGE__``
     '''
     global __SAVE_LIMITS_PRIVATE_STORAGE__
     xl,yl = __SAVE_LIMITS_PRIVATE_STORAGE__
@@ -2442,18 +2695,18 @@ def mock_legend(names,colors=None,s=40,lw=0.6,marker='s',
     '''
     For a list of (labels, colors), generate some 
     square scatter points outside the axis limits
-    with the given labels, so that the `legend()` call
+    with the given labels, so that the ``legend()`` call
     will populate a list of labelled, colored squares.
     
     This does not actually draw the legend, but rather
     mock-up some off-screen labelled scatter points
     that can be used to populate the legend. 
     
-    Use `pyplot.legend()` or one of the 
-    `neurotools.graphics.plot` helpers
-    `nice_legend()`
-    `right_legend()`
-    `base_legend()`
+    Use ``pyplot.legend()`` or one of the 
+    ``neurotools.graphics.plot`` helpers
+    ``nice_legend()``
+    ``right_legend()``
+    ``base_legend()``
     to draw the legend after calling this function.
     
     Parameters
@@ -2508,11 +2761,15 @@ def mock_legend(names,colors=None,s=40,lw=0.6,marker='s',
         marker = [*marker]
     except TypeError:
         marker = [marker,]*len(names)
+    while len(marker)<len(names):
+        marker += marker
     
     try:
         s = [*s]
     except TypeError:
         s = [s,]*len(names)
+    while len(s)<len(names):
+        s += s
     
     try:
         lw = [*lw]
@@ -2535,7 +2792,7 @@ def xtickpad(pad=0,ax=None,which='both'):
     Other Parameters
     ----------------
     ax: matplotlib.axis or None; default None
-        If `None`, uses `pyplot.gca()`
+        If ``None``, uses ``pyplot.gca()``
     which: str in {'major','minor','both'}; default 'both'
         Which set of ticks to apply to
     '''
@@ -2555,7 +2812,7 @@ def ytickpad(pad=0,ax=None,which='both'):
     Other Parameters
     ----------------
     ax: matplotlib.axis or None; default None
-        If `None`, uses `pyplot.gca()`
+        If ``None``, uses ``pyplot.gca()``
     which: str in {'major','minor','both'}; default 'both'
         Which set of ticks to apply to
     '''
@@ -2563,7 +2820,7 @@ def ytickpad(pad=0,ax=None,which='both'):
         ax = plt.gca()
     ax.tick_params(axis='y', which=which, pad=pad)
 
-def xticklen(l=0, w=0,ax=None,which='both'):
+def xticklen(l=0,w=None,ax=None,which='both',**kwargs):
     '''
     Set length and width of x ticks.
     
@@ -2577,15 +2834,16 @@ def xticklen(l=0, w=0,ax=None,which='both'):
     Other Parameters
     ----------------
     ax: matplotlib.axis or None; default None
-        If `None`, uses `pyplot.gca()`
+        If ``None``, uses ``pyplot.gca()``
     which: str in {'major','minor','both'}; default 'both'
         Which set of ticks to apply to
     '''
     if ax is None:
         ax = plt.gca()
-    ax.xaxis.set_tick_params(length=l, width=w, which=which)
+    ax.xaxis.set_tick_params(
+        length=l, width=w, which=which, **kwargs)
 
-def yticklen(l=0, w=0,ax=None,which='both'):
+def yticklen(l=0,w=None,ax=None,which='both',**kwargs):
     '''
     Set length and width of y ticks.
     
@@ -2599,13 +2857,14 @@ def yticklen(l=0, w=0,ax=None,which='both'):
     Other Parameters
     ----------------
     ax: matplotlib.axis or None; default None
-        If `None`, uses `pyplot.gca()`
+        If ``None``, uses ``pyplot.gca()``
     which: str in {'major','minor','both'}; default 'both'
         Which set of ticks to apply to
     '''
     if ax is None:
         ax = plt.gca()
-    ax.yaxis.set_tick_params(length=l, width=w, which=which)
+    ax.yaxis.set_tick_params(
+        length=l, width=w, which=which, **kwargs)
 
 def xin(ax=None,which='both'):
     '''
@@ -2614,7 +2873,7 @@ def xin(ax=None,which='both'):
     Other Parameters
     ----------------
     ax: matplotlib.axis or None; default None
-        If `None`, uses `pyplot.gca()`
+        If ``None``, uses ``pyplot.gca()``
     which: str in {'major','minor','both'}; default 'both'
         Which set of ticks to apply to
     '''
@@ -2629,7 +2888,7 @@ def yin(ax=None,which='both'):
     Other Parameters
     ----------------
     ax: matplotlib.axis or None; default None
-        If `None`, uses `pyplot.gca()`
+        If ``None``, uses ``pyplot.gca()``
     which: str in {'major','minor','both'}; default 'both'
         Which set of ticks to apply to
     '''
@@ -2721,7 +2980,7 @@ def axvbands(widths,
     startat=0,**
     kwargs):
     '''
-    Wrapper for `axvstripe` that accepts band widths 
+    Wrapper for ``axvstripe`` that accepts band widths 
     rather than edges.
     
     Parameters
@@ -2744,7 +3003,7 @@ def axvbands(widths,
         colors=colors,fade=fade,**kwargs)
 
 
-def zerohline(color='k',lw=None):
+def zerohline(color='k',lw=None,**kwargs):
     '''
     Draw horizontal line at zero matching axis style.
     
@@ -2752,14 +3011,14 @@ def zerohline(color='k',lw=None):
     ----------------
     color: matplotlib.color; default 'k'
     lw: positive float
-        Linewidth, if different from `axes.linewidth`
+        Linewidth, if different from ``axes.linewidth``
     '''
     if lw is None:
         lw = matplotlib.rcParams['axes.linewidth']
-    plt.axhline(0,color=color,lw=lw)
+    plt.axhline(0,color=color,lw=lw,**kwargs)
 
 
-def zerovline(color='k',lw=None):
+def zerovline(color='k',lw=None,**kwargs):
     '''
     Draw vertical line at zero matching axis style.
     
@@ -2767,11 +3026,11 @@ def zerovline(color='k',lw=None):
     ----------------
     color: matplotlib.color; default 'k'
     lw: positive float
-        Linewidth, if different from `axes.linewidth`
+        Linewidth, if different from ``axes.linewidth``
     '''
     if lw is None:
         lw = matplotlib.rcParams['axes.linewidth']
-    plt.axvline(0,color=color,lw=lw)
+    plt.axvline(0,color=color,lw=lw,**kwargs)
 
 
     
@@ -2780,7 +3039,7 @@ def plot_circular_histogram(
     x,bins,r,scale,
     color=BLACK,alpha=0.8):
     '''
-    Plot a circular histogram for data `x`, 
+    Plot a circular histogram for data ``x``, 
     given in *degrees*. 
     
     Parameters
@@ -2879,11 +3138,11 @@ def nicebp(bp,color='k',linewidth=.5):
     
     Parameters
     ----------
-    bp : point to boxplot object returned by matplotlib
+    bp: point to boxplot object returned by matplotlib
     
     Other Parameters
     ----------------
-    c: matplotlib.color; default `'k'`
+    c: matplotlib.color; default ``'k'``
         Color to set boxes to
     linewidth: positive float; default 0.5
         Width of whisker lines. 
@@ -2930,12 +3189,12 @@ def colored_boxplot(
     which: tuple; default (5,95)
         Percentile range for whiskers
     bgcolor: matplotlib.color; default WHITE
-        Background color if `filled=False`
+        Background color if ``filled=False``
     mediancolor: matplotlib.color; default None
         Defaults to BLACK unless color is BLACK, in which
         case it defaults to WHITE.
     **kwargs:
-        Additional arguments fowarded to `pyplot.boxplot()`
+        Additional arguments fowarded to ``pyplot.boxplot()``
     '''
     if 'linewidth' in kwargs:
         lw = kwargs[linewidth]
@@ -2980,7 +3239,7 @@ def boxplot_significance(
     and add significance brackets.
         
     Note that this, by default, assumed paired samples.
-    Please set paired=False. 
+    Please set ``paired=False``. 
         
     This corrects for multiple comparisons using the
     Benjamini-Hochberg procedure, using either the 
@@ -3030,6 +3289,7 @@ def boxplot_significance(
         falst discovery rate threshold after correcting
         for multiple comparisons.
     '''
+    import neurotools.stats.pvalues as pvalues
     def test(*args):
         try: 
             if paired:
@@ -3077,11 +3337,13 @@ def boxplot_significance(
     return pv2, reject
 
 
-def pikeplot(x,y,**kwargs):
+def simplestem(x,y,**kwargs):
     '''
     Plot timeseries as verical lines dropped to y=0.
-    Keyword arguments are forwarded to `pyplot.plot()`.
+    Keyword arguments are forwarded to ``pyplot.plot()``.
     
+    **Obsolete:** use ``matplotlib.pyplot.stem`` instead
+
     Parameters
     ----------
     x: 1D np.array
@@ -3094,8 +3356,265 @@ def pikeplot(x,y,**kwargs):
     y = np.array([y*0,y,np.NaN*y]).T.ravel()
     x = np.array([x,x,np.NaN*x]).T.ravel()
     plt.plot(x,y,**kwargs)
-
     
+
+def pike(
+    x,
+    y,
+    bins=10,
+    bin_mode='percentile', # or 'uniform'
+    point_function = 'mean', #'median'
+    error_mode = 'pct', # 'std','pct','boot'
+    error_range = [2.5,97.5],
+    dolines=True,
+    dopoints=True,
+    doscatter=True,
+    connect_points=False,
+    doplot=True,
+    color=None,
+    linestyle={},
+    pointstyle={},
+    scatterstyle={},
+    bin_offset=0.0,
+    w = None,
+    label=None,
+    nbootstrap=500,
+    sideways=False,
+    ):
+    '''
+    Summarize data mean or median within bins. 
+    
+    Parameters
+    ----------
+    x: iterable
+        x coordinates of data
+    y: iterable
+        y coordinates of data
+    
+    Other Parameters
+    ----------------
+    bins: positive int; default 10
+    bin_mode: str; default 'percentile'
+        ``'percentile'``: bins based on data percentiles'
+        ``'uniform'``: evenly spaced bins between 
+        ``min`` and ``max``.
+    point_function: str; default 'mean'
+        ``'mean'`` or ``'median'``
+    error_mode: str; default 'p'
+        ``'e'`` Standard error of mean;
+        ``'s'`` Standard deviation of data;
+        ``'p'`` Percentiles of data;
+        ``'b'`` Bootstrap error of mean.
+    error_range: tuple of numbers ∈(0,100); default (2.5,97.5)
+        Lower and upper percentiles to use for error bars.
+    dolines:boolean; default True
+        Whether to draw error lines.
+    dopoints:boolean; default True
+        Whether to draw mean/median points.
+    doscatter:boolean; default True
+        Wheter to plot ``(x,y)`` as scatter points.
+    connect_points: boolean; default False
+        Whether to connect the points in a line plot.
+    doplot:boolean; default True
+        Whether to draw a plot
+    linestyle: dict
+        Keyword arguments for line style
+    pointstyle: dict
+        Keyword arguments for mean/median style
+    scatterstyle: dict
+        Keyword arguments for scatter points style
+    bin_offset: float
+        Fraction of median inter-bin distance to offset
+        the error lins. This adjustment allows plotting of
+        multiple series atop each-other without overlap.
+    nbootstrap: int; default 200
+        Number of bootstrap samples
+    sideways: boolean, default False
+        Flips the role of the `x` and `y` axes
+    
+    Returns
+    -------
+    xc: list
+        ``x`` bin centers
+    points: list
+        mean or median of ``y`` in each bin
+    lo: list
+        lower data or error percentile in each bin
+    hi: list
+        upper data or error percentile in each bin
+    '''
+    import neurotools.stats.pvalues as pvalues
+
+    # Data cleaning: get error range
+    error_range = np.float32(error_range).ravel()
+    assert np.all(error_range)>=0
+    assert np.all(error_range)<=100
+    plo,phi = sorted(error_range)[:2]
+    
+    # unravel and remove NaN
+    y = np.array(y).ravel()
+    x = np.array(x).ravel()
+    ok = (np.isfinite(x)) & (np.isfinite(y))
+    x = x[ok]
+    y = y[ok]
+    
+    if not color is None:
+        linestyle    = { 'color':color,**linestyle    }
+        pointstyle   = { 'color':color,**pointstyle   }
+        scatterstyle = { 'color':color,**scatterstyle }
+    
+    # Compute bins
+    eps = 1e-9
+    bin_mode = str(bin_mode).lower()[0]
+    
+    if isinstance(bins,int):
+        if bin_mode=='p':#'percentile':
+            # Adjust bins to contain similar numbers of points
+            bins = np.nanpercentile(x,np.linspace(0,100,bins+1))
+            bins[-1] += eps
+        elif bin_mode=='u':#'uniform':
+            # Assign to uniformly spaced bins
+            bins = np.linspace(np.nanmin(x)-eps,np.nanmax(x)+eps,bins+1)
+        else:
+            raise ValueError(
+                "``bin_mode`` must be 'percentile' or 'uniform'")
+    nbins = len(bins)-1
+    xc = centers(bins)
+    
+    # Adjustment allows plotting multiple series without
+    # overlap
+    xc += np.median(np.diff(xc))*bin_offset
+    
+    # Group data by bins 
+    j = np.digitize(x,bins)-1
+    groups = [y[i==j] for i in range(nbins)]
+    
+    '''
+    if w is None:
+        w = np.ones(x.shape)
+    else:
+        w = np.array(w).ravel()[ok]
+    wg     = [w[i==j] for i in range(nbins)]
+    '''
+    str(point_function).lower()
+    if point_function=='mean':
+        mfun = np.nanmean
+    elif point_function=='median':
+        mfun = np.nanmedian
+    else:
+        #mfun = point_function
+        raise ValueError(
+            "``point_function`` must be 'mean' or 'median'")
+        
+    # Calculate measure of central tendency
+    points = np.float32([*map(mfun,groups)])
+    
+    # Calculate error bars 
+    error_mode = str(error_mode).lower()[0]
+    if error_mode=='e':# standard error
+        # Gaussian confidence intervals on mean
+        means  = np.float32([*map(np.nanmean,groups)])
+        counts = np.float32([np.sum(~np.isnan(g)) for g in groups])
+        stds   = np.float32([*map(np.nanstd ,groups)])
+        sems   = stds/np.sqrt(counts)
+        lo = means + sems * scipy.stats.norm.ppf(plo/100)
+        hi = means + sems * scipy.stats.norm.ppf(phi/100)
+    elif error_mode=='s':
+        # Gaussian model of data variance
+        means  = np.float32([*map(np.nanmean,groups)])
+        stds   = np.float32([*map(np.nanstd ,groups)])
+        lo = means + stds * scipy.stats.norm.ppf(plo/100)
+        hi = means + stds * scipy.stats.norm.ppf(phi/100)
+    elif error_mode=='p':
+        # Percentile model of data variace
+        bounds = [
+            np.nanpercentile(yi,[plo,phi])
+            for yi in groups]
+        bounds = [
+            b if np.all(np.isfinite(b)) else (np.NaN,np.NaN)
+            for b in bounds]
+        lo,hi = zip(*bounds)
+    elif error_mode=='b':
+        # Bootstrap mean or median
+        lo,hi = zip(*[
+            np.nanpercentile(
+                pvalues.bootstrap_statistic(
+                    mfun,
+                    yi,
+                    nbootstrap),
+                [plo,phi]
+            ) 
+            for yi in groups])
+    else:
+        raise ValueError(
+            "``error_mode`` must be 'e', 's', 'p', "
+            " or 'b'")
+        
+    lo = np.float32(lo)
+    hi = np.float32(hi)
+    if doplot:
+        if doscatter:
+            if sideways:
+                plt.scatter(y,x,**{**{
+                    'marker':'.',
+                    'lw':0,
+                    'color':AZURE,
+                    's':20
+                },**scatterstyle})
+            else:
+                plt.scatter(x,y,**{**{
+                    'marker':'.',
+                    'lw':0,
+                    'color':AZURE,
+                    's':20
+                },**scatterstyle})
+        if dolines:
+            px = np.array([xc,xc,np.NaN*xc]).T.ravel()
+            py = np.array([lo,hi,np.NaN*lo]).T.ravel()
+            if sideways:
+                plt.plot(py,px,**{**{
+                    'lw':1,
+                    'color':BLACK,
+                    'solid_capstyle':'butt'
+                },**linestyle})
+            else:
+                plt.plot(px,py,**{**{
+                    'lw':1,
+                    'color':BLACK,
+                    'solid_capstyle':'butt'
+                },**linestyle})
+        if dopoints:
+            if sideways:
+                plt.scatter(points,xc,**{**{
+                    'label':label,
+                    'marker':'s',
+                    'lw':0,
+                    'color':BLACK,
+                    's':10
+                },**pointstyle})
+            else:
+                plt.scatter(xc,points,**{**{
+                    'label':label,
+                    'marker':'s',
+                    'lw':0,
+                    'color':BLACK,
+                    's':10
+                },**pointstyle})
+        if connect_points: 
+            if sideways:
+                plt.plot(points,xc,**{**{
+                    'lw':1.5,
+                    'color':BLACK,
+                    'solid_capstyle':'butt'
+                },**linestyle})
+            else:
+                plt.plot(xc,points,**{**{
+                    'lw':1.5,
+                    'color':BLACK,
+                    'solid_capstyle':'butt'
+                },**linestyle})
+            
+    return xc,points,lo,hi
 
 def confidencebox(x,y,
     median=None,boxcolor=RUST,w=.5,**kwargs):
@@ -3119,7 +3638,7 @@ def confidencebox(x,y,
         Box's color
     **kwargs: dictionary
         Overrides for any boxplot arguments. 
-        See `pyplot.boxplot()` for more details. 
+        See ``pyplot.boxplot()`` for more details. 
     '''
     props={
         'sym':'*',
@@ -3165,6 +3684,31 @@ def anatomy_axis(
     ):
     '''
     Draw an anatomical axis crosshairs on the current axis.
+    
+    Parameters
+    ----------
+    x0: number
+        X coordinate of anatomy axis.
+    y0: number
+        Y coordinate of anatomy axis.
+    dx: positive number; default 15
+        Width of axis in pixels
+    dy: positive number; default dx
+        Height of axis in pixels
+    tx: positive number; default 4
+        Horizontal label padding in pixels
+    ty: positive number; default tx
+        Vertical label padding in pixels
+    l: str; default 'M'
+        Label for leftwards direction
+    r: str; default 'L'
+        Label for rightwards direction
+    u: str; default 'A'
+        Label for upwards direction
+    d: str; default 'P'
+        Label for downwards direction
+    fontsize: positive number; 8
+        Font size for labels
     '''
     if dy is None: dy=dx
     if ty is None: ty=tx
@@ -3172,13 +3716,346 @@ def anatomy_axis(
     dy = px2y(dy)
     tx = px2x(tx)
     ty = px2y(ty)
-    plt.plot([x0-dx,x0+dx],[y0,y0],color='k',lw=0.6,clip_on=False)
-    plt.plot([x0,x0],[y0-dy,y0+dy],color='k',lw=0.6,clip_on=False)
-    plt.text(x0+dx+tx,y0,r,fontsize=fontsize,ha='left',va='center',clip_on=False)
-    plt.text(x0-dx-tx,y0,l,fontsize=fontsize,ha='right',va='center',clip_on=False)
-    plt.text(x0,y0+dy+ty,u,fontsize=fontsize,ha='center',va='bottom',clip_on=False)
-    plt.text(x0,y0-dy-ty,d,fontsize=fontsize,ha='center',va='top',clip_on=False)
+    plt.plot([x0-dx,x0+dx],[y0,y0],
+        color='k',lw=0.6,clip_on=False)
+    plt.plot([x0,x0],[y0-dy,y0+dy],
+        color='k',lw=0.6,clip_on=False)
+    plt.text(x0+dx+tx,y0,r,
+        fontsize=fontsize,
+        ha='left',va='center',clip_on=False)
+    plt.text(x0-dx-tx,y0,l,
+        fontsize=fontsize,
+        ha='right',va='center',clip_on=False)
+    plt.text(x0,y0+dy+ty,u,
+        fontsize=fontsize,
+        ha='center',va='bottom',clip_on=False)
+    plt.text(x0,y0-dy-ty,d,
+        fontsize=fontsize,
+        ha='center',va='top',clip_on=False)
+
+
+def vpaired_histogram(
+    ax1,
+    ax2,
+    x1,
+    x2,
+    bins = 10,
+    color1='teal',
+    color2='orange',
+    name1='',
+    name2='',
+    label = '← (density) →',
+    labelpad = 20,
+    labelproperties = {},
+    ):
+    '''
+    Draw a veritically paired histogram.
+    
+    >>> vpaired_histogram(subplot(211), subplot(212), randn(100), randn(100))
+    
+    Parameters
+    ----------
+    ax1: axis
+        The top axis
+    ax2: axis
+        The bottom axis. This will be shifted to 
+        abut the top axis and match its width.
+    x1: iterable of numbers
+        Data for top histogram
+    x2: iterable of numbers
+        Data for bottom histogram
+    
+    Other Parameters
+    ----------------
+    bins: int or series; default 10
+        Histogram bin edges or number of histogram bins.
+    color1: matplotlib color
+        Color of top histogram
+    color2: matplotlib color
+        Color of bottom histogram
+    name1: str
+        Label for top histogram
+    name2: str
+        Label for bottom histogram
+    label: str
+        Y axis label
+    labelpad: int
+        Y axis label spacing in pixels
+    labelproperties: dict
+        Keyword arguments forwarded to figure.text()
+        for drawing the Y axis label.
+    '''
+    
+    x1 = [*x1]
+    x2 = [*x2]
+    xlo = min(np.min(x1),np.min(x2))
+    xhi = max(np.max(x1),np.max(x2))
+    if isinstance(bins,int):
+        bins = np.linspace(xlo,xhi,bins+1)
+    
+    vtwin(ax1,ax2)
+    y1 = -inf
+    for x,ax,color,name in zip((x1,x2),(ax1,ax2),(color1,color2),(name1,name2)):
+        plt.sca(ax)    
+        plt.hist(x,bins,color=color,label=name,density=True)
+        y1 = max(y1,plt.ylim()[1])
+    
+    # Same x range
+    ax1.set_xlim(xlo,xhi)
+    ax2.set_xlim(xlo,xhi)
+    
+    # Remove excess axis spines
+    ax1.spines['bottom'].set_visible(False)
+    ax1.spines['right'].set_visible(False)
+    ax1.spines['top'].set_visible(False)
+    ax2.spines['bottom'].set_visible(False)
+    ax2.spines['right'].set_visible(False)
+    ax2.get_xaxis().tick_bottom()
+    ax1.get_yaxis().tick_left()
+    ax2.get_yaxis().tick_left()
+    
+    # Avoid duplicate zero on y axis
+    ax1.set_ylim(0,y1)
+    ax2.set_ylim(y1,0)
+    yt = ax1.get_yticks()
+    ax1.set_yticks([i for i in yt if not i==0.0])
+    ax2.set_yticks(yt)
+    
+    # It's hard to draw a centered label across axes
+    # Take care of this. 
+    dx = pixels_to_xfigureunits(labelpad)
+    x = ax1.get_position().xmin - dx
+    y = (ax1.get_position().ymin + ax2.get_position().ymax)/2
+    plt.gcf().text(x-0.01,y,label,**{
+        **dict(
+            fontsize=11,
+            ha='right',
+            va='center',
+            rotation=90),
+        **labelproperties})  
+        
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+from matplotlib.patches    import PathPatch
+from matplotlib.path       import Path
+from scipy.stats           import vonmises
+from numpy                 import linspace, exp
+
+def hollow_polygon(outer,inner,**kwargs):
+    '''
+    Add a polygon with a single interior region 
+    subtracted to the current plot.
+    '''
+    gca().add_patch(PathPatch(Path(
+        [*outer] + [*inner][::-1],
+        [Path.MOVETO] + [Path.LINETO]*(len(outer)-2) + 
+        [Path.CLOSEPOLY] + 
+        [Path.MOVETO] + 
+        [Path.LINETO]*(len(inner)-2) + [Path.CLOSEPOLY]
+    ),**kwargs))
+
+def add_polygon(points,**kwargs):
+    '''
+    Add a closed polygon to the current plot.
+    '''
+    gca().add_patch(PathPatch(Path(
+        [*points],
+        [Path.MOVETO] + 
+        [Path.LINETO]*(len(points)-2) + 
+        [Path.CLOSEPOLY]
+    ),**kwargs))
+
+def linscale_polar_plot(
+    h,
+    r,
+    rinner,
+    router,
+    lw=0.8,
+    facecolor=lighten(BLACK,.75),
+    edgecolor=lighten(BLACK,.5),
+    alpha=1.0,
+    ntheta=360,
+    zorder=-500,
+    flipud=False,
+    clip_on=False,
+    ):
+    from neurotools.signal import unitscale 
+    from neurotools.util.tools import c2p
+    z = exp(-1j*h) if flipud else exp(1j*h)
+    inner = c2p(z*rinner)
+    outer = c2p(z*(rinner+(router-rinner)*unitscale(r)))
+    # Shaded region
+    hollow_polygon(
+        outer.T,
+        inner.T,
+        facecolor=facecolor,
+        lw=0,
+        zorder=zorder,
+        alpha=alpha,
+        clip_on=clip_on
+    )
+    # Outer line
+    if lw>0:
+        plot(
+            *outer,
+            color=edgecolor,
+            lw=lw,
+            zorder=zorder,
+            clip_on=clip_on
+        )
+
+def vonmises_ring(
+    kappa,
+    loc,
+    rinner,
+    router,
+    lw=0.8,
+    facecolor=lighten(BLACK,.75),
+    edgecolor=lighten(BLACK,.5),
+    color=None,
+    alpha=1.0,
+    ntheta=360,
+    draw_mean=True,
+    markerprops={},
+    zorder=-500,
+    flipud=False,
+    clip_on=False,
+    ):
+    '''
+    Plot a von Mises distribution in polar coordinates,
+    with inverse-dispersion parameter ``kappa``,
+    location parameter ``loc`` (mean angle in radians),
+    baseline at ``rinner``, and peak at ``router``.
+    '''
+    from neurotools.signal import unitscale 
+    from neurotools.util.tools import c2p
+    
+    if not color is None:
+        facecolor = edgecolor = color
+    
+    h = linspace(0,2*np.pi,ntheta+1)
+    z = exp(-1j*h) if flipud else exp(1j*h)
+    
+    # von Mises distribution shaded ring
+    vm = scipy.stats.vonmises(kappa, loc, 1)
+    rr = unitscale(vm.pdf(h))
+    vminner = c2p(z*rinner)
+    vmouter = c2p(z*(rinner+(router-rinner)*unitscale(rr)))
+    
+    # Shaded region
+    hollow_polygon(
+        vmouter.T,
+        vminner.T,
+        facecolor=facecolor,
+        lw=0,
+        alpha=alpha,
+        zorder=zorder,
+        clip_on=clip_on
+    )
+    # Outer line
+    if lw>0:
+        plot(
+            *vmouter,
+            color=edgecolor,
+            lw=lw,
+            zorder=zorder,
+            clip_on=clip_on
+        )
+    # dial tick for mean
+    if draw_mean:
+        z = exp(1j*loc)
+        plot(
+            *c2p([z*rinner,z*router]),
+            **(dict(
+                zorder=zorder,
+                clip_on=clip_on,
+                lw=2.0,
+                color=[0.26666668, 0.32156864, 0.36078432],
+                solid_capstyle='butt',
+            )|markerprops)
+        )
+    
+def disk_axis(
+    r1,
+    r2,
+    nspokes    = 12,
+    facecolor  = BLACK*.1+WHITE*.9,
+    edgecolor  = BLACK*.9+WHITE*.1,
+    lw         = 0.4,
+    zorder     = -100,
+    fix_limits = True,
+    clip_on    = False,
+    draw_inner = True,
+    draw_outer = True,
+    ):
+    '''
+    Disk axis: Draw a disk with alternating white/colored
+    sectors like a roulette wheel. 
+    '''
+    from neurotools.util.tools import c2p
+    
+    # Spokes
+    for i in range(nspokes):
+        z = exp(1j*linspace(
+            i/nspokes*2*pi,
+            (i+.5)/nspokes*2*pi,
+            100))
+        outer = c2p(z*(r2)).T
+        inner = c2p(z*(r1)).T
+        add_polygon(
+            [*outer] + [*inner][::-1],
+            facecolor = facecolor,
+            edgecolor = (1,1,1,0),
+            lw        = 0.0,
+            zorder    = zorder,
+            clip_on   = clip_on
+        )
+    
+    # ring
+    if lw>0:
+        z = exp(1j*linspace(0,2*np.pi,361))
+        if draw_inner:
+            plot(
+                *c2p(z*r1),
+                lw=lw,
+                color=edgecolor,
+                clip_on=clip_on,
+                zorder=zorder+1
+                )
+        if draw_outer:
+            plot(
+                *c2p(z*r2),
+                lw=lw,
+                color=edgecolor,
+                clip_on=clip_on,
+                zorder=zorder+1
+                )
+            
+    if fix_limits:
+        #x0,x1 = xlim()
+        #y0,y1 = ylim()
+        #x0 = min(x0,-r2)
+        #y0 = min(y0,-r2)
+        #x1 = max(x1, r2)
+        #y1 = max(y1, r2)
+        #xlim(x0,x1)
+        #ylim(y0,y1)
+        xlim(-r2,r2)
+        ylim(-r2,r2)
+        force_aspect()
+    
+    
+    
+    

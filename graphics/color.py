@@ -53,7 +53,7 @@ CHARTREUSE = np.float32(mpl.colors.to_rgb('#b59f1a'))
 VIRIDIAN   = np.float32(mpl.colors.to_rgb('#11be8d'))
 CRIMSON    = np.float32(mpl.colors.to_rgb('#b41d4d'))
 
-# I liked Virginia Rutten's color scheme
+# I really liked Virginia Rutten's color scheme
 GOLD       = np.float32(mpl.colors.to_rgb('#ffd92e'))
 TAN        = np.float32(mpl.colors.to_rgb('#765931'))
 SALMON     = np.float32(mpl.colors.to_rgb('#fa8c61'))
@@ -83,6 +83,14 @@ MATLAB_BLACK_OLD = np.float32([0.25, 0.25, 0.25])
 COLORS     = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]
 CYCLE      = [BLACK,RUST,TURQUOISE,OCHRE,AZURE,MAUVE,YELLOW,INDIGO]
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CYCLE)
+
+# Override defaults
+mcolors.colorConverter.colors['r'] = RUST
+mcolors.colorConverter.colors['g'] = MOSS
+mcolors.colorConverter.colors['b'] = AZURE
+mcolors.colorConverter.colors['y'] = OCHRE
+mcolors.colorConverter.colors['m'] = MAUVE
+mcolors.colorConverter.colors['c'] = TEAL
 
 ######################################################################
 # Hex codes

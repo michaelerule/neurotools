@@ -71,15 +71,18 @@ print matplotlib.pyplot.get_backend()
 from neurotools.spikes                   import *
 from neurotools.spikes.sta               import *
 from neurotools.spikes.waveform          import *
+
 from neurotools.util.tools               import *
+from neurotools.util.array               import *
 from neurotools.util.time                import *
 from neurotools.util.string              import *
 from neurotools.util.functions           import *
+
 from neurotools.linalg.operators         import *
+from neurotools.linalg.matrix            import *
 from neurotools.graphics.color           import *
 from neurotools.graphics.colormaps       import *
 from neurotools.graphics.plot            import *
-from neurotools.linalg.matrix            import *
 
 from neurotools.spatial.dct              import *
 from neurotools.spatial.array            import *
@@ -98,7 +101,10 @@ from neurotools.stats.information        import *
 from neurotools.stats.glm                import *
 from neurotools.stats.hmm                import *
 from neurotools.stats.modefind           import *
-from neurotools.stats.regressions        import *
+from neurotools.stats.pvalues            import *
+from neurotools.stats.tests              import *
+from neurotools.stats.circular           import *
+
 from neurotools.signal.morlet            import *
 #from neurotools.signal.phase             import *
 from neurotools.signal.savitskygolay     import *

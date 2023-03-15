@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.information module &mdash; Neurotools 2 documentation</title>
@@ -12,12 +12,12 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +30,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Neurotools
-            <img src="_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Neurotools
+              <img src="_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,6 +70,8 @@
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.modefind.html">neurotools.stats.modefind module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.pvalues.html">neurotools.stats.pvalues module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neurotools.stats.regressions.html">neurotools.stats.regressions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.shuffleL2explore.html">neurotools.stats.shuffleL2explore module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neurotools.stats.tests.html">neurotools.stats.tests module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.stats.html#module-neurotools.stats">Module contents</a></li>
@@ -92,7 +98,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="neurotools.stats.html">neurotools.stats package</a></li>
       <li class="breadcrumb-item active">neurotools.stats.information module</li>
       <li class="wy-breadcrumbs-aside">
@@ -107,73 +113,384 @@
   <section id="module-neurotools.stats.information">
 <span id="neurotools-stats-information-module"></span><h1>neurotools.stats.information module<a class="headerlink" href="#module-neurotools.stats.information" title="Permalink to this heading"></a></h1>
 <p>Routines concerning information theory</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.stats.information.DKL_discrete">
-<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">DKL_discrete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#DKL_discrete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.DKL_discrete" title="Permalink to this definition"></a></dt>
-<dd><p>Compute KL divergence between discrete distributions</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">discrete</span></span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collected methods for calculating biased information-theoretic
+quantities directly from discrete (categorical) probability
+distributions.
+These have never been fully tested.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.DKL">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DKL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.DKL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.DKL" title="Permalink to this definition"></a></dt>
+<dd><p>Compute KL divergence D(P||Q)
+between discrete distributions <code class="docutils literal notranslate"><span class="pre">P</span></code> and <a href="#id1"><span class="problematic" id="id2">``</span></a>Q`.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>P</strong> (<em>np.array</em>) – Vector of probabilities</p></li>
 <li><p><strong>Q</strong> (<em>np.array</em>) – Vector of probabilities</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>DKL</strong> – KL divergence from P to Q</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.stats.information.discrete_entropy_samples">
-<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">discrete_entropy_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete_entropy_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete_entropy_samples" title="Permalink to this definition"></a></dt>
-<dd><p>Entropy is in nats</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.H">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">H</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.H"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.H" title="Permalink to this definition"></a></dt>
+<dd><p>Sample entropy <code class="docutils literal notranslate"><span class="pre">-Σ</span> <span class="pre">p</span> <span class="pre">ln(p)</span></code> in nats.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>array-like numeric</em>) – List of frequencies or counts</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shannon entropy of discrete distribution
+with observed <cite>counts</cite></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.H_samples">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">H_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.H_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.H_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate sample entropy <code class="docutils literal notranslate"><span class="pre">-Σ</span> <span class="pre">p</span> <span class="pre">ln(p)</span></code> (in nats)
+from a list of samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>samples</strong> (<em>array-like</em>) – 1D array-like iterable of samples. Samples can be of any type, but
 must be hashable.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Shannon entropy of samples</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.stats.information.discrete_entropy_distribution">
-<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">discrete_entropy_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-19</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete_entropy_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete_entropy_distribution" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>array like numeric</em>) – List of frequencies or counts</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.Hcond">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Hcond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.Hcond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.Hcond" title="Permalink to this definition"></a></dt>
+<dd><p>Conditional entropy <span class="math notranslate nohighlight">\(H_{y|x}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>array-like numeric</em>) – List of frequencies or counts</p></li>
+<li><p><strong>axis</strong> (<em>tuple</em>) – List of axes corresponding to <code class="docutils literal notranslate"><span class="pre">y</span></code> in
+<span class="math notranslate nohighlight">\(H_{y|x}\)</span>.
+Remaining axes presumed to correspond to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Shannon entropy of discrete distribution with observed <cite>counts</cite></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shannon entropy of discrete distribution
+with observed <cite>counts</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="neurotools.stats.information.regularized_discrete_entropy">
-<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">regularized_discrete_entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#regularized_discrete_entropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.regularized_discrete_entropy" title="Permalink to this definition"></a></dt>
-<dd><p>Specify that samples come from a set of size N
-Some examples might not be observed
-Use a bound on their probability to compute entropy</p>
-<p>Maybe extrapolate the energy density?</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.I">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">I</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.I"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.I" title="Permalink to this definition"></a></dt>
+<dd><p>Mutual information from a discrete PDF</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>np.ndarray</em>) – Array of probabilities or counts, at lest two dimensional.</p></li>
+<li><p><strong>axes1</strong> (<em>tuple</em>) – List of axes corresponding to the first set of variables.</p></li>
+<li><p><strong>axes2</strong> (<em>tuple</em>) – List of axes corresponding to the second set of variables.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.shuffle">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.shuffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.shuffle" title="Permalink to this definition"></a></dt>
+<dd><p>Replace the joint density for the variables
+in <code class="docutils literal notranslate"><span class="pre">axes</span></code> with the product of their marginals,
+all conditioned on any remaining variables not
+included in <code class="docutils literal notranslate"><span class="pre">axes</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.Ishuff">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ishuff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.Ishuff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.Ishuff" title="Permalink to this definition"></a></dt>
+<dd><p>The shuffled information between
+(neuron₁, neuron₂, stimulus),
+in nats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>np.ndarray</em>) – a 3D array of joint probabilities.
+The first two axes should index neuronal responses.
+The third axis should index the extrinsic covariate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ΔIshuff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.ΔIshuff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Mutual information between
+(neuron₁, neuron₂) and (stimulus),
+relative to a conditionally-shuffled
+baseline where
+P(neuron₁, neuron₂)
+is replaced by
+P(neuron₁) P(neuron₂),
+in nats.</p>
+<p>Naïve calculation of
+Latham and Nirenberg equation (2).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ΔI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.ΔI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd><p>Mutual information between
+(neuron₁, neuron₂) and (stimulus),
+Minus the mutual information
+I(neuron₁, stimulus) and
+I(neuron₂, stimulus).</p>
+<p>Naïve calculation of
+Latham and Nirenberg equation (5)
+from
+Brenner et al., 2000;
+Machens et al., 2001;
+Schneidman et al., 2003.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.Inoise">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ΔInoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.ΔInoise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.Inoise" title="Permalink to this definition"></a></dt>
+<dd><p><span class="math notranslate nohighlight">\(I_{r_1,r_2;s} - I^{\text{shuffle}}_{r_1,r2;s}\)</span>.</p>
+<p>Naïve calculation of
+Schneidman, Bialek, Berry (2003) equation (14).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.Isig">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ΔIsig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.ΔIsig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.Isig" title="Permalink to this definition"></a></dt>
+<dd><p><span class="math notranslate nohighlight">\(I_{r_1,r_2;s} - I^{\text{shuffle}}_{r_1,r2;s}\)</span>.</p>
+<p>Naïve calculation of
+Schneidman, Bialek, Berry (2003) equation (15).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.syn">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">syn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.syn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.syn" title="Permalink to this definition"></a></dt>
+<dd><p>Mutual information between
+(neuron₁, neuron₂) and (stimulus),
+Minus the mutual information
+I(neuron₁, stimulus) and
+I(neuron₂, stimulus).</p>
+<p>Naïve calculation of
+Latham and Nirenberg equation (4)
+from
+Brenner et al., 2000;
+Machens et al., 2001;
+Schneidman et al., 2003.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.discrete.syn2">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">syn2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#discrete.syn2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.discrete.syn2" title="Permalink to this definition"></a></dt>
+<dd><p>Naïve calculation of
+Schneidman, Bialek, Berry (2003) equation (11).</p>
+<p>This should match <code class="docutils literal notranslate"><span class="pre">discrete.syn</span></code></p>
+<p>This is fixed: p should be 3D with axes (0,1) the neurons
+and axis 2 the stimulus</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.stats.information.poisson_entropy_nats">
 <span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">poisson_entropy_nats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#poisson_entropy_nats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.poisson_entropy_nats" title="Permalink to this definition"></a></dt>
-<dd><p>Approximate the entropy of a Poisson distribution in nats</p>
+<dd><p>Approximate entropy of a Poisson distribution in nats</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>l</strong> (<em>positive float</em>) – Poisson rate parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.information.betapr">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">betapr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#betapr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.betapr" title="Permalink to this definition"></a></dt>
+<dd><p>Baysian estimation of rate <cite>p</cite> in Bernoulli trials.
+This returns the posterior median for <cite>p</cite> given
+<cite>k</cite> positive examples from <cite>N</cite> trials, using Jeffery’s
+prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<em>in</em><em> or </em><em>np.int23</em>) – Number of observations for each state</p></li>
+<li><p><strong>N</strong> (<em>positive int</em>) – <code class="docutils literal notranslate"><span class="pre">N&gt;k</span></code> total observations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>p</strong> – Estiamted probability or probability per bin, if
+<code class="docutils literal notranslate"><span class="pre">k</span></code> is a <code class="docutils literal notranslate"><span class="pre">np.int32</span></code> array. Probabilities are
+normalized to sum to 1.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.information.beta_regularized_histogram_mutual_information">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">beta_regularized_histogram_mutual_information</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">97.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nshuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbootstrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#beta_regularized_histogram_mutual_information"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.beta_regularized_histogram_mutual_information" title="Permalink to this definition"></a></dt>
+<dd><p>A quick and dirt mutual information estimator.</p>
+<p>The result will depend on the bin size but a quick
+suffle control provides a useful chance level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>iterable&lt;number&gt;</em>) – Samples for first variable <code class="docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p><strong>y</strong> (<em>iterable&lt;number&gt;</em>) – Samples for second variable <code class="docutils literal notranslate"><span class="pre">y</span></code></p></li>
+<li><p><strong>nb</strong> (<em>positive int; default 4</em>) – Number of bins. I suggest 3-10.</p></li>
+<li><p><strong>eps</strong> (<em>small positive float; default 1e-9</em>) – </p></li>
+<li><p><strong>plo</strong> (<em>number ∈</em><em>(</em><em>0</em><em>,</em><em>100</em><em>)</em><em>; default 2.5</em>) – </p></li>
+<li><p><strong>phi</strong> (<em>number ∈</em><em>(</em><em>0</em><em>,</em><em>100</em><em>)</em><em>; default 97.5</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Ixy</strong> (<em>float</em>) – Histogram-based MI estimate
+<cite>Ixy = Hx + Hy - Hxy</cite></p></li>
+<li><p><strong>IΔ</strong> (<em>float</em>) – Shuffle-adjust MI
+<cite>IΔ = np.median(Hx+Hy) - Hxy</cite></p></li>
+<li><p><strong>pvalue</strong> (<em>float</em>) – p-value for significant MI from the shuffle test</p></li>
+<li><p><strong>lo</strong> (<em>float</em>) – The boostrap <cite>plo</cite> percentil of <cite>IΔ</cite></p></li>
+<li><p><strong>hi</strong> (<em>float</em>) – The boostrap <cite>phi</cite> percentil of <cite>IΔ</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.stats.information.JointCategoricalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">JointCategoricalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joined</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kept</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#JointCategoricalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.JointCategoricalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.stats.information.JointCategoricalDistribution.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#neurotools.stats.information.JointCategoricalDistribution.counts" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.stats.information.JointCategoricalDistribution.joined">
+<span class="sig-name descname"><span class="pre">joined</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#neurotools.stats.information.JointCategoricalDistribution.joined" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.stats.information.JointCategoricalDistribution.kept">
+<span class="sig-name descname"><span class="pre">kept</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#neurotools.stats.information.JointCategoricalDistribution.kept" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.stats.information.JointCategoricalDistribution.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#neurotools.stats.information.JointCategoricalDistribution.states" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.stats.information.JointCategoricalDistribution.nstate">
+<span class="sig-name descname"><span class="pre">nstate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#neurotools.stats.information.JointCategoricalDistribution.nstate" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.stats.information.joint">
+<span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">joint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#joint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.joint" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a list of samples from several categorical
+variables in a single, new categorical variable.</p>
+<p>This drops marginal states not present in any variable
+(which may not be what you want)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.stats.information.</span></span><span class="sig-name descname"><span class="pre">dirichlet_density</span></span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Model empirical (sampled) densities of categorical
+variables using a Dirichlet prior.</p>
+<p>The default prior is α = 1/k, where
+k is the number of states. This makes things behave
+nicer under marginalization. Specify bias=0.5 if
+you want Jeffreys prior.</p>
+<p>These are biased.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.joint_model">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">joint_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.joint_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.joint_model" title="Permalink to this definition"></a></dt>
+<dd><p>Build dirichlet model of joint categorical distribution</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.p">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.p"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.p" title="Permalink to this definition"></a></dt>
+<dd><p>Expected probabilty</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.lnp">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lnp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.lnp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.lnp" title="Permalink to this definition"></a></dt>
+<dd><p>Expected log-probability</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.plnp">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plnp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.plnp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.plnp" title="Permalink to this definition"></a></dt>
+<dd><p>Expected p*ln(p)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.H">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">H</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.H"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.H" title="Permalink to this definition"></a></dt>
+<dd><p>Expected &lt;-p*ln(p)&gt;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.I">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">I</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.I"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.I" title="Permalink to this definition"></a></dt>
+<dd><p>Mutual information</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.redundancy">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">redundancy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.redundancy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.redundancy" title="Permalink to this definition"></a></dt>
+<dd><p>For <code class="docutils literal notranslate"><span class="pre">(x1,x2,y)</span></code> calculate
+<code class="docutils literal notranslate"><span class="pre">I(x1,y)</span> <span class="pre">+</span> <span class="pre">I(x2,y)</span> <span class="pre">-</span> <span class="pre">I(joint(x1,x2),y)</span></code>.</p>
+<p>positive: redundant
+zero: independent
+negative: synergistic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neurotools.stats.information.dirichlet_density.foo">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">foo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/stats/information.html#dirichlet_density.foo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.stats.information.dirichlet_density.foo" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>

@@ -27,6 +27,7 @@ def hcat(*args,sep=' ',TABWIDTH=4,prefix='',suffix=''):
     S = [s+list(('',)*(len(s)-h)) for s in S]
     return prefix+(suffix+'\n'+prefix).join([sep.join(z) for z in zip(*S)])+suffix
 
+
 def wordwrap(text,width=80,sep=' '):
     '''
     Wrap text to a fixed columnd width.
@@ -79,6 +80,7 @@ def incolumns(*args,prefix='',suffix='',sep=' ',width=80):
         result.append(prefix+sep.join(group)+suffix)
     return '\n'.join(result)
 
+
 def percent(n,total):
     '''
     Given `n` observations out of `total`, format
@@ -97,7 +99,8 @@ def percent(n,total):
     '''
     return '%0.2g%%'%(n*100.0/total)
     
-def shortscientific(x,prec=0):
+    
+def shortscientific(p,prec=0,latex=False,sigthr=None):
     '''
     Shortest viable string formatting for scientific
     notation.
@@ -111,14 +114,25 @@ def shortscientific(x,prec=0):
     prec: non-negative integer; default 0
         Extra decimals to add.
         Value of `0` uses only one significant figure. 
+    latex: boolean; defaultFalse
+        Whether to prepare string for latex rendering
     
     Returns
     -------
     str
     '''
-    x = ('%.*e'%(prec,x)).replace('-0','-')
+    x = ('%.*e'%(prec,p)).replace('-0','-')
     x = x.replace('+','').replace('e0','e')
+    if latex:
+        x = '$'+x.replace('e','×10^{')+'}'
+        if not sigthr is None and p<sigthr:
+            x+='{}^*'
+        x+='$'
+    else:
+        if not sigthr is None and p<sigthr:
+            x+='*'    
     return x
+
 
 def eformat(f, prec, exp_digits):
     '''
@@ -148,6 +162,7 @@ def eformat(f, prec, exp_digits):
     s = s.replace('+','')
     return s
 
+
 def v2str(p,sep=','):
     '''
     Format list of numbers as string in short
@@ -170,6 +185,7 @@ def v2str(p,sep=','):
     '''
     return '['+sep.join([shortscientific(x) for x in p])+']'
 
+
 def v2str_long(p,sep=','):
     '''
     Format list as string with maximum precision.
@@ -190,6 +206,7 @@ def v2str_long(p,sep=','):
     '''
     return '['+sep.join([
         np.longdouble(x).astype(str) for x in p])+']'
+
 
 def nicetable(data,format='%4.4f',ncols=8,prefix='',sep=' '):
     '''
@@ -223,3 +240,33 @@ def isInt(v):
     '''
     v = str(v).strip()
     return v=='0' or (v if v.find('..') > -1 else v.lstrip('-+').rstrip('0').rstrip('.')).isdigit()
+
+
+def camel_to_snake(s):
+    '''
+    Convert a ``camelCase`` string to a lower-case
+    string with words delimited by underscore ``_``
+    ("snake case").
+    '''
+    import re
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+def snake_to_camel(s,delimeters=' _'):
+    '''
+    Convert a string delimited by spaces `` `` or 
+    underscores ``_`` to camel case. 
+    '''
+    for d in delimeters:
+        s = s.replace(d,' ')
+    s = s.title()
+    if len(s)<=0: return ''
+    if len(s)<=1: return s[0].lower()
+    return s[0].lower() + s[1:].replace(' ','')
+    
+    
+
+    
+    
+    
+

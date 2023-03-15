@@ -41,6 +41,8 @@ def c2p(z):
     z: np.complex64 or np.complex128
     '''
     z = np.array(z)
+    if np.any(np.isnan(z)):
+        z[np.isnan(z)] = np.NaN*(1+1j)
     return np.float32([z.real,z.imag])
 
 def to_xypoint(z):

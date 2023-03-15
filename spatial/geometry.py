@@ -54,19 +54,24 @@ def p2z(px,py=None):
             'px is already complex but py is specified')
         return px
     # Interpret px as 2D points if py missing
-    px = float32(px)
+    px = np.float32(px)
     if py is None:
         # Try to interpret px as points
         s = px.shape
         if len(s)<=1:
             raise ValueError(
             'px doesn\'t seem to contain 2d points')
-        if sum(int32(s)==2):
-            raise ValueError('more than one axis of '
-            'px.shape=%s is length 2; (x,y) axis is ambiguous'%s)
-        xyaxis = which(int32(s)==2)[0]
-        x = take_along_axis(px,0,xyaxis)
-        y = take_along_axis(px,1,xyaxis)
+        if np.sum(np.int32(s)==2)>1:
+            raise ValueError(('more than one axis of '
+            'px.shape=%s is length 2; (x,y) axis is '
+            'ambiguous')%(s,))
+        xyaxis = np.where(np.int32(s)==2)[0][0]
+        ndims = len(np.shape(px))
+        slices = [slice(None,None,None) for i in range(ndims)]
+        slices[xyaxis] = slice(0,1,1)
+        x = px[tuple(slices)]
+        slices[xyaxis] = slice(1,2,1)
+        y = px[tuple(slices)]
         return x + 1j*y
     # combine as z = px + i py
     py = np.array(py)
@@ -248,18 +253,27 @@ def in_hull(z,hull):
     '''
     Determine if the list of points P lies inside a convex 
     hull
+    
     credit: https://stackoverflow.com/a/52405173/900749
     
     Parameters
     ----------
     z: z=x+iy points to test
     hull: ConvexHull, or points to form one with
+    
+    Returns
+    -------
+    in_hull: np.boolean
     '''
     z = p2z(z)
     s = z.shape
     z = z.ravel()
     if not isinstance(hull,ConvexHull):
-        hull = ConvexHull(z2p(hull).T)
+        if np.any(np.iscomplex(hull)):
+            hull = z2p(hull)
+        if hull.shape[0]!=2:
+            hull=hull.T
+        hull = ConvexHull(hull.T)
     m = hull.equations[:,[1,0]] # half-plane directions
     b = hull.equations[:,-1].T  # half-plane thresholds
     return np.all(m@z2p(z) <= -b[:,None],0).reshape(*s)

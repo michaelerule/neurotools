@@ -11,10 +11,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.stats</li>
       <li class="wy-breadcrumbs-aside">
@@ -108,6 +111,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">modefind</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pvalues</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">regressions</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">tests</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
@@ -122,16 +126,16 @@
 <span class="c1"># For crossvalidation</span>
 
 <div class="viewcode-block" id="partition_data"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.partition_data">[docs]</a><span class="k">def</span> <span class="nf">partition_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">NFOLD</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parrition independent variables `x`</span>
 <span class="sd">    and dependent variables `y` into `NFOLD` </span>
 <span class="sd">    crossvalidation training/testing datasets.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: np.array</span>
+<span class="sd">    x: Ncovariates × Nsamples np.array</span>
 <span class="sd">        Independent variables</span>
-<span class="sd">    y: np.array</span>
+<span class="sd">    y: Npredicted × Nsamples np.array</span>
 <span class="sd">        Dependent variables</span>
 <span class="sd">    </span>
 <span class="sd">    Other Parameters</span>
@@ -155,14 +159,14 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NFOLD</span><span class="p">):</span>
         <span class="n">train</span>  <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">groups</span><span class="p">[[</span><span class="o">*</span><span class="p">({</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="n">NFOLD</span><span class="p">)}</span><span class="o">-</span><span class="p">{</span><span class="n">i</span><span class="p">})]]))</span>
         <span class="n">test</span>   <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">xtrain</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span><span class="n">train</span><span class="p">]</span>
-        <span class="n">ytrain</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span><span class="n">train</span><span class="p">]</span>
-        <span class="n">xtest</span>  <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span><span class="n">test</span><span class="p">]</span>
-        <span class="n">ytest</span>  <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span><span class="n">test</span><span class="p">]</span>
+        <span class="n">xtrain</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">train</span><span class="p">]</span>
+        <span class="n">ytrain</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">train</span><span class="p">]</span>
+        <span class="n">xtest</span>  <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">test</span><span class="p">]</span>
+        <span class="n">ytest</span>  <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">test</span><span class="p">]</span>
         <span class="k">yield</span> <span class="n">xtrain</span><span class="p">,</span><span class="n">ytrain</span><span class="p">,</span><span class="n">xtest</span><span class="p">,</span><span class="n">ytest</span></div>
 
 <div class="viewcode-block" id="partition_trials_for_crossvalidation"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.partition_trials_for_crossvalidation">[docs]</a><span class="k">def</span> <span class="nf">partition_trials_for_crossvalidation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Split trial data into crossvalidation blocks.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -226,7 +230,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="add_constant"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.add_constant">[docs]</a><span class="k">def</span> <span class="nf">add_constant</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    **Appends** a constant feature to a multi-dimensional</span>
 <span class="sd">    array of dependent variables. </span>
 <span class="sd">    </span>
@@ -268,7 +272,7 @@
     <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">errmethod</span><span class="o">=</span><span class="s1">&#39;L2&#39;</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    predicts B from A in K-fold cross-validated blocks </span>
 <span class="sd">    using linear least squares. </span>
 <span class="sd">    I.e. find `w` such that `B=Aw`.</span>
@@ -378,10 +382,14 @@
 
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">Bhat</span><span class="p">),</span><span class="n">errs</span></div>
 
-<div class="viewcode-block" id="partition_data_for_crossvalidation"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.partition_data_for_crossvalidation">[docs]</a><span class="k">def</span> <span class="nf">partition_data_for_crossvalidation</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="partition_data_for_crossvalidation"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.partition_data_for_crossvalidation">[docs]</a><span class="k">def</span> <span class="nf">partition_data_for_crossvalidation</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="p">,</span>
+    <span class="n">discard_mean</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    For predicting B from A, partition both training and </span>
 <span class="sd">    testing data into K-fold cross-validation blocks.</span>
+<span class="sd">    This operates over the first axis of the array</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -392,6 +400,11 @@
 <span class="sd">        dependent variables</span>
 <span class="sd">    K : int</span>
 <span class="sd">        Number of cross-validation blocks</span>
+<span class="sd">    </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    discard_mean: boolean; default False</span>
+<span class="sd">        Whether to remove the means from all variables.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -424,10 +437,18 @@
         <span class="c1"># Testing data</span>
         <span class="n">testB</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
         <span class="n">testA</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">,:</span>  <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">discard_mean</span><span class="p">:</span>
+            <span class="n">trainA</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trainA</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">trainB</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trainB</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">testA</span>  <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">testA</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">testB</span>  <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">testB</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
         <span class="k">yield</span> <span class="n">trainA</span><span class="p">,</span><span class="n">trainB</span><span class="p">,</span><span class="n">testA</span><span class="p">,</span><span class="n">testB</span></div>
 
+
 <div class="viewcode-block" id="block_shuffle"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.block_shuffle">[docs]</a><span class="k">def</span> <span class="nf">block_shuffle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">blocksize</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Shuffle a 2D array in blocks along axis 0</span>
 <span class="sd">    For example, if you provide a NTIMES × NFEATURES array,</span>
 <span class="sd">    this will shuffle all features similarly in blocks along</span>
@@ -474,7 +495,7 @@
     <span class="k">return</span> <span class="n">R</span><span class="p">[:</span><span class="n">T</span><span class="p">,</span><span class="o">...</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="crossvalidated_least_squares"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.crossvalidated_least_squares">[docs]</a><span class="k">def</span> <span class="nf">crossvalidated_least_squares</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">regress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span><span class="n">blockshuffle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    predicts B from A in K-fold cross-validated blocks using linear</span>
 <span class="sd">    least squares. I.e. find w such that B = Aw</span>
 
@@ -580,7 +601,7 @@
 <span class="c1"># Error measures</span>
 
 <div class="viewcode-block" id="fraction_explained_deviance"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.fraction_explained_deviance">[docs]</a><span class="k">def</span> <span class="nf">fraction_explained_deviance</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">L0</span><span class="p">,</span><span class="n">Ls</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculate the fraction explained deviance, which is</span>
 <span class="sd">    the analogue of the linear-Gaussian r² for </span>
 <span class="sd">    Generalized Linear Models (GLMs)</span>
@@ -614,7 +635,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="n">L0</span><span class="p">[</span><span class="n">theslice</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">Ls</span><span class="o">-</span><span class="n">L0</span><span class="p">)[</span><span class="n">theslice</span><span class="p">]</span></div>
         
 <div class="viewcode-block" id="nrmse"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.nrmse">[docs]</a><span class="k">def</span> <span class="nf">nrmse</span><span class="p">(</span><span class="n">estimate</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Normalized root mean-squared error.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -641,43 +662,8 @@
     <span class="n">v2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="n">normalize</span> <span class="o">=</span> <span class="n">v2</span><span class="o">**-</span><span class="mf">0.5</span><span class="c1">#(v2*v2)**-0.25</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">X1</span><span class="o">-</span><span class="n">X2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="o">*</span><span class="n">normalize</span></div>
-    
-<div class="viewcode-block" id="polar_error"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.polar_error">[docs]</a><span class="k">def</span> <span class="nf">polar_error</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xh</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L1&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Compute error for polar measurements, </span>
-<span class="sd">    wrapping the circular variable appropriately.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x: array-like</span>
-<span class="sd">        true valies (in degrees)</span>
-<span class="sd">    hx: array-like</span>
-<span class="sd">        estimated values (in degrees)</span>
-
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    units: str, default &quot;degrees&quot;</span>
-<span class="sd">        Polar units to use. Either &quot;radians&quot; or &quot;degrees&quot;</span>
-<span class="sd">    mode: str, default &#39;L1&#39;</span>
-<span class="sd">        Error method to use. Either &#39;L1&#39; (mean absolute error) or </span>
-<span class="sd">        &#39;L2&#39; (root mean-squared error)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    err:</span>
-<span class="sd">        Circularly-wrapped error</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-    <span class="n">xh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xh</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-    <span class="n">e</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">xh</span><span class="p">)</span>
-    <span class="n">k</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;radians&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="s1">&#39;degrees&#39;</span><span class="p">:</span><span class="mi">180</span><span class="p">}[</span><span class="n">units</span><span class="p">]</span>
-    <span class="n">e</span><span class="p">[</span><span class="n">e</span><span class="o">&gt;</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="o">-</span><span class="n">e</span><span class="p">[</span><span class="n">e</span><span class="o">&gt;</span><span class="n">k</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;L1&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;L2&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">.5</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Mode should be either &quot;L1&quot; or &quot;L2&quot;&#39;</span><span class="p">)</span></div>
-
+<span class="kn">from</span> <span class="nn">neurotools.stats.circular</span> <span class="kn">import</span> <span class="n">wrapped_circular_linear_error</span> <span class="k">as</span> <span class="n">polar_error</span>
 <span class="n">error_functions</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;correlation&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">xh</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xh</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
     <span class="s1">&#39;L2&#39;</span>         <span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">xh</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">xh</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">,</span>
@@ -702,7 +688,7 @@
 <span class="c1"># Statistical summaries</span>
 
 <div class="viewcode-block" id="weighted_avg_and_std"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.weighted_avg_and_std">[docs]</a><span class="k">def</span> <span class="nf">weighted_avg_and_std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the weighted average and standard deviation.</span>
 <span class="sd">    values, weights -- Numpy ndarrays with the same shape.</span>
 <span class="sd">    </span>
@@ -727,7 +713,7 @@
     <span class="k">return</span> <span class="n">average</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="print_stats"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.print_stats">[docs]</a><span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    computes, prints, and returns mean, median, minimum, </span>
 <span class="sd">    and maximum.</span>
 <span class="sd">        </span>
@@ -756,7 +742,7 @@
     <span class="k">return</span> <span class="n">mn</span><span class="p">,</span><span class="n">md</span><span class="p">,</span><span class="n">mi</span><span class="p">,</span><span class="n">mx</span></div>
 
 <div class="viewcode-block" id="outliers"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.outliers">[docs]</a><span class="k">def</span> <span class="nf">outliers</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reject outliers from data based on percentiles.</span>
 
 <span class="sd">    Parameters</span>
@@ -790,7 +776,7 @@
     <span class="k">return</span> <span class="n">remove</span></div>
 
 <div class="viewcode-block" id="reject_outliers"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.reject_outliers">[docs]</a><span class="k">def</span> <span class="nf">reject_outliers</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">percent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reject outliers from data based on percentiles.</span>
 
 <span class="sd">    Parameters</span>
@@ -820,11 +806,11 @@
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">to_keep</span><span class="p">],</span> <span class="n">to_keep</span><span class="p">,</span> <span class="n">to_remove</span></div>
     
 <div class="viewcode-block" id="Description"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.Description">[docs]</a><span class="k">class</span> <span class="nc">Description</span><span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    quick statistical description</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data: np.array</span>
@@ -856,7 +842,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="Description.short"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.Description.short">[docs]</a>    <span class="k">def</span> <span class="nf">short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Abbreviated statistical summary</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
@@ -881,7 +867,7 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
 <div class="viewcode-block" id="glmfit"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.glmfit">[docs]</a>    <span class="k">def</span> <span class="nf">glmfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Wrapper for statsmodels glmfit that prepares a </span>
 <span class="sd">        constant parameter and configuration options for </span>
 <span class="sd">        poisson-GLM fitting. Please see the documentation </span>
@@ -926,7 +912,7 @@
 <span class="c1"># Covariance and factor analysis</span>
     
 <div class="viewcode-block" id="pca"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.pca">[docs]</a><span class="k">def</span> <span class="nf">pca</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rank_deficient</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    `w,v = pca(x,n_keep=None)`</span>
 <span class="sd">    Performs PCA on data `x`, keeping the first `n_keep `</span>
 <span class="sd">    dimensions</span>
@@ -967,7 +953,7 @@
     <span class="n">sample_deficient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">reg</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Covariance matrix for `Nsamples` x `Nfeatures` matrix.</span>
 <span class="sd">    Data are *not* centered before computing covariance.</span>
 <span class="sd"> </span>
@@ -1036,7 +1022,7 @@
     <span class="k">return</span> <span class="n">C</span></div>
     
 <div class="viewcode-block" id="get_factor_analysis"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.get_factor_analysis">[docs]</a><span class="k">def</span> <span class="nf">get_factor_analysis</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">NFACTORS</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Wrapper to fit factor analysis model, extract the model,</span>
 <span class="sd">    and sort by factor importance.</span>
 <span class="sd">    </span>
@@ -1073,7 +1059,7 @@
     <span class="k">return</span> <span class="n">Y</span><span class="p">,</span><span class="n">Sigma</span><span class="p">,</span><span class="n">F</span><span class="p">,</span><span class="n">lmbda</span><span class="p">,</span><span class="n">fa</span></div>
 
 <div class="viewcode-block" id="project_factors"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.project_factors">[docs]</a><span class="k">def</span> <span class="nf">project_factors</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">F</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Project observations X with noise variances S onto </span>
 <span class="sd">    latent factors F. This uses the same argument/return </span>
 <span class="sd">    conventions as scipy&#39;s factor analysis.</span>
@@ -1095,7 +1081,7 @@
     <span class="k">return</span> <span class="n">lstsq</span><span class="p">(</span><span class="n">Px</span><span class="p">,</span><span class="n">FP</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span></div>
 
 <div class="viewcode-block" id="predict_latent"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.predict_latent">[docs]</a><span class="k">def</span> <span class="nf">predict_latent</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">predict_from</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Predict mean of all factors from </span>
 <span class="sd">    `predict_from` factors.</span>
 <span class="sd">    </span>
@@ -1129,7 +1115,7 @@
     <span class="k">return</span> <span class="n">Xthat</span></div>
 
 <div class="viewcode-block" id="factor_predict"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.factor_predict">[docs]</a><span class="k">def</span> <span class="nf">factor_predict</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">predict_from</span><span class="p">,</span><span class="n">predict_to</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Predict mean, variance of `predict_to` factors from </span>
 <span class="sd">    `predict_from` factors.</span>
 <span class="sd">    </span>
@@ -1181,6 +1167,58 @@
     
 
 
+
+
+
+
+
+
+
+<span class="c1">############################################################</span>
+<span class="c1"># Recently added functions</span>
+
+<div class="viewcode-block" id="nanrankdata"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.nanrankdata">[docs]</a><span class="k">def</span> <span class="nf">nanrankdata</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;fraction&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A variant of `rankdata` that handles NaNs better.</span>
+<span class="sd">    Returns normalized rank in (0,1) by default.    </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : iterable</span>
+<span class="sd">        Data to be ranked</span>
+<span class="sd">    mode: str; default &#39;fraction&#39;</span>
+<span class="sd">        ``&#39;fraction&#39;``: return rank of non-NaN values in (0,1)</span>
+<span class="sd">        ``&#39;percentile&#39;``: return rank of non-NaN values in (0,100)</span>
+<span class="sd">        ``None``: return integer ranks (NaNs excluded)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">nfinite</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">rankdata</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;omit&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;fraction&#39;</span><span class="p">:</span>
+        <span class="n">ranks</span> <span class="o">=</span> <span class="p">(</span><span class="n">ranks</span><span class="o">-</span><span class="mf">.5</span><span class="p">)</span><span class="o">/</span><span class="n">nfinite</span>
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;percentile&#39;</span><span class="p">:</span>
+        <span class="n">ranks</span> <span class="o">=</span> <span class="p">(</span><span class="n">ranks</span><span class="o">-</span><span class="mf">.5</span><span class="p">)</span><span class="o">/</span><span class="n">nfinite</span><span class="o">*</span><span class="mi">100</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ranks</span> <span class="o">=</span> <span class="p">(</span><span class="n">ranks</span><span class="o">-</span><span class="mf">.5</span><span class="p">)</span><span class="o">/</span><span class="n">nfinite</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ranks</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
+
+<span class="kn">import</span> <span class="nn">neurotools.util.array</span>
+<div class="viewcode-block" id="mean_confidence_interval"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.mean_confidence_interval">[docs]</a><span class="k">def</span> <span class="nf">mean_confidence_interval</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.95</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">remove_nans</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sem</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">se</span> <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">confidence</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="n">h</span></div>
+    
+<div class="viewcode-block" id="minmax"><a class="viewcode-back" href="../../neurotools.stats.html#neurotools.stats.minmax">[docs]</a><span class="k">def</span> <span class="nf">minmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">x</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">]))</span></div>
+
+    
 
 </pre></div>
 

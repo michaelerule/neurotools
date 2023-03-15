@@ -266,3 +266,150 @@ def fit_vonmises(z):
     dephased = z*np.exp(-1j*theta)
     location,_,scale = scipy.stats.distributions.vonmises.fit(np.angle(dephased))
     return location,theta,scale
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+def wrapped_circular_linear_error(x,xh,units='degrees',mode='L1'):
+    '''
+    Compute error for polar measurements, 
+    wrapping the circular variable appropriately.
+
+    Parameters
+    ----------
+    x: array-like
+        true valies (in degrees)
+    hx: array-like
+        estimated values (in degrees)
+
+    Other Parameters
+    ----------------
+    units: str, default "degrees"
+        Polar units to use. Either "radians" or "degrees"
+    mode: str, default 'L1'
+        Error method to use. Either 'L1' (mean absolute error) or 
+        'L2' (root mean-squared error)
+
+    Returns
+    -------
+    err:
+        Circularly-wrapped error
+    '''
+    x  = np.float32(x ).ravel()
+    xh = np.float32(xh).ravel()
+    e  = np.abs(x-xh)
+    k  = {'radians':np.pi,'degrees':180}[units]
+    e[e>k] = 2*k-e[e>k]
+    if mode=='L1':
+        return np.mean(np.abs(e))
+    if mode=='L2':
+        return np.mean(np.abs(e)**2)**.5
+    raise ValueError('Mode should be either "L1" or "L2"')
+    
+    
+    
+    
+    
+    
+    
+    
+
+from neurotools.util.array import remove_nans
+from neurotools.util.tools import c2p
+import scipy.stats
+
+def asunit(x):
+    return np.exp(1j*np.angle(x))
+
+def circvar(x):
+    return 1-np.mean(np.cos(circcenter(x)))
+
+def circwrap(x1):
+    return np.angle(np.exp(1j*x1))
+
+def circmce(x1,x2):
+    return np.mean(np.cos(x1-x2))
+
+def circdelta(x1,x2):
+    return circwrap(x1-x2)
+
+def circmean(x):
+    return np.angle(np.mean(np.exp(1j*x)))
+
+def circcenter(x):
+    return circwrap(x-circmean(x))
+
+def circcorr(x1,x2):
+    x1,x2 = remove_nans(x1,x2)
+    x1 = circcenter(x1)
+    x2 = circcenter(x2)
+    z1 = np.exp(1j*x1)
+    z2 = np.exp(1j*x2)
+    y1 = np.float32(c2p(z1))
+    y2 = np.float32(c2p(z2))
+    s1,c1 = y1
+    s2,c2 = y2
+    return scipy.stats.linregress(s1,s2)
+    
+    '''
+    Some bad ideas below, ignore them.
+    # vectors and return the L2 multiple correlation.
+    if mode in {1,'symmetric_cartesian'}:
+        w  = reglstsq(y1.T,y2.T,0)
+        ρ1 = sqrt(1-mse(y2,w@y1)/var(y2))
+        w  = reglstsq(y2.T,y1.T,0)
+        ρ2 = sqrt(1-mse(y1,w@y2)/var(y1))
+        return ((ρ1**2+ρ2**2)/2)
+    '''
+
+def circabsdelta(x1,x2):
+    return abs(circwrap(x1-x2))
+
+def degrees_to_survey_format(
+    theta,
+    mode='compass',
+    ):
+    if mode=='compass':
+        N,E,S,W = (0,90,180,270)
+    elif mode=='mathematical':
+        N,E,S,W = (90, 0, -90, 180)
+    elif mode=='pcv':
+        N,E,S,W = (-90, 0, 90, 180)
+    else:
+        assert 0
+        
+    N,E,S,W = np.float32([N,E,S,W])*np.pi/180
+    theta = np.float32(theta)*np.pi/180
+    
+    dNS = np.float32([circabsdelta(theta,N),circabsdelta(theta,S)])*180/np.pi
+    dEW = np.float32([circabsdelta(theta,E),circabsdelta(theta,W)])*180/np.pi
+    
+    d0 = np.array(['N','S'],object)[np.argmin(dNS,0)]
+    d1 = np.array(['E','W'],object)[np.argmin(dEW,0)]
+    dd = np.min(dNS,0)
+    dd = np.round(dd)
+    
+    def _fmt(d0,dd,d1):
+        if dd==0:  return d0
+        if dd==90: return d1
+        return '%s%02d°%s'%(d0,dd,d1)
+    try:
+        return [_fmt(id0,idd,id1) for (id0,idd,id1) in zip(d0,dd,d1)]
+    except TypeError:
+        return _fmt(d0,dd,d1)
+        
+    
+    
+    

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotools.stats.shuffleL2explore &mdash; Neurotools 2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Subpackages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.signal.html">signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.stats.html">stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spatial.html">spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.spikes.html">spikes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.graphics.html">graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.linalg.html">linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neurotools.jobs.html">util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Neurotools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../stats.html">neurotools.stats</a></li>
+      <li class="breadcrumb-item active">neurotools.stats.shuffleL2explore</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for neurotools.stats.shuffleL2explore</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Statistical routines for shuffle-based hyothesis testing </span>
+<span class="sd">when using L2 regularized multivariate linear regression</span>
+<span class="sd">to analyze explained variance.</span>
+
+<span class="sd">These are useful when you have limited, highly correlated, </span>
+<span class="sd">highly nonlinear, highly skewed data, and don&#39;t trust an </span>
+<span class="sd">F test. They are very slow. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.stats</span> <span class="kn">import</span> <span class="n">partition_data_for_crossvalidation</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span>   <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jp</span>
+<span class="kn">import</span> <span class="nn">jax.numpy.linalg</span> <span class="k">as</span> <span class="nn">jl</span>
+<span class="kn">from</span>   <span class="nn">jax</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">grad</span>
+<span class="kn">from</span>   <span class="nn">jax</span> <span class="kn">import</span> <span class="n">jacfwd</span><span class="p">,</span> <span class="n">jacrev</span>
+<div class="viewcode-block" id="hess"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.hess">[docs]</a><span class="k">def</span> <span class="nf">hess</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">argnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">argnum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jacfwd</span><span class="p">(</span><span class="n">jacrev</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">jacfwd</span><span class="p">(</span><span class="n">jacrev</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">argnum</span><span class="p">),)</span></div>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span> <span class="nn">neurotools.util.time</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+
+<div class="viewcode-block" id="MSE"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.MSE">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">MSE</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">):</span>
+    <span class="n">Σyhat</span>  <span class="o">=</span> <span class="n">W</span><span class="nd">@Σx@W</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">Σyyhat</span> <span class="o">=</span> <span class="n">Σyx</span><span class="nd">@W</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># ŷ = wx</span>
+    <span class="c1"># &lt;(y-ŷ)²&gt; = trace( Σy + Σyhat - Σyyhat - Σyyhat.T )</span>
+    <span class="k">return</span> <span class="n">jp</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">Σy</span><span class="p">)</span> <span class="o">+</span> <span class="n">jp</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">Σyhat</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">jp</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">Σyyhat</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="error_covariance"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.error_covariance">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">error_covariance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">):</span>
+    <span class="n">Σyh</span>  <span class="o">=</span> <span class="n">W</span><span class="nd">@Σx@W</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">Σyyh</span> <span class="o">=</span> <span class="n">Σyx</span><span class="nd">@W</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">Σy</span> <span class="o">+</span> <span class="n">Σyh</span> <span class="o">-</span> <span class="n">Σyyh</span> <span class="o">-</span> <span class="n">Σyyh</span><span class="o">.</span><span class="n">T</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &lt;(y-ŷ)(y-ŷ)&#39;&gt;</span>
+<span class="sd">    &lt;(y-ŷ)(y&#39;-ŷ&#39;)&gt;</span>
+<span class="sd">    &lt;(y(y&#39;-ŷ&#39;)-ŷ(y&#39;-ŷ&#39;))&gt;</span>
+<span class="sd">    &lt;yy&#39;-yŷ&#39;-ŷy&#39;+ŷŷ&#39;&gt;</span>
+<span class="sd">    &lt;yy&#39;&gt;-&lt;yŷ&#39;&gt;-&lt;ŷy&gt;&#39;+&lt;ŷŷ&#39;&gt;</span>
+<span class="sd">    Σy + Σŷ - Σyŷ - Σyŷ&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+
+<div class="viewcode-block" id="reglstq_moments"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.reglstq_moments">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">reglstq_moments</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
+    <span class="n">N</span>   <span class="o">=</span> <span class="n">Σx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σx</span> <span class="o">+=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">Σyx</span> <span class="o">@</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">Σx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">W</span></div>
+
+<div class="viewcode-block" id="reglstsq_MSE"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.reglstsq_MSE">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">):</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">reglstq_moments</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MSE</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span></div>
+    
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+
+<div class="viewcode-block" id="regroup"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.regroup">[docs]</a><span class="k">def</span> <span class="nf">regroup</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="o">*</span><span class="n">partition_data_for_crossvalidation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="p">,</span><span class="kc">True</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="ungroup"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.ungroup">[docs]</a><span class="k">def</span> <span class="nf">ungroup</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">x0</span><span class="p">,</span><span class="n">y0</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">,</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">groups</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x0</span><span class="p">,</span><span class="n">y0</span></div>
+
+<div class="viewcode-block" id="scov"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.scov">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">scov</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="nd">@Y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="xy_moments"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.xy_moments">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">xy_moments</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">):</span>
+    <span class="n">Σx</span>   <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trX</span><span class="p">)</span>
+    <span class="n">Σy</span>   <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">trY</span><span class="p">,</span><span class="n">trY</span><span class="p">)</span>
+    <span class="n">Σyx</span>  <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">trY</span><span class="p">,</span><span class="n">trX</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span></div>
+    
+<div class="viewcode-block" id="reglstq_xy"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.reglstq_xy">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">reglstq_xy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
+    <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span> <span class="o">=</span> <span class="n">xy_moments</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">N</span>   <span class="o">=</span> <span class="n">Σx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Σx</span> <span class="o">+=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">Σyx</span> <span class="o">@</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">Σx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">W</span></div>
+
+<div class="viewcode-block" id="group_moments"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_moments">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">group_moments</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+    <span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">,</span><span class="n">tsX</span><span class="p">,</span><span class="n">tsY</span> <span class="o">=</span> <span class="n">group</span>
+    <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span> <span class="o">=</span> <span class="n">xy_moments</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">)</span>
+    <span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span> <span class="o">=</span> <span class="n">xy_moments</span><span class="p">(</span><span class="n">tsX</span><span class="p">,</span><span class="n">tsY</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span></div>
+    
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+
+<div class="viewcode-block" id="group_mse"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_mse">[docs]</a><span class="k">def</span> <span class="nf">group_mse</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
+    <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_moments</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="p">[</span><span class="n">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span> 
+          <span class="k">for</span> <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span> <span class="ow">in</span> <span class="n">Σs</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">e2</span><span class="p">))</span></div>
+
+<span class="c1">#@jit</span>
+<div class="viewcode-block" id="group_error_covariance"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_error_covariance">[docs]</a><span class="k">def</span> <span class="nf">group_error_covariance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">group_moments</span><span class="p">,</span><span class="n">groups</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span> <span class="ow">in</span> <span class="n">Σs</span><span class="p">:</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">reglstq_moments</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span>
+        <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_covariance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
+
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">cholesky</span> <span class="k">as</span> <span class="n">chol</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg.lapack</span> <span class="kn">import</span> <span class="n">dtrtri</span>
+<div class="viewcode-block" id="get_whiten"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.get_whiten">[docs]</a><span class="k">def</span> <span class="nf">get_whiten</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+    <span class="c1"># covariance transform</span>
+    <span class="c1"># S = ULU&#39;</span>
+    <span class="c1"># x = Uq</span>
+    <span class="c1"># q = inv(U)q</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">chol</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1">#q=UU&#39;</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">dtrtri</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#inv(q)=V&#39;V</span>
+    <span class="k">return</span> <span class="n">V</span></div>
+
+<div class="viewcode-block" id="group_R2_matrix"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_R2_matrix">[docs]</a><span class="k">def</span> <span class="nf">group_R2_matrix</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get matrix-valued R² for L2 regularized </span>
+<span class="sd">    (strength ``rho``)</span>
+<span class="sd">    n-fold crossvalidated</span>
+<span class="sd">    linear regression (n ``groups``).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Whitening transform from population covariance</span>
+    <span class="n">x0</span><span class="p">,</span><span class="n">y0</span> <span class="o">=</span> <span class="n">ungroup</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span><span class="n">y0</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">get_whiten</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+    <span class="c1"># Error covariances</span>
+    <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">group_moments</span><span class="p">,</span><span class="n">groups</span><span class="p">)]</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">group_error_covariance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">)</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">y0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">I</span><span class="o">-</span><span class="n">V</span><span class="nd">@E@V</span><span class="o">.</span><span class="n">T</span> <span class="c1"># R²</span></div>
+    
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+    
+<div class="viewcode-block" id="regsweep_r2"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.regsweep_r2">[docs]</a><span class="k">def</span> <span class="nf">regsweep_r2</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get list of R² for regularization strengths ``rr``.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Large regularization gives us chance level</span>
+    <span class="n">ibig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span>
+    <span class="n">rbig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span>
+    <span class="n">addedbig</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">rbig</span><span class="o">&lt;</span><span class="mf">1e9</span><span class="p">:</span>
+        <span class="n">rr</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">rr</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="mf">1e9</span><span class="p">]</span>
+        <span class="n">ibig</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">addedbig</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">R2s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span>
+        <span class="n">group_R2_matrix</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">groups</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rr</span>
+    <span class="p">])</span>
+    
+    <span class="n">R2s</span> <span class="o">-=</span> <span class="n">R2s</span><span class="p">[</span><span class="n">ibig</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">addedbig</span><span class="p">:</span>
+        <span class="n">R2s</span> <span class="o">=</span> <span class="n">R2s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">R2s</span></div>
+    
+
+<div class="viewcode-block" id="regsweep_MSE"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.regsweep_MSE">[docs]</a><span class="k">def</span> <span class="nf">regsweep_MSE</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">group_mse</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">groups</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rr</span><span class="p">])</span></div>
+    
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+  
+<div class="viewcode-block" id="shuffle_variable"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.shuffle_variable">[docs]</a><span class="k">def</span> <span class="nf">shuffle_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">indeces</span><span class="p">):</span>
+    <span class="c1"># Shuffle just some columns (``indeces``)</span>
+    <span class="c1"># of ``x``</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">i</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">N</span><span class="p">,</span><span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indeces</span><span class="p">:</span>
+        <span class="n">nx</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">nx</span>  </div>
+    
+<div class="viewcode-block" id="adaptive_shuffle"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.adaptive_shuffle">[docs]</a><span class="k">def</span> <span class="nf">adaptive_shuffle</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">,</span>
+    <span class="n">regularization_strengths</span><span class="p">,</span>
+    <span class="n">vg</span><span class="p">,</span>
+    <span class="n">nfold</span>         <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">minshuffles</span>   <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">maxshuffles</span>   <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="n">tolerance</span>     <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">alpha</span>         <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">return_samples</span><span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+    
+    <span class="k">assert</span> <span class="n">maxshuffles</span> <span class="o">&gt;</span> <span class="n">minshuffles</span>
+    <span class="n">maxshuffles</span> <span class="o">-=</span> <span class="n">minshuffles</span>
+    
+    <span class="c1"># Large regularization gives us chance level</span>
+    <span class="n">rr</span>  <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="n">regularization_strengths</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
+    <span class="k">if</span> <span class="n">rr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">1e9</span><span class="p">:</span> <span class="n">rr</span> <span class="o">+=</span> <span class="p">[</span><span class="mf">1e9</span><span class="p">]</span>
+    
+    <span class="c1"># Get model fit with all features.</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">regroup</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="p">)</span>
+    <span class="n">R0</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">regsweep_r2</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">),</span><span class="n">axis1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">axis2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">R0</span> <span class="o">-=</span> <span class="n">R0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Rmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">R0</span><span class="p">)</span>
+    
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">progress_bar</span> <span class="k">if</span> <span class="n">show_progress</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span>
+    
+    <span class="c1"># Run a minimum number of shuffles</span>
+    <span class="n">R1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">foo</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">minshuffles</span><span class="p">)):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">regsweep_r2</span><span class="p">(</span><span class="n">regroup</span><span class="p">(</span><span class="n">shuffle_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">vg</span><span class="p">),</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="p">),</span><span class="n">rr</span><span class="p">)</span>
+        <span class="n">R1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        
+    <span class="c1"># Run shuffles until we have enough data for a clear p-value</span>
+    <span class="n">pvalue</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">foo</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">maxshuffles</span><span class="p">)):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">regsweep_r2</span><span class="p">(</span><span class="n">regroup</span><span class="p">(</span><span class="n">shuffle_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">vg</span><span class="p">),</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="p">),</span><span class="n">rr</span><span class="p">)</span>
+        <span class="n">R1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        
+        <span class="c1"># Check if we have enough results to make a clear decision</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">R1</span><span class="p">),</span><span class="n">axis1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">axis2</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">u</span><span class="o">-=</span> <span class="n">u</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span>
+        <span class="n">i_reg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">vuniq</span> <span class="o">=</span> <span class="n">Rmax</span><span class="o">-</span><span class="n">u</span><span class="p">[:,</span><span class="n">i_reg</span><span class="p">]</span>
+        
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vuniq</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vuniq</span><span class="p">)</span>
+        
+        <span class="n">a</span><span class="p">,</span><span class="n">pvalue</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">ppf</span><span class="p">([</span>
+            <span class="n">tolerance</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="mf">.5</span><span class="p">,</span>
+            <span class="mi">1</span><span class="o">-</span><span class="n">tolerance</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span><span class="n">k</span><span class="o">+</span><span class="mf">.5</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mf">.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span>
+                <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span>
+                    <span class="p">[</span><span class="mf">.005</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">.995</span><span class="p">],</span><span class="n">k</span><span class="o">+</span><span class="mf">.5</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mf">.5</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span>
+                <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">&lt;</span><span class="n">alpha</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">b</span><span class="o">&lt;</span><span class="n">alpha</span><span class="p">):</span> 
+            <span class="k">break</span>
+            
+    <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">if</span> <span class="n">return_samples</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">AdaptiveShuffleResult</span><span class="p">(</span>
+            <span class="n">pvalue</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vuniq</span><span class="p">),</span> 
+            <span class="n">Rmax</span><span class="p">,</span> <span class="n">rr</span><span class="p">[</span><span class="n">i_reg</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">R1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">AdaptiveShuffleResult</span><span class="p">(</span>
+            <span class="n">pvalue</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vuniq</span><span class="p">),</span> 
+            <span class="n">Rmax</span><span class="p">,</span> <span class="n">rr</span><span class="p">[</span><span class="n">i_reg</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AdaptiveShuffleResult"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.AdaptiveShuffleResult">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveShuffleResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">pvalue</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">vunique</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">r2</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">allr2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></div>
+
+<div class="viewcode-block" id="adaptive_shuffle_pvalue"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.adaptive_shuffle_pvalue">[docs]</a><span class="k">def</span> <span class="nf">adaptive_shuffle_pvalue</span><span class="p">(</span>
+    <span class="n">sampling_function</span><span class="p">,</span>
+    <span class="n">relative_to</span>    <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">alternative</span>    <span class="o">=</span> <span class="s1">&#39;two-sided&#39;</span><span class="p">,</span> <span class="c1"># &#39;two-sided&#39;, &#39;less&#39;, &#39;greater&#39;</span>
+    <span class="n">minshuffles</span>    <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">maxshuffles</span>    <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="n">ptol</span>           <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="c1"># p density tolerance</span>
+    <span class="c1">#atol           = 0.01, # absolute numerical tolerance</span>
+    <span class="n">alpha</span>          <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">show_progress</span>  <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">return_samples</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sampling_function: function</span>
+<span class="sd">        This function should take no arguments, and</span>
+<span class="sd">        return a single scalar float reflecting the </span>
+<span class="sd">        value to be tested. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">minshuffles</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">maxshuffles</span> <span class="o">&gt;</span> <span class="n">minshuffles</span>
+    <span class="c1">#assert atol&gt;1e-15</span>
+    <span class="c1">#assert atol&lt;0.5</span>
+    <span class="k">assert</span> <span class="n">ptol</span><span class="o">&gt;</span><span class="mf">1e-15</span>
+    <span class="k">assert</span> <span class="n">ptol</span><span class="o">&lt;</span><span class="mf">0.1</span>
+    
+    <span class="n">maxshuffles</span> <span class="o">-=</span> <span class="n">minshuffles</span>
+    <span class="n">alternative</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">alternative</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampling_function</span><span class="p">()</span> 
+               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">minshuffles</span><span class="p">)]</span>
+    
+    <span class="n">pvalue</span>  <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxshuffles</span><span class="p">):</span>
+        <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sampling_function</span><span class="p">())</span>
+        
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">u</span><span class="o">&lt;</span><span class="n">relative_to</span><span class="p">)</span> <span class="c1"># Greater</span>
+        
+        <span class="c1"># Bayesian Beta to get range on p-value</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">k</span><span class="o">+</span><span class="mf">.5</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mf">.5</span> 
+        <span class="n">lo</span><span class="p">,</span><span class="n">pvalue</span><span class="p">,</span><span class="n">hi</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">ppf</span><span class="p">([</span>
+            <span class="n">ptol</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="mf">.5</span><span class="p">,</span>
+            <span class="mi">1</span><span class="o">-</span><span class="n">ptol</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+            
+        <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="o">/</span><span class="p">((</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%0.4f</span><span class="s1"> </span><span class="si">%0.4f</span><span class="s1"> </span><span class="si">%0.4f</span><span class="s1"> </span><span class="si">%0.4f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">lo</span><span class="p">,</span><span class="n">pvalue</span><span class="p">,</span><span class="n">hi</span><span class="p">,</span><span class="n">s</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span>
+                <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+        <span class="c1"># Absolute tolerance stop</span>
+        <span class="c1">#if s&lt;atol:</span>
+        <span class="c1"># alternatives</span>
+        <span class="k">if</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;g&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">alpha</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">hi</span><span class="o">&lt;</span><span class="n">alpha</span><span class="p">):</span> 
+                <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;l&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">hi</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">):</span> 
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1">#two-sided</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">hi</span><span class="o">&lt;</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">):</span> 
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">==</span><span class="p">(</span><span class="n">hi</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">):</span> 
+                <span class="k">break</span>
+    
+    <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;g&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">alternative</span><span class="o">==</span><span class="s1">&#39;l&#39;</span><span class="p">:</span>
+        <span class="n">pvalue</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">pvalue</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">k</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1">#two-sided</span>
+        <span class="k">if</span> <span class="n">pvalue</span><span class="o">&lt;</span><span class="mf">0.5</span><span class="p">:</span> <span class="c1"># is bigger than</span>
+            <span class="n">pvalue</span><span class="o">*=</span><span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># is less than</span>
+            <span class="n">pvalue</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">pvalue</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">k</span>
+            
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">pvalue</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_samples</span><span class="p">:</span> <span class="n">result</span> <span class="o">+=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">samples</span><span class="p">),)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+
+<div class="viewcode-block" id="joint_reglstsq_MSE"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.joint_reglstsq_MSE">[docs]</a><span class="nd">@jit</span>
+<span class="k">def</span> <span class="nf">joint_reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σs</span><span class="p">):</span>
+    <span class="n">N</span>   <span class="o">=</span> <span class="n">Σs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">R</span>   <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">Σx</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">Σs</span><span class="p">):</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">Σyx</span> <span class="o">@</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">Σx</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span>
+        <span class="n">err</span> <span class="o">+=</span> <span class="n">jp</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">)</span><span class="o">*</span><span class="n">tΣx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">jp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tΣyx</span><span class="o">*</span><span class="n">W</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">err</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    err = 0.0</span>
+<span class="sd">    for Σx,Σy,Σyx,tΣx,tΣy,tΣyx in Σs:</span>
+<span class="sd">        err += reglstsq_MSE(rho,Σx,Σyx,tΣx,tΣy,tΣyx)</span>
+<span class="sd">    return err</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="best_rho"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.best_rho">[docs]</a><span class="k">def</span> <span class="nf">best_rho</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="nd">@jit</span>
+    <span class="k">def</span> <span class="nf">o</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">hess</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">rho</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="n">g</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span></div>
+
+<div class="viewcode-block" id="joint_best_rho_gradient"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.joint_best_rho_gradient">[docs]</a><span class="k">def</span> <span class="nf">joint_best_rho_gradient</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">1e6</span><span class="p">):</span>
+    <span class="c1"># This routine peforms local gradient search on the </span>
+    <span class="c1"># regularization stranenggth, and can *usually*</span>
+    <span class="c1"># gets trapped in a local minimum. </span>
+    <span class="c1"># don&#39;t use it!</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+    <span class="n">nfold</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+    <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">group_moments</span><span class="p">,</span><span class="n">groups</span><span class="p">)]</span>
+    <span class="n">N</span>  <span class="o">=</span> <span class="n">Σs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nd">@jit</span>
+    <span class="k">def</span> <span class="nf">o</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+        <span class="c1">#&#39;&#39;&#39;</span>
+        <span class="n">R</span>  <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">10.0</span><span class="o">**</span><span class="n">rho</span><span class="p">)</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">Σx</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">Σs</span><span class="p">):</span>
+            <span class="n">W</span> <span class="o">=</span> <span class="n">Σyx</span> <span class="o">@</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">Σx</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">+=</span> <span class="n">jp</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">)</span><span class="o">*</span><span class="n">tΣx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">jp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tΣyx</span><span class="o">*</span><span class="n">W</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">err</span>
+        <span class="c1">#&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">joint_reglstsq_MSE_reference</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σs</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">hess</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="n">rho</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="n">g</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">10.</span><span class="o">**</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span></div>
+
+
+
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+<span class="c1">############################################################</span>
+
+
+
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">minres</span>
+
+<div class="viewcode-block" id="lfit"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.lfit">[docs]</a><span class="k">def</span> <span class="nf">lfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="n">Σx</span>  <span class="o">=</span> <span class="n">X</span><span class="nd">@X</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">Σxy</span> <span class="o">=</span> <span class="n">X</span><span class="nd">@Y</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">minres</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span> <span class="n">Σxy</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span></div>
+
+<div class="viewcode-block" id="leave_one_out"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.leave_one_out">[docs]</a><span class="k">def</span> <span class="nf">leave_one_out</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Leave-one-out linear regression. </span>
+<span class="sd">    </span>
+<span class="sd">    This is extremely inefficient for large datasets. </span>
+<span class="sd">    This was written for theoretical exploration only.</span>
+<span class="sd">    It exists as a helper routine for </span>
+<span class="sd">    ``linear_regression_shuffle()``.</span>
+<span class="sd">    </span>
+<span class="sd">    This was written for theoretical exploration only.</span>
+<span class="sd">    It is extremely inefficient and you should not use it.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: Ncovariates × Nsames np.ndarray</span>
+<span class="sd">        Array of values for the independent variables</span>
+<span class="sd">    Y: Ndependent × Nsamples np.ndarray</span>
+<span class="sd">        Array of values for the dependent variables</span>
+<span class="sd">    rho: positive float; default 1e-6</span>
+<span class="sd">        L2 regularization</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Yhat: np.ndarray</span>
+<span class="sd">        Leave-one-out predictions of the dependent </span>
+<span class="sd">        variables.</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="n">N</span><span class="p">,</span><span class="n">T</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">X</span>   <span class="o">=</span> <span class="n">add_constant</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
+    <span class="n">R</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">Σx</span>  <span class="o">=</span> <span class="n">X</span><span class="nd">@X</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">R</span>
+    <span class="n">Σxy</span> <span class="o">=</span> <span class="n">X</span><span class="nd">@Y</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">Yhat</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">Σx_</span>  <span class="o">=</span> <span class="n">Σx</span>  <span class="o">-</span> <span class="n">outer</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="n">t</span><span class="p">],</span><span class="n">X</span><span class="p">[:,</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">Σxy_</span> <span class="o">=</span> <span class="n">Σxy</span> <span class="o">-</span> <span class="n">outer</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="n">t</span><span class="p">],</span><span class="n">Y</span><span class="p">[:,</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">minres</span><span class="p">(</span><span class="n">Σx_</span><span class="p">,</span> <span class="n">Σxy_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">Yhat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">W</span><span class="nd">@X</span><span class="p">[:,</span><span class="n">t</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">Yhat</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="linear_regression_shuffle"><a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.linear_regression_shuffle">[docs]</a><span class="k">def</span> <span class="nf">linear_regression_shuffle</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span>
+    <span class="n">Y</span><span class="p">,</span> 
+    <span class="n">nshuffle</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Leave-one-out linear regression with shuffle-out</span>
+<span class="sd">    tests for individual parameter importance. </span>
+<span class="sd">    </span>
+<span class="sd">    This was written for theoretical exploration only.</span>
+<span class="sd">    It is extremely inefficient and you should not use it.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: Ncovariates × Nsames np.ndarray</span>
+<span class="sd">        Array of values for the independent variables</span>
+<span class="sd">    Y: Ndependent × Nsamples np.ndarray</span>
+<span class="sd">        Array of values for the dependent variables</span>
+<span class="sd">    NSHUFFLE: positive int; default 100</span>
+<span class="sd">        Number of shuffles to sample</span>
+<span class="sd">    rho: positive float; default 1e-6</span>
+<span class="sd">        L2 regularization</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    yhat: np.float32</span>
+<span class="sd">        Leave-one-out predicted values for the dependent </span>
+<span class="sd">        variable.</span>
+<span class="sd">    mse: float</span>
+<span class="sd">        Mean-squared-error (MSE) for leave-one-out linear</span>
+<span class="sd">        regression.</span>
+<span class="sd">    shuffles: Ncovariates × Nshuffles np.ndarray</span>
+<span class="sd">        List of MSE for shuffle-out tests for all</span>
+<span class="sd">        covariates. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">N</span><span class="p">,</span><span class="n">T</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    
+    <span class="n">mse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">mean</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">r2</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="n">var</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">rho</span><span class="o">*=</span> <span class="n">T</span>
+    <span class="n">MSE</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">X_</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nshuffle</span><span class="p">):</span>
+            <span class="n">X_</span><span class="p">[</span><span class="n">n</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="p">,:],</span><span class="n">T</span><span class="p">,</span><span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">Yhat</span> <span class="o">=</span> <span class="n">leave_one_out</span><span class="p">(</span><span class="n">X_</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">)</span>
+            <span class="n">MSE</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mse</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">Yhat</span><span class="p">))</span>
+    
+    <span class="n">Yhat</span> <span class="o">=</span> <span class="n">leave_one_out</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">)</span>
+    <span class="n">mse_</span> <span class="o">=</span> <span class="n">mse</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">Yhat</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">Yhat</span><span class="p">,</span> <span class="n">mse_</span><span class="p">,</span> <span class="n">array</span><span class="p">(</span><span class="n">MSE</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, M Rule.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

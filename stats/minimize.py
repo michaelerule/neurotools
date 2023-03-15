@@ -40,7 +40,7 @@ def minimize_retry(objective,initial,jac=None,hess=None,
                    failthrough=True,
                    tol=1e-5,
                    simplex_only=False,
-                   show_progress=True,
+                   show_progress=False,
                    dontuse = {},
                    maxfeval = None,
                    maxgeval = None,
@@ -110,16 +110,14 @@ def minimize_retry(objective,initial,jac=None,hess=None,
             s2 = '%0.9e'%nonlocals['recent']
             s2 += ' '*(15-len(ss))
             out = '\r#feval %6d \t#geval %6d \tBest %s \tPrev %s'%(nonlocals['nfeval'],nonlocals['ngeval'],ss,s2)
-            sys.stdout.write(out)
-            sys.stdout.flush()
+            print(out,end='',flush=True)
         nonlocals['last_shown'] = current_milli_time()
 
     def clear_progress():
         if show_progress: 
             progress_update()
-            sys.stdout.write('\n')
-            sys.stdout.flush()
-
+            print('\n',end='',flush=True)
+    
     # Wrap the provided gradient and objective functions, so that we can
     # capture the function values as they are being optimized. This way, 
     # if optimization throws an exception, we can still remember the best
@@ -177,12 +175,10 @@ def minimize_retry(objective,initial,jac=None,hess=None,
     def try_to_optimize(method,validoptions,jac_=None):
         if method in dontuse:
             if verbose:
-                sys.stdout.write('Skipping method %s\n'%method)
-                sys.stdout.flush()
+                print('Skipping method %s\n'%method,end='',flush=True)
             return False
         if verbose:
-            sys.stdout.write('Trying method %s\n'%method)
-            sys.stdout.flush()
+            print('Trying method %s\n'%method,end='',flush=True)
         try:
             options = {k:v for (k,v) in kwargs.items() if k in validoptions.split()}
             others  = {k:v for (k,v) in kwargs.items() if not k in validoptions.split()}
@@ -193,8 +189,7 @@ def minimize_retry(objective,initial,jac=None,hess=None,
             if result.success: 
                 return True
             if verbose or printerrors:
-                sys.stderr.write('%s reported "%s"\n'%(method,result.message))
-                sys.stderr.flush()
+                print('%s reported "%s"\n'%(method,result.message),end='',flush=True)
         except (KeyboardInterrupt, SystemExit): 
             # Don't catch system interrupts
             raise
@@ -210,8 +205,7 @@ def minimize_retry(objective,initial,jac=None,hess=None,
             traceback.print_exc()
             clear_progress()
             if verbose or printerrors:
-                sys.stderr.write('Error using minimize with %s:\n'%method)
-                sys.stderr.flush()
+                print('Error using minimize with %s:\n'%method,end='',flush=True)
                 traceback.print_exc()
                 sys.stderr.flush()
             return False

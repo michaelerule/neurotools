@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -27,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Neurotools
-            <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Neurotools
+              <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -66,7 +69,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">neurotools.util.array</li>
       <li class="wy-breadcrumbs-aside">
@@ -221,11 +224,55 @@
     <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">real</span></div>
 
+<div class="viewcode-block" id="verify_axes"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.verify_axes">[docs]</a><span class="k">def</span> <span class="nf">verify_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
+    <span class="c1"># Get shape of the array</span>
+    <span class="n">x</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">xshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">naxes</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xshape</span><span class="p">)</span>
+    <span class="c1"># Convert axis argument into an int32 array      </span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">axis</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="o">*</span><span class="n">axis</span><span class="p">])</span>
+    <span class="c1"># Check is in range    </span>
+    <span class="n">max_axis</span> <span class="o">=</span> <span class="n">naxes</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">min_axis</span> <span class="o">=</span> <span class="o">-</span><span class="n">naxes</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">axis</span><span class="o">&gt;</span><span class="n">max_axis</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">axis</span><span class="o">&lt;</span><span class="n">min_axis</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;An axis </span><span class="si">%s</span><span class="s1"> is out of range for shape </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">xshape</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">({</span><span class="o">*</span><span class="n">axis</span><span class="p">})</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;axes </span><span class="si">%s</span><span class="s1"> contains duplicates&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">axis</span><span class="p">,)</span>
+        <span class="p">)</span>
+    <span class="c1"># Convert negative axis index to positive        </span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">%</span> <span class="n">naxes</span>
+    <span class="k">return</span> <span class="n">axis</span></div>
+
+<div class="viewcode-block" id="axes_complement"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.axes_complement">[docs]</a><span class="k">def</span> <span class="nf">axes_complement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Set of all axes indeces for ``x`` not contained in ``axes``.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Get shape of the array</span>
+    <span class="n">x</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">xshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">naxes</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xshape</span><span class="p">)</span>
+    <span class="n">axes</span>   <span class="o">=</span> <span class="n">verify_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">other_axes</span> <span class="o">=</span> <span class="p">{</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="n">naxes</span><span class="p">)}</span> <span class="o">-</span> <span class="p">{</span><span class="o">*</span><span class="n">axes</span><span class="p">}</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other_axes</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="reslice"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.reslice">[docs]</a><span class="k">def</span> <span class="nf">reslice</span><span class="p">(</span><span class="n">naxes</span><span class="p">,</span><span class="n">expand_into</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generate a slice object to expand an array along</span>
+<span class="sd">    ``expand_into`` to broadcast with an array with ``naxes``</span>
+<span class="sd">    dimenstions.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span>
+        <span class="kc">None</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">expand_into</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:]</span> 
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">naxes</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="make_rebroadcast_slice"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.make_rebroadcast_slice">[docs]</a><span class="k">def</span> <span class="nf">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate correct slice object for broadcasting </span>
-<span class="sd">    stastistics averaged over the given axis back to the</span>
+<span class="sd">    stastistics averaged over the given axis(es) back to the</span>
 <span class="sd">    original shape.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -234,26 +281,25 @@
 <span class="sd">    </span>
 <span class="sd">    Other Parameters</span>
 <span class="sd">    ----------------</span>
-<span class="sd">    axis: int; default 0</span>
+<span class="sd">    axis: int or tuple; default 0</span>
 <span class="sd">    verbose: boolean; default False</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">naxes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    
+    <span class="c1"># Get the actual shape of the array</span>
+    <span class="n">x</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">xshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">naxes</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xshape</span><span class="p">)</span>
+
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">verify_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
+
+    <span class="c1"># Broadcast None over the axes that were collapsed</span>
+    <span class="n">theslice</span> <span class="o">=</span> <span class="n">reslice</span><span class="p">(</span><span class="n">naxes</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
+    
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;x.shape=&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;naxes=&#39;</span><span class="p">,</span><span class="n">naxes</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">axis</span><span class="o">=</span><span class="n">naxes</span><span class="o">+</span><span class="n">axis</span>
-    <span class="k">if</span> <span class="n">axis</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="bp">Ellipsis</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">axis</span><span class="o">==</span><span class="n">naxes</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="bp">Ellipsis</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">axis</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">naxes</span> <span class="o">-</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">theslice</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:],)</span><span class="o">*</span><span class="n">b</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis=&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;slice=&#39;</span><span class="p">,</span><span class="n">theslice</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">theslice</span></div>
 
 
@@ -583,14 +629,48 @@
     <span class="n">edges</span> <span class="o">=</span> <span class="n">widths_to_edges</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="n">startat</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">centers</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="extract"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.extract">[docs]</a><span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">zerod</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Extract a zero-dimensional array.</span>
-<span class="sd">    There is probably a better way to do this but it is</span>
-<span class="sd">    poorly documented. </span>
+<span class="sd">    Extract the scalar value from zero-dimensional </span>
+<span class="sd">    ``np.ndarray``.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zerod</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="binspace"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.binspace">[docs]</a><span class="k">def</span> <span class="nf">binspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">nbins</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span><span class="n">eps</span>
+    <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="n">eps</span>
+    <span class="k">return</span> <span class="n">b</span></div>
+
+
+<div class="viewcode-block" id="binto"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.binto">[docs]</a><span class="k">def</span> <span class="nf">binto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">binspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">==</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbins</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="remove_nonincreasing"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.remove_nonincreasing">[docs]</a><span class="k">def</span> <span class="nf">remove_nonincreasing</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="remove_nans"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.remove_nans">[docs]</a><span class="k">def</span> <span class="nf">remove_nans</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span><span class="n">args</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">remove_nans</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)[</span><span class="n">ok</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="n">ok</span><span class="p">]</span></div>
+
+
+
+
+
+
+
 
 </pre></div>
 

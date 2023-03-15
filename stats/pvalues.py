@@ -18,6 +18,9 @@ import statsmodels
 import numpy as np
 from numpy import random
 from neurotools.util.array import find
+import scipy.stats
+from typing import NamedTuple 
+
 
 def benjamini_hochberg_positive_correlations(pvalues,alpha):
     '''
@@ -80,6 +83,7 @@ def benjamini_hochberg_positive_correlations(pvalues,alpha):
     pN  = np.where( pvalues<=X/cVN )[0]
     pN  = pvalues[pN [-1]] if len(pN )>0 else 0#pvalues[0]
     return pID, pN
+
 
 def correct_pvalues_positive_dependent(pvalue_dictionary,verbose=0,alpha=0.05):
     '''
@@ -519,8 +523,6 @@ def bootstrap_compare_mean(
         mean, popA, popB, NA, NB, ntrials)
 
 
-
-
 def bootstrap_in_blocks(
     variables,
     blocklength,
@@ -631,23 +633,56 @@ def bootstrap_in_blocks(
     return [sample() for i in range(nsamples)]
 
 
+def nancorrect(pvalues,alpha=0.05,method='fdr_tsbh'):
+    '''
+    Wrapper for 
+    ``multipletests(pvalues,alpha,method='fdr_tsbh')``
+    in 
+    ``statsmodels.stats.multitest``
+    that gracefully handles ``NaN``.
+    
+    Parameters
+    ----------
+    pvalues: np.float32
+        List of p-values to correct
+    alpha: float in (0,1); default 0.05
+        False-discovery rate to correct for
+    method: str; default 'fdr_tsbh'
+        Method to use with ``multipletests()``.
+        The default is a two-stage Benjamini-Hochberg.
+        see
+        ``statsmodels.stats.multitest.multipletests``
+        for more options. 
+        
+    Returns
+    -------
+    reject: np.bool
+    corrected_pvalues: np.float32
+    '''
+    pvalues   = np.float32(pvalues)
+    ok        = np.isfinite(pvalues)
+    corrected = np.full(pvalues.shape,np.NaN,'f')
+    reject    = np.full(pvalues.shape,np.NaN,'f')
+    try:
+        a,b = statsmodels.stats.multitest.multipletests(
+            pvalues[ok], alpha=alpha, method=method)[:2]
+        ok = np.where(ok)#[0]
+        reject   [ok] = a
+        corrected[ok] = b
+    except ZeroDivisionError:
+        pass
+    return reject, corrected
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def atac(p):
+    '''
+    Aggregate p-values using Cauchey distribution model
+    (invariant to the degrees of freedom and therefore
+    conservative with potenitally correlated p-values). 
+    '''
+    p = np.float64(p)
+    z = np.nanmean(np.tan(p*np.pi-np.pi/2))
+    return (np.arctan(z)+np.pi/2)/np.pi
 
 
 

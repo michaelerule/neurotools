@@ -356,8 +356,10 @@ def exponential_decay(X,Y):
     Fit exponential decay from an initial value to a final value with 
     some time (or length, etc) constant.
     
-    lamb,scale,dc = exponential_decay(X,Y)
-    z = np.exp(-lamb*X)*scale+dc
+    ``tau,scale,dc = exponential_decay(X,Y)`` 
+    fits
+    ``z = np.exp(-X/tau)*scale+dc``
+    using least squares.
     
     Parameters
     ----------
@@ -366,8 +368,8 @@ def exponential_decay(X,Y):
         
     Returns
     -------
-    lambda : float
-        Length constant of fitted exponential fit
+    tau : float
+        Length constant of exponential fit
     scale: float
         Scale parameter (magnitude at zero) of exponential fit
     dc : float
@@ -376,16 +378,16 @@ def exponential_decay(X,Y):
     X = np.float64(X)
     Y = np.float64(Y)
     def error(theta):
-        (lamb,scale,dc) = theta
-        z = np.exp(-lamb*X)*scale+dc
-        return np.sum( (z-Y)**2 )
-    result = minimize_retry(error,[1,1,1],verbose=False,printerrors=False)
+        (tau,scale,dc) = theta
+        z = np.exp(np.minimum(50.0,-X/tau))*scale+dc
+        return np.mean( (z-Y)**2.0 )
+    result = minimize_retry(error,[1,1,0],verbose=False,printerrors=False,show_progress=False)
     #if not result.success:
     #    print(result.message)
     #    warnings.warn('Optimization failed: %s'%result.message)
     # lamb,scale,dc = result.x
-    lamb,scale,dc = result
-    return lamb,scale,dc
+    tau,scale,dc = result
+    return tau,scale,dc
 
 
 def robust_line(X,Y):
@@ -574,3 +576,175 @@ def cubic_spline_regression(x,y,x_eval,
         ntrials=NBOOTSTRAP,
         show_progress=show_progress))
     return y_hat, samples
+    
+    
+    
+    
+    
+
+from neurotools.jobs.parallel import limit_cores, parmap, parcontext
+from neurotools.stats.information import betapr
+from neurotools.stats.pvalues import bootstrap_statistic
+from neurotools.linalg.matrix import reglstsq
+
+class CircregressResult():
+
+    def __init__(
+        self,
+        theta,
+        y,
+        nboot  = 1000,
+        nshuff = 1000,
+        parallel = True,
+        show_progress = False,
+        #save_samples = True,
+        #save_training_data = True
+    ):
+        # Convert to polar featuress 
+        x  = np.float32([
+            np.cos(theta),
+            np.sin(theta), 
+            np.ones(theta.shape)
+        ])
+        y  = np.float32(y).copy()
+        w  = np.squeeze(
+            CircregressResult._linregress([*zip(x.T,y)])
+        )
+        with parcontext():
+            wb = np.squeeze(
+                parmap(
+                    CircregressResult._boothelper ,
+                    [(i,(x,y)) for i in range(nboot)],
+                    show_progress = show_progress,
+                    debug=not parallel)
+            ).reshape(nboot ,3)
+            ws = np.squeeze(
+                parmap(
+                    CircregressResult._shuffhelper,
+                    [(i,(x,y)) for i in range(nshuff)],
+                    show_progress = show_progress,
+                    debug=not parallel)
+            ).reshape(nshuff,3)
+        
+        '''
+        if save_training_data:
+            self.x = x
+            self.y = y
+        if save_samples:
+            self.w_bootstrap = wb
+            self.w_shuffle = ws
+        '''
+        self.w = w
+        self.x = x
+        self.y = y
+        self.a = w[0]
+        self.b = w[1]
+        self.c = w[2]
+        self.w_bootstrap = wb
+        self.w_shuffle = ws
+        
+        # Confidence on magnitude
+        r2  = np.linalg.norm(w [  :2],2  )**2
+        r2lo, r2hi = np.nanpercentile(self.get_d2_samples(),[2.5,97.5])
+        self.d   = r2**.5
+        self.dlo = r2lo**.5
+        self.dhi = r2hi**.5
+        
+        # Angle confidence
+        θhat    = np.angle(w [  :2]@[1,1j])
+        center  = np.exp(1j*θhat)
+        θboot   = np.angle( (wb[:,:2]@[1,1j])/center )
+        θlo,θhi = np.nanpercentile(θboot,[2.5,97.5])
+        θlo += θhat
+        θhi += θhat
+        self.theta    = θhat
+        self.theta_lo = θlo
+        self.theta_hi = θhi
+        
+        # Coefficient of dertermination
+        R2     = 1 - np.mean((w@x-y)**2)/np.var(y)
+        R2lo, R2hi = np.nanpercentile(self.get_R2_samples(),[2.5,97.5])
+        self.R2    = R2
+        self.R2lo  = R2lo
+        self.R2hi  = R2hi
+
+        # P-value on weight magnitude
+        r20    = np.linalg.norm(ws[:,:2],2,1)**2
+        pvalue = betapr(sum(r20>r2),len(r20))
+        self.pvalue = pvalue
+        
+    def get_theta_samples(self):
+        wb  = self.w_bootstrap
+        return np.angle((wb[:,:2]@[1,1j]))
+        
+    def get_d2_samples(self):
+        wb  = self.w_bootstrap
+        return np.linalg.norm(wb[:,:2],2,1)**2        
+        
+    def get_R2_samples(self):
+        wb = self.w_bootstrap
+        x  = self.x
+        y  = self.y
+        # Coefficient of dertermination
+        return 1 - np.mean((wb@x-y)**2,-1)/np.var(y)
+
+    def __iter__(self):
+        yield self.pvalue 
+        yield self.a  
+        yield self.b  
+        yield self.c  
+        yield self.d 
+        yield self.dlo
+        yield self.dhi
+        yield self.theta    
+        yield self.theta_lo 
+        yield self.theta_hi 
+        yield self.R2     
+        yield self.R2lo   
+        yield self.R2hi   
+        
+    def _asdict(self):
+        return {
+        'pvalue':self.pvalue,
+        'a':self.a,
+        'b':self.b,
+        'c':self.c,
+        'd':self.d,
+        'dlo':self.dlo,
+        'dhi':self.dhi,
+        'theta':self.theta,
+        'theta_lo':self.theta_lo,
+        'theta_hi':self.theta_hi,
+        'R2':self.R2,
+        'R2lo':self.R2lo,
+        'R2hi':self.R2hi,
+        }
+    
+    def __getitem__(self,s):
+        return [*self][s]
+
+    def _linregress(p):
+        x,y = zip(*p)
+        return reglstsq(np.float32(x),y)
+
+    def _boothelper(p):
+        i,(x,t) = p
+        np.random.seed(i)
+        limit_cores(1)
+        xt = [*zip(x.T,t)]
+        return i,np.array(bootstrap_statistic(
+            CircregressResult._linregress,
+            xt,1,show_progress=False))
+
+    def _shuffhelper(p):
+        i,(x,t) = p
+        np.random.seed(i)
+        limit_cores(1)
+        ti = np.random.choice(t,len(t),replace=False)
+        xt = [*zip(x.T,ti)]
+        return i,np.squeeze(
+            CircregressResult._linregress(xt))
+    
+    
+def circregress(*args,**kwargs):
+    return CircregressResult(*args,**kwargs)

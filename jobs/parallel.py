@@ -77,8 +77,7 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=True):
                 thisprogress = ((i+1)*100./njobs)
                 if (thisprogress - lastprogress)>0.5:
                     k = int(thisprogress//2)
-                    sys.stdout.write('\r['+('#'*k)+(' '*(50-k))+']%5.1f%% '%thisprogress)
-                    sys.stdout.flush()
+                    print('\r['+('#'*k)+(' '*(50-k))+']%5.1f%% '%thisprogress,end='',flush=True)
                     lastprogress = thisprogress
             # if it is a one element tuple, unpack it automatically
             if isinstance(result,tuple) and len(result)==1:
@@ -86,15 +85,18 @@ def parmap(f,problems,leavefree=1,debug=False,verbose=False,show_progress=True):
             results[i]=result
             if verbose and type(result) is RuntimeError:
                 print('Error processing',problems[i])
+            if type(result) in {KeyboardInterrupt,KeyError}:
+                # bad things, we need to stop. 
+                break
         if show_progress:
-            sys.stdout.write('\r['+('#'*50)+']%5.1f%% \n\r'%100)
-            sys.stdout.flush()
-    except:
+            print('\r['+('#'*50)+']%5.1f%% \n\r'%100,end='',flush=True)
+    finally:
         if show_progress:
             k = int(thisprogress//2)
-            sys.stdout.write('\r['+('#'*k)+('~'*(50-k))+'](fail)\n\r')
-            sys.stdout.flush()
-        raise
+            print(
+                '\r['+('#'*50)+']%5.1f%% \n\r'%100 if i+1==njobs
+                else '\r['+('#'*k)+('~'*(50-k))+'](fail)\n\r',
+                end='',flush=True)
     return [results[i] if i in results else None \
         for i,k in enumerate(problems)]
 
@@ -413,7 +415,7 @@ def parimap(f,jobs,
         except PicklingError:
             if verbose:
                 print('Function could not be pickled.')
-        except:
+        except Exception:
             if verbose: 
                 print('Built-in parmap failed.')
                 traceback.print_exc()
@@ -460,7 +462,7 @@ def parimap(f,jobs,
         except PicklingError:
             if verbose:
                 print('Function could not be pickled.')
-        except:
+        except Exception:
             if verbose: 
                 traceback.print_exc()
                 print('Resetting workers failed.')
@@ -480,7 +482,7 @@ def parimap(f,jobs,
             if verbose: print('Reset + pass-source worked')
             return result
         except (SystemExit,KeyboardInterrupt): raise
-        except:
+        except Exception:
             if verbose: 
                 traceback.print_exc()
                 print('All approaches failed')
@@ -510,8 +512,7 @@ def close_pool(context=None,verbose=False):
         reference_globals = context
 
     if not 'mypool' in globals() or mypool is None:
-        if verbose:
-            print('No pool found')
+        if verbose: print('No pool found')
     else:
         if verbose:
             print('Pool found, restarting')
@@ -521,15 +522,15 @@ def close_pool(context=None,verbose=False):
             global mypool
             if not 'mypool' in globals() or mypool is None:
                 return
-            sys.stderr.write('\nClosing...')
+            if verbose: sys.stderr.write('\nClosing...')
             mypool.close()
-            sys.stderr.write('\n(ok) Terminating...')
+            if verbose: sys.stderr.write('\n(ok) Terminating...')
             mypool.terminate()
-            sys.stderr.write('\n(ok) Joining...')
+            if verbose: sys.stderr.write('\n(ok) Joining...')
             mypool.join()
-            sys.stderr.write('\n(ok)...')
+            if verbose: sys.stderr.write('\n(ok)...')
         def term(*args,**kwargs):
-            sys.stderr.write('\nStopping.')
+            if verbose: sys.stderr.write('\nStopping.')
             stoppool=threading.Thread(target=_close_pool)
             stoppool.daemon=True
             stoppool.start()
@@ -582,8 +583,7 @@ def parallel_error_handling(f):
             return RuntimeError(info, exc)
     return parallel_helper
     
-    
-    
+   
 def limit_cores(CORES_PER_THREAD=1): 
     '''
     Control the number of cores used by linear algebra
@@ -597,8 +597,20 @@ def limit_cores(CORES_PER_THREAD=1):
         'OPENBLAS_NUM_THREADS',
         'VECLIB_MAXIMUM_THREADS']
     for k in keys: os.environ[k] = str(CORES_PER_THREAD)
-    os.environ["XLA_FLAGS"] = \
-    "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=%d"\
-    %CORES_PER_THREAD
+    os.environ["XLA_FLAGS"] = (
+        "--xla_cpu_multi_thread_eigen=false "
+        "intra_op_parallelism_threads=%d")%CORES_PER_THREAD
     threadpool_limits(limits=CORES_PER_THREAD, user_api='blas')
     NCORES = multiprocessing.cpu_count()
+    return NCORES
+    
+    
+    
+import contextlib
+@contextlib.contextmanager
+def parcontext(leavefree=None):
+    try:
+        reset_pool(leavefree=leavefree)
+        yield
+    finally:
+        close_pool()

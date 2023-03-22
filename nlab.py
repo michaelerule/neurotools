@@ -117,9 +117,9 @@ except ImportError:
 
 # Depends on the spectrum package and will not import if this is missing
 try:
-    from neurotools.signal.ppc               import *
+    from neurotools.spikes.ppc               import *
 except ImportError:
-    print('Skipping the neurotools.signal.ppc module')
+    print('Skipping the neurotools.spikes.ppc module')
 
 from neurotools.signal.savitskygolay     import *
 from neurotools.signal                   import *

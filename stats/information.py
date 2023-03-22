@@ -45,7 +45,7 @@ class discrete:
     def DKL(cls,P,Q,axis=None):
         '''
         Compute KL divergence D(P||Q) 
-        between discrete distributions ``P`` and ``Q`.
+        between discrete distributions ``P`` and ``Q``.
         
         Parameters
         ----------
@@ -310,7 +310,7 @@ class discrete:
         '''
 
     @classmethod
-    def ΔIshuff(cls,p,axes=(0,1)):
+    def deltaIshuff(cls,p,axes=(0,1)):
         '''
         Mutual information between 
         (neuron₁, neuron₂) and (stimulus),
@@ -327,7 +327,7 @@ class discrete:
         return cls.I(p,axes) - cls.Ishuff(p,axes)
     
     @classmethod
-    def ΔI(cls,p,axes=(0,1)):
+    def deltaI(cls,p,axes=(0,1)):
         '''
         Mutual information between 
         (neuron₁, neuron₂) and (stimulus),
@@ -364,7 +364,7 @@ class discrete:
         return cls.DKL(p,q)
     
     @classmethod
-    def ΔInoise(cls,p,axes=(0,1)):
+    def deltaInoise(cls,p,axes=(0,1)):
         '''
         :math:`I_{r_1,r_2;s} - I^{\\text{shuffle}}_{r_1,r2;s}`.
         
@@ -376,7 +376,7 @@ class discrete:
         return Isr - Jsr
     
     @classmethod
-    def ΔIsig(cls,p,axes=(0,1)):
+    def deltaIsig(cls,p,axes=(0,1)):
         '''
         :math:`I_{r_1,r_2;s} - I^{\\text{shuffle}}_{r_1,r2;s}`.
         
@@ -510,15 +510,15 @@ def beta_regularized_histogram_mutual_information(
     Ixy: float
         Histogram-based MI estimate 
         `Ixy = Hx + Hy - Hxy`
-    IΔ: float
+    Idelta: float
         Shuffle-adjust MI 
-        `IΔ = np.median(Hx+Hy) - Hxy`
+        `Idelta = np.median(Hx+Hy) - Hxy`
     pvalue: float
         p-value for significant MI from the shuffle test
     lo: float
-        The boostrap `plo` percentil of `IΔ`
+        The boostrap `plo` percentil of `Idelta`
     hi: float
-        The boostrap `phi` percentil of `IΔ`
+        The boostrap `phi` percentil of `Idelta`
     
     '''
     x = np.array(x).ravel()
@@ -550,7 +550,7 @@ def beta_regularized_histogram_mutual_information(
         e.append(betaH(k,N))
     e = np.float32(e)
     pvalue = betapr(np.sum(e<Hxy),nshuffle)
-    IΔ = np.median(e) - Hxy
+    Idelta = np.median(e) - Hxy
     
     # Bootstrap uncertainty
     b = []
@@ -560,9 +560,9 @@ def beta_regularized_histogram_mutual_information(
         p = betapr(k,N)
         b.append(betaH(k,N))
     Ib = H0 - np.float32(b)
-    lo,hi = np.nanpercentile(Ib,[plo,phi])-(Ixy-IΔ)
+    lo,hi = np.nanpercentile(Ib,[plo,phi])-(Ixy-Idelta)
     
-    return Ixy, IΔ, pvalue, lo, hi
+    return Ixy, Idelta, pvalue, lo, hi
     
     
     

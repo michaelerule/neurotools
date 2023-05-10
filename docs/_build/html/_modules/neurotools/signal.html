@@ -11,8 +11,6 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
-        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -1465,34 +1463,60 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">v</span><span class="p">),</span>\
            <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">w</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
+<div class="viewcode-block" id="PeakInfoResult"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.PeakInfoResult">[docs]</a><span class="k">class</span> <span class="nc">PeakInfoResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">index</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">inflection_below</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">inflection_above</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">trough_below</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">trough_above</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">qfit</span><span class="p">:</span> <span class="nb">list</span></div>
 
-<div class="viewcode-block" id="quadratic_peakinfo"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.quadratic_peakinfo">[docs]</a><span class="k">def</span> <span class="nf">quadratic_peakinfo</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="quadratic_peakinfo"><a class="viewcode-back" href="../../neurotools.signal.html#neurotools.signal.quadratic_peakinfo">[docs]</a><span class="k">def</span> <span class="nf">quadratic_peakinfo</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span> 
+    <span class="n">freqs</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Collect information about the location, width, and</span>
+<span class="sd">    height of local maxima. Fit a Gaussian model to each</span>
+<span class="sd">    peak using data between the edges of the peak, </span>
+<span class="sd">    defined as the inflection points below and above</span>
+<span class="sd">    each local maxima.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: 1D np.array</span>
 <span class="sd">        1D spectrum</span>
+<span class="sd">    freqs: list (optional)</span>
+<span class="sd">        List of frequencies for each value of ``x``.</span>
+<span class="sd">        In not provided, return results will be in</span>
+<span class="sd">        terms of index into ``x`` (starting at 0).</span>
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ti: np.float32</span>
-<span class="sd">        Interpolated index of each peak</span>
-<span class="sd">    v: np.float32</span>
-<span class="sd">        Interpolated value at each peak</span>
-<span class="sd">    inflect_below: np.float32</span>
-<span class="sd">        Inflection point below each peak or NaN if None</span>
-<span class="sd">    inflect_above: np.float32</span>
-<span class="sd">        Inflection point abobe each peak or NaN if None</span>
-<span class="sd">    trough_below: np.float32</span>
-<span class="sd">        Trough below each peak or NaN if None</span>
-<span class="sd">    trough_above: np.float32</span>
-<span class="sd">        Trough above each peak or NaN if None</span>
-<span class="sd">    (c2,c1,c0): np.float32</span>
-<span class="sd">        Quadratic, linear, and constant coefficiets of </span>
-<span class="sd">        local quadratic fit, NaN if peak is poorly </span>
-<span class="sd">        localized.</span>
+<span class="sd">    peaks: list</span>
+<span class="sd">        List of ``PeakInfoResult`` containing the fields</span>
+<span class="sd">        </span>
+<span class="sd">        :index: float</span>
+<span class="sd">            Index into ``x`` of each local maximum</span>
+<span class="sd">            (interpolated). </span>
+<span class="sd">        :height: float</span>
+<span class="sd">            Value of ``x`` at each local maximum</span>
+<span class="sd">        :inflection_below: float</span>
+<span class="sd">            Nearest inflection below each local maximum.</span>
+<span class="sd">        :inflection_above: float</span>
+<span class="sd">            Nearest inflection above each local maximum.</span>
+<span class="sd">        :trough_below: float</span>
+<span class="sd">            Nearest trough below each local maximum.</span>
+<span class="sd">        :trough_above: float</span>
+<span class="sd">            Nearest trough above each local maximum.</span>
+<span class="sd">        :qfit: list</span>
+<span class="sd">            Quadratic regression polynomial coefficients</span>
+<span class="sd">            ``[c2,c1,c0]``.</span>
+<span class="sd">        </span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="c1"># Get first derivative to find peaks</span>
@@ -1503,7 +1527,6 @@
     <span class="n">y1</span> <span class="o">=</span> <span class="n">slope</span><span class="p">[</span><span class="n">zsigns</span><span class="p">]</span>
     <span class="n">y2</span> <span class="o">=</span> <span class="n">slope</span><span class="p">[</span><span class="n">zsigns</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">tp</span> <span class="o">=</span> <span class="n">zsigns</span> <span class="o">+</span> <span class="n">y1</span><span class="o">/</span><span class="p">(</span><span class="n">y1</span><span class="o">-</span><span class="n">y2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span>
-
     <span class="c1"># Get inflection points where curvature changes sign</span>
     <span class="n">curvature</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">dsign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">curvature</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">))</span>
@@ -1532,6 +1555,16 @@
     <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">minima</span><span class="p">)</span><span class="o">&lt;</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span> <span class="n">minima</span> <span class="o">=</span> <span class="n">minima</span><span class="o">+</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">maxima</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">maxima</span><span class="p">))</span>
     <span class="n">minima</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">minima</span><span class="p">))</span>
+
+    <span class="n">to_frequency</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">freqs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
+        <span class="n">to_frequency</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">_interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>
+            <span class="n">freqs</span><span class="p">,</span>
+            <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">,</span>
+            <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Peakinfo with nice interpolation</span>
     <span class="n">peakinfo</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1562,23 +1595,20 @@
             <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">upper</span><span class="p">)),</span><span class="mi">0</span><span class="p">,</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">upper</span><span class="o">&gt;</span><span class="n">lower</span><span class="p">:</span>
                 <span class="n">ii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">to_frequency</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">ii</span> <span class="o">=</span> <span class="n">to_frequency</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
                 <span class="n">c2</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">c0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">lower</span><span class="p">:</span><span class="n">upper</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
                 
-
-        <span class="n">peakinfo</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ti</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">c0</span><span class="p">))</span>
-    <span class="n">peakinfo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">peakinfo</span><span class="p">)</span>
-    <span class="n">ti</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">c0</span> <span class="o">=</span> <span class="n">peakinfo</span><span class="o">.</span><span class="n">T</span>
-    <span class="k">return</span> <span class="n">ti</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,[</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">c0</span><span class="p">)]</span></div>
-
-
-
-
-
-
-
-
-
-
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">to_frequency</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ti</span> <span class="o">=</span> <span class="n">to_frequency</span><span class="p">(</span><span class="n">ti</span><span class="p">)</span>
+            <span class="n">a</span>  <span class="o">=</span> <span class="n">to_frequency</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">b</span>  <span class="o">=</span> <span class="n">to_frequency</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="n">c</span>  <span class="o">=</span> <span class="n">to_frequency</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">d</span>  <span class="o">=</span> <span class="n">to_frequency</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                
+        <span class="n">peakinfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PeakInfoResult</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,[</span><span class="n">c2</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">c0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">peakinfo</span></div>
 
 
 <span class="c1">############################################################</span>

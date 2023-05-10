@@ -12,8 +12,6 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="_static/jquery.js"></script>
-        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
@@ -254,10 +252,24 @@ Controls the time-frequency tradeoff</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.morlet.fft_cwt_transposed">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">fft_cwt_transposed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfreqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#fft_cwt_transposed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.fft_cwt_transposed" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">fft_cwt_transposed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfreqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#fft_cwt_transposed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.fft_cwt_transposed" title="Permalink to this definition"></a></dt>
+<dd><p>Compute morelet spectrogam of a list of time-domain
+signals (possibly in parallel if you have a threaded
+installation of the FFTW library available).</p>
+<p>This version spaces <code class="docutils literal notranslate"><span class="pre">nfreqs</span></code> frquencies uniformly
+between <code class="docutils literal notranslate"><span class="pre">fa</span></code> and <code class="docutils literal notranslate"><span class="pre">fb</span></code>, inclusive. For logarithmic
+spacing, see <code class="docutils literal notranslate"><span class="pre">fft_cwt_transposed_logspaced()</span></code>.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numeric</em>) – NCH x Ntimes list of signals to transform</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numeric</em>) – NCH x Ntimes list of signals to transform</p></li>
+<li><p><strong>fa</strong> (<em>float</em>) – Lowest frequency to extract</p></li>
+<li><p><strong>fb</strong> (<em>float</em>) – Highest frequency to extract</p></li>
+<li><p><strong>4</strong> (<em>float; default 4.0</em>) – Time/frequency morlet width parameter</p></li>
+<li><p><strong>nfreqs</strong> (<em>int; default 1000</em>) – Number of frequency components to use</p></li>
+<li><p><strong>Fs</strong> (<em>float; default 1000.0</em>) – Sample rate in Hz</p></li>
+<li><p><strong>threads</strong> (<em>int; default 1</em>) – Number of threads to use</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -271,8 +283,14 @@ Controls the time-frequency tradeoff</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.morlet.fft_cwt_transposed_logspaced">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">fft_cwt_transposed_logspaced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfreqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#fft_cwt_transposed_logspaced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.fft_cwt_transposed_logspaced" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">fft_cwt_transposed_logspaced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfreqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#fft_cwt_transposed_logspaced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.fft_cwt_transposed_logspaced" title="Permalink to this definition"></a></dt>
+<dd><p>Compute morelet spectrogam of a list of time-domain
+signals (possibly in parallel if you have a threaded
+installation of the FFTW library available).</p>
+<p>This version spaces <code class="docutils literal notranslate"><span class="pre">nfreqs</span></code> frquencies logarithmically
+between <code class="docutils literal notranslate"><span class="pre">fa</span></code> and <code class="docutils literal notranslate"><span class="pre">fb</span></code>, inclusive. For uniform
+spacing, see <code class="docutils literal notranslate"><span class="pre">fft_cwt_transposed()</span></code>.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>NCHANNELS × NTIMES np.array</em>) – </p></li>
@@ -281,8 +299,8 @@ Controls the time-frequency tradeoff</p></li>
 <li><p><strong>w</strong> (<em>positive float; default 4.0</em>) – Wavelet base frequency;
 Controls the time-frequency tradeoff</p></li>
 <li><p><strong>nfreqs</strong> (<em>positive float; default 0.1</em>) – Frequency sampling nfreqs</p></li>
-<li><p><strong>threads</strong> (<em>positive int; default 1</em>) – Number of CPU threads to use</p></li>
 <li><p><strong>Fs</strong> (<em>positive int; default 1000</em>) – Sample rate</p></li>
+<li><p><strong>threads</strong> (<em>positive int; default 1</em>) – Number of CPU threads to use</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -291,6 +309,29 @@ Controls the time-frequency tradeoff</p></li>
 <li><p><strong>result</strong> (<em>NCHANNELS × NFREQS × NTIMES np.array</em>) – wavelet transform</p></li>
 </ul>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.morlet.convenient_morlet">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">convenient_morlet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#convenient_morlet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.convenient_morlet" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.morlet.get_gentle_morlets_ft">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">get_gentle_morlets_ft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_lo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">166.66666666666666</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_md</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfreqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#get_gentle_morlets_ft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.get_gentle_morlets_ft" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.morlet.gentle_morlet_psd">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.morlet.</span></span><span class="sig-name descname"><span class="pre">gentle_morlet_psd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_lo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">166.66666666666666</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_md</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfreqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal/morlet.html#gentle_morlet_psd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.morlet.gentle_morlet_psd" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>psd</strong> – <code class="docutils literal notranslate"><span class="pre">NFREQS</span> <span class="pre">x</span> <span class="pre">NSAMPLES</span></code> power spectrum</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>

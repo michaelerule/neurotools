@@ -11,8 +11,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
-        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -158,34 +156,6 @@
 <span class="sd">    ndarray</span>
 <span class="sd">        frequencies,</span>
 <span class="sd">    ndarray</span>
-<span class="sd">        average sqrt(power) over tapers.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">nodc</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
-        <span class="n">tapers</span><span class="p">,</span> <span class="n">eigen</span> <span class="o">=</span> <span class="n">dpss_cached</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mf">0.4999</span><span class="o">*</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tapers</span><span class="p">]</span>
-        <span class="n">freqs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">freqs</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="o">...</span><span class="p">,:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="multitaper_squared_spectrum"><a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_squared_spectrum">[docs]</a><span class="k">def</span> <span class="nf">multitaper_squared_spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">nodc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : ndarray</span>
-<span class="sd">        Signal to use</span>
-<span class="sd">    k : int (positive)</span>
-<span class="sd">        number of tapers (positive)</span>
-<span class="sd">    Fs: int</span>
-<span class="sd">        sample rate in Hz (default 1000)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ndarray</span>
-<span class="sd">        frequencies,</span>
-<span class="sd">    ndarray</span>
 <span class="sd">        average squared power over tapers.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
@@ -194,9 +164,9 @@
         <span class="k">if</span> <span class="n">nodc</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
         <span class="n">tapers</span><span class="p">,</span> <span class="n">eigen</span> <span class="o">=</span> <span class="n">dpss_cached</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mf">0.4999</span><span class="o">*</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tapers</span><span class="p">]</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">t</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tapers</span><span class="p">]</span>
         <span class="n">freqs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">Fs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">freqs</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="o">...</span><span class="p">,:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span></div>
+        <span class="k">return</span> <span class="n">freqs</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="o">...</span><span class="p">,:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="sliding_multitaper_spectrum"><a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.sliding_multitaper_spectrum">[docs]</a><span class="k">def</span> <span class="nf">sliding_multitaper_spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">step</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">BW</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>

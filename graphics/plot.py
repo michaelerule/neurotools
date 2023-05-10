@@ -3013,6 +3013,7 @@ def zerohline(color='k',lw=None,**kwargs):
     lw: positive float
         Linewidth, if different from ``axes.linewidth``
     '''
+    kwargs = dict(clip_on=False)|kwargs
     if lw is None:
         lw = matplotlib.rcParams['axes.linewidth']
     plt.axhline(0,color=color,lw=lw,**kwargs)

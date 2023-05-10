@@ -74,34 +74,6 @@ def multitaper_spectrum(x,k,Fs=1000.0,nodc=True):
     ndarray
         frequencies,
     ndarray
-        average sqrt(power) over tapers.
-    '''
-    with warnings.catch_warnings():
-        warnings.simplefilter(action='ignore', category=FutureWarning)
-        N = x.shape[-1]
-        if nodc:
-            x = x-np.mean(x,axis=-1)[...,None]
-        tapers, eigen = dpss_cached(N,0.4999*k)
-        specs = [np.abs(fft.fft(x*t)) for t in tapers]
-        freqs = fft.fftfreq(N,1./Fs)
-        return freqs[:N//2],np.mean(specs,0)[...,:N//2]
-
-def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
-    '''
-    Parameters
-    ----------
-    x : ndarray
-        Signal to use
-    k : int (positive)
-        number of tapers (positive)
-    Fs: int
-        sample rate in Hz (default 1000)
-
-    Returns
-    -------
-    ndarray
-        frequencies,
-    ndarray
         average squared power over tapers.
     '''
     with warnings.catch_warnings():
@@ -110,9 +82,9 @@ def multitaper_squared_spectrum(x,k,Fs=1000.0,nodc=True):
         if nodc:
             x = x-np.mean(x,axis=-1)[...,None]
         tapers, eigen = dpss_cached(N,0.4999*k)
-        specs = [np.abs(fft.fft(x*t)) for t in tapers]
+        specs = [np.abs(fft.fft(x*t))**2 for t in tapers]
         freqs = fft.fftfreq(N,1./Fs)
-        return freqs[:N//2],np.mean(specs,0)[...,:N//2]**2
+        return freqs[:N//2],np.mean(specs,0)[...,:N//2]
 
 def sliding_multitaper_spectrum(x,window=500,step=100,Fs=1000,BW=5):
     '''

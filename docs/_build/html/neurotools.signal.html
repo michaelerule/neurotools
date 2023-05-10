@@ -12,8 +12,6 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="_static/jquery.js"></script>
-        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
@@ -102,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.peak_within"><code class="docutils literal notranslate"><span class="pre">peak_within()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.interpmax1d"><code class="docutils literal notranslate"><span class="pre">interpmax1d()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.peak_fwhm"><code class="docutils literal notranslate"><span class="pre">peak_fwhm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.PeakInfoResult"><code class="docutils literal notranslate"><span class="pre">PeakInfoResult</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.quadratic_peakinfo"><code class="docutils literal notranslate"><span class="pre">quadratic_peakinfo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.unitscale"><code class="docutils literal notranslate"><span class="pre">unitscale()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.topercentiles"><code class="docutils literal notranslate"><span class="pre">topercentiles()</span></code></a></li>
@@ -200,12 +199,14 @@
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.population_synchrony_spectrum"><code class="docutils literal notranslate"><span class="pre">population_synchrony_spectrum()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.fft_cwt_transposed"><code class="docutils literal notranslate"><span class="pre">fft_cwt_transposed()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.fft_cwt_transposed_logspaced"><code class="docutils literal notranslate"><span class="pre">fft_cwt_transposed_logspaced()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.convenient_morlet"><code class="docutils literal notranslate"><span class="pre">convenient_morlet()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.get_gentle_morlets_ft"><code class="docutils literal notranslate"><span class="pre">get_gentle_morlets_ft()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.gentle_morlet_psd"><code class="docutils literal notranslate"><span class="pre">gentle_morlet_psd()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="neurotools.signal.multitaper.html">neurotools.signal.multitaper module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.dpss_cached"><code class="docutils literal notranslate"><span class="pre">dpss_cached()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_spectrum"><code class="docutils literal notranslate"><span class="pre">multitaper_spectrum()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_squared_spectrum"><code class="docutils literal notranslate"><span class="pre">multitaper_squared_spectrum()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.sliding_multitaper_spectrum"><code class="docutils literal notranslate"><span class="pre">sliding_multitaper_spectrum()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.multitaper.html#neurotools.signal.multitaper.multitaper_population_eigencoherence"><code class="docutils literal notranslate"><span class="pre">multitaper_population_eigencoherence()</span></code></a></li>
 </ul>
@@ -1131,26 +1132,109 @@ times the tallest peak.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">PeakInfoResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflection_below</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflection_above</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trough_below</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trough_above</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qfit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#PeakInfoResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.PeakInfoResult" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.index">
+<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.index" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.height" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.inflection_below">
+<span class="sig-name descname"><span class="pre">inflection_below</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.inflection_below" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.inflection_above">
+<span class="sig-name descname"><span class="pre">inflection_above</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.inflection_above" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.trough_below">
+<span class="sig-name descname"><span class="pre">trough_below</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.trough_below" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.trough_above">
+<span class="sig-name descname"><span class="pre">trough_above</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.trough_above" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neurotools.signal.PeakInfoResult.qfit">
+<span class="sig-name descname"><span class="pre">qfit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#neurotools.signal.PeakInfoResult.qfit" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.quadratic_peakinfo">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">quadratic_peakinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#quadratic_peakinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.quadratic_peakinfo" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">quadratic_peakinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#quadratic_peakinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.quadratic_peakinfo" title="Permalink to this definition"></a></dt>
+<dd><p>Collect information about the location, width, and
+height of local maxima. Fit a Gaussian model to each
+peak using data between the edges of the peak,
+defined as the inflection points below and above
+each local maxima.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>1D np.array</em>) – 1D spectrum</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>1D np.array</em>) – 1D spectrum</p></li>
+<li><p><strong>freqs</strong> (<em>list</em><em> (</em><em>optional</em><em>)</em>) – List of frequencies for each value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+In not provided, return results will be in
+terms of index into <code class="docutils literal notranslate"><span class="pre">x</span></code> (starting at 0).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>ti</strong> (<em>np.float32</em>) – Interpolated index of each peak</p></li>
-<li><p><strong>v</strong> (<em>np.float32</em>) – Interpolated value at each peak</p></li>
-<li><p><strong>inflect_below</strong> (<em>np.float32</em>) – Inflection point below each peak or NaN if None</p></li>
-<li><p><strong>inflect_above</strong> (<em>np.float32</em>) – Inflection point abobe each peak or NaN if None</p></li>
-<li><p><strong>trough_below</strong> (<em>np.float32</em>) – Trough below each peak or NaN if None</p></li>
-<li><p><strong>trough_above</strong> (<em>np.float32</em>) – Trough above each peak or NaN if None</p></li>
-<li><p><strong>(c2,c1,c0)</strong> (<em>np.float32</em>) – Quadratic, linear, and constant coefficiets of
-local quadratic fit, NaN if peak is poorly
-localized.</p></li>
-</ul>
+<dd class="field-even"><p><p><strong>peaks</strong> – List of <code class="docutils literal notranslate"><span class="pre">PeakInfoResult</span></code> containing the fields</p>
+<dl class="field-list simple">
+<dt class="field-odd">index<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float
+Index into <code class="docutils literal notranslate"><span class="pre">x</span></code> of each local maximum
+(interpolated).</p>
+</dd>
+<dt class="field-even">height<span class="colon">:</span></dt>
+<dd class="field-even"><p>float
+Value of <code class="docutils literal notranslate"><span class="pre">x</span></code> at each local maximum</p>
+</dd>
+<dt class="field-odd">inflection_below<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float
+Nearest inflection below each local maximum.</p>
+</dd>
+<dt class="field-even">inflection_above<span class="colon">:</span></dt>
+<dd class="field-even"><p>float
+Nearest inflection above each local maximum.</p>
+</dd>
+<dt class="field-odd">trough_below<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float
+Nearest trough below each local maximum.</p>
+</dd>
+<dt class="field-even">trough_above<span class="colon">:</span></dt>
+<dd class="field-even"><p>float
+Nearest trough above each local maximum.</p>
+</dd>
+<dt class="field-odd">qfit<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list
+Quadratic regression polynomial coefficients
+<code class="docutils literal notranslate"><span class="pre">[c2,c1,c0]</span></code>.</p>
+</dd>
+</dl>
 </p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>

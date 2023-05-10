@@ -654,7 +654,7 @@ def enumerate_fast_colors():
     
     Returns
     -------
-    colors:
+    colors: list
     '''
     bytes = sorted(list(set([i&0b11110100 for i in range(0,256)])))
     colors = [bit16_RGB_to_tuple(x*256|x) for x in bytes]
@@ -671,7 +671,7 @@ def tuple_to_bit16(c):
     
     Returns
     -------
-    RGB:
+    RGB: int
     '''
     R,G,B = c
     R = int(R*0b11111)

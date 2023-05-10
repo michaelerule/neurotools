@@ -1382,34 +1382,60 @@ def peak_fwhm(
     return np.int32(i),np.float32(v),\
            np.int32(w),np.int32(a),np.int32(b)
 
+from typing import NamedTuple
+class PeakInfoResult(NamedTuple):
+    index: float
+    height: float
+    inflection_below: float
+    inflection_above: float
+    trough_below: float
+    trough_above: float
+    qfit: list
 
-def quadratic_peakinfo(x):
+def quadratic_peakinfo(
+    x, 
+    freqs = None
+    ):
     '''
+    Collect information about the location, width, and
+    height of local maxima. Fit a Gaussian model to each
+    peak using data between the edges of the peak, 
+    defined as the inflection points below and above
+    each local maxima.
+    
     Parameters
     ----------
     x: 1D np.array
         1D spectrum
+    freqs: list (optional)
+        List of frequencies for each value of ``x``.
+        In not provided, return results will be in
+        terms of index into ``x`` (starting at 0).
         
     Returns
     -------
-    ti: np.float32
-        Interpolated index of each peak
-    v: np.float32
-        Interpolated value at each peak
-    inflect_below: np.float32
-        Inflection point below each peak or NaN if None
-    inflect_above: np.float32
-        Inflection point abobe each peak or NaN if None
-    trough_below: np.float32
-        Trough below each peak or NaN if None
-    trough_above: np.float32
-        Trough above each peak or NaN if None
-    (c2,c1,c0): np.float32
-        Quadratic, linear, and constant coefficiets of 
-        local quadratic fit, NaN if peak is poorly 
-        localized.
-    '''
+    peaks: list
+        List of ``PeakInfoResult`` containing the fields
+        
+        :index: float
+            Index into ``x`` of each local maximum
+            (interpolated). 
+        :height: float
+            Value of ``x`` at each local maximum
+        :inflection_below: float
+            Nearest inflection below each local maximum.
+        :inflection_above: float
+            Nearest inflection above each local maximum.
+        :trough_below: float
+            Nearest trough below each local maximum.
+        :trough_above: float
+            Nearest trough above each local maximum.
+        :qfit: list
+            Quadratic regression polynomial coefficients
+            ``[c2,c1,c0]``.
+        
     
+    '''
     N = len(x)
 
     # Get first derivative to find peaks
@@ -1420,7 +1446,6 @@ def quadratic_peakinfo(x):
     y1 = slope[zsigns]
     y2 = slope[zsigns+1]
     tp = zsigns + y1/(y1-y2) + 0.5
-
     # Get inflection points where curvature changes sign
     curvature = np.diff(x,2)
     dsign = np.diff(np.float32(curvature>0))
@@ -1449,6 +1474,16 @@ def quadratic_peakinfo(x):
     if x[-1]<x[-2] and np.max(minima)<N-2: minima = minima+[N-1]
     maxima = np.float32(sorted(maxima))
     minima = np.float32(sorted(minima))
+
+    to_frequency = None
+    if not freqs is None:
+        assert len(x)==len(freqs)
+        to_frequency = scipy.interpolate._interpolate.interp1d(
+            np.arange(len(x)),
+            freqs,
+            kind='linear',
+            fill_value="extrapolate",
+            bounds_error=False)
 
     # Peakinfo with nice interpolation
     peakinfo = []
@@ -1479,23 +1514,20 @@ def quadratic_peakinfo(x):
             upper = np.clip(int(round(upper)),0,N-1)
             if upper>lower:
                 ii = np.arange(lower,upper+1)
+                if not to_frequency is None:
+                    ii = to_frequency(ii)
                 c2,c1,c0 = np.polyfit(ii,x[lower:upper+1],2)
                 
-
-        peakinfo.append((ti,v,a,b,c,d,c2,c1,c0))
-    peakinfo = np.float32(peakinfo)
-    ti,v,a,b,c,d,c2,c1,c0 = peakinfo.T
-    return ti,v,a,b,c,d,[*zip(c2,c1,c0)]
-
-
-
-
-
-
-
-
-
-
+        
+        if not to_frequency is None:
+            ti = to_frequency(ti)
+            a  = to_frequency(a)
+            b  = to_frequency(b)
+            c  = to_frequency(c)
+            d  = to_frequency(d)
+                
+        peakinfo.append(PeakInfoResult(ti,v,a,b,c,d,[c2,c1,c0]))
+    return peakinfo
 
 
 ############################################################

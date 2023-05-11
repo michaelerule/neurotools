@@ -40,6 +40,9 @@ TEAL       = np.float32(mpl.colors.to_rgb('#00bac9'))
 BLACK      = np.float32(mpl.colors.to_rgb('#44525c'))
 GATHER     = [WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK]
 
+OFFWHITE = BLACK*.1+WHITE*.9
+OFFBLACK = BLACK*.9+WHITE*.1
+
 # Mauve and Moss round-out and complement the Gather pallet
 MAUVE      = np.float32(mpl.colors.to_rgb('#b56ab6'))
 MOSS       = np.float32(mpl.colors.to_rgb('#77ae64'))

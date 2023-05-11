@@ -681,7 +681,40 @@
         <span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="c1">#save_samples = True,</span>
         <span class="c1">#save_training_data = True</span>
-    <span class="p">):</span>
+    <span class="p">):</span>  
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pvalue: float</span>
+<span class="sd">            Probability of observing a modulation depth at </span>
+<span class="sd">            least as large as d assuming no circular-linear</span>
+<span class="sd">            correlation. Computed via a phase randomization null test</span>
+<span class="sd">            assuming data points are indepent. </span>
+<span class="sd">        a: float</span>
+<span class="sd">            Weighting of cosine component</span>
+<span class="sd">        b: float</span>
+<span class="sd">            Weighting of sine component</span>
+<span class="sd">        c: float</span>
+<span class="sd">            Weighting of DC component</span>
+<span class="sd">        d: float</span>
+<span class="sd">            Modulation depth sqrt(a²+b²)</span>
+<span class="sd">        dlo: float</span>
+<span class="sd">            Bootstrap 2.5th percentil of modulation depth</span>
+<span class="sd">        dhi: float</span>
+<span class="sd">            Bootstrap 97.5th percentil of modulation depth</span>
+<span class="sd">        theta:</span>
+<span class="sd">            Peak angle</span>
+<span class="sd">        theta_lo:</span>
+<span class="sd">            Bootstrap 2.5th percentil of peak angle (relative)</span>
+<span class="sd">        theta_hi:</span>
+<span class="sd">            Bootstrap 97.5th percentil of peak angle (relative)</span>
+<span class="sd">        R2: float</span>
+<span class="sd">            Coefficient of determination R²</span>
+<span class="sd">        R2lo:</span>
+<span class="sd">            Bootstrap 2.5th percentile of R²</span>
+<span class="sd">        R2hi:  </span>
+<span class="sd">            Bootstrap 97.5th percentile of R²</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># Convert to polar featuress </span>
         <span class="n">x</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span>
             <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span>
@@ -751,6 +784,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">R2hi</span>  <span class="o">=</span> <span class="n">R2hi</span>
 
         <span class="c1"># P-value on weight magnitude</span>
+        <span class="c1"># r20 is the squared modulation depth from the shuffle null.</span>
         <span class="n">r20</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ws</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">],</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">pvalue</span> <span class="o">=</span> <span class="n">betapr</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r20</span><span class="o">&gt;</span><span class="n">r2</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">r20</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span>
@@ -771,6 +805,39 @@
         <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">wb</span><span class="nd">@x</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pvalue: float</span>
+<span class="sd">            Probability of observing a modulation depth at </span>
+<span class="sd">            least as large as d assuming no circular-linear</span>
+<span class="sd">            correlation. Computed via a phase randomization null test</span>
+<span class="sd">            assuming data points are indepent. </span>
+<span class="sd">        a: float</span>
+<span class="sd">            Weighting of cosine component</span>
+<span class="sd">        b: float</span>
+<span class="sd">            Weighting of sine component</span>
+<span class="sd">        c: float</span>
+<span class="sd">            Weighting of DC component</span>
+<span class="sd">        d: float</span>
+<span class="sd">            Modulation depth sqrt(a²+b²)</span>
+<span class="sd">        dlo: float</span>
+<span class="sd">            Bootstrap 2.5th percentil of modulation depth</span>
+<span class="sd">        dhi: float</span>
+<span class="sd">            Bootstrap 97.5th percentil of modulation depth</span>
+<span class="sd">        theta:</span>
+<span class="sd">            Peak angle</span>
+<span class="sd">        theta_lo:</span>
+<span class="sd">            Bootstrap 2.5th percentil of peak angle (relative)</span>
+<span class="sd">        theta_hi:</span>
+<span class="sd">            Bootstrap 97.5th percentil of peak angle (relative)</span>
+<span class="sd">        R2: float</span>
+<span class="sd">            Coefficient of determination R²</span>
+<span class="sd">        R2lo:</span>
+<span class="sd">            Bootstrap 2.5th percentile of R²</span>
+<span class="sd">        R2hi:  </span>
+<span class="sd">            Bootstrap 97.5th percentile of R²</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">pvalue</span> 
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>  

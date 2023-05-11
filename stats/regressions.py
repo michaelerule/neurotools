@@ -599,7 +599,40 @@ class CircregressResult():
         show_progress = False,
         #save_samples = True,
         #save_training_data = True
-    ):
+    ):  
+        '''
+        Attributes
+        ----------
+        pvalue: float
+            Probability of observing a modulation depth at 
+            least as large as d assuming no circular-linear
+            correlation. Computed via a phase randomization null test
+            assuming data points are indepent. 
+        a: float
+            Weighting of cosine component
+        b: float
+            Weighting of sine component
+        c: float
+            Weighting of DC component
+        d: float
+            Modulation depth sqrt(a²+b²)
+        dlo: float
+            Bootstrap 2.5th percentil of modulation depth
+        dhi: float
+            Bootstrap 97.5th percentil of modulation depth
+        theta:
+            Peak angle
+        theta_lo:
+            Bootstrap 2.5th percentil of peak angle (relative)
+        theta_hi:
+            Bootstrap 97.5th percentil of peak angle (relative)
+        R2: float
+            Coefficient of determination R²
+        R2lo:
+            Bootstrap 2.5th percentile of R²
+        R2hi:  
+            Bootstrap 97.5th percentile of R²
+        '''
         # Convert to polar featuress 
         x  = np.float32([
             np.cos(theta),
@@ -669,6 +702,7 @@ class CircregressResult():
         self.R2hi  = R2hi
 
         # P-value on weight magnitude
+        # r20 is the squared modulation depth from the shuffle null.
         r20    = np.linalg.norm(ws[:,:2],2,1)**2
         pvalue = betapr(sum(r20>r2),len(r20))
         self.pvalue = pvalue
@@ -689,6 +723,39 @@ class CircregressResult():
         return 1 - np.mean((wb@x-y)**2,-1)/np.var(y)
 
     def __iter__(self):
+        '''
+        Returns
+        -------
+        pvalue: float
+            Probability of observing a modulation depth at 
+            least as large as d assuming no circular-linear
+            correlation. Computed via a phase randomization null test
+            assuming data points are indepent. 
+        a: float
+            Weighting of cosine component
+        b: float
+            Weighting of sine component
+        c: float
+            Weighting of DC component
+        d: float
+            Modulation depth sqrt(a²+b²)
+        dlo: float
+            Bootstrap 2.5th percentil of modulation depth
+        dhi: float
+            Bootstrap 97.5th percentil of modulation depth
+        theta:
+            Peak angle
+        theta_lo:
+            Bootstrap 2.5th percentil of peak angle (relative)
+        theta_hi:
+            Bootstrap 97.5th percentil of peak angle (relative)
+        R2: float
+            Coefficient of determination R²
+        R2lo:
+            Bootstrap 2.5th percentile of R²
+        R2hi:  
+            Bootstrap 97.5th percentile of R²
+        '''
         yield self.pvalue 
         yield self.a  
         yield self.b  

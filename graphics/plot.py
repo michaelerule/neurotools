@@ -3405,7 +3405,7 @@ def pike(
         ``'e'`` Standard error of mean;
         ``'s'`` Standard deviation of data;
         ``'p'`` Percentiles of data;
-        ``'b'`` Bootstrap error of mean.
+        ``'b'`` Bootstrap error of mean or median.
     error_range: tuple of numbers ∈(0,100); default (2.5,97.5)
         Lower and upper percentiles to use for error bars.
     dolines:boolean; default True
@@ -3917,6 +3917,7 @@ def linscale_polar_plot(
             clip_on=clip_on
         )
 
+
 def vonmises_ring(
     kappa,
     loc,
@@ -3987,13 +3988,14 @@ def vonmises_ring(
                 solid_capstyle='butt',
             )|markerprops)
         )
+
     
 def disk_axis(
     r1,
     r2,
     nspokes    = 12,
-    facecolor  = BLACK*.1+WHITE*.9,
-    edgecolor  = BLACK*.9+WHITE*.1,
+    facecolor  = OFFWHITE,
+    edgecolor  = OFFBLACK,
     lw         = 0.4,
     zorder     = -100,
     fix_limits = True,
@@ -4004,6 +4006,30 @@ def disk_axis(
     '''
     Disk axis: Draw a disk with alternating white/colored
     sectors like a roulette wheel. 
+    
+    Parameters
+    ----------
+    r1: positive float
+        Radius of lower axis limit, ``r1>0``.
+    r2: positive float
+        Radius of upper axis limit, ``r2>r1``.
+        
+    Other Parameters
+    ----------------
+    nspokes: non-negative integer
+        Number of bands/spokes to draw, default is 12.
+    facecolor: matplotlib color
+        Color of bands/spokes; Default is `OFFWHITE` defined in
+        `neurotools.graphics.color`.
+    edgecolor: matplotlib color
+        Color of the upper/lower radius axes; 
+        Default is `OFFBLACK` defined in `neurotools.graphics.color`.
+    lw: positive float, default 0.4
+    zorder: numeric, default -100
+    fix_limits: boolean, default True
+    clip_on: boolean, default False
+    draw_inner: boolean, default True
+    draw_outer: boolean, default True
     '''
     from neurotools.util.tools import c2p
     

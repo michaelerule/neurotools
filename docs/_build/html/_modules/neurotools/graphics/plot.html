@@ -3486,7 +3486,7 @@
 <span class="sd">        ``&#39;e&#39;`` Standard error of mean;</span>
 <span class="sd">        ``&#39;s&#39;`` Standard deviation of data;</span>
 <span class="sd">        ``&#39;p&#39;`` Percentiles of data;</span>
-<span class="sd">        ``&#39;b&#39;`` Bootstrap error of mean.</span>
+<span class="sd">        ``&#39;b&#39;`` Bootstrap error of mean or median.</span>
 <span class="sd">    error_range: tuple of numbers ∈(0,100); default (2.5,97.5)</span>
 <span class="sd">        Lower and upper percentiles to use for error bars.</span>
 <span class="sd">    dolines:boolean; default True</span>
@@ -3998,6 +3998,7 @@
             <span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span>
         <span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="vonmises_ring"><a class="viewcode-back" href="../../../neurotools.graphics.plot.html#neurotools.graphics.plot.vonmises_ring">[docs]</a><span class="k">def</span> <span class="nf">vonmises_ring</span><span class="p">(</span>
     <span class="n">kappa</span><span class="p">,</span>
     <span class="n">loc</span><span class="p">,</span>
@@ -4068,13 +4069,14 @@
                 <span class="n">solid_capstyle</span><span class="o">=</span><span class="s1">&#39;butt&#39;</span><span class="p">,</span>
             <span class="p">)</span><span class="o">|</span><span class="n">markerprops</span><span class="p">)</span>
         <span class="p">)</span></div>
+
     
 <div class="viewcode-block" id="disk_axis"><a class="viewcode-back" href="../../../neurotools.graphics.plot.html#neurotools.graphics.plot.disk_axis">[docs]</a><span class="k">def</span> <span class="nf">disk_axis</span><span class="p">(</span>
     <span class="n">r1</span><span class="p">,</span>
     <span class="n">r2</span><span class="p">,</span>
     <span class="n">nspokes</span>    <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
-    <span class="n">facecolor</span>  <span class="o">=</span> <span class="n">BLACK</span><span class="o">*</span><span class="mf">.1</span><span class="o">+</span><span class="n">WHITE</span><span class="o">*</span><span class="mf">.9</span><span class="p">,</span>
-    <span class="n">edgecolor</span>  <span class="o">=</span> <span class="n">BLACK</span><span class="o">*</span><span class="mf">.9</span><span class="o">+</span><span class="n">WHITE</span><span class="o">*</span><span class="mf">.1</span><span class="p">,</span>
+    <span class="n">facecolor</span>  <span class="o">=</span> <span class="n">OFFWHITE</span><span class="p">,</span>
+    <span class="n">edgecolor</span>  <span class="o">=</span> <span class="n">OFFBLACK</span><span class="p">,</span>
     <span class="n">lw</span>         <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
     <span class="n">zorder</span>     <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">fix_limits</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -4085,6 +4087,30 @@
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Disk axis: Draw a disk with alternating white/colored</span>
 <span class="sd">    sectors like a roulette wheel. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r1: positive float</span>
+<span class="sd">        Radius of lower axis limit, ``r1&gt;0``.</span>
+<span class="sd">    r2: positive float</span>
+<span class="sd">        Radius of upper axis limit, ``r2&gt;r1``.</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    nspokes: non-negative integer</span>
+<span class="sd">        Number of bands/spokes to draw, default is 12.</span>
+<span class="sd">    facecolor: matplotlib color</span>
+<span class="sd">        Color of bands/spokes; Default is `OFFWHITE` defined in</span>
+<span class="sd">        `neurotools.graphics.color`.</span>
+<span class="sd">    edgecolor: matplotlib color</span>
+<span class="sd">        Color of the upper/lower radius axes; </span>
+<span class="sd">        Default is `OFFBLACK` defined in `neurotools.graphics.color`.</span>
+<span class="sd">    lw: positive float, default 0.4</span>
+<span class="sd">    zorder: numeric, default -100</span>
+<span class="sd">    fix_limits: boolean, default True</span>
+<span class="sd">    clip_on: boolean, default False</span>
+<span class="sd">    draw_inner: boolean, default True</span>
+<span class="sd">    draw_outer: boolean, default True</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">c2p</span>
     

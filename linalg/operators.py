@@ -42,7 +42,7 @@ def adjacency1D(L,circular=True):
 def laplacian1D_circular(N):
     '''
     Laplacian operator on a closed, discrete, one-dimensional domain
-    of length `N`, with circularly-wrapped boundary condition.
+    of length ``N``, with circularly-wrapped boundary condition.
 
     Parameters
     ----------
@@ -65,7 +65,7 @@ def adjacency2D(L,H=None,circular=True):
     Parameters
     ----------
     L: int
-        Size of operator, or width if H is provided
+        Size of operator, or width if ``H`` is provided
     H: int
         Height of operator, if different from width
     circular: bool
@@ -93,10 +93,10 @@ def laplacian2D(L,H=None,circular=True,mask=None,boundary='dirichlet'):
     This is uses an approximately radially-symmetric 
     Laplacian in a 3×3 neighborhood.
     
-    If a `mask` is provided, this supports a
-    `'neumann'` boundary condition, which amounts to 
+    If a ``mask`` is provided, this supports a
+    ``'neumann'`` boundary condition, which amounts to 
     clamping the derivative to zero at the boundary, 
-    and a `'dirichlet'` boundary condition,
+    and a ``'dirichlet'`` boundary condition,
     which amounts to clamping the values to zero at
     the boundary. 
     
@@ -179,7 +179,7 @@ def adjacency2d_rotational(L):
 def laplacian1D(N):
     '''
     Laplacian operator on a closed, discrete, one-dimensional domain
-    of length `N`
+    of length ``N``
 
     Parameters
     ----------
@@ -207,7 +207,7 @@ def laplacianFT1D(N):
     -------
     x : np.array
         Fourier transform of discrete Laplacian operator on a discrete
-        one-dimensional domain of lenght `N`
+        one-dimensional domain of lenght ``N``
     '''
     precision = np.zeros((N,))
     if (N%2==1):
@@ -329,8 +329,8 @@ def terminated_derivative_operator(N):
     Discrete derivative, using {-1,1} at endpoints and
     ½{-1,0,1} in the interior. 
     
-    This operator will have two zero eigenvalues for `N`
-    even and three zero eigenvalues for `N` odd. 
+    This operator will have two zero eigenvalues for ``N``
+    even and three zero eigenvalues for ``N`` odd. 
     
     Parameters
     ----------

@@ -1947,9 +1947,13 @@ def span(data):
     return np.nanmax(data)-np.nanmin(data)
     
     
-def mintomax(x):
+def mintomax(x,prefix=None,doprint=True):
     mnmx = tuple(np.nanpercentile(x,[0,100]))
-    print('%0.2f–%0.2f'%mnmx)
+    if doprint:
+        if prefix:
+            print(prefix,'%0.2f–%0.2f'%mnmx)
+        else:
+            print('%0.2f–%0.2f'%mnmx)
     return mnmx
 
 

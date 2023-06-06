@@ -472,3 +472,19 @@ def yank(argnames):
     return TolerantDict(result)
 
 
+@piper
+def asmap(f):
+    '''
+    Turn a function into a pipe-compatible map
+    '''
+    return piper(lambda x:map(f,x))
+
+'''
+def cur(f,*args1,**kwargs1):
+    @piper
+    def g(*args2,**kwargs2):
+        return f(*[*args1,*args2],**(kwargs1|kwargs2))
+    return g
+'''    
+    
+    

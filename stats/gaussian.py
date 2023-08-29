@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import scipy
+import numpy as np
 from numpy import pi
 import scipy.linalg
 import numpy.random
@@ -284,7 +285,7 @@ def MVG_PDF(X,M,P=None,C=None):
         C : NxN covariance matirx
     '''
     logP = MVG_logPDF(X,M,P=P,C=C)
-    P = exp(logP)
+    P = np.exp(logP)
     if np.any(~np.isfinite(P)):
         raise ValueError("Invalid probability; something is wrong?")
     return P

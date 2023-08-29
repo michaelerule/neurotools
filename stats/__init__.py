@@ -74,8 +74,8 @@ def partition_data(x,y,NFOLD=3):
         x.T,NFOLD,shuffle=False)
     groups = np.array(groups,dtype='object')
     for i in range(NFOLD):
-        train  =  np.int32(np.concatenate(groups[[*({*range(NFOLD)}-{i})]]))
-        test   =  np.int32(groups[i])
+        train  = np.int32(np.concatenate(groups[[*({*range(NFOLD)}-{i})]]))
+        test   = np.int32(groups[i])
         xtrain = x[...,train]
         ytrain = y[...,train]
         xtest  = x[...,test]

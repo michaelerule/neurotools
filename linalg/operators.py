@@ -126,7 +126,7 @@ def laplacian2D(L,H=None,circular=True,mask=None,boundary='dirichlet'):
     nrows = W
     
     if not mask is None:
-        mask = np.array(mask)
+        mask = np.array(mask)>0
         if not mask.shape==(nrows,ncols):
             raise ValueError(('Mask with shape %s provided, '
             'but operator shape is %s')%(mask.shape,(W,H)))
@@ -507,10 +507,10 @@ def separable_guassian_blur(op,x):
     n = len(op)
     return op @ x @ ou.T
 
-def gaussian2DblurOperator(n,sigma):
+def gaussian2DblurOperator(n,sigma,normalize='left'):
     '''
-    Returns a 2D Gaussan blur operator for a n x n sized domain
-    Constructed as a tensor product of two 1d blurs of size n
+    Returns a 2D Gaussan blur operator for a n × n domain.
+    Constructed as a tensor product of two 1d blurs.
     '''
     x   = np.linspace(0,n-1,n) # 1D domain
     tau = 1.0/sigma**2       # precision
@@ -523,9 +523,20 @@ def gaussian2DblurOperator(n,sigma):
     big = np.max(op)
     toosmall = 1e-4*big
     op[op<toosmall] = 0
-    # (re) normalize rows so density is conserved
-    op /= np.sum(op,axis=1)
+    # normalize rows so density is conserved
+    # Stochastic matrix 
+    # on right: columns sum to 1; 
+    # on left: rows sum to 1
+    if normalize=='left':    
+        # Rows sum to 1 for left operator
+        op/=sum(op,0)[None,:]
+    elif normalize=='right':
+        # Columns sum to 1 for right operator
+        op/=sum(op,1)[:,None]
+    elif normalize!=None:
+        raise ValueError('normalize must be "left", "right", or None')
     return op
+    
     
 def cosine_kernel(x):
     '''

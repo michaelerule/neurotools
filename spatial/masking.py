@@ -43,7 +43,7 @@ def as_mask(x):
     if not x.dtype==np.bool:
         # Try something sensible
         x = np.nan_to_num(np.float32(x),0.0)
-        values = np.float32(unique(x))
+        values = np.float32(np.unique(x))
         if len(values)!=2 or np.all(values<=0) or np.all(values>0):
             raise ValueError('x should be np.bool, got %s'%x.dtype)
         x = x>0

@@ -123,7 +123,7 @@
 <div class="viewcode-block" id="laplacian1D_circular"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplacian1D_circular">[docs]</a><span class="k">def</span> <span class="nf">laplacian1D_circular</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Laplacian operator on a closed, discrete, one-dimensional domain</span>
-<span class="sd">    of length `N`, with circularly-wrapped boundary condition.</span>
+<span class="sd">    of length ``N``, with circularly-wrapped boundary condition.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -146,7 +146,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    L: int</span>
-<span class="sd">        Size of operator, or width if H is provided</span>
+<span class="sd">        Size of operator, or width if ``H`` is provided</span>
 <span class="sd">    H: int</span>
 <span class="sd">        Height of operator, if different from width</span>
 <span class="sd">    circular: bool</span>
@@ -174,10 +174,10 @@
 <span class="sd">    This is uses an approximately radially-symmetric </span>
 <span class="sd">    Laplacian in a 3×3 neighborhood.</span>
 <span class="sd">    </span>
-<span class="sd">    If a `mask` is provided, this supports a</span>
-<span class="sd">    `&#39;neumann&#39;` boundary condition, which amounts to </span>
+<span class="sd">    If a ``mask`` is provided, this supports a</span>
+<span class="sd">    ``&#39;neumann&#39;`` boundary condition, which amounts to </span>
 <span class="sd">    clamping the derivative to zero at the boundary, </span>
-<span class="sd">    and a `&#39;dirichlet&#39;` boundary condition,</span>
+<span class="sd">    and a ``&#39;dirichlet&#39;`` boundary condition,</span>
 <span class="sd">    which amounts to clamping the values to zero at</span>
 <span class="sd">    the boundary. </span>
 <span class="sd">    </span>
@@ -207,7 +207,7 @@
     <span class="n">nrows</span> <span class="o">=</span> <span class="n">W</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span><span class="n">ncols</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;Mask with shape </span><span class="si">%s</span><span class="s1"> provided, &#39;</span>
             <span class="s1">&#39;but operator shape is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="p">)))</span>
@@ -260,7 +260,7 @@
 <div class="viewcode-block" id="laplacian1D"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.laplacian1D">[docs]</a><span class="k">def</span> <span class="nf">laplacian1D</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Laplacian operator on a closed, discrete, one-dimensional domain</span>
-<span class="sd">    of length `N`</span>
+<span class="sd">    of length ``N``</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -288,7 +288,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    x : np.array</span>
 <span class="sd">        Fourier transform of discrete Laplacian operator on a discrete</span>
-<span class="sd">        one-dimensional domain of lenght `N`</span>
+<span class="sd">        one-dimensional domain of lenght ``N``</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
@@ -410,8 +410,8 @@
 <span class="sd">    Discrete derivative, using {-1,1} at endpoints and</span>
 <span class="sd">    ½{-1,0,1} in the interior. </span>
 <span class="sd">    </span>
-<span class="sd">    This operator will have two zero eigenvalues for `N`</span>
-<span class="sd">    even and three zero eigenvalues for `N` odd. </span>
+<span class="sd">    This operator will have two zero eigenvalues for ``N``</span>
+<span class="sd">    even and three zero eigenvalues for ``N`` odd. </span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -588,10 +588,10 @@
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">op</span> <span class="o">@</span> <span class="n">x</span> <span class="o">@</span> <span class="n">ou</span><span class="o">.</span><span class="n">T</span></div>
 
-<div class="viewcode-block" id="gaussian2DblurOperator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.gaussian2DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian2DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="gaussian2DblurOperator"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.gaussian2DblurOperator">[docs]</a><span class="k">def</span> <span class="nf">gaussian2DblurOperator</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns a 2D Gaussan blur operator for a n x n sized domain</span>
-<span class="sd">    Constructed as a tensor product of two 1d blurs of size n</span>
+<span class="sd">    Returns a 2D Gaussan blur operator for a n × n domain.</span>
+<span class="sd">    Constructed as a tensor product of two 1d blurs.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="c1"># 1D domain</span>
     <span class="n">tau</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>       <span class="c1"># precision</span>
@@ -604,9 +604,20 @@
     <span class="n">big</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
     <span class="n">toosmall</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="o">*</span><span class="n">big</span>
     <span class="n">op</span><span class="p">[</span><span class="n">op</span><span class="o">&lt;</span><span class="n">toosmall</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="c1"># (re) normalize rows so density is conserved</span>
-    <span class="n">op</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">op</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># normalize rows so density is conserved</span>
+    <span class="c1"># Stochastic matrix </span>
+    <span class="c1"># on right: columns sum to 1; </span>
+    <span class="c1"># on left: rows sum to 1</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="o">==</span><span class="s1">&#39;left&#39;</span><span class="p">:</span>    
+        <span class="c1"># Rows sum to 1 for left operator</span>
+        <span class="n">op</span><span class="o">/=</span><span class="nb">sum</span><span class="p">(</span><span class="n">op</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="kc">None</span><span class="p">,:]</span>
+    <span class="k">elif</span> <span class="n">normalize</span><span class="o">==</span><span class="s1">&#39;right&#39;</span><span class="p">:</span>
+        <span class="c1"># Columns sum to 1 for right operator</span>
+        <span class="n">op</span><span class="o">/=</span><span class="nb">sum</span><span class="p">(</span><span class="n">op</span><span class="p">,</span><span class="mi">1</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">normalize</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;normalize must be &quot;left&quot;, &quot;right&quot;, or None&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">op</span></div>
+    
     
 <div class="viewcode-block" id="cosine_kernel"><a class="viewcode-back" href="../../../neurotools.linalg.operators.html#neurotools.linalg.operators.cosine_kernel">[docs]</a><span class="k">def</span> <span class="nf">cosine_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>

@@ -295,7 +295,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composewith</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="globalize"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.globalize">[docs]</a><span class="nd">@robust_decorator</span>
+<span class="nd">@robust_decorator</span>
 <span class="k">def</span> <span class="nf">globalize</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">krgs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    globalize allows the positional argument list of a python to be</span>
@@ -349,7 +349,7 @@
                 <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             <span class="n">argnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;globalized &#39;</span> <span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">argnames</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">newargs</span><span class="p">,</span><span class="o">**</span><span class="n">krgs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">newargs</span><span class="p">,</span><span class="o">**</span><span class="n">krgs</span><span class="p">)</span>
 
 
 <span class="c1"># common aliases</span>
@@ -553,6 +553,22 @@
     <span class="k">return</span> <span class="n">TolerantDict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 
+<span class="nd">@piper</span>
+<span class="k">def</span> <span class="nf">asmap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Turn a function into a pipe-compatible map</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">piper</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def cur(f,*args1,**kwargs1):</span>
+<span class="sd">    @piper</span>
+<span class="sd">    def g(*args2,**kwargs2):</span>
+<span class="sd">        return f(*[*args1,*args2],**(kwargs1|kwargs2))</span>
+<span class="sd">    return g</span>
+<span class="sd">&#39;&#39;&#39;</span>    
+    
+    
 </pre></div>
 
            </div>

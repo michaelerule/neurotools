@@ -583,7 +583,16 @@ def remove_nans(*args):
         return np.array(args[0])[ok]
 
 
-
+def allclose_recursive(a,b):
+    '''
+    Version of `np.allclose` that recurses through a tuple/
+    list structure until it reaches an `np.ndarray` to compare
+    via `np.allclose` as a base-case.
+    '''
+    if isinstance(a,np.ndarray) and isinstance(b,np.ndarray):
+        return np.allclose(a,b)
+    return all([allclose_recursive(ai,bi) \
+                for (ai,bi) in zip(a,b)])
 
 
 

@@ -95,6 +95,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span>
 <span class="kn">import</span> <span class="nn">numpy.random</span>
@@ -366,7 +367,7 @@
 <span class="sd">        C : NxN covariance matirx</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">logP</span> <span class="o">=</span> <span class="n">MVG_logPDF</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">)</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">logP</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logP</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">P</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid probability; something is wrong?&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">P</span></div>

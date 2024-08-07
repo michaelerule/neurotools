@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.spatial.masking &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -79,20 +83,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for neurotools.spatial.masking</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
+<span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Routines related to 2D boolean arrays used as image masks</span>
 <span class="sd">depends on neurotools.spatial.geometry</span>
 <span class="sd">These routines expect 2D (x,y) points to be encoded as complex z=x+iy numbers.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -100,45 +97,50 @@
 <span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
 
 
-<div class="viewcode-block" id="as_mask"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.as_mask">[docs]</a><span class="k">def</span> <span class="nf">as_mask</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="as_mask">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.as_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">as_mask</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Verify that x is a 2D np.bool array, or attempt to convert it to one if </span>
-<span class="sd">    not.</span>
+<span class="sd">    Verify that x is a 2D np.ndarray(dtype=bool), </span>
+<span class="sd">    or attempt to convert it to one if not.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: 2D np.array</span>
-<span class="sd">        This routine understands np.bool, as well as numeric arrays that contain</span>
-<span class="sd">        only two distinct values, and use a positive value for True and any</span>
-<span class="sd">        other value for False.</span>
-<span class="sd">    </span>
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
+<span class="sd">        This routine understands np.ndarray(dtype=bool), as well as numeric </span>
+<span class="sd">        arrays that contain only two distinct values, and use a positive value </span>
+<span class="sd">        for `True` and any other value for `False`.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    x: np.ndarray(dtype=bool)</span>
+<span class="sd">        Image mask as a 2D Numpy array with datatype `bool`.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x should be a 2D array&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
+    <span class="c1">#if not x.dtype==np.ndarray(dtype=bool):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="o">==</span><span class="nb">bool</span><span class="p">:</span>
         <span class="c1"># Try something sensible</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="mf">0.0</span><span class="p">)</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">values</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">values</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x should be np.bool, got </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x should be np.ndarray(dtype=bool), got </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">&gt;</span><span class="mi">0</span>
     <span class="k">return</span> <span class="n">x</span></div>
+
     
 
-<div class="viewcode-block" id="mask_to_points"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.mask_to_points">[docs]</a><span class="k">def</span> <span class="nf">mask_to_points</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="mask_to_points">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.mask_to_points">[docs]</a>
+<span class="k">def</span> <span class="nf">mask_to_points</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get locations of all `True` pixels in a 2D boolean array encoded as</span>
-<span class="sd">    z = column + i*row.</span>
+<span class="sd">    Get locations of all `True` pixels in a 2D boolean </span>
+<span class="sd">    array encoded as `z = column + i*row.`</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x: 2D np.bool</span>
+<span class="sd">    x: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -148,25 +150,31 @@
     <span class="k">return</span> <span class="n">px</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">py</span></div>
 
 
-<div class="viewcode-block" id="extend_mask"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.extend_mask">[docs]</a><span class="k">def</span> <span class="nf">extend_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">thr</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="extend_mask">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.extend_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">extend_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">thr</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extend 2D image mask by blurring and thresholding.</span>
 <span class="sd">    Note: this uses circular convolution; Pad accordingly. </span>
 <span class="sd">    </span>
 <span class="sd">    Parameters:</span>
-<span class="sd">        mask (2D np.bool): Image mask to extend.</span>
+<span class="sd">        mask (2D np.ndarray(dtype=bool)): Image mask to extend.</span>
 <span class="sd">        sigma (float, default 3): Gaussian blur radius.</span>
 <span class="sd">        thr: (float, default .5): Threshold for new mask.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    smoothed mask: 2D np.bool</span>
+<span class="sd">    smoothed mask: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">as_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">sig</span><span class="o">.</span><span class="n">circular_gaussian_smooth_2D</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span><span class="o">&gt;</span><span class="n">thr</span></div>
+
     
 
-<div class="viewcode-block" id="pgrid"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.pgrid">[docs]</a><span class="k">def</span> <span class="nf">pgrid</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="pgrid">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.pgrid">[docs]</a>
+<span class="k">def</span> <span class="nf">pgrid</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Create a (W,H) = (Nrows,Ncols) coordinate grid where each cell</span>
 <span class="sd">    is z = irow + 1j * icol</span>
@@ -192,14 +200,17 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">w</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">h</span><span class="p">)[</span><span class="kc">None</span><span class="p">,:]</span></div>
 
 
-<div class="viewcode-block" id="nan_mask"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.nan_mask">[docs]</a><span class="k">def</span> <span class="nf">nan_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="n">nanvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="nan_mask">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.nan_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">nan_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="n">nanvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Create a (W,H) = (Nrows,Ncols) coordinate grid where each cell</span>
 <span class="sd">    is z = irow + 1j * icol</span>
 <span class="sd">        </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    mask: 2D np.bool</span>
+<span class="sd">    mask: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nanvalue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="ow">not</span><span class="p">(</span><span class="ow">not</span> <span class="n">nanvalue</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -208,19 +219,25 @@
     <span class="k">return</span> <span class="n">use</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">as_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">))]</span></div>
 
 
-<div class="viewcode-block" id="maskout"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.maskout">[docs]</a><span class="k">def</span> <span class="nf">maskout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="maskout">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.maskout">[docs]</a>
+<span class="k">def</span> <span class="nf">maskout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Set pixels in x where mask is False to NaN</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: 2D np.float32</span>
-<span class="sd">    mask: 2D np.bool</span>
+<span class="sd">    mask: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">*</span><span class="n">nan_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="trim_mask"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.trim_mask">[docs]</a><span class="k">def</span> <span class="nf">trim_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+
+<div class="viewcode-block" id="trim_mask">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.trim_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">trim_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Remove empty edges of boolean mask.</span>
 <span class="sd">    See `mask_crop(array,mask)` to use a mask to trim </span>
@@ -228,15 +245,18 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    mask: 2D np.bool</span>
+<span class="sd">    mask: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">as_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">1</span><span class="p">))[[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">0</span><span class="p">))[[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">][[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">c</span><span class="p">,</span><span class="n">d</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">][[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">mask</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">c</span><span class="p">:</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="mask_crop"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.mask_crop">[docs]</a><span class="k">def</span> <span class="nf">mask_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">,</span><span class="n">fill_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="mask_crop">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.mask_crop">[docs]</a>
+<span class="k">def</span> <span class="nf">mask_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">,</span><span class="n">fill_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Set pixels in `x` where `mask` is `False` to `NaN`,</span>
 <span class="sd">    and then remove empty rows and columns.</span>
@@ -247,18 +267,21 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: 2D np.float32</span>
-<span class="sd">    mask: 2D np.bool</span>
+<span class="sd">    mask: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    fill_nan: bool; default True</span>
 <span class="sd">        Whether to fill &quot;false&quot; values with NaN</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">fill_nan</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">maskout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">)</span>
-    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">1</span><span class="p">))[[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">0</span><span class="p">))[[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">][[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">][[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">c</span><span class="p">:</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="to_image"><a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.to_image">[docs]</a><span class="k">def</span> <span class="nf">to_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">,</span><span class="n">fill</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="n">crop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="to_image">
+<a class="viewcode-back" href="../../../neurotools.spatial.masking.html#neurotools.spatial.masking.to_image">[docs]</a>
+<span class="k">def</span> <span class="nf">to_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mask</span><span class="p">,</span><span class="n">fill</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="n">crop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Assign list of values `x` to locations in `mask` that </span>
 <span class="sd">    are `True`, in row-major order.</span>
@@ -266,7 +289,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: 1D np.array</span>
-<span class="sd">    mask: 2D np.bool</span>
+<span class="sd">    mask: 2D np.ndarray(dtype=bool)</span>
 <span class="sd">    </span>
 <span class="sd">    Other Parameters</span>
 <span class="sd">    ----------------</span>
@@ -283,6 +306,7 @@
     <span class="k">if</span> <span class="n">crop</span><span class="p">:</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">mask_crop</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">mask</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">q</span></div>
+
 
     
     

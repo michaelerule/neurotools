@@ -14,8 +14,6 @@ from __future__ import print_function
 import os,sys,traceback,h5py
 
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
 
 from sklearn                import manifold
 from scipy.linalg           import solve,lstsq
@@ -24,8 +22,11 @@ from sklearn                import manifold
 from neurotools.util.hdfmat import printmatHDF5, hdf2dict, getHDF
 from neurotools.util.time   import progress_bar
 
-from matplotlib.patches import Polygon
-from matplotlib.collections import PatchCollection
+
+#import matplotlib
+#import matplotlib.pyplot as plt
+#from matplotlib.patches     import Polygon
+#from matplotlib.collections import PatchCollection
 
 NPERMUTATION = 10
 

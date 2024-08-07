@@ -1,16 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 """
 Helper functions related to Numpy arrays and other indexing
 tasks.
 """
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
 
 import numpy as np
 
@@ -306,11 +299,9 @@ def to_indices(x):
         'contains non-integer numbers?')
         
 
-def onehot(ids,dense=False,n=None):
+def onehot(ids,n=None,dense=False):
     '''
-    Generate so-called "one-hot"
-    representation of class labels from 
-    a vector of class identities
+    Generate "one-hot" representation from integer class labels.
     
     Parameters
     ----------
@@ -318,12 +309,12 @@ def onehot(ids,dense=False,n=None):
     
     Other Parameters
     ----------------
-    dense: boolean; default False
-        Whether to create missing labels. 
-        Ignored if the parameter `n` is specified.
     n: int or None; default None
         Total number of labels. If None, will default
         to the largest value in `ids`.
+    dense: boolean; default False
+        Whether to create missing labels. 
+        Ignored if the parameter `n` is specified.
     
     Returns
     -------
@@ -332,15 +323,17 @@ def onehot(ids,dense=False,n=None):
     r:
         One-hot label format
     '''
-    ids      = np.array(ids)
-    labels   = sorted(list(set(ids)))
+    ids = np.array(ids)
+    if ids.shape==tuple():
+      ids = np.array([ids])
+    labels = sorted(list(set(ids)))
     
-    if not n is None or dense:
+    if (n is not None) or dense:
         if not np.allclose(labels,np.int32(labels)):
             raise ValueError(
-            'The options `dense` and `n` only work when '
-            'using integer labels. The content of `ids` '
-            'does not look like integers')
+            'The options `dense` and `n` only supported for '
+            '32-bit integer labels. The content of `ids` '
+            'doesn\'t look like 32-bit integers.')
         labels = np.int32(labels)
         ids    = np.int32(ids)
         maxid  = np.max(ids)
@@ -351,7 +344,7 @@ def onehot(ids,dense=False,n=None):
                 'The parameter `n` was set to %d, but '
                 '`ids` contained the value %d; Ids must '
                 'be <= `n`.')%(n,maxid))
-        labels = np.arange(maxid+1)
+        labels = np.arange(n)
         
     nsamples = len(ids)
     nlabels  = len(labels)

@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.spatial.triangulation &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -100,7 +104,9 @@
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
 
-<div class="viewcode-block" id="z2xy"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.z2xy">[docs]</a><span class="k">def</span> <span class="nf">z2xy</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="z2xy">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.z2xy">[docs]</a>
+<span class="k">def</span> <span class="nf">z2xy</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts an array of complex numbers into two arrays</span>
 <span class="sd">    representing real and imaginary parts, respectively.</span>
@@ -113,7 +119,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="uniquerow"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.uniquerow">[docs]</a><span class="k">def</span> <span class="nf">uniquerow</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="uniquerow">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.uniquerow">[docs]</a>
+<span class="k">def</span> <span class="nf">uniquerow</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Removes duplicate rows from a 2D numpy array</span>
 <span class="sd">    </span>
@@ -125,7 +134,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span><span class="n">x</span><span class="p">))))</span></div>
 
-<div class="viewcode-block" id="trianglesToEdges"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.trianglesToEdges">[docs]</a><span class="k">def</span> <span class="nf">trianglesToEdges</span><span class="p">(</span><span class="n">triangles</span><span class="p">):</span>
+
+<div class="viewcode-block" id="trianglesToEdges">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.trianglesToEdges">[docs]</a>
+<span class="k">def</span> <span class="nf">trianglesToEdges</span><span class="p">(</span><span class="n">triangles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Accepts Ntriangles x 3 array of triangle indeces, the format</span>
 <span class="sd">    returned by `scipy.spatial.Delaunay(...).simplices`. Returns a</span>
@@ -141,7 +153,10 @@
     <span class="n">tedges</span>    <span class="o">=</span> <span class="n">uniquerow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">tedges</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">tedges</span></div>
 
-<div class="viewcode-block" id="edgesNearby"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.edgesNearby">[docs]</a><span class="k">def</span> <span class="nf">edgesNearby</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">microd</span><span class="p">):</span>
+
+<div class="viewcode-block" id="edgesNearby">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.edgesNearby">[docs]</a>
+<span class="k">def</span> <span class="nf">edgesNearby</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">microd</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns a dictionary mapping from </span>
 <span class="sd">    indecies into point list iz </span>
@@ -172,7 +187,10 @@
     
     <span class="k">return</span> <span class="n">edgelist</span></div>
 
-<div class="viewcode-block" id="coalesce"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.coalesce">[docs]</a><span class="k">def</span> <span class="nf">coalesce</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">edgelist</span><span class="p">):</span>
+
+<div class="viewcode-block" id="coalesce">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.coalesce">[docs]</a>
+<span class="k">def</span> <span class="nf">coalesce</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">edgelist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Join connected components as defined in edgelist, and return the centroids</span>
 <span class="sd">    taken as an average of all point locations in list iz </span>
@@ -208,7 +226,10 @@
     <span class="n">centroids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">iz</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">))])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">centroids</span></div>
 
-<div class="viewcode-block" id="plot_edges"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.plot_edges">[docs]</a><span class="k">def</span> <span class="nf">plot_edges</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">edges</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="plot_edges">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.plot_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_edges</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">edges</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Plots a set of edges given by 2d complex numbers and Nedges x 2 array of edge indices</span>
 <span class="sd">    keword arguments are forwarded to matplotlib.plot</span>
@@ -226,8 +247,11 @@
     <span class="n">edgelist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">edges</span><span class="p">[:,:</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span><span class="n">iz</span><span class="p">[</span><span class="n">edges</span><span class="p">]],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">z2xy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">edgelist</span><span class="p">)),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">nplt</span><span class="o">.</span><span class="n">force_aspect</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="plot_triangles"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.plot_triangles">[docs]</a><span class="k">def</span> <span class="nf">plot_triangles</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">triangles</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_triangles">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.plot_triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_triangles</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">triangles</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -245,7 +269,10 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">z2xy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">edgelist</span><span class="p">)),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">nplt</span><span class="o">.</span><span class="n">force_aspect</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="mergeNearby"><a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.mergeNearby">[docs]</a><span class="k">def</span> <span class="nf">mergeNearby</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">radius</span><span class="p">):</span>
+
+<div class="viewcode-block" id="mergeNearby">
+<a class="viewcode-back" href="../../../neurotools.spatial.triangulation.html#neurotools.spatial.triangulation.mergeNearby">[docs]</a>
+<span class="k">def</span> <span class="nf">mergeNearby</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">radius</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Merge nearby points</span>
 <span class="sd">    </span>
@@ -260,6 +287,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">iz</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">y</span>
     <span class="k">return</span> <span class="n">z2xy</span><span class="p">(</span><span class="n">coalesce</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">edgesNearby</span><span class="p">(</span><span class="n">iz</span><span class="p">,</span><span class="n">radius</span><span class="p">)))</span></div>
+
     
 </pre></div>
 

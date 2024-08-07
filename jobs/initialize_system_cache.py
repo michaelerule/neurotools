@@ -63,8 +63,7 @@ def du(location):
         File size in bytes
     '''
     st = os.stat(location)
-    du = st.st_blocks * st.st_blksize
-    return du
+    return st.st_blocks * st.st_blksize
 
 default_ramdisk_location = os.path.expanduser('~/.neurotools_ramdisk')
 
@@ -160,7 +159,6 @@ def launch_cache_synchronizers(cache_identifier ='neurotools_cache'):
     print('Launched background rsync processes')
     print('You may want this command later:')
     print("\tsudo ps aux | grep rsync | awk '{print $2}' | xargs kill -9")
-
 
 def initialize_caches(level1=default_ramdisk_location,level2=None,level3=None,force=False,
     verbose=False,

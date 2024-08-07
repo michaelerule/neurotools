@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.circular &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -93,12 +97,12 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<div class="viewcode-block" id="logpolar_gaussian"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.logpolar_gaussian">[docs]</a><span class="k">def</span> <span class="nf">logpolar_gaussian</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="logpolar_gaussian">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.logpolar_gaussian">[docs]</a>
+<span class="k">def</span> <span class="nf">logpolar_gaussian</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates major and minor axis and one-sigma ellipse contours for a</span>
 <span class="sd">    log-polar complex Gaussian. Contours are returned as lists of complex</span>
@@ -117,6 +121,8 @@
 <span class="sd">    axis 2 (np.array)</span>
 <span class="sd">    1-sigma ellipse (np.array)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
     <span class="c1"># set to zero mean phase</span>
     <span class="n">theta</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>
     <span class="n">rephased</span> <span class="o">=</span> <span class="n">frame</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*-</span><span class="n">theta</span><span class="p">)</span>
@@ -151,7 +157,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">axis1</span><span class="p">)</span><span class="o">*</span><span class="n">phase</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">axis2</span><span class="p">)</span><span class="o">*</span><span class="n">phase</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span><span class="o">*</span><span class="n">phase</span></div>
 
 
-<div class="viewcode-block" id="complex_gaussian"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.complex_gaussian">[docs]</a><span class="k">def</span> <span class="nf">complex_gaussian</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="complex_gaussian">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.complex_gaussian">[docs]</a>
+<span class="k">def</span> <span class="nf">complex_gaussian</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate axis and 1-sigma contour for a complex gaussian </span>
 <span class="sd">    distribution</span>
@@ -172,6 +181,8 @@
 <span class="sd">    circle:</span>
 <span class="sd">        Path for 1-sigma radius ellipse, encoded as z=x+iy</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
     <span class="c1"># set to zero mean phase</span>
     <span class="n">rephased</span> <span class="o">=</span> <span class="n">frame</span><span class="c1">#*np.exp(1j*-theta)</span>
     <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">rephased</span><span class="p">))</span>
@@ -190,13 +201,13 @@
     <span class="n">cxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">cx</span><span class="o">*</span><span class="n">cy</span><span class="p">)</span><span class="o">*</span><span class="n">correction</span>
     <span class="n">cyy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">cy</span><span class="o">*</span><span class="n">cy</span><span class="p">)</span><span class="o">*</span><span class="n">correction</span>
     <span class="n">cm</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cxx</span><span class="p">,</span><span class="n">cxy</span><span class="p">],[</span><span class="n">cxy</span><span class="p">,</span><span class="n">cyy</span><span class="p">]])</span>
-    <span class="n">sm</span>  <span class="o">=</span> <span class="n">cholesky</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
-    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+    <span class="n">sm</span>  <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">mx</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">my</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="n">axis1</span>  <span class="o">=</span> <span class="n">origin</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
-    <span class="n">axis2</span>  <span class="o">=</span> <span class="n">origin</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axis1</span>  <span class="o">=</span> <span class="n">origin</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axis2</span>  <span class="o">=</span> <span class="n">origin</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
     <span class="n">circle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
     <span class="n">circle</span> <span class="o">=</span> <span class="n">p2c</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sm</span><span class="p">,[</span><span class="n">real</span><span class="p">(</span><span class="n">circle</span><span class="p">),</span><span class="n">imag</span><span class="p">(</span><span class="n">circle</span><span class="p">)]))</span><span class="o">+</span><span class="n">origin</span>
     <span class="k">if</span> <span class="n">doplot</span><span class="p">:</span>
@@ -205,7 +216,10 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">circle</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">axis1</span><span class="p">,</span><span class="n">axis2</span><span class="p">,</span><span class="n">circle</span></div>
 
-<div class="viewcode-block" id="logpolar_stats"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.logpolar_stats">[docs]</a><span class="k">def</span> <span class="nf">logpolar_stats</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="logpolar_stats">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.logpolar_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">logpolar_stats</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate summary statistics for a log-polar Gaussian distribution</span>
 <span class="sd">    </span>
@@ -225,6 +239,8 @@
 <span class="sd">    radial:</span>
 <span class="sd">        Path for radial line, encoded as z=x+iy.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>
     <span class="n">rl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame</span><span class="p">)))</span>
@@ -232,26 +248,29 @@
     <span class="n">rsl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame</span><span class="p">)))</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="c1">#R = np.abs(x)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="n">r</span>
     <span class="n">sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;R,sd&#39;</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">sd</span><span class="p">)</span>
     <span class="n">cv</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">R</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
-    <span class="n">arc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rl</span><span class="o">+</span><span class="n">theta</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">sd</span><span class="p">,</span><span class="n">sd</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+    <span class="n">arc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rl</span><span class="o">+</span><span class="n">theta</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">sd</span><span class="p">,</span><span class="n">sd</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
     <span class="n">circle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
-    <span class="n">circle</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span><span class="o">*</span><span class="n">rsl</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">imag</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span><span class="o">*</span><span class="n">sd</span>
+    <span class="n">circle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span><span class="o">*</span><span class="n">rsl</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span><span class="o">*</span><span class="n">sd</span>
     <span class="n">circle</span> <span class="o">=</span> <span class="n">circle</span><span class="o">+</span><span class="n">rl</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span>
     <span class="n">circle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span>
     <span class="n">radial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">rsl</span><span class="p">),</span><span class="n">s</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rsl</span><span class="p">)])</span>
     <span class="k">if</span> <span class="n">doplot</span><span class="p">:</span>
-        <span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">circle</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">arc</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">radial</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">circle</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">arc</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">(</span><span class="n">radial</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">circle</span><span class="p">,</span><span class="n">arc</span><span class="p">,</span><span class="n">radial</span></div>
 
-<div class="viewcode-block" id="abspolar_stats"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.abspolar_stats">[docs]</a><span class="k">def</span> <span class="nf">abspolar_stats</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="abspolar_stats">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.abspolar_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">abspolar_stats</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate summary statistics for a polar Gaussian distribution</span>
 <span class="sd">    </span>
@@ -271,6 +290,8 @@
 <span class="sd">    radial:</span>
 <span class="sd">        Path for radial line, encoded as z=x+iy.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
     <span class="n">z</span>    <span class="o">=</span> <span class="n">frame</span>
     <span class="n">phi</span>  <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
     <span class="n">flip</span> <span class="o">=</span> <span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">-</span><span class="n">phi</span><span class="p">))</span>
@@ -292,7 +313,10 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">c2p</span><span class="p">([</span><span class="n">mr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">phi</span><span class="p">)]),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">circle</span><span class="p">,</span><span class="n">arc</span><span class="p">,</span><span class="n">radial</span></div>
 
-<div class="viewcode-block" id="squared_first_circular_moment"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.squared_first_circular_moment">[docs]</a><span class="k">def</span> <span class="nf">squared_first_circular_moment</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">unbiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dof</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="squared_first_circular_moment">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.squared_first_circular_moment">[docs]</a>
+<span class="k">def</span> <span class="nf">squared_first_circular_moment</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">unbiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dof</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Compute squared first circular moment</span>
 <span class="sd">    </span>
@@ -324,7 +348,10 @@
         <span class="n">squared_average</span> <span class="o">=</span> <span class="p">(</span><span class="n">dof</span><span class="o">*</span><span class="n">squared_average</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">dof</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">squared_average</span></div>
 
-<div class="viewcode-block" id="fit_vonmises"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.fit_vonmises">[docs]</a><span class="k">def</span> <span class="nf">fit_vonmises</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fit_vonmises">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.fit_vonmises">[docs]</a>
+<span class="k">def</span> <span class="nf">fit_vonmises</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Fit a vonMises distribution using circular moments.</span>
 <span class="sd">    </span>
@@ -348,6 +375,7 @@
     <span class="n">dephased</span> <span class="o">=</span> <span class="n">z</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">location</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">vonmises</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">dephased</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">location</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">scale</span></div>
+
     
     
     
@@ -364,7 +392,9 @@
     
     
     
-<div class="viewcode-block" id="wrapped_circular_linear_error"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.wrapped_circular_linear_error">[docs]</a><span class="k">def</span> <span class="nf">wrapped_circular_linear_error</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xh</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L1&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="wrapped_circular_linear_error">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.wrapped_circular_linear_error">[docs]</a>
+<span class="k">def</span> <span class="nf">wrapped_circular_linear_error</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xh</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;degrees&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L1&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Compute error for polar measurements, </span>
 <span class="sd">    wrapping the circular variable appropriately.</span>
@@ -399,6 +429,7 @@
     <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;L2&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">.5</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Mode should be either &quot;L1&quot; or &quot;L2&quot;&#39;</span><span class="p">)</span></div>
+
     
     
     
@@ -412,28 +443,51 @@
 <span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">c2p</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
 
-<div class="viewcode-block" id="asunit"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.asunit">[docs]</a><span class="k">def</span> <span class="nf">asunit</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="asunit">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.asunit">[docs]</a>
+<span class="k">def</span> <span class="nf">asunit</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="circvar"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circvar">[docs]</a><span class="k">def</span> <span class="nf">circvar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circvar">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circvar">[docs]</a>
+<span class="k">def</span> <span class="nf">circvar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">circcenter</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="circwrap"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circwrap">[docs]</a><span class="k">def</span> <span class="nf">circwrap</span><span class="p">(</span><span class="n">x1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circwrap">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circwrap">[docs]</a>
+<span class="k">def</span> <span class="nf">circwrap</span><span class="p">(</span><span class="n">x1</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">x1</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="circmce"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circmce">[docs]</a><span class="k">def</span> <span class="nf">circmce</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circmce">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circmce">[docs]</a>
+<span class="k">def</span> <span class="nf">circmce</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">x2</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="circdelta"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circdelta">[docs]</a><span class="k">def</span> <span class="nf">circdelta</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circdelta">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circdelta">[docs]</a>
+<span class="k">def</span> <span class="nf">circdelta</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">circwrap</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="circmean"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circmean">[docs]</a><span class="k">def</span> <span class="nf">circmean</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circmean">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circmean">[docs]</a>
+<span class="k">def</span> <span class="nf">circmean</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">x</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="circcenter"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circcenter">[docs]</a><span class="k">def</span> <span class="nf">circcenter</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circcenter">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circcenter">[docs]</a>
+<span class="k">def</span> <span class="nf">circcenter</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">circwrap</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">circmean</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="circcorr"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circcorr">[docs]</a><span class="k">def</span> <span class="nf">circcorr</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circcorr">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circcorr">[docs]</a>
+<span class="k">def</span> <span class="nf">circcorr</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
     <span class="n">x1</span><span class="p">,</span><span class="n">x2</span> <span class="o">=</span> <span class="n">remove_nans</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">)</span>
     <span class="n">x1</span> <span class="o">=</span> <span class="n">circcenter</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
     <span class="n">x2</span> <span class="o">=</span> <span class="n">circcenter</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
@@ -456,10 +510,16 @@
 <span class="sd">        return ((ρ1**2+ρ2**2)/2)</span>
 <span class="sd">    &#39;&#39;&#39;</span></div>
 
-<div class="viewcode-block" id="circabsdelta"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circabsdelta">[docs]</a><span class="k">def</span> <span class="nf">circabsdelta</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="circabsdelta">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.circabsdelta">[docs]</a>
+<span class="k">def</span> <span class="nf">circabsdelta</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">circwrap</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">x2</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="degrees_to_survey_format"><a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.degrees_to_survey_format">[docs]</a><span class="k">def</span> <span class="nf">degrees_to_survey_format</span><span class="p">(</span>
+
+<div class="viewcode-block" id="degrees_to_survey_format">
+<a class="viewcode-back" href="../../../neurotools.stats.circular.html#neurotools.stats.circular.degrees_to_survey_format">[docs]</a>
+<span class="k">def</span> <span class="nf">degrees_to_survey_format</span><span class="p">(</span>
     <span class="n">theta</span><span class="p">,</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;compass&#39;</span><span class="p">,</span>
     <span class="p">):</span>
@@ -491,6 +551,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">_fmt</span><span class="p">(</span><span class="n">id0</span><span class="p">,</span><span class="n">idd</span><span class="p">,</span><span class="n">id1</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">id0</span><span class="p">,</span><span class="n">idd</span><span class="p">,</span><span class="n">id1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span><span class="n">dd</span><span class="p">,</span><span class="n">d1</span><span class="p">)]</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_fmt</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span><span class="n">dd</span><span class="p">,</span><span class="n">d1</span><span class="p">)</span></div>
+
         
     
     

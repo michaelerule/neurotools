@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 '''
 Collected functions from 2018--2023 
@@ -7,20 +7,11 @@ concerning analyses of 2D data.
 These routines work on 2D (x,y) points encoded as 
 complex z=x+iy numbers.
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import neurotools.util.tools as ntools
 import neurotools.signal as sig
-from scipy.spatial import ConvexHull
 import neurotools.spatial.masking
-
 import numpy as np
+from scipy.spatial import ConvexHull
 
 def p2z(px,py=None):
     '''
@@ -83,8 +74,7 @@ def p2z(px,py=None):
         'Argument py already contains z = x + iy points')
     return np.real(px) + 1j*np.real(py)
 
-# Operator abuse;
-@ntools.piper
+
 def z2p(pz):
     '''
     Convert complex points to 2D (x,y) points
@@ -133,7 +123,6 @@ def polar_smooth_contour(z,sigma=2):
     h  = np.angle((ct+1j*st))
     r  = sig.circular_gaussian_smooth(np.abs(z)**2,sigma)**0.5
     return r*np.exp(1j*h) + c
-
 
 
 def convex_hull(px,py=None):

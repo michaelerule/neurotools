@@ -1,16 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 '''
 Routines for signal processing.
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
 from . import conv
 from . import morlet
 from . import multitaper
@@ -1441,7 +1433,7 @@ def quadratic_peakinfo(
     # Get first derivative to find peaks
     slope  = np.diff(x)
     dsigns = np.diff(np.float32(slope>0))
-    zsigns = find(dsigns!=0)
+    zsigns = np.where(dsigns!=0)[0]
     # Linearly interpolate to find zero crossing
     y1 = slope[zsigns]
     y2 = slope[zsigns+1]
@@ -1449,7 +1441,7 @@ def quadratic_peakinfo(
     # Get inflection points where curvature changes sign
     curvature = np.diff(x,2)
     dsign = np.diff(np.float32(curvature>0))
-    zsign = find(dsign!=0)
+    zsign = np.where(dsign!=0)[0]
     # Linearly interpolate to find zero crossing
     y1 = curvature[zsign]
     y2 = curvature[zsign+1]
@@ -1707,10 +1699,12 @@ def gaussianize(x,axis=-1,verbose=False):
     axis: int; default -1
     verbose: boolean; default False
     '''
-    x = np.array(x)
+    x = np.float32(x)
     if np.prod(x.shape)==0: return x
     n = np.sum(np.isfinite(x),axis=axis)+1
-    return ndtri((rankdata(x,axis=axis,nan_policy='omit'))/n)
+    ranks = rankdata(x,axis=axis,nan_policy='omit')
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    return ndtri(ranks/n[theslice])
 
 def uniformize(x,axis=-1,killeps=None):
     '''

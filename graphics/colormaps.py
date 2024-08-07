@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 """
 Additional color maps for use with matplotlib.
@@ -6,21 +6,13 @@ Additional color maps for use with matplotlib.
 Importing the module also loads
 `neurotools.graphics.fabio_maps`.
 """
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import neurotools.graphics.color as ncl
 import traceback
-
+import matplotlib
+import numpy                     as np
+import matplotlib                as mpl
+import matplotlib.pyplot         as plt
+import matplotlib.colors         as mcolors
+import neurotools.graphics.color as ncl
 from neurotools.graphics.fabio_maps import *
 
 
@@ -145,12 +137,12 @@ try:
     isolum = mcolors.ListedColormap(isolum_data,'isolum')
     
     if not 'isolum' in plt.colormaps():
-        plt.register_cmap(name='isolum', cmap=isolum)
+        mpl.colormaps.register(name='isolum', cmap=isolum)
 
     double_isolum_data = np.concatenate([isolum_data[::2],isolum_data[::2]])
     double_isolum = mcolors.ListedColormap(double_isolum_data,'isolum')
     if not 'double_isolum' in plt.colormaps():
-        plt.register_cmap(name='double_isolum', cmap=double_isolum)
+        mpl.colormaps.register(name='double_isolum', cmap=double_isolum)
 except:
     traceback.print_exc()
     isolum = double_isolum = None
@@ -166,11 +158,11 @@ try:
     medhue   = mcolors.ListedColormap(ncl.medhues  (360),'medhue')
     darkhue  = mcolors.ListedColormap(ncl.darkhues (360),'darkhue')
     if not 'lighthue' in plt.colormaps():
-        plt.register_cmap(name='lighthue', cmap=lighthue)
+        mpl.colormaps.register(name='lighthue', cmap=lighthue)
     if not 'medhue' in plt.colormaps():
-        plt.register_cmap(name='medhue'  , cmap=medhue)
+        mpl.colormaps.register(name='medhue'  , cmap=medhue)
     if not 'darkhue' in plt.colormaps():
-        plt.register_cmap(name='darkhue' , cmap=darkhue)
+        mpl.colormaps.register(name='darkhue' , cmap=darkhue)
 except:
     traceback.print_exc()
     pass # Bypass this code in sphinx
@@ -188,11 +180,11 @@ try:
     hsv0    = mcolors.ListedColormap(x,'hsv0')
     hcl0    = mcolors.ListedColormap(y,'hcl0')
     if not 'balance' in plt.colormaps():
-        plt.register_cmap(name='balance', cmap=balance)
+        mpl.colormaps.register(name='balance', cmap=balance)
     if not 'hsv0' in plt.colormaps():
-        plt.register_cmap(name='hsv0'   , cmap=hsv0)
+        mpl.colormaps.register(name='hsv0'   , cmap=hsv0)
     if not 'hcl0' in plt.colormaps():
-        plt.register_cmap(name='hcl0'   , cmap=hcl0)
+        mpl.colormaps.register(name='hcl0'   , cmap=hcl0)
 except:
     traceback.print_exc()
     hsv0 = hcl0 = balance = None
@@ -290,7 +282,7 @@ parula_data = np.float32([
 
 try:
     parula = mcolors.ListedColormap(parula_data,'parula')
-    plt.register_cmap(name='parula', cmap=parula)
+    mpl.colormaps.register(name='parula', cmap=parula)
 except:
     parula=None
     pass 
@@ -307,14 +299,14 @@ try:
     riley0 = matplotlib.colors.LinearSegmentedColormap.from_list(
         'riley0',colors)
     if not 'riley0' in plt.colormaps():
-        #plt.register_cmap(name='riley0', cmap=riley0)
+        #mpl.colormaps.register(name='riley0', cmap=riley0)
         matplotlib.colormaps.register(name='riley0', cmap=riley0, force=True)
     colors = ncl.circularly_smooth_colormap(
         np.array(riley0(np.linspace(0,1,1000)))[:,:3],45)
     riley  = matplotlib.colors.LinearSegmentedColormap.from_list(
         'riley',colors)
     if not 'riley' in plt.colormaps():
-        #plt.register_cmap(name='riley', cmap=riley)
+        #mpl.colormaps.register(name='riley', cmap=riley)
         matplotlib.colormaps.register(name='riley', cmap=riley, force=True)
 except Exception as e:
     traceback.print_exc()
@@ -473,7 +465,7 @@ extended_data = np.array([[0.10872628, 0.08688698, 0.27649182],
 try:
     extended = mcolors.ListedColormap(extended_data,'extended')
     if not 'extended' in plt.colormaps():
-        plt.register_cmap(name='extended', cmap=extended)
+        mpl.colormaps.register(name='extended', cmap=extended)
 except:
     extended = None
     pass #sphinx workaround
@@ -568,7 +560,7 @@ turbo_colormap_data = np.float32([
 try:
     turbo = mcolors.ListedColormap(turbo_colormap_data,'turbo')
     if not 'turbo' in plt.colormaps():
-        plt.register_cmap(name='turbo', cmap=turbo)
+        mpl.colormaps.register(name='turbo', cmap=turbo)
 except:
     turbo = None
     pass #sphinx workaround

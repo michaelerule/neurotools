@@ -169,7 +169,7 @@ def function_signature(f):
     identity  = (module,name)
     signature = (docstring,source,argspec)
     name = '.'.join(identity)
-    code = base64hash2byte((identity,signature))
+    code = base64hash10bytes((identity,signature))
     return name+'.'+code
 
 def signature_to_file_string(f,sig,
@@ -266,7 +266,7 @@ def signature_to_file_string(f,sig,
     # A hash value gives us good distribution to control
     # the complexity of the directory tree used to manage
     # the cache, but is not unique
-    hsh = base64hash2byte(sig)    
+    hsh = base64hash10bytes(sig)    
 
     # We also need to store some information about which
     # function this is for. We'll get a human readable
@@ -497,9 +497,9 @@ def get_cache_path(cache_root,f,*args,**kwargs):
     sig = neurotools.jobs.ndecorator.argument_signature(
         f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
-            mode        ='repr',
-            compressed  =True,
-            base64encode=True)
+        mode        ='repr',
+        compressed  =True,
+        base64encode=True)
     pieces = fn.split('.')
     # first two words used as directories
     path = cache_root + os.sep + os.sep.join(pieces[:-2]) + os.sep
@@ -541,9 +541,9 @@ def locate_cached(cache_root,f,method,*args,**kwargs):
     while method.startswith('.'): method=method[1:]
     sig = neurotools.jobs.ndecorator.argument_signature(f,*args,**kwargs)
     fn  = signature_to_file_string(f,sig,
-            mode        ='repr',
-            compressed  =True,
-            base64encode=True)
+        mode        ='repr',
+        compressed  =True,
+        base64encode=True)
 
     pieces = fn.split('.')
     # first two words used as directories
@@ -646,13 +646,21 @@ def validate_for_numpy(x):
         True if the data in ``x`` can be safely stored in a 
         Numpy archive
     '''
-    safe = (np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
-                  np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
-                  np.float64, np.complex64, np.complex128)
+    safe = (
+        np.bool_  , np.int8     , np.int16 , np.int32 , np.int64  ,
+        np.uint8  , np.uint16   , np.uint32, np.uint64, np.float32,
+        np.float64, np.complex64, np.complex128)
     warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
     if not isinstance(x,np.ndarray):
-        x = np.array(x)
-    if x.dtype == np.object:
+        try:
+            x = np.array(x)
+        except:
+            x = [*x]
+            _x = np.empty(len(x),dtype=object)
+            for i,xi in enumerate(x):
+                _x[i] = x[i]
+            x = _x
+    if x.dtype == object:
         # object arrays will be converted to cell arrays,
         # we need to make sure each cell can be stored safely
         try:
@@ -788,7 +796,6 @@ def disk_cacher(
             # Store parameters;
             # These will be saved in the cached result
             params = (args,tuple(list(kwargs.items())))
-
             try:
                 fn,sig,path,filename,location = \
                     locate_cached(
@@ -845,7 +852,10 @@ def disk_cacher(
                             if validated_result is None:
                                 raise ValueError(
                                     'Error: return value cannot be safely packaged in a numpy file')
-                            np.save(location, savedata)
+                            sd = np.empty(2,dtype=object)
+                            sd[0] = savedata[0]
+                            sd[1] = savedata[1]
+                            np.save(location, sd)
                     except (ValueError, IOError, PicklingError) as exc2:
                         if verbose:
                             print('Saving cache at %s FAILED'%cache_location)
@@ -1166,14 +1176,19 @@ def scan_cachedir(
 
     return results
     
-    
-    
+def hashit(obj):
+    if not isinstance(obj,bytes):
+        try:
+            obj = obj.encode('UTF-8')
+        except:
+            obj = repr(obj).encode('UTF-8')
+    return hashlib.sha224(obj).digest()#[::-1]
 
 def base64hash(obj):
     '''
     Retrieve a base-64 encoded hash for an object.
     This uses the built-in ``encode`` function to convert an object to
-    ``utf-8``, then calls ``hashlib.sha224(ss).digest()`` to create a hash,
+    ``utf-8``, then calls ``.sha224(obj).digest()`` to create a hash,
     finally packaging the result in base-64.
     
     Parameters
@@ -1184,16 +1199,11 @@ def base64hash(obj):
     -------
     code: str
     '''
-    try:
-        ss = ss.encode('UTF-8')
-    except:
-        ss = repr(obj).encode('UTF-8')
-    code = base64.urlsafe_b64encode(\
-            str(hashlib.sha224(ss).digest()).encode('UTF-8')
-        ).decode().replace('=','')
+    code = base64.urlsafe_b64encode(hashit(obj)).decode().replace('=','')
+    #code = base64.urlsafe_b64encode(str(hashit(obj)).encode('UTF-8')).decode().replace('=','')
     return code
 
-def base64hash2byte(obj):
+def base64hash10bytes(obj):
     '''
     Retrieve first two bytes of a base-64 encoded has for 
     an object.
@@ -1206,14 +1216,8 @@ def base64hash2byte(obj):
     -------
     code: str
     '''
-    try:
-        ss = ss.encode('UTF-8')
-    except:
-        ss = repr(obj).encode('UTF-8')
-    bytes = hashlib.sha224(ss).digest()
-    code = base64.urlsafe_b64encode(\
-            str(bytes[:2]).encode('UTF-8')
-        ).decode().replace('=','')
+    code = base64.urlsafe_b64encode(hashit(obj)[:10]).decode().replace('=','')
+    #code = base64.urlsafe_b64encode(str(hashit(obj)).encode('UTF-8')).decode().replace('=','')
     return code
     
 @neurotools.jobs.ndecorator.memoize
@@ -1356,3 +1360,4 @@ def exists(cache_root,f,method,*args,**kwargs):
                 
                 
                 
+

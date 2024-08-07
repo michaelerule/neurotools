@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.information &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -115,7 +119,9 @@
 <span class="k">def</span> <span class="nf">_masked_log</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="o">!=</span><span class="mi">0</span><span class="p">))</span>
 
-<div class="viewcode-block" id="discrete"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete">[docs]</a><span class="k">class</span> <span class="nc">discrete</span><span class="p">:</span>
+<div class="viewcode-block" id="discrete">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete">[docs]</a>
+<span class="k">class</span> <span class="nc">discrete</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Collected methods for calculating biased information-theoretic</span>
 <span class="sd">    quantities directly from discrete (categorical) probability</span>
@@ -123,7 +129,9 @@
 <span class="sd">    These have never been fully tested.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="discrete.DKL"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.DKL">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.DKL">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.DKL">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">DKL</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute KL divergence D(P||Q) </span>
@@ -149,8 +157,11 @@
         <span class="n">P</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
         <span class="n">Q</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P</span><span class="o">*</span><span class="p">(</span><span class="n">_masked_log</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Q</span><span class="p">)),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
         
-<div class="viewcode-block" id="discrete.H"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.H">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.H">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.H">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sample entropy ``-Σ p ln(p)`` in nats.</span>
@@ -177,8 +188,11 @@
 <span class="sd">        2.0 ?= 2</span>
 <span class="sd">        1.4999999999999998 ?= 1.5</span>
 <span class="sd">        &#39;&#39;&#39;</span></div>
+
     
-<div class="viewcode-block" id="discrete.H_samples"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.H_samples">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.H_samples">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.H_samples">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">H_samples</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">samples</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Calculate sample entropy ``-Σ p ln(p)`` (in nats)</span>
@@ -199,8 +213,11 @@
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
             <span class="n">counts</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
         
-<div class="viewcode-block" id="discrete.Hcond"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.Hcond">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.Hcond">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.Hcond">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Hcond</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Conditional entropy :math:`H_{y|x}`. </span>
@@ -253,7 +270,10 @@
 <span class="sd">        2.0 ?= 2</span>
 <span class="sd">        &#39;&#39;&#39;</span></div>
 
-<div class="viewcode-block" id="discrete.I"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.I">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="discrete.I">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.I">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">I</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">axes2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Mutual information from a discrete PDF</span>
@@ -327,7 +347,10 @@
 <span class="sd">        0.25000000000000006 ?= 0.25</span>
 <span class="sd">        &#39;&#39;&#39;</span></div>
 
-<div class="viewcode-block" id="discrete.shuffle"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.shuffle">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="discrete.shuffle">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.shuffle">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Replace the joint density for the variables</span>
@@ -352,8 +375,11 @@
 <span class="sd">        p = array(p).transpose(1,2,0)</span>
 <span class="sd">        discrete.shuffle(p)</span>
 <span class="sd">        &#39;&#39;&#39;</span></div>
+
     
-<div class="viewcode-block" id="discrete.Ishuff"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.Ishuff">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.Ishuff">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.Ishuff">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Ishuff</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        The shuffled information between</span>
@@ -391,7 +417,10 @@
 <span class="sd">        0.11809427883737673</span>
 <span class="sd">        &#39;&#39;&#39;</span></div>
 
-<div class="viewcode-block" id="discrete.deltaIshuff"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaIshuff">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="discrete.deltaIshuff">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaIshuff">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">deltaIshuff</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Mutual information between </span>
@@ -407,8 +436,11 @@
 <span class="sd">        Latham and Nirenberg equation (2).</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span> <span class="o">-</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Ishuff</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="discrete.deltaI"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaI">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.deltaI">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaI">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">deltaI</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Mutual information between </span>
@@ -444,8 +476,11 @@
         <span class="n">Psgrshuff</span> <span class="o">=</span> <span class="n">unitsum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">stim</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">DKL</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">q</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="discrete.deltaInoise"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaInoise">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.deltaInoise">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaInoise">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">deltaInoise</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        :math:`I_{r_1,r_2;s} - I^{\\text{shuffle}}_{r_1,r2;s}`.</span>
@@ -456,8 +491,11 @@
         <span class="n">Isr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
         <span class="n">Jsr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Ishuff</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Isr</span> <span class="o">-</span> <span class="n">Jsr</span></div>
+
     
-<div class="viewcode-block" id="discrete.deltaIsig"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaIsig">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.deltaIsig">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.deltaIsig">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">deltaIsig</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        :math:`I_{r_1,r_2;s} - I^{\\text{shuffle}}_{r_1,r2;s}`.</span>
@@ -469,8 +507,11 @@
         <span class="k">for</span> <span class="n">others</span> <span class="ow">in</span> <span class="n">circulant</span><span class="p">(</span><span class="n">axes</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">others</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">result</span></div>
+
     
-<div class="viewcode-block" id="discrete.syn"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.syn">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.syn">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.syn">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">syn</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Mutual information between </span>
@@ -490,8 +531,11 @@
         <span class="k">for</span> <span class="n">others</span> <span class="ow">in</span> <span class="n">circulant</span><span class="p">(</span><span class="n">axes</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="n">result</span> <span class="o">-=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="nb">tuple</span><span class="p">(</span><span class="n">others</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">result</span></div>
+
     
-<div class="viewcode-block" id="discrete.syn2"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.syn2">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="discrete.syn2">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.discrete.syn2">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">syn2</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Naïve calculation of </span>
@@ -511,10 +555,14 @@
         <span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>   
         <span class="n">Ineur_stim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ps</span><span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="n">p</span><span class="p">,(</span><span class="mi">0</span><span class="p">,),(</span><span class="mi">1</span><span class="p">,)))</span>
         
-        <span class="k">return</span> <span class="n">Ineur_stim</span> <span class="o">-</span> <span class="n">Ineur_marginal</span></div></div>
+        <span class="k">return</span> <span class="n">Ineur_stim</span> <span class="o">-</span> <span class="n">Ineur_marginal</span></div>
+</div>
+
         
 
-<div class="viewcode-block" id="poisson_entropy_nats"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.poisson_entropy_nats">[docs]</a><span class="k">def</span> <span class="nf">poisson_entropy_nats</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+<div class="viewcode-block" id="poisson_entropy_nats">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.poisson_entropy_nats">[docs]</a>
+<span class="k">def</span> <span class="nf">poisson_entropy_nats</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Approximate entropy of a Poisson distribution in nats</span>
 <span class="sd">    </span>
@@ -528,7 +576,10 @@
     <span class="k">return</span> <span class="n">discrete_entropy_distribution</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="betapr"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.betapr">[docs]</a><span class="k">def</span> <span class="nf">betapr</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+
+<div class="viewcode-block" id="betapr">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.betapr">[docs]</a>
+<span class="k">def</span> <span class="nf">betapr</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Baysian estimation of rate `p` in Bernoulli trials.</span>
 <span class="sd">    This returns the posterior median for `p` given </span>
@@ -556,7 +607,10 @@
         <span class="n">p</span><span class="o">*=</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">p</span></div>
 
-<div class="viewcode-block" id="beta_regularized_histogram_mutual_information"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.beta_regularized_histogram_mutual_information">[docs]</a><span class="k">def</span> <span class="nf">beta_regularized_histogram_mutual_information</span><span class="p">(</span>
+
+<div class="viewcode-block" id="beta_regularized_histogram_mutual_information">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.beta_regularized_histogram_mutual_information">[docs]</a>
+<span class="k">def</span> <span class="nf">beta_regularized_histogram_mutual_information</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="n">y</span><span class="p">,</span>
     <span class="n">nb</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
@@ -645,6 +699,7 @@
     <span class="n">lo</span><span class="p">,</span><span class="n">hi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">Ib</span><span class="p">,[</span><span class="n">plo</span><span class="p">,</span><span class="n">phi</span><span class="p">])</span><span class="o">-</span><span class="p">(</span><span class="n">Ixy</span><span class="o">-</span><span class="n">Idelta</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">Ixy</span><span class="p">,</span> <span class="n">Idelta</span><span class="p">,</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span></div>
+
     
     
     
@@ -658,14 +713,19 @@
 
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
-<div class="viewcode-block" id="JointCategoricalDistribution"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.JointCategoricalDistribution">[docs]</a><span class="k">class</span> <span class="nc">JointCategoricalDistribution</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<div class="viewcode-block" id="JointCategoricalDistribution">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.JointCategoricalDistribution">[docs]</a>
+<span class="k">class</span> <span class="nc">JointCategoricalDistribution</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">counts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">joined</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">kept</span>  <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">states</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">nstate</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></div>
 
-<div class="viewcode-block" id="joint"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.joint">[docs]</a><span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+
+<div class="viewcode-block" id="joint">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.joint">[docs]</a>
+<span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="n">nstates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">remove_empty</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
@@ -712,6 +772,7 @@
         <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">joined</span><span class="p">,</span><span class="n">minlength</span><span class="o">=</span><span class="n">nkept</span><span class="p">)</span>
    
     <span class="k">return</span> <span class="n">JointCategoricalDistribution</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">joined</span><span class="p">,</span> <span class="n">kept</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">nstates</span><span class="p">)</span></div>
+
     
     
     
@@ -729,7 +790,9 @@
     
     
     
-<div class="viewcode-block" id="dirichlet_density"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density">[docs]</a><span class="k">class</span> <span class="nc">dirichlet_density</span><span class="p">:</span>
+<div class="viewcode-block" id="dirichlet_density">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density">[docs]</a>
+<span class="k">class</span> <span class="nc">dirichlet_density</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Model empirical (sampled) densities of categorical</span>
 <span class="sd">    variables using a Dirichlet prior. </span>
@@ -742,7 +805,9 @@
 <span class="sd">    These are biased. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
-<div class="viewcode-block" id="dirichlet_density.joint_model"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.joint_model">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="dirichlet_density.joint_model">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.joint_model">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">joint_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Build dirichlet model of joint categorical distribution</span>
@@ -751,8 +816,11 @@
         <span class="n">counts</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
         <span class="k">if</span> <span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dirichlet</span><span class="p">(</span><span class="n">counts</span><span class="o">+</span><span class="n">bias</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+
     
-<div class="viewcode-block" id="dirichlet_density.p"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.p">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="dirichlet_density.p">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.p">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Expected probabilty</span>
@@ -762,8 +830,11 @@
         <span class="n">α</span>  <span class="o">=</span> <span class="n">counts</span> <span class="o">+</span> <span class="n">bias</span>
         <span class="n">α0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">α</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">α</span><span class="o">/</span><span class="n">α0</span></div>
+
     
-<div class="viewcode-block" id="dirichlet_density.lnp"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.lnp">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="dirichlet_density.lnp">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.lnp">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">lnp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Expected log-probability </span>
@@ -774,8 +845,11 @@
         <span class="n">α</span>  <span class="o">=</span> <span class="n">counts</span> <span class="o">+</span> <span class="n">bias</span>
         <span class="n">α0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">α</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ψ</span><span class="p">(</span><span class="n">α</span><span class="p">)</span> <span class="o">-</span> <span class="n">ψ</span><span class="p">(</span><span class="n">α0</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="dirichlet_density.plnp"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.plnp">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="dirichlet_density.plnp">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.plnp">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">plnp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="o">*</span><span class="n">samples</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Expected p*ln(p) </span>
@@ -786,15 +860,21 @@
         <span class="n">α</span>  <span class="o">=</span> <span class="n">counts</span> <span class="o">+</span> <span class="n">bias</span>
         <span class="n">α0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">α</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">α</span><span class="o">/</span><span class="n">α0</span><span class="o">*</span><span class="p">(</span><span class="n">ψ</span><span class="p">(</span><span class="n">α</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">ψ</span><span class="p">(</span><span class="n">α0</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span></div>
+
     
-<div class="viewcode-block" id="dirichlet_density.H"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.H">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="dirichlet_density.H">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.H">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="o">*</span><span class="n">samples</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Expected &lt;-p*ln(p)&gt; </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">plnp</span><span class="p">(</span><span class="o">*</span><span class="n">samples</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="dirichlet_density.I"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.I">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="dirichlet_density.I">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.I">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">I</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Mutual information</span>
@@ -810,7 +890,10 @@
 <span class="sd">        print(dd.H(i1,i2,bias=0), dd.H(i1,bias=0)+dd.H(i1,bias=0))</span>
 <span class="sd">        &#39;&#39;&#39;</span></div>
 
-<div class="viewcode-block" id="dirichlet_density.redundancy"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.redundancy">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="dirichlet_density.redundancy">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.redundancy">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">redundancy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        For ``(x1,x2,y)`` calculate</span>
@@ -823,10 +906,15 @@
         <span class="n">x12</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">joined</span>
         <span class="n">I</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">I</span>
         <span class="k">return</span> <span class="n">I</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="o">+</span> <span class="n">I</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="o">-</span> <span class="n">I</span><span class="p">(</span><span class="n">x12</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span></div>
+
     
-<div class="viewcode-block" id="dirichlet_density.foo"><a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.foo">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="dirichlet_density.foo">
+<a class="viewcode-back" href="../../../neurotools.stats.information.html#neurotools.stats.information.dirichlet_density.foo">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-        <span class="n">counts</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">nstate</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div></div>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">nstate</span> <span class="o">=</span> <span class="n">joint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+</div>
+
     
         
 

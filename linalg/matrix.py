@@ -649,6 +649,7 @@ def reglstsq(X, Y, reg=1e-15, suppress_transpose_error=False):
     N,K = X.shape
     if K>N and not suppress_transpose_error:
         raise ValueError('First argument has more dimensions than training examples. Is it transposed?')
+    
     # L: number of samples (should match N)
     # M: number of features
     L,M = Y.shape

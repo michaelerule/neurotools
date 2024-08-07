@@ -11,10 +11,8 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import matplotlib.pyplot as mp
 import scipy.stats
 import numpy as np
-import matplotlib as plt
 
 def logpolar_gaussian(frame,doplot=False):
     '''
@@ -35,6 +33,8 @@ def logpolar_gaussian(frame,doplot=False):
     axis 2 (np.array)
     1-sigma ellipse (np.array)
     '''
+    import matplotlib.pyplot as mp
+    import matplotlib as plt
     # set to zero mean phase
     theta    = np.angle(np.mean(frame))
     rephased = frame*np.exp(1j*-theta)
@@ -90,6 +90,8 @@ def complex_gaussian(frame,doplot=False):
     circle:
         Path for 1-sigma radius ellipse, encoded as z=x+iy
     '''
+    import matplotlib.pyplot as mp
+    import matplotlib as plt
     # set to zero mean phase
     rephased = frame#*np.exp(1j*-theta)
     weights = np.ones(np.shape(rephased))
@@ -108,13 +110,13 @@ def complex_gaussian(frame,doplot=False):
     cxy = np.dot(weights,cx*cy)*correction
     cyy = np.dot(weights,cy*cy)*correction
     cm  = np.array([[cxx,cxy],[cxy,cyy]])
-    sm  = cholesky(cm)
-    w,v = eig(cm)
+    sm  = scipy.linalg.cholesky(cm)
+    w,v = scipy.linalg.eig(cm)
     v = v[0,:]+1j*v[1,:]
     origin = mx + 1j*my
     w = np.sqrt(w)
-    axis1  = origin + v[0]*w[0]*linspace(-1,1,100)
-    axis2  = origin + v[1]*w[1]*linspace(-1,1,100)
+    axis1  = origin + v[0]*w[0]*np.linspace(-1,1,100)
+    axis2  = origin + v[1]*w[1]*np.linspace(-1,1,100)
     circle = np.exp(1j*linspace(0,2*pi,100))
     circle = p2c(np.dot(sm,[real(circle),imag(circle)]))+origin
     if doplot:
@@ -143,6 +145,8 @@ def logpolar_stats(frame,doplot=False):
     radial:
         Path for radial line, encoded as z=x+iy.
     '''
+    import matplotlib.pyplot as mp
+    import matplotlib as plt
     z = np.mean(frame)
     r = np.mean(np.abs(frame))
     rl = np.mean(np.log(np.abs(frame)))
@@ -150,23 +154,23 @@ def logpolar_stats(frame,doplot=False):
     rsl = np.std(np.log(np.abs(frame)))
     w = frame / np.abs(frame)
     x = np.mean(w)
-    theta = angle(x)
+    theta = np.angle(x)
     #R = np.abs(x)
     R = np.abs(z) / r
     sd = np.sqrt(-2*np.log(R))
     print('R,sd',R,sd)
     cv = 1-R
     s = np.exp(rl)*np.exp(1j*theta)
-    arc = np.exp(rl+theta*1j)*np.exp(1j*linspace(-sd,sd,100))
+    arc = np.exp(rl+theta*1j)*np.exp(1j*np.linspace(-sd,sd,100))
     circle = np.exp(1j*linspace(0,2*pi,100))
-    circle = real(circle)*rsl + 1j*imag(circle)*sd
+    circle = np.real(circle)*rsl + 1j*np.imag(circle)*sd
     circle = circle+rl+1j*theta
     circle = np.exp(circle)
     radial = np.array([s*np.exp(-rsl),s*np.exp(rsl)])
     if doplot:
-        plot(*c2p(circle),color='m',lw=2)
-        plot(*c2p(arc),color='m',lw=2)
-        plot(*c2p(radial),color='m',lw=2)
+        plt.plot(*c2p(circle),color='m',lw=2)
+        plt.plot(*c2p(arc),color='m',lw=2)
+        plt.plot(*c2p(radial),color='m',lw=2)
     return circle,arc,radial
 
 def abspolar_stats(frame,doplot=False):
@@ -189,6 +193,8 @@ def abspolar_stats(frame,doplot=False):
     radial:
         Path for radial line, encoded as z=x+iy.
     '''
+    import matplotlib.pyplot as mp
+    import matplotlib as plt
     z    = frame
     phi  = angle(np.mean(z**2))/2
     flip = sign(np.cos(np.angle(z)-phi))

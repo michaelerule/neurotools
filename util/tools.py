@@ -1,14 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import os,sys
 import traceback
 import inspect
@@ -460,7 +451,11 @@ def yank(argnames):
         A single string containing all variable
         identifiers to grab, delimited by whitespace.
     '''
-    argnames = argnames.split()
+    if not isinstance(argnames,list):
+        for c in ',.;:-—~#':
+            argnames.replace(c,' ')
+        argnames = argnames.split()
+    
     f = sys._getframe().f_back
     result = {}
     for a in argnames:

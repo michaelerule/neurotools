@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.minimize &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -108,7 +112,9 @@
 <span class="kn">from</span> <span class="nn">neurotools.util.time</span>      <span class="kn">import</span> <span class="n">current_milli_time</span>
 <span class="kn">from</span> <span class="nn">neurotools.util.string</span>    <span class="kn">import</span> <span class="n">v2str_long</span>
     
-<div class="viewcode-block" id="FailureError"><a class="viewcode-back" href="../../../neurotools.stats.minimize.html#neurotools.stats.minimize.FailureError">[docs]</a><span class="k">class</span> <span class="nc">FailureError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<div class="viewcode-block" id="FailureError">
+<a class="viewcode-back" href="../../../neurotools.stats.minimize.html#neurotools.stats.minimize.FailureError">[docs]</a>
+<span class="k">class</span> <span class="nc">FailureError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Re-named `RuntimeError` to distinguish error </span>
 <span class="sd">    conditions arising from failure of optimization</span>
@@ -116,7 +122,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="minimize_retry"><a class="viewcode-back" href="../../../neurotools.stats.minimize.html#neurotools.stats.minimize.minimize_retry">[docs]</a><span class="k">def</span> <span class="nf">minimize_retry</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">initial</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="minimize_retry">
+<a class="viewcode-back" href="../../../neurotools.stats.minimize.html#neurotools.stats.minimize.minimize_retry">[docs]</a>
+<span class="k">def</span> <span class="nf">minimize_retry</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">initial</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                    <span class="n">printerrors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                    <span class="n">failthrough</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -301,6 +310,7 @@
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Method Nelder-Mead does not use&#39;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;Method BFGS does not use&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;does not use&#39;</span><span class="p">)</span>
             <span class="c1"># If gradient is provided....</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">jac</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">jac</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">simplex_only</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">try_to_optimize</span><span class="p">(</span><span class="s1">&#39;Newton-CG&#39;</span><span class="p">,</span><span class="s1">&#39;disp xtol maxiter eps&#39;</span><span class="p">,</span><span class="n">jac_</span><span class="o">=</span><span class="n">jac</span><span class="p">):</span>
@@ -342,6 +352,7 @@
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;All minimization attempts failed</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="k">return</span> <span class="kc">None</span></div>
+
 </pre></div>
 
            </div>

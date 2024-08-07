@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.util.tools &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -79,17 +83,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for neurotools.util.tools</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
+<span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
@@ -127,7 +122,9 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;or  pip  install decorator&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hopefully at least one of those works&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="varexists"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.varexists">[docs]</a><span class="k">def</span> <span class="nf">varexists</span><span class="p">(</span><span class="n">varname</span><span class="p">):</span>
+<div class="viewcode-block" id="varexists">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.varexists">[docs]</a>
+<span class="k">def</span> <span class="nf">varexists</span><span class="p">(</span><span class="n">varname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">varname</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">():</span>
@@ -136,37 +133,55 @@
         <span class="k">return</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">varname</span><span class="p">]</span><span class="o">!=</span><span class="kc">None</span>
     <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="nowarn"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.nowarn">[docs]</a><span class="k">def</span> <span class="nf">nowarn</span><span class="p">():</span>
+
+<div class="viewcode-block" id="nowarn">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.nowarn">[docs]</a>
+<span class="k">def</span> <span class="nf">nowarn</span><span class="p">():</span>
     <span class="c1"># TODO: merge warning control with something more standard</span>
     <span class="k">global</span> <span class="n">SUPPRESS_WARNINGS</span>
     <span class="n">SUPPRESS_WARNINGS</span><span class="o">=</span><span class="kc">True</span></div>
 
-<div class="viewcode-block" id="okwarn"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.okwarn">[docs]</a><span class="k">def</span> <span class="nf">okwarn</span><span class="p">():</span>
+
+<div class="viewcode-block" id="okwarn">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.okwarn">[docs]</a>
+<span class="k">def</span> <span class="nf">okwarn</span><span class="p">():</span>
     <span class="c1"># TODO: merge warning control with something more standard</span>
     <span class="k">global</span> <span class="n">SUPPRESS_WARNINGS</span>
     <span class="n">SUPPRESS_WARNINGS</span><span class="o">=</span><span class="kc">False</span></div>
 
-<div class="viewcode-block" id="dowarn"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.dowarn">[docs]</a><span class="k">def</span> <span class="nf">dowarn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+
+<div class="viewcode-block" id="dowarn">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.dowarn">[docs]</a>
+<span class="k">def</span> <span class="nf">dowarn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
     <span class="c1"># TODO: merge warning control with something more standard</span>
     <span class="k">if</span> <span class="n">varexists</span><span class="p">(</span><span class="s1">&#39;SUPPRESS_WARNINGS&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">SUPPRESS_WARNINGS</span>
     <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+
+<div class="viewcode-block" id="warn">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.warn">[docs]</a>
+<span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
     <span class="c1"># TODO: merge warning control with something more standard</span>
     <span class="k">if</span> <span class="n">dowarn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">a</span><span class="p">)))</span></div>
+
 
 <span class="c1"># todo: make these separate</span>
 <span class="c1"># TODO: is debug even used?</span>
 <span class="n">debug</span> <span class="o">=</span> <span class="n">warn</span>
 
-<div class="viewcode-block" id="wait"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.wait">[docs]</a><span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;--- press enter to continue ---&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="wait">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.wait">[docs]</a>
+<span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;--- press enter to continue ---&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
     <span class="n">raw_input</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="matlab"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.matlab">[docs]</a><span class="k">def</span> <span class="nf">matlab</span><span class="p">(</span><span class="n">commands</span><span class="p">):</span>
+
+<div class="viewcode-block" id="matlab">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.matlab">[docs]</a>
+<span class="k">def</span> <span class="nf">matlab</span><span class="p">(</span><span class="n">commands</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Runs Matlab commands through the shell</span>
 <span class="sd">    TODO: make matlabpath configurable</span>
@@ -176,27 +191,39 @@
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="si">%s</span><span class="s2"> &quot;identifyHost(); </span><span class="si">%s</span><span class="s2">; exit&quot; &quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">matlabpath</span><span class="p">,</span><span class="n">commands</span><span class="p">))</span>
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="history"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.history">[docs]</a><span class="k">def</span> <span class="nf">history</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="history">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.history">[docs]</a>
+<span class="k">def</span> <span class="nf">history</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Return last n lines of shell history</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">In</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:]))</span></div>
 
-<div class="viewcode-block" id="p2c"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.p2c">[docs]</a><span class="k">def</span> <span class="nf">p2c</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+
+<div class="viewcode-block" id="p2c">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.p2c">[docs]</a>
+<span class="k">def</span> <span class="nf">p2c</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert a point in terms of a length-2 iterable into a complex number</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="c2p"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.c2p">[docs]</a><span class="k">def</span> <span class="nf">c2p</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+
+<div class="viewcode-block" id="c2p">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.c2p">[docs]</a>
+<span class="k">def</span> <span class="nf">c2p</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">    Convert complex point to tuple</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="emitter"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.emitter">[docs]</a><span class="k">class</span> <span class="nc">emitter</span><span class="p">():</span>
+
+<div class="viewcode-block" id="emitter">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.emitter">[docs]</a>
+<span class="k">class</span> <span class="nc">emitter</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is a toy example test of a concept used in the piper dectorator</span>
 <span class="sd">    below. It extends callables so that using them with the logical or</span>
@@ -223,7 +250,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span></div>
 
-<div class="viewcode-block" id="piper"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.piper">[docs]</a><span class="k">class</span> <span class="nc">piper</span><span class="p">():</span>
+
+<div class="viewcode-block" id="piper">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.piper">[docs]</a>
+<span class="k">class</span> <span class="nc">piper</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Piper extends callables such that they can be called by </span>
 <span class="sd">    using infix operators. This is just for fun and you</span>
@@ -295,6 +325,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composewith</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 
+
 <span class="nd">@robust_decorator</span>
 <span class="k">def</span> <span class="nf">globalize</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">krgs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
@@ -357,7 +388,9 @@
 <span class="n">concat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span>
 
 <span class="n">matfilecache</span> <span class="o">=</span> <span class="p">{}</span>
-<div class="viewcode-block" id="metaloadmat"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.metaloadmat">[docs]</a><span class="k">def</span> <span class="nf">metaloadmat</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="metaloadmat">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.metaloadmat">[docs]</a>
+<span class="k">def</span> <span class="nf">metaloadmat</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Loads a matfile from the provided path, caching it in the global dict</span>
 <span class="sd">    &quot;matfilecache&quot; using path as the lookup key.</span>
@@ -376,7 +409,10 @@
     <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;loaded&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="find_all_extension"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.find_all_extension">[docs]</a><span class="k">def</span> <span class="nf">find_all_extension</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">ext</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_all_extension">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.find_all_extension">[docs]</a>
+<span class="k">def</span> <span class="nf">find_all_extension</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">ext</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Locate all files with a given extension</span>
 <span class="sd">    </span>
@@ -401,11 +437,14 @@
     <span class="k">return</span> <span class="n">found</span></div>
 
 
+
 <span class="n">setinrange</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">v</span><span class="o">&gt;=</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">v</span><span class="o">&lt;=</span><span class="n">b</span><span class="p">)}</span>
 <span class="n">mapdict</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span><span class="n">function</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">function</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()}</span>
 <span class="n">getdict</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">,</span><span class="n">index</span><span class="p">:</span> <span class="n">mapdict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">v</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
 
-<div class="viewcode-block" id="ensure_dir"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.ensure_dir">[docs]</a><span class="k">def</span> <span class="nf">ensure_dir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_dir">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.ensure_dir">[docs]</a>
+<span class="k">def</span> <span class="nf">ensure_dir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensure that a named directory exists; if it does not, attempt to create it.</span>
 <span class="sd">    http://stackoverflow.com/questions/944536/efficient-way-of-creating-recursive-paths-python</span>
@@ -420,7 +459,10 @@
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="getsize"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.getsize">[docs]</a><span class="k">def</span> <span class="nf">getsize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+
+<div class="viewcode-block" id="getsize">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.getsize">[docs]</a>
+<span class="k">def</span> <span class="nf">getsize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recursively iterate to sum size of object &amp; members.</span>
 <span class="sd">    http://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python    </span>
@@ -452,6 +494,7 @@
                 <span class="n">size</span> <span class="o">+=</span> <span class="n">inner</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">size</span>
     <span class="k">return</span> <span class="n">inner</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
 <span class="w">    </span>
 
 <span class="sd">&#39;&#39;&#39;</span>
@@ -475,18 +518,26 @@
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="n">__saved_context__</span> <span class="o">=</span> <span class="p">{}</span>
-<div class="viewcode-block" id="saveContext"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.saveContext">[docs]</a><span class="k">def</span> <span class="nf">saveContext</span><span class="p">():</span>
+<div class="viewcode-block" id="saveContext">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.saveContext">[docs]</a>
+<span class="k">def</span> <span class="nf">saveContext</span><span class="p">():</span>
     <span class="n">__saved_context__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span></div>
+
 
 <span class="n">clear</span> <span class="o">=</span> <span class="n">saveContext</span>
 
-<div class="viewcode-block" id="restoreContext"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.restoreContext">[docs]</a><span class="k">def</span> <span class="nf">restoreContext</span><span class="p">():</span>
+<div class="viewcode-block" id="restoreContext">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.restoreContext">[docs]</a>
+<span class="k">def</span> <span class="nf">restoreContext</span><span class="p">():</span>
     <span class="n">names</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">__saved_context__</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">n</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="getVariable"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.getVariable">[docs]</a><span class="k">def</span> <span class="nf">getVariable</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+
+<div class="viewcode-block" id="getVariable">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.getVariable">[docs]</a>
+<span class="k">def</span> <span class="nf">getVariable</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Reads a variable from a .mat or .hdf5 file</span>
 <span class="sd">    The read result is cached in ram for later access</span>
@@ -505,7 +556,10 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Path is neither .mat nor .hdf5&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TolerantDict"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.TolerantDict">[docs]</a><span class="k">class</span> <span class="nc">TolerantDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TolerantDict">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.TolerantDict">[docs]</a>
+<span class="k">class</span> <span class="nc">TolerantDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="s1">&#39;_asdict&#39;</span><span class="p">):</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
@@ -516,8 +570,11 @@
         <span class="k">return</span> <span class="n">TolerantDict</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__ror__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span></div>
 
 
+
 <span class="kn">import</span> <span class="nn">sys</span>
-<div class="viewcode-block" id="yank"><a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.yank">[docs]</a><span class="k">def</span> <span class="nf">yank</span><span class="p">(</span><span class="n">argnames</span><span class="p">):</span>
+<div class="viewcode-block" id="yank">
+<a class="viewcode-back" href="../../../neurotools.util.tools.html#neurotools.util.tools.yank">[docs]</a>
+<span class="k">def</span> <span class="nf">yank</span><span class="p">(</span><span class="n">argnames</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Turns a string of whitespace-delimited variable names</span>
 <span class="sd">    ``&#39;name1 name2 ...&#39;`` </span>
@@ -541,7 +598,11 @@
 <span class="sd">        A single string containing all variable</span>
 <span class="sd">        identifiers to grab, delimited by whitespace.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">argnames</span> <span class="o">=</span> <span class="n">argnames</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">argnames</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;,.;:-—~#&#39;</span><span class="p">:</span>
+            <span class="n">argnames</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">argnames</span> <span class="o">=</span> <span class="n">argnames</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    
     <span class="n">f</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">argnames</span><span class="p">:</span>
@@ -551,6 +612,7 @@
                 <span class="s1">&#39;Variable `</span><span class="si">%s</span><span class="s1">` not found in either local &#39;</span>
                 <span class="s1">&#39;or gloabl scope&#39;</span><span class="p">)</span><span class="o">%</span><span class="n">a</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">TolerantDict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
 
 
 <span class="nd">@piper</span>

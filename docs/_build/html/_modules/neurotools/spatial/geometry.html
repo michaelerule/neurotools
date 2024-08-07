@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.spatial.geometry &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -79,7 +83,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for neurotools.spatial.geometry</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
+<span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Collected functions from 2018--2023 </span>
@@ -88,22 +92,15 @@
 <span class="sd">These routines work on 2D (x,y) points encoded as </span>
 <span class="sd">complex z=x+iy numbers.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-
 <span class="kn">import</span> <span class="nn">neurotools.util.tools</span> <span class="k">as</span> <span class="nn">ntools</span>
 <span class="kn">import</span> <span class="nn">neurotools.signal</span> <span class="k">as</span> <span class="nn">sig</span>
-<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span>
 <span class="kn">import</span> <span class="nn">neurotools.spatial.masking</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span>
 
-<div class="viewcode-block" id="p2z"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.p2z">[docs]</a><span class="k">def</span> <span class="nf">p2z</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="p2z">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.p2z">[docs]</a>
+<span class="k">def</span> <span class="nf">p2z</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Ensure that a numpy array contains (x,y) points </span>
 <span class="sd">    encoded as z = x+iy,</span>
@@ -164,8 +161,10 @@
         <span class="s1">&#39;Argument py already contains z = x + iy points&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">px</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">py</span><span class="p">)</span></div>
 
-<span class="c1"># Operator abuse;</span>
-<span class="nd">@ntools</span><span class="o">.</span><span class="n">piper</span>
+
+
+<div class="viewcode-block" id="z2p">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.z2p">[docs]</a>
 <span class="k">def</span> <span class="nf">z2p</span><span class="p">(</span><span class="n">pz</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert complex points to 2D (x,y) points</span>
@@ -182,10 +181,13 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">pz</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
         <span class="s1">&#39;pz does not seem to contain complex x+iy points&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">pz</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">pz</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">pz</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">pz</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="polar_smooth_contour"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.polar_smooth_contour">[docs]</a><span class="k">def</span> <span class="nf">polar_smooth_contour</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="polar_smooth_contour">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.polar_smooth_contour">[docs]</a>
+<span class="k">def</span> <span class="nf">polar_smooth_contour</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Smooth the radial and angular components of a closed, </span>
 <span class="sd">    circular, non-self-intersecting contour `z` in the </span>
@@ -217,7 +219,9 @@
 
 
 
-<div class="viewcode-block" id="convex_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull">[docs]</a><span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="convex_hull">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull">[docs]</a>
+<span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A wrapper for scipy.spatial.ConvexHull that returns </span>
 <span class="sd">    points as z=x+iy.</span>
@@ -238,7 +242,10 @@
     <span class="k">return</span> <span class="n">points</span><span class="p">[</span><span class="n">verts</span><span class="p">]</span><span class="o">@</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="n">j</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="convex_hull_from_mask"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull_from_mask">[docs]</a><span class="k">def</span> <span class="nf">convex_hull_from_mask</span><span class="p">(</span>
+
+<div class="viewcode-block" id="convex_hull_from_mask">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.convex_hull_from_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">convex_hull_from_mask</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="n">Ntheta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -294,7 +301,10 @@
     <span class="k">return</span> <span class="n">q</span></div>
 
 
-<div class="viewcode-block" id="resample_convex_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.resample_convex_hull">[docs]</a><span class="k">def</span> <span class="nf">resample_convex_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+
+<div class="viewcode-block" id="resample_convex_hull">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.resample_convex_hull">[docs]</a>
+<span class="k">def</span> <span class="nf">resample_convex_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">Ntheta</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Resample a convex shape at uniform angular intervals </span>
 <span class="sd">    around its centroid</span>
@@ -328,9 +338,12 @@
     <span class="n">r1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span><span class="n">hpad</span><span class="p">,</span><span class="n">rpad</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">c</span> <span class="o">+</span> <span class="n">r1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">angles</span><span class="p">)</span></div>
+
     
     
-<div class="viewcode-block" id="in_hull"><a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.in_hull">[docs]</a><span class="k">def</span> <span class="nf">in_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">hull</span><span class="p">):</span> 
+<div class="viewcode-block" id="in_hull">
+<a class="viewcode-back" href="../../../neurotools.spatial.geometry.html#neurotools.spatial.geometry.in_hull">[docs]</a>
+<span class="k">def</span> <span class="nf">in_hull</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">hull</span><span class="p">):</span> 
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Determine if the list of points P lies inside a convex </span>
 <span class="sd">    hull</span>
@@ -358,6 +371,7 @@
     <span class="n">m</span> <span class="o">=</span> <span class="n">hull</span><span class="o">.</span><span class="n">equations</span><span class="p">[:,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># half-plane directions</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">hull</span><span class="o">.</span><span class="n">equations</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># half-plane thresholds</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">m</span><span class="nd">@z2p</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">b</span><span class="p">[:,</span><span class="kc">None</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">)</span></div>
+
 
 
 </pre></div>

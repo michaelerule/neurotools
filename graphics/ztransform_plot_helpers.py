@@ -116,14 +116,14 @@ def phase_magnitude_figure(z,limit=2):
     v = v*0.975+0.0125
     v = v**0.5
     im = imshow(v,extent=ext,cmap='bone')
-    xlabel('$\Re$')
-    ylabel('$\Im$')
+    xlabel(r'$\Re$')
+    ylabel(r'$\Im$')
     title('Magnitude')
     add_complex_axes(limits=((-limit,limit),)*2)
     subplot(122)
     im = imshow(angle(z),extent=ext,cmap='hsv',interpolation='nearest')
-    xlabel('$\Re$')
-    ylabel('$\Im$')
+    xlabel(r'$\Re$')
+    ylabel(r'$\Im$')
     cax = add_colorbar(im,label="Phase $\\theta$")
     cax.set_ticks([-pi*0.999,0,pi*0.999])
     cax.ax.set_yticklabels(['-π','0','π'])

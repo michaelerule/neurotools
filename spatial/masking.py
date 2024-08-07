@@ -1,17 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 '''
 Routines related to 2D boolean arrays used as image masks
 depends on neurotools.spatial.geometry
 These routines expect 2D (x,y) points to be encoded as complex z=x+iy numbers.
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
 
 import numpy as np
 
@@ -21,43 +14,43 @@ import neurotools.signal as sig
 
 def as_mask(x):
     '''
-    Verify that x is a 2D np.bool array, or attempt to convert it to one if 
-    not.
+    Verify that x is a 2D np.ndarray(dtype=bool), 
+    or attempt to convert it to one if not.
     
     Parameters
     ----------
     x: 2D np.array
-        This routine understands np.bool, as well as numeric arrays that contain
-        only two distinct values, and use a positive value for True and any
-        other value for False.
-    
-    Other Parameters
-    ----------------
+        This routine understands np.ndarray(dtype=bool), as well as numeric 
+        arrays that contain only two distinct values, and use a positive value 
+        for `True` and any other value for `False`.
     
     Returns
     -------
+    x: np.ndarray(dtype=bool)
+        Image mask as a 2D Numpy array with datatype `bool`.
     '''
     x = np.array(x)
     if not len(x.shape)==2:
         raise ValueError('x should be a 2D array')
-    if not x.dtype==np.bool:
+    #if not x.dtype==np.ndarray(dtype=bool):
+    if not x.dtype==bool:
         # Try something sensible
         x = np.nan_to_num(np.float32(x),0.0)
         values = np.float32(np.unique(x))
         if len(values)!=2 or np.all(values<=0) or np.all(values>0):
-            raise ValueError('x should be np.bool, got %s'%x.dtype)
+            raise ValueError('x should be np.ndarray(dtype=bool), got %s'%x.dtype)
         x = x>0
     return x
     
 
 def mask_to_points(x):
     '''
-    Get locations of all `True` pixels in a 2D boolean array encoded as
-    z = column + i*row.
+    Get locations of all `True` pixels in a 2D boolean 
+    array encoded as `z = column + i*row.`
     
     Parameters
     ----------
-    x: 2D np.bool
+    x: 2D np.ndarray(dtype=bool)
     
     Returns
     -------
@@ -73,13 +66,13 @@ def extend_mask(mask,sigma=2,thr=0.5):
     Note: this uses circular convolution; Pad accordingly. 
     
     Parameters:
-        mask (2D np.bool): Image mask to extend.
+        mask (2D np.ndarray(dtype=bool)): Image mask to extend.
         sigma (float, default 3): Gaussian blur radius.
         thr: (float, default .5): Threshold for new mask.
     
     Returns
     -------
-    smoothed mask: 2D np.bool
+    smoothed mask: 2D np.ndarray(dtype=bool)
     '''
     mask = np.float32(as_mask(mask))
     return sig.circular_gaussian_smooth_2D(mask,sigma)>thr
@@ -118,7 +111,7 @@ def nan_mask(mask,nanvalue=False,value=None):
         
     Parameters
     ----------
-    mask: 2D np.bool
+    mask: 2D np.ndarray(dtype=bool)
     '''
     nanvalue = int(not(not nanvalue))
     if value is None:
@@ -134,7 +127,7 @@ def maskout(x,mask,**kwargs):
     Parameters
     ----------
     x: 2D np.float32
-    mask: 2D np.bool
+    mask: 2D np.ndarray(dtype=bool)
     '''
     return x.reshape(mask.shape)*nan_mask(mask,**kwargs)
 
@@ -147,11 +140,11 @@ def trim_mask(mask):
     
     Parameters
     ----------
-    mask: 2D np.bool
+    mask: 2D np.ndarray(dtype=bool)
     '''
     mask = as_mask(mask)
-    a,b = find(np.any(mask,1))[[0,-1]]
-    c,d = find(np.any(mask,0))[[0,-1]]
+    a,b  = np.where(np.any(mask,1))[0][[0,-1]]
+    c,d  = np.where(np.any(mask,0))[0][[0,-1]]
     return mask[a:b+1,c:d+1]
 
 
@@ -166,14 +159,14 @@ def mask_crop(x,mask,fill_nan=True):
     Parameters
     ----------
     x: 2D np.float32
-    mask: 2D np.bool
+    mask: 2D np.ndarray(dtype=bool)
     fill_nan: bool; default True
         Whether to fill "false" values with NaN
     '''
     if fill_nan:
         x = maskout(x,mask)
-    a,b = find(np.any(mask,1))[[0,-1]]
-    c,d = find(np.any(mask,0))[[0,-1]]
+    a,b = np.where(np.any(mask,1))[0][[0,-1]]
+    c,d = np.where(np.any(mask,0))[0][[0,-1]]
     return x[a:b+1,c:d+1]
 
 
@@ -185,7 +178,7 @@ def to_image(x,mask,fill=np.NaN,crop=False):
     Parameters
     ----------
     x: 1D np.array
-    mask: 2D np.bool
+    mask: 2D np.ndarray(dtype=bool)
     
     Other Parameters
     ----------------

@@ -1,15 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 '''
 Miscellaneous color-related functions.
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
 
 
 import math
@@ -39,14 +32,11 @@ TURQUOISE  = np.float32(mpl.colors.to_rgb('#00bac9'))
 TEAL       = np.float32(mpl.colors.to_rgb('#00bac9'))
 BLACK      = np.float32(mpl.colors.to_rgb('#44525c'))
 GATHER     = [WHITE,RUST,OCHRE,AZURE,TURQUOISE,BLACK]
-
-OFFWHITE = BLACK*.1+WHITE*.9
-OFFBLACK = BLACK*.9+WHITE*.1
-
-# Mauve and Moss round-out and complement the Gather pallet
+# A purple and green to round-out and complement the Gather pallet
 MAUVE      = np.float32(mpl.colors.to_rgb('#b56ab6'))
 MOSS       = np.float32(mpl.colors.to_rgb('#77ae64'))
-
+OFFWHITE   = BLACK*.1+WHITE*.9
+OFFBLACK   = BLACK*.9+WHITE*.1
 # Other colors (just OK)
 YELLOW     = np.float32(mpl.colors.to_rgb('#efcd2b'))
 INDIGO     = np.float32(mpl.colors.to_rgb('#606ec3'))
@@ -55,24 +45,33 @@ MAGENTA    = np.float32(mpl.colors.to_rgb('#cc79a7'))
 CHARTREUSE = np.float32(mpl.colors.to_rgb('#b59f1a'))
 VIRIDIAN   = np.float32(mpl.colors.to_rgb('#11be8d'))
 CRIMSON    = np.float32(mpl.colors.to_rgb('#b41d4d'))
-
-# I really liked Virginia Rutten's color scheme
+# I liked Virginia Rutten's color scheme
 GOLD       = np.float32(mpl.colors.to_rgb('#ffd92e'))
 TAN        = np.float32(mpl.colors.to_rgb('#765931'))
 SALMON     = np.float32(mpl.colors.to_rgb('#fa8c61'))
 GRAY       = np.float32(mpl.colors.to_rgb('#b3b3b3'))
 LICHEN     = np.float32(mpl.colors.to_rgb('#63c2a3'))
 RUTTEN     = [GOLD,TAN,SALMON,GRAY,LICHEN]
-
+# Set line propert cycle for Matplotlib
+COLORS     = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]
+CYCLE      = [BLACK,RUST,TURQUOISE,OCHRE,AZURE,MAUVE,YELLOW,INDIGO]
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CYCLE)
+# Override defaults
+mcolors.colorConverter.colors['r'] = RUST
+mcolors.colorConverter.colors['g'] = MOSS
+mcolors.colorConverter.colors['b'] = AZURE
+mcolors.colorConverter.colors['y'] = OCHRE
+mcolors.colorConverter.colors['m'] = MAUVE
+mcolors.colorConverter.colors['c'] = TEAL
 # Sometimes, we need to match Matlab colors
-MATLAB_BLUE   = np.float32([0.0000, 0.4470, 0.7410])
-MATLAB_RUST   = np.float32([0.8500, 0.3250, 0.0980])
-MATLABE_OCHRE = np.float32([0.9290, 0.6940, 0.1250])
-MATLAB_MAUVE  = np.float32([0.4940, 0.1840, 0.5560])
-MATLAB_MOSS   = np.float32([0.4660, 0.6740, 0.1880])
-MATLAB_AZURE  = np.float32([0.3010, 0.7450, 0.9330])
-MATLAB_UMBER  = np.float32([0.6350, 0.0780, 0.1840])
-
+# Note: Matlab has different color series for lines, points
+MATLAB_BLUE      = np.float32([0.0000, 0.4470, 0.7410])
+MATLAB_RUST      = np.float32([0.8500, 0.3250, 0.0980])
+MATLABE_OCHRE    = np.float32([0.9290, 0.6940, 0.1250])
+MATLAB_MAUVE     = np.float32([0.4940, 0.1840, 0.5560])
+MATLAB_MOSS      = np.float32([0.4660, 0.6740, 0.1880])
+MATLAB_AZURE     = np.float32([0.3010, 0.7450, 0.9330])
+MATLAB_UMBER     = np.float32([0.6350, 0.0780, 0.1840])
 # The old matlab colors
 MATLAB_BLUE_OLD  = np.float32([0, 0, 1])
 MATLAB_GREEN_OLD = np.float32([0, 0.5, 0])
@@ -81,19 +80,6 @@ MATLAB_TEAL_OLD  = np.float32([0, 0.75, 0.75])
 MATLAB_MAUVE_OLD = np.float32([0.75, 0, 0.75])
 MATLAB_OCHRE_OLD = np.float32([0.75, 0.75, 0])
 MATLAB_BLACK_OLD = np.float32([0.25, 0.25, 0.25])
-
-# Set line propert cycle for Matplotlib
-COLORS     = [BLACK,WHITE,YELLOW,OCHRE,CHARTREUSE,MOSS,VIRIDIAN,TURQUOISE,AZURE,INDIGO,VIOLET,MAUVE,MAGENTA,RUST]
-CYCLE      = [BLACK,RUST,TURQUOISE,OCHRE,AZURE,MAUVE,YELLOW,INDIGO]
-mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CYCLE)
-
-# Override defaults
-mcolors.colorConverter.colors['r'] = RUST
-mcolors.colorConverter.colors['g'] = MOSS
-mcolors.colorConverter.colors['b'] = AZURE
-mcolors.colorConverter.colors['y'] = OCHRE
-mcolors.colorConverter.colors['m'] = MAUVE
-mcolors.colorConverter.colors['c'] = TEAL
 
 ######################################################################
 # Hex codes
@@ -890,9 +876,9 @@ def lighten(color,amount=0.2):
         Length-3 RGB tuple. 
         Alpha is discarded.
     ''' 
-    color = np.float32(mpl.colors.to_rgb(color))
+    color  = np.float32(mpl.colors.to_rgb(color))
     amount = np.clip(float(amount),0,1)
-    color = 1.0 * amount + (1-amount) * color
+    color  = 1.0 * amount + (1-amount) * color
     return color
 
 def darken(color,amount=0.2):
@@ -912,9 +898,9 @@ def darken(color,amount=0.2):
         Length-3 RGB tuple. 
         Alpha is discarded.
     ''' 
-    color = np.float32(mpl.colors.to_rgb(color))
+    color  = np.float32(mpl.colors.to_rgb(color))
     amount = np.clip(float(amount),0,1)
-    color = (1-amount) * color
+    color  = (1-amount) * color
     return color
     
     

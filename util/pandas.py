@@ -10,7 +10,12 @@ from __future__ import print_function
 
 import os,sys
 import numpy  as np
-import pandas as pd
+
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import pandas as pd
+
 import scipy
 from neurotools.stats.pvalues import nancorrect
 from neurotools.util.tools import piper

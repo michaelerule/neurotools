@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.obsolete.gpu.cl.function &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -125,7 +129,9 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 
-<div class="viewcode-block" id="format"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.format">[docs]</a><span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<div class="viewcode-block" id="format">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.format">[docs]</a>
+<span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is a kernel source auto-formatter. </span>
 <span class="sd">    It mostly just does auto-indent</span>
@@ -155,8 +161,11 @@
         <span class="n">indents</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
         <span class="n">newcode</span> <span class="o">+=</span> <span class="n">line</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="k">return</span> <span class="n">newcode</span></div>
+
     
-<div class="viewcode-block" id="printKernel"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.printKernel">[docs]</a><span class="k">def</span> <span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<div class="viewcode-block" id="printKernel">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.printKernel">[docs]</a>
+<span class="k">def</span> <span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This prints out a kernel source with line numbers</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -166,8 +175,11 @@
     <span class="n">formatstring</span> <span class="o">=</span> <span class="s2">&quot;%0&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">labeldigits</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d </span><span class="si">%s</span><span class="s2">&quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">formatstring</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">line</span><span class="p">))</span></div>
+
     
-<div class="viewcode-block" id="guessGPUType"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.guessGPUType">[docs]</a><span class="k">def</span> <span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+<div class="viewcode-block" id="guessGPUType">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.guessGPUType">[docs]</a>
+<span class="k">def</span> <span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;At the moment, this returns numpy.float32 for Python floats and </span>
 <span class="sd">    numpy.int32 for python integers, and is otherwise undefined&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">float</span><span class="p">:</span>
@@ -176,6 +188,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span></div>
+
     
 <span class="n">toGPUType</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span><span class="n">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">)(</span><span class="n">arg</span><span class="p">)</span>
 <span class="sd">&#39;&#39;&#39;A little wrapper to auto-cast floats/ints to respective numpy datatypes</span>
@@ -188,7 +201,9 @@
 <span class="n">insert_global</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([^,* \t]+) \*([^,* \t]+)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;__global \1 *\2&#39;</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="kernel"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.kernel">[docs]</a><span class="nd">@memoize</span>
+<div class="viewcode-block" id="kernel">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.kernel">[docs]</a>
+<span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is my easy kernel wrapper. This function accepts a header ( the</span>
@@ -223,19 +238,26 @@
         <span class="k">return</span> <span class="n">execkern</span>
     <span class="k">return</span> <span class="n">init</span></div>
 
-<div class="viewcode-block" id="elemental"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.elemental">[docs]</a><span class="nd">@memoize</span>
+
+<div class="viewcode-block" id="elemental">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.elemental">[docs]</a>
+<span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">elemental</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
     <span class="n">code</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">code</span>
     <span class="n">arrays</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; \*([^,* \t]+)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span> 
         <span class="n">code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([^a-zA-Z0-9_]+)</span><span class="si">%s</span><span class="s2">([^a-zA-Z0-9_]+)&quot;</span><span class="o">%</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1</span><span class="si">%s</span><span class="s2">[gid]\2&quot;</span><span class="o">%</span><span class="n">var</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">kernel</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span></div>
+
     <span class="c1">#def execkern(*args):</span>
     <span class="c1">#    return kern(len(args[0]))(*args)</span>
     <span class="c1">#return execkern</span>
 
-<div class="viewcode-block" id="gpumap"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.gpumap">[docs]</a><span class="k">def</span> <span class="nf">gpumap</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="gpumap">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.gpumap">[docs]</a>
+<span class="k">def</span> <span class="nf">gpumap</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpumap under construction&quot;</span><span class="p">)</span></div>
+
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">def duckern(header,code):</span>

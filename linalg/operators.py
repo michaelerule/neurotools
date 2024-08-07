@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 '''
 Functions for generating discrete representations of 
@@ -6,16 +6,11 @@ certain operators, either as matrices or in terms of
 their discrete Fourier coefficients. 
 '''
 
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import numpy as np
 import numpy.linalg
 import scipy
 from neurotools.util.functions import sexp
+
 
 def adjacency1D(L,circular=True):
     '''
@@ -149,6 +144,7 @@ def laplacian2D(L,H=None,circular=True,mask=None,boundary='dirichlet'):
             Lp[~mask.ravel(),:] = Lp[:,~mask.ravel()] = 0
     return scipy.sparse.csr_matrix(Lp)
 
+
 def adjacency2D_circular(N):
     '''
     Adjacency matric on a closed NxN domain with circularly-wrapped boundary.
@@ -166,6 +162,7 @@ def adjacency2D_circular(N):
     A1d = adjacency1D_circular(N)
     return scipy.sparse.kronsum(A1d,A1d).toarray()
 
+
 def adjacency2d_rotational(L):
     '''
     2D adjacency matrix with nonzero weights for corner neighbors to improve
@@ -175,6 +172,7 @@ def adjacency2d_rotational(L):
     A2d_cross  = scipy.sparse.kronsum(A1d,A1d).toarray()
     A2d_corner = scipy.sparse.kron(A1d,A1d).toarray()
     return A2d_cross*2/3+A2d_corner*1/3
+
 
 def laplacian1D(N):
     '''
@@ -195,6 +193,7 @@ def laplacian1D(N):
     L = -2*np.eye(N)+np.eye(N,k=1)+np.eye(N,k=-1)
     L[0,0] = L[-1,-1] = -1
     return L
+
 
 def laplacianFT1D(N):
     '''
@@ -219,6 +218,7 @@ def laplacianFT1D(N):
     x = np.fft.fft(precision)
     return x
 
+
 def wienerFT1D(N):
     '''
     Square-root covariance operator for standard 1D Wiener process
@@ -234,6 +234,7 @@ def wienerFT1D(N):
     x[np.abs(x)<1e-5]=1
     sqrtcov = 1/np.sqrt(x)
     return sqrtcov
+
 
 def diffuseFT1D(N,sigma):
     '''
@@ -252,6 +253,7 @@ def diffuseFT1D(N,sigma):
     kernel = np.roll(kernel,N//2)
     return np.fft.fft(kernel).real
 
+
 def flatcov(covariance):
     '''
     Parameters
@@ -266,6 +268,7 @@ def flatcov(covariance):
     for i in range(N):
         sums += np.roll(covariance[i],-i)
     return sums / N
+
 
 def delta(N):
     '''
@@ -283,6 +286,7 @@ def delta(N):
         delta[N//2+1]=delta[N//2]=0.5
     x = np.fft.fft(delta)
     return x
+
 
 def circular_derivative_operator(N):
     '''
@@ -324,6 +328,7 @@ def truncated_derivative_operator(N):
     '''
     return eye(N-1,N,1) - eye(N-1,N,0)
 
+
 def terminated_derivative_operator(N):
     '''
     Discrete derivative, using {-1,1} at endpoints and
@@ -342,12 +347,17 @@ def terminated_derivative_operator(N):
     result: N×N np.float32
         Matrix D such that Dx = Δx
     '''
-    D = eye(11,11,1) - eye(11,11,-1)
-    D = np0.array(D)
+    D = np.eye(N,N,1) - np.eye(N,N,-1)
+    D = np.array(D)
     D[1:-1]*=0.5
     D[0,0] = -1
     D[-1,-1]=1
     return D
+
+
+def truncated_derivative(N):
+    return (eye(N)-eye(N,k=-1))[1:]
+
 
 def pad1up(N):
     '''
@@ -365,15 +375,16 @@ def pad1up(N):
     result: N×(N-1) np.float32
     '''
     K = N-1
-    interpoints = linspace(0,K-1,N)
-    ii = int32(floor(interpoints))
-    ii,ff = np0.divmod(interpoints,1)
+    interpoints = np.linspace(0,K-1,N)
+    ii = np.int32(np.floor(interpoints))
+    ii,ff = np.divmod(interpoints,1)
     ii = np.int32(ii)
-    D = np0.zeros((N,N-1),dtype=np0.float32)
-    D[arange(N-1),ii[:-1]]=1.-ff[:-1]
-    D[arange(N-1),ii[:-1]+1]=ff[:-1]
+    D = np.zeros((N,N-1),dtype=np.float32)
+    D[np.arange(N-1),ii[:-1]]=1.-ff[:-1]
+    D[np.arange(N-1),ii[:-1]+1]=ff[:-1]
     D[-1,-1]=1.
     return D
+
 
 def spaced_derivative_operator(N):
     '''
@@ -393,8 +404,6 @@ def spaced_derivative_operator(N):
     result: N×N np.float32
     '''
     return pad1up(N)@truncated_derivative(N)
-    
-    
 
 
 def integrator(N):
@@ -588,7 +597,7 @@ def make_cosine_basis(N,L,min_interval):
     '''
     t = np.arange(L)/min_interval+1
     b = np.exp(np.log(t[-1])/(N+1))
-    B = log_cosine_basis(arange(N),t,base=b,offset=0)
+    B = log_cosine_basis(np.arange(N),t,base=b,offset=0)
     return B
     
     

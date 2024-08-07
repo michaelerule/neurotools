@@ -1,17 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
-
 import numpy as np
 from scipy import fft
-
 
 def blurkernel(L,σ,normalize=False):
     '''
@@ -236,7 +226,7 @@ def interpolate_peaks(
     iy: interpolated y location of peaks
     rz: indecies of which sample each peak comes from
     '''
-    z = np.array(z)
+    z  = np.array(z)
     Lx = z.shape[0]
     Ly = z.shape[1]
     is3d = True

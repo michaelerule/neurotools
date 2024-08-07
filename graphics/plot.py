@@ -1,48 +1,29 @@
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 '''
 Plotting helper routines
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
-import sys
-if sys.version_info<(3,):
-    from itertools import imap as map
-try: # python 2.x
-    from itertools import izip, chain
-except: # python 3
-    from itertools import chain
-    izip = zip
-
-import os
-import pickle
-import scipy
-import numpy
+import os, sys, pickle
+import numpy, scipy
 import scipy.optimize
+import scipy.stats
+import matplotlib        as mpl
 import matplotlib.pyplot as plt
 
-from scipy.io          import savemat, loadmat
-from scipy.optimize    import leastsq
-from scipy.signal      import butter,filtfilt,lfilter
-from multiprocessing   import Process, Pipe, cpu_count, Pool
+from scipy.io                  import savemat, loadmat
+from scipy.optimize            import leastsq
+from scipy.signal              import butter,filtfilt,lfilter
+from multiprocessing           import Process, Pipe, cpu_count, Pool
+from matplotlib.pyplot         import *
+from matplotlib.patches        import Polygon
+from matplotlib.collections    import PatchCollection
 
-from neurotools.util.array  import find, centers
-from neurotools.util.array  import widths_to_edges
-from neurotools.util.array  import widths_to_centers
-from neurotools.util.time   import today, now
-from neurotools.util.string import shortscientific
+from neurotools.util.array     import find, centers
+from neurotools.util.array     import widths_to_edges
+from neurotools.util.array     import widths_to_centers
+from neurotools.util.time      import today, now
+from neurotools.util.string    import shortscientific
 from neurotools.graphics.color import *
-
-from matplotlib.pyplot import *
-from matplotlib.patches import Polygon
-from matplotlib.collections import PatchCollection
-
-import scipy.stats
 
 try:
     import statsmodels
@@ -149,7 +130,7 @@ def nicey(**kwargs):
     Returns
     -------
     '''
-    if ylim()[0]<0:
+    if plt.ylim()[0]<0:
         plt.yticks([plt.ylim()[0],0,plt.ylim()[1]])
     else:
         plt.yticks([plt.ylim()[0],plt.ylim()[1]])
@@ -165,7 +146,7 @@ def nicex(**kwargs):
     Returns
     -------
     '''
-    if xlim()[0]<0:
+    if plt.xlim()[0]<0:
         plt.xticks([plt.xlim()[0],0,plt.xlim()[1]])
     else:
         plt.xticks([plt.xlim()[0],plt.xlim()[1]])
@@ -199,10 +180,10 @@ def positivex():
     '''
     Sets the lower x limit to zero, and the upper limit to 
     the largest positive value un the current xlimit. 
-    If the curent xlim() is negative, 
+    If the curent plt.xlim() is negative, 
     a ``ValueError`` is raised.
     '''
-    top = np.max(xlim())
+    top = np.max(plt.xlim())
     if top<=0:
         raise ValueError(
             'Current axis view lies within negative '
@@ -214,9 +195,9 @@ def positivey():
     '''
     Sets the lower y limit to zero, and the upper limit to 
     the largest positive value un the current ylimit. 
-    If the curent ylim() is negative, a ValueError is raised.
+    If the curent plt.ylim() is negative, a ValueError is raised.
     '''
-    top = np.max(ylim())
+    top = np.max(plt.ylim())
     if top<=0:
         raise ValueError(
             'Current axis view lies within negative '
@@ -234,7 +215,7 @@ def positivexy():
 
 def xylim(a,b,ax=None):
     '''
-    set x and y axis limits to the smae range
+    set x and y axis limits to the same range
     
     Parameters
     ----------
@@ -283,7 +264,7 @@ def noxyaxes():
     nox()
     noy()
     noaxis()
-    gca().set_frame_on(False)
+    plt.gca().set_frame_on(False)
     
 def noxlabels():
     '''
@@ -318,14 +299,14 @@ def unity(by=5,**kwargs):
     '''
     Set y-axis to unit interval
     '''
-    ylim(0,1)
+    plt.ylim(0,1)
     nicey(by=by,**kwargs)
 
 def unitx():
     '''
     Set x-axis to unit interval
     '''
-    xlim(0,1)
+    plt.xlim(0,1)
     nicex()
 
 
@@ -379,8 +360,8 @@ def square_compare(hi=1,lo=0,**kwargs):
     if lo>hi: lo,hi=hi,lo
     simpleaxis()
     plot([lo,hi],[lo,hi],**(dict(color='k',lw=.6)|kwargs)) 
-    xlim(lo,hi)
-    ylim(lo,hi) 
+    plt.xlim(lo,hi)
+    plt.ylim(lo,hi) 
     force_aspect()
 
 def get_aspect(aspect=1,a=None):
@@ -510,8 +491,8 @@ def get_ax_pixel(ax=None,fig=None):
     # w/h in pixels
     w,h = get_ax_size()
     # one px in axis units is the axis span div no. pix
-    dy = np.diff(ylim())[0]
-    dx = np.diff(xlim())[0]
+    dy = np.diff(plt.ylim())[0]
+    dx = np.diff(plt.xlim())[0]
     return dx/float(w),dy/float(h)
 
 
@@ -609,7 +590,7 @@ def xunits_to_pixels(n,ax=None,fig=None):
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
-    dx = np.diff(xlim())[0]
+    dx = np.diff(plt.xlim())[0]
     return n*float(w)/dx
 
 
@@ -637,7 +618,7 @@ def pixels_to_yunits(n,ax=None,fig=None):
     if fig is None: fig = plt.gcf()
     if ax  is None: ax  = plt.gca()
     w,h = get_ax_size()
-    dy = np.diff(ylim())[0]
+    dy = np.diff(plt.ylim())[0]
     return n*dy/float(h)
 
 
@@ -663,6 +644,11 @@ def pixels_to_xfigureunits(n,fig=None):
     if fig is None: fig = plt.gcf()
     w_pixels = fig.get_size_inches()[0]*fig.dpi
     return n/float(w_pixels)
+
+
+# aliases
+px2x = pixels_to_xunits
+px2y = pixels_to_yunits
 
 def pixels_to_yfigureunits(n,fig=None):
     '''
@@ -739,10 +725,6 @@ def yfigureunits_to_pixels(n,ax=None,fig=None):
     if ax  is None: ax  = plt.gca()
     h_pixels = fig.get_size_inches()[1]*fig.dpi
     return n*float(h_pixels)
-    
-# aliases
-px2x = pixels_to_xunits
-px2y = pixels_to_yunits
 
 def adjust_ylabel_space(n,ax=None):
     '''
@@ -1191,12 +1173,12 @@ def shade_edges(edges,color=(0.5,0.5,0.5,0.5),**kwargs):
     edges
     color
     '''
-    a,b = ylim()
-    c,d = xlim()
+    a,b = plt.ylim()
+    c,d = plt.xlim()
     for x1,x2 in zip(*edges):
         fill_between([x1,x2],[a,a],[b,b],color=color,lw=0,**kwargs)
-    ylim(a,b)
-    xlim(c,d)
+    plt.ylim(a,b)
+    plt.xlim(c,d)
 
 def ybartext(
     x,t,
@@ -1206,7 +1188,7 @@ def ybartext(
     **kwargs):
     '''
     Draws an ``axvline()`` spanning the *current*
-    y-axis limits (``ylim()``), with an appropriately
+    y-axis limits (``plt.ylim()``), with an appropriately
     spaced (and optionally outlined) label at the top
     left. 
     
@@ -1228,16 +1210,16 @@ def ybartext(
         keyword arguments forwarded to 
         ``plot()`` and ``text()``.
     '''
-    a,b = ylim()
+    a,b = plt.ylim()
     plot([x,x],[a,b],**(dict(lw=0.8,color='k')|kwargs))
-    ylim(a,b)
+    plt.ylim(a,b)
     dx,dy = get_ax_pixel()
     # Generate outline by drawing copies in the background
     # There must be a better way?
     if outline:
         for ix in arange(-2,3)*dx:
             for iy in arange(-2,3)*dy:
-                text(ix+x,iy+ylim()[1]-dy*4,t,
+                text(ix+x,iy+plt.ylim()[1]-dy*4,t,
                     rotation=90,
                     color=c2,
                     ha='right',
@@ -1246,7 +1228,7 @@ def ybartext(
     # Add text label
     text(
         x,
-        ylim()[1]-dy*2,
+        plt.ylim()[1]-dy*2,
         t,
         rotation=90,
         color=c1,
@@ -1254,7 +1236,7 @@ def ybartext(
         ha='right',
         va='top')
     # Restore y limits
-    ylim(a,b)
+    plt.ylim(a,b)
 
 def xbartext(
     y,t,
@@ -1264,7 +1246,7 @@ def xbartext(
     **kwargs):
     '''
     Draws an ``axhline()`` spanning the *current*
-    x-axis limits (``xlim()``), with an appropriately
+    x-axis limits (``plt.xlim()``), with an appropriately
     spacedd (and optionally outlined) label at the top
     left. 
     
@@ -1286,7 +1268,7 @@ def xbartext(
         keyword arguments forwarded to 
         ``plot()`` and ``text()``.
     '''
-    a,b = xlim()
+    a,b = plt.xlim()
     text_kwargs = {}
     text_kwargs['horizontalalignment'] = 'left'
     text_kwargs['verticalalignment'] = 'bottom'
@@ -1297,7 +1279,7 @@ def xbartext(
             del kwargs[key]
     text_kwargs['color']=c1
     plot([a,b],[y,y],**kwargs)
-    xlim(a,b)
+    plt.xlim(a,b)
     dx,dy = get_ax_pixel()
     if outline:
         for ix in arange(-2,3)*dx:
@@ -1312,7 +1294,7 @@ def xbartext(
     elif text_kwargs['horizontalalignment']=='right':
         # right aligned text
         text(b-dx*4,y,t,**text_kwargs)
-    xlim(a,b)
+    plt.xlim(a,b)
 
 def nice_legend(*args,**kwargs):
     '''
@@ -1333,7 +1315,6 @@ def nice_legend(*args,**kwargs):
     lg = legend(*args,**defaults)
     lg.get_frame().set_linewidth(0.0)
     return lg
-
 def right_legend(*args,fudge=0.0,**kwargs):
     '''
     Legend outside the plot to the right.
@@ -1348,7 +1329,7 @@ def right_legend(*args,fudge=0.0,**kwargs):
         'bbox_to_anchor':(1+fudge,0.5),
         }
     defaults.update(kwargs)
-    lg = legend(*args,**defaults)
+    lg = plt.legend(*args,**defaults)
     lg.get_frame().set_linewidth(0.0)
     return lg
 
@@ -1370,7 +1351,7 @@ def left_legend(*args,**kwargs):
         'bbox_to_anchor':(x,0.5),
         }
     defaults.update(kwargs)
-    lg = legend(*args,**defaults)
+    lg = plt.legend(*args,**defaults)
     lg.get_frame().set_linewidth(0.0)
     return lg
 
@@ -1382,7 +1363,7 @@ def base_legend(*args,fudge=-0.1,**kwargs):
     ----------------
     fudge: padding between legend and axis, default -0.1
     '''
-    lg = legend(*args,**{**{
+    lg = plt.legend(*args,**{**{
         'loc':'upper center',
         'bbox_to_anchor':(0.5,0.0+fudge),
         },**kwargs})
@@ -1397,7 +1378,7 @@ def top_legend(*args,fudge=0.1,**kwargs):
     ----------------
     fudge: padding between legend and axis, default -0.1
     '''
-    lg = legend(*args,**{**{
+    lg = plt.legend(*args,**{**{
         'loc':'lower center',
         'bbox_to_anchor':(0.5,1.0+fudge),
         },**kwargs})
@@ -1481,8 +1462,8 @@ def plotWTPhase(ff,cwt,aspect=None,ip='nearest'):
     cla()
     imshow(rgb,cmap=None,aspect=aspect,
         extent=(0,N,ff[-1],ff[0]),interpolation=ip)
-    xlim(0,N)
-    ylim(ff[0],ff[-1])
+    plt.xlim(0,N)
+    plt.ylim(ff[0],ff[-1])
     tight_layout()
     draw()
     show()
@@ -1632,7 +1613,7 @@ def good_colorbar(
     ha='c'):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
-    r'$\mathrm{\mu V}^2$'
+    r'$\\mathrm{\\mu V}^2$'
 
     Parameters:
         vmin      (number) : min value for colormap
@@ -1664,7 +1645,7 @@ def good_colorbar(
         
     if labelsize is None:
         labelsize = fontsize
-    if type(vmin)==matplotlib.image.AxesImage:
+    if type(vmin) == mpl.image.AxesImage:
         img  = vmin
         cmap = img.get_cmap()
         vmin = img.get_clim()[0]
@@ -1702,8 +1683,8 @@ def good_colorbar(
         noy()
         nicex()
         plt.text(
-            np.mean(xlim()),
-            ylim()[1]-pixels_to_yunits(labelpad,ax=cax),
+            np.mean(plt.xlim()),
+            plt.ylim()[1]-pixels_to_yunits(labelpad,ax=cax),
             title,
             fontsize=fontsize,
             rotation=0,
@@ -1729,8 +1710,8 @@ def good_colorbar(
         nox()
         nicey()
         plt.text(
-            xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
-            np.mean(ylim()),
+            plt.xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
+            np.mean(plt.ylim()),
             title,
             fontsize=fontsize,
             rotation=90,
@@ -1753,11 +1734,11 @@ def complex_axis(scale):
     ----------
     scale: float
     '''
-    xlim(-scale,scale)
-    ylim(-scale,scale)
+    plt.xlim(-scale,scale)
+    plt.ylim(-scale,scale)
     nicexy()
-    ybartext(0,'$\Im(z)$','k','w',lw=1,color='k',outline=False)
-    xbartext(0,'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    ybartext(0,r'$\Im(z)$','k','w',lw=1,color='k',outline=False)
+    xbartext(0,r'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
     noaxis()
     xlabel(u'μV',fontname='DejaVu Sans',fontsize=12)
     ylabel(u'μV',fontname='DejaVu Sans',fontsize=12)
@@ -1779,7 +1760,10 @@ def subfigurelabel(x,fontsize=10,dx=39,dy=7,ax=None,bold=True,**kwargs):
         'va':'bottom',
         'ha':'left'}
     fontproperties.update(kwargs)
-    text(xlim()[0]-pixels_to_xunits(dx),ylim()[1]+pixels_to_yunits(dy),x,
+    plt.text(
+        plt.xlim()[0]-pixels_to_xunits(dx),
+        plt.ylim()[1]+pixels_to_yunits(dy),
+        x,
         **fontproperties)
 
 def sigbar(x1,x2,y,
@@ -1899,11 +1883,11 @@ def savefigure(name,stamp=True,**kwargs):
     if not 'dpi' in kwargs:
         kwargs['dpi']=600
     prefix = now()+'_'+basename if stamp else basename
-    savefig(dirname + os.path.sep+prefix+'.svg',
+    plt.savefig(dirname + os.path.sep+prefix+'.svg',
         transparent=True,bbox_inches='tight',pad_inches=0,**kwargs)
-    savefig(dirname + os.path.sep+prefix+'.pdf',
+    plt.savefig(dirname + os.path.sep+prefix+'.pdf',
         transparent=True,bbox_inches='tight',pad_inches=0,**kwargs)
-    savefig(dirname + os.path.sep+prefix+'.png',
+    plt.savefig(dirname + os.path.sep+prefix+'.png',
         transparent=True,bbox_inches='tight',pad_inches=0,**kwargs)
 
 def clean_y_range(ax=None,precision=1):
@@ -1916,11 +1900,11 @@ def clean_y_range(ax=None,precision=1):
     precision: int
     '''
     if ax is None: ax=plt.gca()
-    y1,y2 = ylim()
+    y1,y2 = plt.ylim()
     precision = 10.0**precision
     _y1 = floor(y1*precision)/precision
     _y2 = ceil (y2*precision)/precision
-    ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
+    plt.ylim(min(_y1,plt.ylim()[0]),max(_y2,plt.ylim()[1]))
 
 def round_to_precision(x,precision=1):
     '''
@@ -2010,7 +1994,7 @@ def expand_y_range(yvalues,ax=None,precision=1,pad=1.2):
     precision = 10.0**precision
     _y1 = floor_to_precision(y1,precision)
     _y2 = ceil_to_precision(y2,precision)
-    ylim(min(_y1,ylim()[0]),max(_y2,ylim()[1]))
+    plt.ylim(min(_y1,plt.ylim()[0]),max(_y2,plt.ylim()[1]))
 
 
 def Gaussian2D_covellipse(M,C,N=60,**kwargs):
@@ -2300,7 +2284,7 @@ def figurebox(color=(0.6,0.6,0.6)):
     '''
     # new clear axis overlay with 0-1 limits
     from matplotlib import pyplot, lines
-    ax2 = pyplot.axes([0,0,1,1],facecolor=(1,1,1,0))# axisbg=(1,1,1,0))
+    ax2 = pyplot.axes([0,0,1,1],facecolor=(1,1,1,0))
     x,y = np.array([[0,0,1,1,0], [0,1,1,0,0]])
     line = lines.Line2D(x, y, lw=1, color=color)
     ax2.add_line(line)
@@ -2738,8 +2722,8 @@ def mock_legend(names,colors=None,s=40,lw=0.6,marker='s',
     '''
     names = [*names]
     save_limits()
-    x0 = xlim()[0]-100
-    y0 = ylim()[0]-100
+    x0 = plt.xlim()[0]-100
+    y0 = plt.ylim()[0]-100
     
     if not styles is None:
         for name,style in zip(names,styles):
@@ -3084,7 +3068,7 @@ def plot_quadrant(
     '''
     Other Parameters
     ----------------
-    xlabel: str; default '←$\mathrm{noise}$→',
+    xlabel: str; default '←$\\mathrm{noise}$→',
     ylabel: str; default '←$\\varnothing$→'
     '''
     # Quadrant of unit circle
@@ -3100,8 +3084,8 @@ def plot_quadrant(
     text(r/2,0,xlabel,ha='center',va='top')
 
 def quadrant_axes(q = 0.2):
-    xlim(0-q,1+q)
-    ylim(0-q,1+q)
+    plt.xlim(0-q,1+q)
+    plt.ylim(0-q,1+q)
     force_aspect()
     noaxis()
     noxyaxes()
@@ -3152,6 +3136,30 @@ def nicebp(bp,color='k',linewidth=.5):
         setp(bp[kk], color=color)
     setp(bp['whiskers'],linestyle='solid',linewidth=linewidth)
     setp(bp['caps'],    linestyle='solid',linewidth=linewidth)
+
+
+def colored_violin(data,position=1,color=RUST,edgecolor=WHITE,width=0.75,lw=0.8):
+    vp = plt.violinplot(
+        data,
+        positions=[position],
+        widths=[width],
+        showextrema=True,
+        showmedians=True,
+    )
+    for _ in vp['bodies']:
+        _.set_facecolor(color)
+        _.set_edgecolor(color)
+        _.set_alpha(1)
+        _.set_lw(lw/2)
+    vp['cbars' ].set_color(color)
+    vp['cmaxes'].set_color(color)
+    vp['cmins' ].set_color(color)
+    vp['cbars' ].set_lw(lw)
+    vp['cmaxes'].set_lw(lw)
+    vp['cmins' ].set_lw(lw)
+    vp['cmedians'].set_color(edgecolor)
+    vp['cmedians'].set_lw(lw)
+    vp['cmedians'].set_capstyle("butt")
 
 def colored_boxplot(
     data,
@@ -3209,19 +3217,20 @@ def colored_boxplot(
             mediancolor = BLACK \
                 if matplotlib.colors.to_hex(color)!=b \
                 else WHITE
+    kwargs2 = {k:v for (k,v) in kwargs.items() if not k.endswith('props')}
     bp = plt.boxplot(data,
         positions    = positions,
         patch_artist = True,
         showfliers   = showfliers,
         notch        = notch,
         whis         = whis, 
-        medianprops  = {'linewidth':lw,'color':mediancolor},
-        whiskerprops = {'linewidth':lw,'color':color},
-        flierprops   = {'linewidth':lw,'color':color},
-        capprops     = {'linewidth':lw,'color':color},
-        boxprops     = {'linewidth':lw,'color':color,
-                  'facecolor':color if filled else bgcolor},
-        **kwargs);
+        medianprops  = {'lw':lw,'color':mediancolor}|kwargs.get('medianprops',{}),
+        whiskerprops = {'lw':lw,'color':color}|kwargs.get('whiskerprops',{}),
+        flierprops   = {'lw':lw,'color':color}|kwargs.get('flierprops',{}),
+        capprops     = {'lw':lw,'color':color}|kwargs.get('capprops',{}),
+        boxprops     = {'lw':lw,'color':color,
+                  'facecolor':color if filled else bgcolor}|kwargs.get('boxprops',{}),
+        **kwargs2);
     return bp
 
 def boxplot_significance(
@@ -4071,16 +4080,16 @@ def disk_axis(
                 )
             
     if fix_limits:
-        #x0,x1 = xlim()
-        #y0,y1 = ylim()
+        #x0,x1 = plt.xlim()
+        #y0,y1 = plt.ylim()
         #x0 = min(x0,-r2)
         #y0 = min(y0,-r2)
         #x1 = max(x1, r2)
         #y1 = max(y1, r2)
-        #xlim(x0,x1)
-        #ylim(y0,y1)
-        xlim(-r2,r2)
-        ylim(-r2,r2)
+        #plt.xlim(x0,x1)
+        #plt.ylim(y0,y1)
+        plt.xlim(-r2,r2)
+        plt.ylim(-r2,r2)
         force_aspect()
     
     

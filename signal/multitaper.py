@@ -25,6 +25,7 @@ from neurotools.jobs            import parallel
 try:
     from spectrum.mtm import dpss
 except:
+    warnings.warn("Could not find the `spectrum` module; multitaper unsupported")
     def dpss(*args):
         raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
 

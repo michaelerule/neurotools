@@ -219,6 +219,7 @@ def minimize_retry(objective,initial,jac=None,hess=None,
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore",message='Method Nelder-Mead does not use')
             warnings.filterwarnings("ignore",message='Method BFGS does not use')
+            warnings.filterwarnings("ignore",message='does not use')
             # If gradient is provided....
             if not jac is None and not jac is False and not simplex_only:
                 if try_to_optimize('Newton-CG','disp xtol maxiter eps',jac_=jac):

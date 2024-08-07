@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.obsolete.encoding.NaryHuffman &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -94,8 +98,12 @@
 <span class="sd">N-ary Huffman encoder</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="NaryHuffman"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman">[docs]</a><span class="k">class</span> <span class="nc">NaryHuffman</span><span class="p">:</span>
-<div class="viewcode-block" id="NaryHuffman.Node"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.Node">[docs]</a>    <span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+<div class="viewcode-block" id="NaryHuffman">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman">[docs]</a>
+<span class="k">class</span> <span class="nc">NaryHuffman</span><span class="p">:</span>
+<div class="viewcode-block" id="NaryHuffman.Node">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.Node">[docs]</a>
+    <span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">children</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">children</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pr</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ch</span><span class="o">.</span><span class="n">pr</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">children</span><span class="p">])</span>
@@ -104,7 +112,9 @@
             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
                 <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">0:</span><span class="si">%s</span><span class="s1">,&#39;</span><span class="o">%</span><span class="n">ch</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="n">nested</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">s</span><span class="o">+</span><span class="s1">&#39;)&#39;</span>
-<div class="viewcode-block" id="NaryHuffman.Node.walk"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.Node.walk">[docs]</a>        <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sequence</span><span class="o">=</span><span class="p">()):</span>
+<div class="viewcode-block" id="NaryHuffman.Node.walk">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.Node.walk">[docs]</a>
+        <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sequence</span><span class="o">=</span><span class="p">()):</span>
             <span class="n">symbols</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
                 <span class="n">code</span> <span class="o">=</span> <span class="n">sequence</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="p">,)</span>
@@ -112,13 +122,18 @@
                     <span class="n">symbols</span> <span class="o">+=</span> <span class="n">ch</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">symbols</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">ch</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span><span class="n">code</span><span class="p">)]</span>
-            <span class="k">return</span> <span class="n">symbols</span></div></div>
-<div class="viewcode-block" id="NaryHuffman.Leaf"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.Leaf">[docs]</a>    <span class="k">class</span> <span class="nc">Leaf</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">symbols</span></div>
+</div>
+
+<div class="viewcode-block" id="NaryHuffman.Leaf">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.Leaf">[docs]</a>
+    <span class="k">class</span> <span class="nc">Leaf</span><span class="p">:</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">symbol</span><span class="p">,</span><span class="n">probability</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pr</span> <span class="o">=</span> <span class="n">probability</span>
         <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nested</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
             <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">nested</span><span class="o">+</span><span class="s2">&quot;(</span><span class="si">%s</span><span class="s2">; </span><span class="si">%0.2e</span><span class="s2">)&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">pr</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frequencies</span><span class="p">,</span><span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">degree</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Degree of a tree must be at least 2&quot;</span><span class="p">);</span>
@@ -134,14 +149,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">walk</span><span class="p">())</span>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
-<div class="viewcode-block" id="NaryHuffman.encode_packets"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.encode_packets">[docs]</a>    <span class="k">def</span> <span class="nf">encode_packets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="NaryHuffman.encode_packets">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.encode_packets">[docs]</a>
+    <span class="k">def</span> <span class="nf">encode_packets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">]</span></div>
-<div class="viewcode-block" id="NaryHuffman.encode"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NaryHuffman.encode">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.encode">[docs]</a>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_packets</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
             <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">p</span></div>
-<div class="viewcode-block" id="NaryHuffman.decode"><a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NaryHuffman.decode">
+<a class="viewcode-back" href="../../../../neurotools.obsolete.encoding.NaryHuffman.html#neurotools.obsolete.encoding.NaryHuffman.NaryHuffman.decode">[docs]</a>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
         <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
         <span class="n">decoded</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">B</span><span class="p">:</span>
@@ -149,7 +172,9 @@
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">head</span><span class="p">)</span> <span class="ow">is</span> <span class="n">NaryHuffman</span><span class="o">.</span><span class="n">Leaf</span><span class="p">:</span>
                 <span class="n">decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
                 <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
-        <span class="k">return</span> <span class="n">decoded</span></div></div>
+        <span class="k">return</span> <span class="n">decoded</span></div>
+</div>
+
 </pre></div>
 
            </div>

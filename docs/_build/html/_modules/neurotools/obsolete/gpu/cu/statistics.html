@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.obsolete.gpu.cu.statistics &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -100,8 +104,11 @@
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PyCuda is missing; please install it to use CUDA routines&#39;</span><span class="p">)</span>
     <span class="n">pycuda</span> <span class="o">=</span> <span class="n">cuda</span> <span class="o">=</span> <span class="kc">None</span>
-<div class="viewcode-block" id="ElementwiseKernel"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.ElementwiseKernel">[docs]</a>    <span class="k">def</span> <span class="nf">ElementwiseKernel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ElementwiseKernel">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.ElementwiseKernel">[docs]</a>
+    <span class="k">def</span> <span class="nf">ElementwiseKernel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PyCuda is missing; please install it to use CUDA routines&#39;</span><span class="p">)</span></div>
+
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">gpufun</span>
 <span class="kn">from</span> <span class="nn">gpufun</span> <span class="kn">import</span> <span class="o">*</span>
@@ -205,7 +212,9 @@
         <span class="s2">&quot;z[i]=p[i]&gt;0?pow(x[i]-mean,2):0.0&quot;</span><span class="p">,</span>
         <span class="s2">&quot;gpubarlinekernc&quot;</span><span class="p">)</span>
         
-<div class="viewcode-block" id="gpubarlinedata"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpubarlinedata">[docs]</a><span class="k">def</span> <span class="nf">gpubarlinedata</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">minval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="gpubarlinedata">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpubarlinedata">[docs]</a>
+<span class="k">def</span> <span class="nf">gpubarlinedata</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">minval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -240,8 +249,11 @@
             <span class="n">ymeans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">my</span><span class="p">)</span>
             <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">xmeans</span><span class="p">,</span><span class="n">ymeans</span><span class="p">,</span><span class="n">errors</span><span class="p">)</span>    </div>
+
     
-<div class="viewcode-block" id="sebarline"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sebarline">[docs]</a><span class="k">def</span> <span class="nf">sebarline</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="nb">min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="sebarline">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sebarline">[docs]</a>
+<span class="k">def</span> <span class="nf">sebarline</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="nb">min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -261,8 +273,11 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">textf</span><span class="p">(</span><span class="n">ly</span><span class="p">))</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">textf</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    </div>
+
     
-<div class="viewcode-block" id="sebarline2"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sebarline2">[docs]</a><span class="k">def</span> <span class="nf">sebarline2</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="sebarline2">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sebarline2">[docs]</a>
+<span class="k">def</span> <span class="nf">sebarline2</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -283,8 +298,11 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">textf</span><span class="p">(</span><span class="n">ly</span><span class="p">))</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">textf</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>      </div>
+
          
-<div class="viewcode-block" id="gpuhistogram"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpuhistogram">[docs]</a><span class="k">def</span> <span class="nf">gpuhistogram</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">minval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="gpuhistogram">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpuhistogram">[docs]</a>
+<span class="k">def</span> <span class="nf">gpuhistogram</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">minval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -306,6 +324,7 @@
     <span class="k">return</span> <span class="n">N</span></div>
 
 
+
 <span class="n">sdgpubarlinekerna</span> <span class="o">=</span> <span class="n">ElementwiseKernel</span><span class="p">(</span>
         <span class="s2">&quot;float *x, float low, float high, float *z&quot;</span><span class="p">,</span>
         <span class="s2">&quot;z[i] = x[i]&gt;=low&amp;&amp;x[i]&lt;high?1.0:0.0&quot;</span><span class="p">,</span>
@@ -320,7 +339,9 @@
         <span class="s2">&quot;gpubarlinekernc&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="sdgpubarlinedata"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sdgpubarlinedata">[docs]</a><span class="k">def</span> <span class="nf">sdgpubarlinedata</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">minval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="sdgpubarlinedata">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sdgpubarlinedata">[docs]</a>
+<span class="k">def</span> <span class="nf">sdgpubarlinedata</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">minval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -355,9 +376,12 @@
             <span class="n">ymeans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">my</span><span class="p">)</span>
             <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">xmeans</span><span class="p">,</span><span class="n">ymeans</span><span class="p">,</span><span class="n">errors</span><span class="p">)</span></div>
+
         
 
-<div class="viewcode-block" id="sdbarline"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sdbarline">[docs]</a><span class="k">def</span> <span class="nf">sdbarline</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="nb">min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="sdbarline">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sdbarline">[docs]</a>
+<span class="k">def</span> <span class="nf">sdbarline</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="nb">min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -379,7 +403,10 @@
     <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    </div>
 
 
-<div class="viewcode-block" id="sdbarline2"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sdbarline2">[docs]</a><span class="k">def</span> <span class="nf">sdbarline2</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="sdbarline2">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sdbarline2">[docs]</a>
+<span class="k">def</span> <span class="nf">sdbarline2</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span><span class="n">lx</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">ly</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -401,7 +428,10 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">textf</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="gpubin_core"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpubin_core">[docs]</a><span class="k">def</span> <span class="nf">gpubin_core</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+
+<div class="viewcode-block" id="gpubin_core">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpubin_core">[docs]</a>
+<span class="k">def</span> <span class="nf">gpubin_core</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -432,6 +462,7 @@
     <span class="k">del</span> <span class="n">newdata</span>
     <span class="k">del</span> <span class="n">data</span>
     <span class="k">return</span> <span class="n">cut</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">bins</span><span class="p">)</span></div>
+
 <span class="n">gpubin</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">size</span><span class="p">:</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span><span class="n">flat</span><span class="p">([</span><span class="n">gpubin_core</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">MAXPROCESS</span><span class="p">],</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="n">MAXPROCESS</span><span class="p">)])</span>
 
 
@@ -457,7 +488,9 @@
     <span class="c1">#traceback.print_exc()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PyCuda may not be installed, could not initialize&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="gpu_histogram"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpu_histogram">[docs]</a><span class="k">def</span> <span class="nf">gpu_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="nb">min</span><span class="p">,</span><span class="nb">max</span><span class="p">,</span><span class="n">bins</span><span class="p">):</span>
+<div class="viewcode-block" id="gpu_histogram">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.gpu_histogram">[docs]</a>
+<span class="k">def</span> <span class="nf">gpu_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="nb">min</span><span class="p">,</span><span class="nb">max</span><span class="p">,</span><span class="n">bins</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -483,7 +516,10 @@
     <span class="n">n</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">N</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">n</span><span class="o">*</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dest</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span></div>
 
-<div class="viewcode-block" id="sprinkle"><a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sprinkle">[docs]</a><span class="k">def</span> <span class="nf">sprinkle</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">DT</span><span class="p">):</span>
+
+<div class="viewcode-block" id="sprinkle">
+<a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cu.statistics.html#neurotools.obsolete.gpu.cu.statistics.sprinkle">[docs]</a>
+<span class="k">def</span> <span class="nf">sprinkle</span><span class="p">(</span><span class="n">spikes</span><span class="p">,</span><span class="n">DT</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -501,6 +537,7 @@
                 <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">DT</span><span class="p">)</span>
                 <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+
 
 </pre></div>
 

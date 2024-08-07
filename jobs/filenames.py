@@ -69,7 +69,7 @@ def is_dangerous_filename(filename):
         return True
     if __PYTHON_2__ and type(filename) is unicode:
         return True
-    if any([c in filename for c in "\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
+    if any([c in filename for c in "\\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
         return True
     return False
 
@@ -97,8 +97,8 @@ def check_filename(filename):
         warnings.warn('FILE NAME MAY BE TOO LONG ON SOME SYSTEMS')
     if __PYTHON_2__ and type(filename) is unicode:
         warnings.warn('FILE NAME IS UNICODE')
-    if any([c in filename for c in "/?<>\:*|\"\n\t\b\r"]):
+    if any([c in filename for c in "/?<>\\:*|\"\n\t\b\r"]):
         raise ValueError('Filename contains character forbidden on windows')
-    if any([c in filename for c in "\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
+    if any([c in filename for c in "\\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
         warnings.warn('FILE NAME CONTAINS CHARACTER THAT MAY CAUSE ISSUES IN SOME SOFTWARE')
 

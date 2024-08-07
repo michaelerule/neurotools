@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.util.array &mdash; Neurotools 2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=804ff984"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+        <script src="../../../_static/doctools.js?v=454853ac"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -79,37 +83,38 @@
            <div itemprop="articleBody">
              
   <h1>Source code for neurotools.util.array</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
+<span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Helper functions related to Numpy arrays and other indexing</span>
 <span class="sd">tasks.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="lmap"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.lmap">[docs]</a><span class="k">def</span> <span class="nf">lmap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="lmap">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.lmap">[docs]</a>
+<span class="k">def</span> <span class="nf">lmap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Map, collecting results immediately in a list.</span>
 <span class="sd">    Also aliased as `lap`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="slist"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.slist">[docs]</a><span class="k">def</span> <span class="nf">slist</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="slist">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.slist">[docs]</a>
+<span class="k">def</span> <span class="nf">slist</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert iterable to sorted list.</span>
 <span class="sd">    Also aliased as `sls`.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">([</span><span class="o">*</span><span class="n">x</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="amap"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.amap">[docs]</a><span class="k">def</span> <span class="nf">amap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="amap">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.amap">[docs]</a>
+<span class="k">def</span> <span class="nf">amap</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Map, collecting results immediately in a Numpy array.</span>
 <span class="sd">    This will try to create a numeric or boolean array </span>
@@ -124,11 +129,14 @@
         <span class="n">b</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">a</span>
         <span class="k">return</span> <span class="n">b</span></div>
 
+
 <span class="n">lap</span> <span class="o">=</span> <span class="n">lmap</span>
 <span class="n">aap</span> <span class="o">=</span> <span class="n">amap</span>
 <span class="n">sls</span> <span class="o">=</span> <span class="n">slist</span>
 
-<div class="viewcode-block" id="arraymap"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.arraymap">[docs]</a><span class="k">def</span> <span class="nf">arraymap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">iterables</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="arraymap">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.arraymap">[docs]</a>
+<span class="k">def</span> <span class="nf">arraymap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">iterables</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Map functionality over numpy arrays</span>
 <span class="sd">    replaces depricated arraymap from pylab.</span>
@@ -142,7 +150,10 @@
         <span class="k">return</span> <span class="n">arraymap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">arraymap</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span><span class="o">*</span><span class="n">iterables</span><span class="p">,</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;depth&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="find"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.find">[docs]</a><span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.find">[docs]</a>
+<span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Replacement to Pylab&#39;s lost `find()` function.</span>
 <span class="sd">    Synonym for `np.where(np.array(x).ravel())[0]`</span>
@@ -152,14 +163,20 @@
 <span class="sd">    x: np.array</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span></div>
+
     
-<div class="viewcode-block" id="ezip"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.ezip">[docs]</a><span class="k">def</span> <span class="nf">ezip</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="ezip">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.ezip">[docs]</a>
+<span class="k">def</span> <span class="nf">ezip</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Enumerate and zip, i.e. `enumerate(zip(*args))`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="asiterable"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.asiterable">[docs]</a><span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="asiterable">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.asiterable">[docs]</a>
+<span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Attempt to convert an iterable object to a list.</span>
 <span class="sd">    This mat eventually be replaced with something fancier,</span>
@@ -177,8 +194,11 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span></div>
+
     
-<div class="viewcode-block" id="invert_permutation"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.invert_permutation">[docs]</a><span class="k">def</span> <span class="nf">invert_permutation</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="invert_permutation">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.invert_permutation">[docs]</a>
+<span class="k">def</span> <span class="nf">invert_permutation</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Invert a a permutation</span>
 <span class="sd">    </span>
@@ -191,8 +211,11 @@
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">s</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span></div>
+
     
-<div class="viewcode-block" id="ndargmax"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.ndargmax">[docs]</a><span class="k">def</span> <span class="nf">ndargmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ndargmax">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.ndargmax">[docs]</a>
+<span class="k">def</span> <span class="nf">ndargmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get coordinates of largest value in a multidimensional </span>
 <span class="sd">    array</span>
@@ -205,7 +228,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmax</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="complex_to_nan"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.complex_to_nan">[docs]</a><span class="k">def</span> <span class="nf">complex_to_nan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
+
+<div class="viewcode-block" id="complex_to_nan">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.complex_to_nan">[docs]</a>
+<span class="k">def</span> <span class="nf">complex_to_nan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Replce complex entries with NaN or other value</span>
 <span class="sd">    </span>
@@ -222,7 +248,10 @@
     <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">real</span></div>
 
-<div class="viewcode-block" id="verify_axes"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.verify_axes">[docs]</a><span class="k">def</span> <span class="nf">verify_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="verify_axes">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.verify_axes">[docs]</a>
+<span class="k">def</span> <span class="nf">verify_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
     <span class="c1"># Get shape of the array</span>
     <span class="n">x</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">xshape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -245,7 +274,10 @@
     <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">%</span> <span class="n">naxes</span>
     <span class="k">return</span> <span class="n">axis</span></div>
 
-<div class="viewcode-block" id="axes_complement"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.axes_complement">[docs]</a><span class="k">def</span> <span class="nf">axes_complement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axes</span><span class="p">):</span>
+
+<div class="viewcode-block" id="axes_complement">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.axes_complement">[docs]</a>
+<span class="k">def</span> <span class="nf">axes_complement</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axes</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Set of all axes indeces for ``x`` not contained in ``axes``.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -257,7 +289,10 @@
     <span class="n">other_axes</span> <span class="o">=</span> <span class="p">{</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="n">naxes</span><span class="p">)}</span> <span class="o">-</span> <span class="p">{</span><span class="o">*</span><span class="n">axes</span><span class="p">}</span>
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">other_axes</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="reslice"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.reslice">[docs]</a><span class="k">def</span> <span class="nf">reslice</span><span class="p">(</span><span class="n">naxes</span><span class="p">,</span><span class="n">expand_into</span><span class="p">):</span>
+
+<div class="viewcode-block" id="reslice">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.reslice">[docs]</a>
+<span class="k">def</span> <span class="nf">reslice</span><span class="p">(</span><span class="n">naxes</span><span class="p">,</span><span class="n">expand_into</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate a slice object to expand an array along</span>
 <span class="sd">    ``expand_into`` to broadcast with an array with ``naxes``</span>
@@ -267,7 +302,10 @@
         <span class="kc">None</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">expand_into</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:]</span> 
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">naxes</span><span class="p">)])</span></div>
 
-<div class="viewcode-block" id="make_rebroadcast_slice"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.make_rebroadcast_slice">[docs]</a><span class="k">def</span> <span class="nf">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="make_rebroadcast_slice">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.make_rebroadcast_slice">[docs]</a>
+<span class="k">def</span> <span class="nf">make_rebroadcast_slice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generate correct slice object for broadcasting </span>
 <span class="sd">    stastistics averaged over the given axis(es) back to the</span>
@@ -301,7 +339,10 @@
     <span class="k">return</span> <span class="n">theslice</span></div>
 
 
-<div class="viewcode-block" id="deep_tuple"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.deep_tuple">[docs]</a><span class="k">def</span> <span class="nf">deep_tuple</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="deep_tuple">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.deep_tuple">[docs]</a>
+<span class="k">def</span> <span class="nf">deep_tuple</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert x to tuple, deeply.</span>
 <span class="sd">    Defaults to the identity function if x is not iterable</span>
@@ -325,7 +366,10 @@
     <span class="k">assert</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="deep_map"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.deep_map">[docs]</a><span class="k">def</span> <span class="nf">deep_map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">tree</span><span class="p">):</span>
+
+<div class="viewcode-block" id="deep_map">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.deep_map">[docs]</a>
+<span class="k">def</span> <span class="nf">deep_map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">tree</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Maps over a tree like structure</span>
 <span class="sd">    </span>
@@ -344,7 +388,10 @@
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="to_indices"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.to_indices">[docs]</a><span class="k">def</span> <span class="nf">to_indices</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="to_indices">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.to_indices">[docs]</a>
+<span class="k">def</span> <span class="nf">to_indices</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    There are two ways to extract a subset from numpy arrays:</span>
 <span class="sd">    1. providing a boolean array of the same shape</span>
@@ -385,13 +432,14 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
         <span class="s1">&#39;Indexing array is numeric, but &#39;</span>
         <span class="s1">&#39;contains non-integer numbers?&#39;</span><span class="p">)</span></div>
+
         
 
-<div class="viewcode-block" id="onehot"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.onehot">[docs]</a><span class="k">def</span> <span class="nf">onehot</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span><span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="onehot">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.onehot">[docs]</a>
+<span class="k">def</span> <span class="nf">onehot</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Generate so-called &quot;one-hot&quot;</span>
-<span class="sd">    representation of class labels from </span>
-<span class="sd">    a vector of class identities</span>
+<span class="sd">    Generate &quot;one-hot&quot; representation from integer class labels.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -399,12 +447,12 @@
 <span class="sd">    </span>
 <span class="sd">    Other Parameters</span>
 <span class="sd">    ----------------</span>
-<span class="sd">    dense: boolean; default False</span>
-<span class="sd">        Whether to create missing labels. </span>
-<span class="sd">        Ignored if the parameter `n` is specified.</span>
 <span class="sd">    n: int or None; default None</span>
 <span class="sd">        Total number of labels. If None, will default</span>
 <span class="sd">        to the largest value in `ids`.</span>
+<span class="sd">    dense: boolean; default False</span>
+<span class="sd">        Whether to create missing labels. </span>
+<span class="sd">        Ignored if the parameter `n` is specified.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -413,15 +461,17 @@
 <span class="sd">    r:</span>
 <span class="sd">        One-hot label format</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">ids</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-    <span class="n">labels</span>   <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">)))</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ids</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="nb">tuple</span><span class="p">():</span>
+      <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ids</span><span class="p">])</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">)))</span>
     
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dense</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dense</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;The options `dense` and `n` only work when &#39;</span>
-            <span class="s1">&#39;using integer labels. The content of `ids` &#39;</span>
-            <span class="s1">&#39;does not look like integers&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;The options `dense` and `n` only supported for &#39;</span>
+            <span class="s1">&#39;32-bit integer labels. The content of `ids` &#39;</span>
+            <span class="s1">&#39;doesn</span><span class="se">\&#39;</span><span class="s1">t look like 32-bit integers.&#39;</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
         <span class="n">ids</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
         <span class="n">maxid</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
@@ -432,7 +482,7 @@
                 <span class="s1">&#39;The parameter `n` was set to </span><span class="si">%d</span><span class="s1">, but &#39;</span>
                 <span class="s1">&#39;`ids` contained the value </span><span class="si">%d</span><span class="s1">; Ids must &#39;</span>
                 <span class="s1">&#39;be &lt;= `n`.&#39;</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">maxid</span><span class="p">))</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">maxid</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         
     <span class="n">nsamples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
     <span class="n">nlabels</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
@@ -440,6 +490,7 @@
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
         <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">ids</span><span class="o">==</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">labels</span><span class="p">,</span><span class="n">r</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_take_axis_slice</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
@@ -456,7 +507,9 @@
     <span class="c1"># Redundant to existing numpy functions TODO remove</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">_take_axis_slice</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">index</span><span class="p">)]</span>
     
-<div class="viewcode-block" id="zeroslike"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.zeroslike">[docs]</a><span class="k">def</span> <span class="nf">zeroslike</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="zeroslike">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.zeroslike">[docs]</a>
+<span class="k">def</span> <span class="nf">zeroslike</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Create numpy array of zeros the same shape and type as x</span>
 <span class="sd">    </span>
@@ -466,7 +519,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="oneslike"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.oneslike">[docs]</a><span class="k">def</span> <span class="nf">oneslike</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="oneslike">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.oneslike">[docs]</a>
+<span class="k">def</span> <span class="nf">oneslike</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Create numpy array of ones the same shape and type as x</span>
 <span class="sd">    </span>
@@ -476,7 +532,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="split_into_groups"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.split_into_groups">[docs]</a><span class="k">def</span> <span class="nf">split_into_groups</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">group_sizes</span><span class="p">):</span>
+
+<div class="viewcode-block" id="split_into_groups">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.split_into_groups">[docs]</a>
+<span class="k">def</span> <span class="nf">split_into_groups</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">group_sizes</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Split `np.array` `x` into `len(group_sizes)` groups,</span>
 <span class="sd">    with the size of the groups specified by `group_sizes`.</span>
@@ -514,7 +573,10 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="maybe_integer"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.maybe_integer">[docs]</a><span class="k">def</span> <span class="nf">maybe_integer</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="maybe_integer">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.maybe_integer">[docs]</a>
+<span class="k">def</span> <span class="nf">maybe_integer</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Cast a float numpy array to int32 or int64, if it would </span>
 <span class="sd">    not result in loss of precision. </span>
@@ -537,7 +599,10 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="widths_to_edges"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.widths_to_edges">[docs]</a><span class="k">def</span> <span class="nf">widths_to_edges</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="widths_to_edges">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.widths_to_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">widths_to_edges</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert a list of widths into a list of edges</span>
 <span class="sd">    delimiting consecutive bands of the given width</span>
@@ -562,7 +627,10 @@
     <span class="k">return</span> <span class="n">e</span></div>
 
 
-<div class="viewcode-block" id="widths_to_limits"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.widths_to_limits">[docs]</a><span class="k">def</span> <span class="nf">widths_to_limits</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="widths_to_limits">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.widths_to_limits">[docs]</a>
+<span class="k">def</span> <span class="nf">widths_to_limits</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert a list of integer widths into a list of</span>
 <span class="sd">    [a,b) indecies delimiting the concatenated width </span>
@@ -586,9 +654,12 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Widths should be int32&#39;</span><span class="p">)</span>
     <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">r</span><span class="p">],</span><span class="n">q</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">e</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span><span class="o">.</span><span class="n">T</span>    </div>
+
     
 
-<div class="viewcode-block" id="centers"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.centers">[docs]</a><span class="k">def</span> <span class="nf">centers</span><span class="p">(</span><span class="n">edges</span><span class="p">):</span>
+<div class="viewcode-block" id="centers">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.centers">[docs]</a>
+<span class="k">def</span> <span class="nf">centers</span><span class="p">(</span><span class="n">edges</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get center of histogram bins given as a list of edges.</span>
 <span class="sd">    </span>
@@ -609,7 +680,10 @@
     <span class="k">return</span> <span class="n">c</span></div>
 
 
-<div class="viewcode-block" id="widths_to_centers"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.widths_to_centers">[docs]</a><span class="k">def</span> <span class="nf">widths_to_centers</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="widths_to_centers">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.widths_to_centers">[docs]</a>
+<span class="k">def</span> <span class="nf">widths_to_centers</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get centers of a consecutive collection of histogram</span>
 <span class="sd">    widths. </span>
@@ -627,7 +701,10 @@
     <span class="n">edges</span> <span class="o">=</span> <span class="n">widths_to_edges</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span><span class="n">startat</span><span class="o">=</span><span class="n">startat</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">centers</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="extract"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.extract">[docs]</a><span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">zerod</span><span class="p">):</span>
+
+<div class="viewcode-block" id="extract">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.extract">[docs]</a>
+<span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">zerod</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extract the scalar value from zero-dimensional </span>
 <span class="sd">    ``np.ndarray``.</span>
@@ -635,25 +712,37 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zerod</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="binspace"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.binspace">[docs]</a><span class="k">def</span> <span class="nf">binspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">nbins</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+
+<div class="viewcode-block" id="binspace">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.binspace">[docs]</a>
+<span class="k">def</span> <span class="nf">binspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">nbins</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span><span class="n">eps</span>
     <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="n">eps</span>
     <span class="k">return</span> <span class="n">b</span></div>
 
 
-<div class="viewcode-block" id="binto"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.binto">[docs]</a><span class="k">def</span> <span class="nf">binto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+
+<div class="viewcode-block" id="binto">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.binto">[docs]</a>
+<span class="k">def</span> <span class="nf">binto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">binspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">==</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbins</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="remove_nonincreasing"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.remove_nonincreasing">[docs]</a><span class="k">def</span> <span class="nf">remove_nonincreasing</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+
+<div class="viewcode-block" id="remove_nonincreasing">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.remove_nonincreasing">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_nonincreasing</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
     <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="remove_nans"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.remove_nans">[docs]</a><span class="k">def</span> <span class="nf">remove_nans</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="remove_nans">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.remove_nans">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_nans</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span><span class="n">args</span><span class="p">)]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">remove_nans</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -664,7 +753,10 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="n">ok</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="allclose_recursive"><a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.allclose_recursive">[docs]</a><span class="k">def</span> <span class="nf">allclose_recursive</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+
+<div class="viewcode-block" id="allclose_recursive">
+<a class="viewcode-back" href="../../../neurotools.util.array.html#neurotools.util.array.allclose_recursive">[docs]</a>
+<span class="k">def</span> <span class="nf">allclose_recursive</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Version of `np.allclose` that recurses through a tuple/</span>
 <span class="sd">    list structure until it reaches an `np.ndarray` to compare</span>
@@ -674,6 +766,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">allclose_recursive</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">bi</span><span class="p">)</span> \
                 <span class="k">for</span> <span class="p">(</span><span class="n">ai</span><span class="p">,</span><span class="n">bi</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)])</span></div>
+
 
 
 

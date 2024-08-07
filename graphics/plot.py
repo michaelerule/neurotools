@@ -3078,8 +3078,8 @@ def plot_quadrant(
     plot(x,y,color='k',lw=1)
     plot([0,0],[0,r],color='k',lw=1)
     plot([0,r],[0,0],color='k',lw=1)
-    text(r+.02,0,'$0\degree$',ha='left',va='top')
-    text(0,r+.02,'$90\degree$',ha='right',va='bottom')
+    text(r+.02,0,r'$0\degree$',ha='left',va='top')
+    text(0,r+.02,r'$90\degree$',ha='right',va='bottom')
     text(0,r/2,ylabel,rotation=90,ha='right',va='center')
     text(r/2,0,xlabel,ha='center',va='top')
 

@@ -21,7 +21,7 @@ from neurotools.stats.minimize import minimize_retry
 
 '''
 Regress on the following model for synchrony
-synchrony(x) = np.cos(wx)*np.exp(-x/tau)+b
+`synchrony(x) = np.cos(wx)*np.exp(-x/tau)+b`
 
 angular synchrony np.cos(theta_x1-theta_x2) should
 decay as a damped cosine, with some constant offset b. Note that
@@ -37,7 +37,7 @@ Y: List of average pairwise distances
 
 Model is np.cos(wx)*np.exp(-x/L)+b
 Generates predictions Z
-error is \sum W*(Z-Y)^2
+error is ∑ W*(Z-Y)^2
 
 gradient of the error
 dErr/dw np.sum(W*(np.cos(w*x)*np.exp(-x/L)+b-Y)**2)
@@ -55,7 +55,6 @@ np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) dErr/db (np.cos(w*x)*np.exp(-x/L)+b-Y)
 np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) * -np.sin(w*x)*np.exp(-x/L) )
 np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y) *  np.cos(w*x)*(-1/L)*np.exp(-x/L) )
 np.sum(W* 2(np.cos(w*x)*np.exp(-x/L)+b-Y))
-
 
 objective function is
 

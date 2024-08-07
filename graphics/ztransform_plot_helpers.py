@@ -58,8 +58,8 @@ def label_complex_axes(color='k'):
     Returns
     -------
     '''
-    text(0,ylim()[1],'$\Im$',va='top',color=color)
-    text(xlim()[1],0,'$\Re$',va='bottom',ha='right',color=color)
+    text(0,ylim()[1],r'$\Im$',va='top',color=color)
+    text(xlim()[1],0,r'$\Re$',va='bottom',ha='right',color=color)
     
 def add_complex_axes(lw=0.75,color='w',limits=[(-2,2),(-2,2)]):
     '''
@@ -249,8 +249,8 @@ def do_nyquist(ax,z,Y,extent=8):
     plot(x,y)
     add_complex_axes(color='k',limits = ((-extent,extent),(-extent,extent)))
     title('Nyquist plot')
-    xlabel('$\Re$')
-    ylabel('$\Im$')
+    xlabel(r'$\Re$')
+    ylabel(r'$\Im$')
     
 def do_bode_and_nyquist(Y,extent=4):
     '''

@@ -617,7 +617,7 @@ def population_phase_relative_sliding_kuramoto(data,L=100,window=np.hanning):
 
     .. math::
     
-        \\textrm{kuramoto order} = \left\langle z/|z| \\right\\rangle
+        \\textrm{kuramoto order} = \\left\\langle z/|z| \\right\\rangle
     
     Assumes constant phase velocity, and a constant per-channel
     phase shift, and then computes the order. This is a notion of 

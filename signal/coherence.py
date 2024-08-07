@@ -149,7 +149,7 @@ def coherence_pvalue(C,NSample,beta = 23/20.):
     beta = 23/20. Jarvis & Mitra suggest (Neural Comp., 2001, p732)
     Pesaran et al. suggest beta=1.5 (Nature, 2008, supp info, p5)
 
-    \citep{jarvis2001sampling, pesaran2008free}
+    \\citep{jarvis2001sampling, pesaran2008free}
     '''
     df = 2*NSample                 # degrees of freedom
     q  = sqrt(-(df-2)*log(1-C**2)) # ???

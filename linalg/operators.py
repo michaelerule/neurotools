@@ -28,9 +28,9 @@ def adjacency1D(L,circular=True):
     '''
     # Make adjacency matrix
     # [1 0 1 .. 0]
-    A1d = scipy.sparse.eye(L,k=-1) + scipy.sparse.eye(L,k=1)
+    A1d = scipy.sparse.np.eye(L,k=-1) + scipy.sparse.np.eye(L,k=1)
     if circular:
-        A1d += scipy.sparse.eye(L,k=L-1) + scipy.sparse.eye(L,k=1-L) 
+        A1d += scipy.sparse.np.eye(L,k=L-1) + scipy.sparse.np.eye(L,k=1-L) 
     return A1d
 
 
@@ -168,7 +168,7 @@ def adjacency2d_rotational(L):
     2D adjacency matrix with nonzero weights for corner neighbors to improve
     rotational symmetry. 
     '''
-    A1d = eye(L,k=-1) + eye(L,k=1) + eye(L,k=L-1) + eye(L,k=1-L) 
+    A1d = np.eye(L,k=-1) + np.eye(L,k=1) + np.eye(L,k=L-1) + np.eye(L,k=1-L) 
     A2d_cross  = scipy.sparse.kronsum(A1d,A1d).toarray()
     A2d_corner = scipy.sparse.kron(A1d,A1d).toarray()
     return A2d_cross*2/3+A2d_corner*1/3
@@ -288,28 +288,81 @@ def delta(N):
     return x
 
 
-def circular_derivative_operator(N):
+def dirichlet_derivative_operator(N):
     '''
-    Circulat discete differentiation in the frequeincy
-    domain.
+    Discrete derivative treating out-of-bounds edges as zero.
     
-
     Parameters
     ----------
     N : int
-        Size of the domain    
     
     Returns
     -------
     result: N×N np.float32
-        Fourier transform of the circular discrete 
-        derivative.
     '''
-    delta = np.zeros((N,))
-    delta[0]=-1
-    delta[-1]=1
-    x = np.fft.fft(delta)
-    return bp.flot32(x)
+    return np.float32((np.eye(N,k=1) - np.eye(N,k=-1))*0.5)
+
+
+def neumann_derivative_operator(N,abba=True):
+    '''
+    Discrete derivative with reflected boundary condition.
+    
+    Parameters
+    ----------
+    N : int
+    abba : bool
+        `False`: Reflect e.g. `ab?` as `aba`
+        `True`:  Reflect e.g. `ab? as `abba`
+    Returns
+    -------
+    result: N×N np.float32
+    '''
+    D = dirichlet_derivative_operator(N)
+    if abba:
+        D[ 0, 0] = -0.5
+        D[-1,-1] =  0.5
+    else:
+        D[0,1] = D[-1,-2] = 0
+    return D
+
+
+def circular_derivative_operator(N):
+    '''
+    Circular discrete derivative.
+
+    Parameters
+    ----------
+    N : int
+    
+    Returns
+    -------
+    result: N×N np.float32
+        Discrete derivative on circular domain
+    '''
+    D = dirichlet_derivative_operator(N)
+    D[0,-1] = -0.5
+    D[-1,0] = 0.5
+    return np.float32(D)
+
+
+def circular_derivative_fourier(N):
+    '''
+    Circular discrete derivative Fourier domain kernel.
+
+    Parameters
+    ----------
+    N : int
+    
+    Returns
+    -------
+    result: N np.complex64
+        Fourier transform of circular discrete derivative.
+    '''
+    delta = np.zeros((N,),)
+    delta[ 1] =  0.5
+    delta[-1] = -0.5
+    return np.fft.fft(delta)
+
 
 def truncated_derivative_operator(N):
     '''
@@ -326,7 +379,7 @@ def truncated_derivative_operator(N):
     result: (N-1)×N np.float32
         Matrix D such that Dx = Δx
     '''
-    return eye(N-1,N,1) - eye(N-1,N,0)
+    return np.eye(N-1,N,1) - np.eye(N-1,N,0)
 
 
 def terminated_derivative_operator(N):
@@ -356,7 +409,7 @@ def terminated_derivative_operator(N):
 
 
 def truncated_derivative(N):
-    return (eye(N)-eye(N,k=-1))[1:]
+    return (np.eye(N)-np.eye(N,k=-1))[1:]
 
 
 def pad1up(N):

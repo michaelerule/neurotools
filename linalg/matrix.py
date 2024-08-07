@@ -559,7 +559,7 @@ def cinv(X,repair=False):
     The function `numpy.linalg.cholesky` is aliased as 
     `chol` in this library, in analogy to matlab. `chol` 
     returns a upper-triangular matrix such that 
-    $L = \operatorname{chol}(X)$ and $X = L^T L$. 
+    $L = \\operatorname{chol}(X)$ and $X = L^T L$. 
     The inverse of
     $X$ is $X^{-1} = (L^T L)^{-1} = L^{-1} L^{-T}$. 
     '''
@@ -569,7 +569,7 @@ from scipy.linalg import solve_triangular as stri
 
 def csolve(H,J):
     '''
-    Solve PSD linear system x = H^{-1}J via Cholesky factorization
+    Solve PSD linear system $x = H^{-1}J$ via Cholesky factorization
     '''
     C = chol(H)
     return stri(C,stri(C.T,J,lower=True))
@@ -699,7 +699,7 @@ def rmatrix(h):
 
 def ldiv(A,B):
     '''
-    Behaves like Matlab `A\B`; Solves `AX=B` for 
+    Behaves like Matlab `A\\B`; Solves `AX=B` for 
     `X = A^{-1}B`
     i.e. find matrix `X` which when right-multiplied with 
     `A` is close to `B`.

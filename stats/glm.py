@@ -375,7 +375,7 @@ def cosine_kernel(x):
     Returns
     -------
     vector
-        $\\tfrac 1 4 + \\tfrac 1 2 cos(x)$ if $x\in[-\pi,\pi]$, otherwise 0.
+        $\\tfrac 1 4 + \\tfrac 1 2 cos(x)$ if $x\\in[-\\pi,\\pi]$, otherwise 0.
     '''
     x = np.float64(np.abs(x))/2.0*np.pi
     return np.piecewise(x,[x<=np.pi],[lambda x:(np.cos(x)+1)/4.0])

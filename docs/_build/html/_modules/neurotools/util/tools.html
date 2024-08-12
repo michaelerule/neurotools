@@ -323,9 +323,15 @@
     <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">piper</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composewith</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        
+        
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span>
+          <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_locals</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)]</span>
+        <span class="p">)</span></div>
 
-
+      
 <span class="nd">@robust_decorator</span>
 <span class="k">def</span> <span class="nf">globalize</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">krgs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>

@@ -204,7 +204,13 @@ class piper():
         if isinstance(other,piper):
             return self._composewith(other)
         return self.operation(other)
-
+        
+        
+    def __getattr__(self,other):
+        return self.operation(
+          inspect.currentframe().f_back.f_locals[str(other)]
+        )
+      
 @robust_decorator
 def globalize(function,*args,**krgs):
     '''

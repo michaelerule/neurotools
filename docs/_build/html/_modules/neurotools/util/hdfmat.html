@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
@@ -5,19 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.util.hdfmat &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=804ff984"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
-        <script src="../../../_static/doctools.js?v=454853ac"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=804ff984"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=1e5e4989"></script>
+      <script src="../../../_static/doctools.js?v=454853ac"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -35,9 +33,6 @@
             Neurotools
               <img src="../../../_static/logo1.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                2
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -267,6 +262,40 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="o">+</span><span class="n">k</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
         <span class="n">recursive_printmatHDF5</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">prefix</span><span class="o">+</span><span class="s1">&#39;: &#39;</span><span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="matversion">
+<a class="viewcode-back" href="../../../neurotools.util.hdfmat.html#neurotools.util.hdfmat.matversion">[docs]</a>
+<span class="k">def</span> <span class="nf">matversion</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ff</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">c</span><span class="o">!=</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="n">c</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="matstrip">
+<a class="viewcode-back" href="../../../neurotools.util.hdfmat.html#neurotools.util.hdfmat.matstrip">[docs]</a>
+<span class="k">def</span> <span class="nf">matstrip</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">while</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span> 
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="mat5todict">
+<a class="viewcode-back" href="../../../neurotools.util.hdfmat.html#neurotools.util.hdfmat.mat5todict">[docs]</a>
+<span class="k">def</span> <span class="nf">mat5todict</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">hasobject</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">matstrip</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">,</span> <span class="n">data</span><span class="p">)}</span></div>
+
+
+    
+    
+    
+    
 </pre></div>
 
            </div>

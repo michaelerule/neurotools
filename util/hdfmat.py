@@ -167,3 +167,28 @@ def recursive_printmatHDF5(d,prefix=' '):
     for k,v in dict_vars.items():
         print(prefix+k+':')
         recursive_printmatHDF5(v,prefix+': ')
+
+
+def matversion(fn):
+    with open(fn,'rb') as ff:
+        s = b''
+        c = ff.read(1)
+        while c!=b'\x00':
+            s += c
+            c = ff.read(1)
+        return s
+
+def matstrip(data):
+    while data.shape==(1,1): 
+        data = data[0,0]
+    return data
+
+def mat5todict(data):
+    assert data.dtype.hasobject or data.dtype.kind in ('V','O')
+    data = matstrip(data)
+    return {k[0]:v for k,v in zip(data.dtype.descr, data)}
+
+    
+    
+    
+    

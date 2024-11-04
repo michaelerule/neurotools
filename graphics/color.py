@@ -23,7 +23,7 @@ from matplotlib import cm
 
 # Some custom colors, just for fun! 
 
-# Bridget Riley's "Gather Painting" has perfect colors
+# Bridget Riley's "Gather"
 WHITE      = np.float32(mpl.colors.to_rgb('#f1f0e9'))
 RUST       = np.float32(mpl.colors.to_rgb('#eb7a59'))
 OCHRE      = np.float32(mpl.colors.to_rgb('#eea300'))

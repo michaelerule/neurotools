@@ -312,7 +312,7 @@ def to_mat(df,saveas,tablename='data',readme=None):
     scipy.io.savemat(saveas,savedict)
     
     
-def conform(x,dtype=np.float32,fill_value=np.NaN):
+def conform(x,dtype=np.float32,fill_value=np.nan):
     '''
     Recursively coerce nested iterables into a numpy
     array with a uniform shape by padding uneven shapes

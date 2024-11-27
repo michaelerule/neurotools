@@ -1,39 +1,25 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 """
 Routines for calculating coherence
 """
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import numpy as np
 import scipy.stats
 from collections import defaultdict
-
 from neurotools.signal.morlet     import *
 from neurotools.util.getfftw      import *
 from neurotools.signal.multitaper import dpss_cached
 from neurotools.stats.circular    import squared_first_circular_moment
-
-
 import neurotools.signal
-
 from multiprocessing import cpu_count
 __N_CPU__ = cpu_count()
-
 
 try:
     import nitime
     from nitime.algorithms import coherence
 except:
-    print('could not locate nitime module; coherence functions missing')
     def coherence(*args,**kwargs):
-        raise ImportError("nitime module not loaded, coherence missing. Try installing nitime, e.g.:\n\tpip install nitime")
+        raise ImportError("nitime module not loaded")
 
 def morlet_population_synchrony_spectrum(lfp,fa,fb,w=4.0,resolution=0.1,Fs=1000):
     '''

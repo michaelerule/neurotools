@@ -1,15 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 '''
 Routines for multi-taper spectral analysis
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
 
 # Suppress warnings from numpy/spectrum
 import warnings
@@ -25,9 +18,8 @@ from neurotools.jobs            import parallel
 try:
     from spectrum.mtm import dpss
 except:
-    warnings.warn("Could not find the `spectrum` module; multitaper unsupported")
     def dpss(*args):
-        raise NotImplementedError("Please install the spectrum module, e.g.\n\tpip install spectrum")
+        raise NotImplementedError("Please install the spectrum module")
 
 @memoize
 def dpss_cached(length,half_bandwidth_parameter):

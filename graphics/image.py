@@ -1,17 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-import sys
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATEion
 
 '''
 A couple image-like subroutines. This may overlap a bit with `stats.spatial`
@@ -25,8 +13,9 @@ try:
     from skimage import data, img_as_float
     from skimage import exposure
 except:
-    print('Module skimage not found!')
-    print('Please install with, e.g. pip install --user scikit-image')    
+    def noskimage(*args,**kwargs):
+        raise ImportError("skimage module not loaded")
+    data = img_as_float = exposure = noskimage
     
 import scipy
 blur = scipy.ndimage.filters.gaussian_filter

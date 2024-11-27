@@ -117,7 +117,7 @@ def ndargmax(x):
     return np.unravel_index(np.nanargmax(x),x.shape)
 
 
-def complex_to_nan(x,value=np.NaN):
+def complex_to_nan(x,value=np.nan):
     '''
     Replce complex entries with NaN or other value
     

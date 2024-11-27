@@ -170,7 +170,7 @@ def mask_crop(x,mask,fill_nan=True):
     return x[a:b+1,c:d+1]
 
 
-def to_image(x,mask,fill=np.NaN,crop=False):
+def to_image(x,mask,fill=np.nan,crop=False):
     '''
     Assign list of values `x` to locations in `mask` that 
     are `True`, in row-major order.

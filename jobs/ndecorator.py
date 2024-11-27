@@ -1,20 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 '''
 Robust decorators are provided by the decorator package
     http://pythonhosted.org/decorator/documentation.html
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
-import sys
-__PYTHON_2__ = sys.version_info<(3, 0)
-
 import neurotools.util
 from collections import defaultdict
 import os, sys
@@ -25,18 +14,8 @@ import numpy as np
 
 try:
     import decorator
-    #from decorator import decorator as robust_decorator
-    #import decorator.decorator as robust_decorator
     robust_decorator = decorator.decorator
-    #print(robust_decorator)
-    #sys.exit(-3)
 except:
-    traceback.print_exc()
-    print('could not find decorator module; '
-        'no robust_decorator support')
-    #robust_decorator = lambda x:x
-    print('This is important; you should not continue!')
-    # Null version; migth not work
     def robust_decorator(caller, _func=None):
         if _func is not None:
             return _func
@@ -47,8 +26,9 @@ try:
     import typedecorator
     from typedecorator import params, returns, setup_typecheck
 except:
-    print('could not find typedecorator module; '
-        'advanced decorator functions missing')
+    def notypedecorator(*args,**kwargs):
+        raise ImportError("skimage module not loaded")
+    params = returns = setup_typecheck = notypedecorator
 
 def listit(t):
     '''

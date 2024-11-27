@@ -30,7 +30,7 @@ try:
     import statsmodels.api as smapi
     import statsmodels.graphics as smgraphics
 except:
-    print('could not find statsmodels; some plotting functions missing')
+    print('no statsmodels; some plotting functions missing')
 
 
 ############################################################

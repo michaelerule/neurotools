@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 '''
 pvalues.py
@@ -6,15 +6,11 @@ pvalues.py
 This module collects useful routines for 
 working with p-values. 
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
+try:
+    import statsmodels
+except ModuleNotFoundError:
+    print('neurotools.stats.pvalues needs statsmodels')
 
-import statsmodels
 import numpy as np
 from numpy import random
 from neurotools.util.array import find

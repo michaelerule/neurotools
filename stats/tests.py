@@ -1,25 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 """
 Additional hypothesis-testing routines to supplement
 ``scipy.stats`` and ``statsmodels``.
 """
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
-import statsmodels
+try:
+    import statsmodels
+except ModuleNotFoundError:
+    print('neurotools.stats.tests needs statsmodels')
 import numpy as np
 from numpy import random
 from neurotools.util.array import find
 import scipy.stats
 from typing import NamedTuple 
-
-
 
 from neurotools.stats.information import betapr
 def two_tailed_sampled_test(delta):

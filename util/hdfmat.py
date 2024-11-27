@@ -1,19 +1,16 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 """
 Routines for handling the new-style `.mat` files, which are secretly `.hdf` files
 """
 
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import numpy
-import h5py
+
+try:
+    import h5py
+except:
+    print("no h5py")
+
 
 def getHDFvalue(hdf,d,squeeze=True,detectString=True,detectScalar=True):
     '''

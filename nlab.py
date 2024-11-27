@@ -142,20 +142,16 @@ except ImportError:
 from neurotools.util.getfftw                 import *
 
 try:
+    import h5py
     from neurotools.util.hdfmat                  import *
-except ModuleNotFoundError:
-    print('ModuleNotFoundError: No module named \'h5py\'; please install this to use neurotools.hdfmat')
+except:
+    print('hdfmat needs h5py')
+    h5py = None
 
 # suppress verbose warning messages
 nowarn()
 
 from numpy.core.multiarray import concatenate as cat
-
-try:
-    import h5py
-except:
-    print('could not locate h5py; support for hdf5 files missing')
-    h5py = None
 
 # Last but not least 
 from pylab import *   

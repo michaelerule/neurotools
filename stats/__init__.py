@@ -12,7 +12,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 from . import circular
-from . import covalign
 from . import density
 from . import distributions
 from . import fastkde
@@ -29,6 +28,10 @@ from . import modefind
 from . import pvalues
 from . import regressions
 from . import tests
+try:
+    from . import covalign
+except ModuleNotFoundError:
+    print('neurotools.stats.covalign needs sklearn')
 
 import numpy as np
 import scipy
@@ -36,7 +39,10 @@ import random
 import warnings
 from scipy.stats.stats import describe
 from neurotools.util.array import find
-from sklearn.decomposition import FactorAnalysis
+try:
+    from sklearn.decomposition import FactorAnalysis
+except ModuleNotFoundError:
+    print('no sklearn')
 
 
 ############################################################

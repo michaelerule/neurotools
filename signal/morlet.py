@@ -17,7 +17,10 @@ from __future__ import print_function
 from neurotools.graphics.plot   import *
 from neurotools.util.getfftw    import *
 from neurotools.jobs.ndecorator import memoize
-from scipy.signal import morlet
+try:
+  from scipy.signal import morlet
+except:
+  print('migrating to pywavelets is TODO')
 import warnings
 
 def normalized_morlet(m,w):

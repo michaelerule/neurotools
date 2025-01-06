@@ -20,7 +20,7 @@ from neurotools.jobs.ndecorator import memoize
 try:
   from scipy.signal import morlet
 except:
-  print('migrating to pywavelets is TODO')
+  print('neurotools.signal.morlet: migrating to pywavelets is TODO')
 import warnings
 
 def normalized_morlet(m,w):

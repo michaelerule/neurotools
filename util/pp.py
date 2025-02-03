@@ -3,20 +3,29 @@
 
 import numpy as np
 from matplotlib.pyplot import plot
+from scipy.optimize import root_scalar
 
 def detect_sign_change_2D(D,k=6):
     D = np.sign(D)
     return np.float32(np.abs(D[k:,k:]+D[k:,:-k]+D[:-k,k:]+D[:-k,:-k])!=4)
     
+def orderas(order,*args):
+    o = np.argsort(order)
+    return tuple(a[o] for a in args)
+    
 def interpolate_zero(x,y):
     '''
     Find x such that y=f(x)=0 assuming f(x) is monotonic and crosses zero
     '''
-    if not (np.any(y>0) and np.any(y<0)): return np.NaN
-    o = np.argsort(y)
-    y = y[o]
-    x = x[o]
-    return np.interp([0],y,x)[0]
+    x,y = orderas(x,x,y)
+    return tuple(np.interp([0],y[i:i+1],x[i:i+1])[0] for i in np.where(np.diff(np.sign(y))!=0)[0])
+    
+def refine_zero(f,x):# Refine
+    y = f(x)
+    z = interpolate_zero(x,y)
+    e = np.array((z[0]-1,) + z + (z[-1]+1,)))
+    e = (e[1:]+e[:-1])/2
+    return tuple(root_scalar(f, bracket=[a,b]).root for a,b in zip(e[:-1], e[1:]))
     
 def kill_zeros(x,eps=1e-6):
     x = np.copy(x)

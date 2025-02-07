@@ -3,17 +3,8 @@
 '''
 Functions to validate filenames
 '''
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
 
 import sys
-__PYTHON_2__ = sys.version_info<(3, 0)
-
 from   collections import defaultdict
 import numpy as np
 import scipy.io
@@ -31,7 +22,6 @@ import pickle
 import json
 import base64
 import zlib
-
 
 def validate_argument_signature(sig):
     '''
@@ -67,8 +57,6 @@ def is_dangerous_filename(filename):
     '''
     if len(filename)>255:
         return True
-    if __PYTHON_2__ and type(filename) is unicode:
-        return True
     if any([c in filename for c in "\\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
         return True
     return False
@@ -76,17 +64,10 @@ def is_dangerous_filename(filename):
 def check_filename(filename):
     '''
     Check if a `filename` is safe to use on most filesystems. More lenient
-    than `is_dangerous_filename`.
-    
-    Unicode filenames are permitted (in Python 3), but generate a warning
-    in Pythoon 2. 
-    
-    Long filenames (over 255 chars) are ok on many modern filesystems and
-    only trigger a warning
-    
-    Only special characters that outright break windows will raise an error.
-    
-    No return value.
+    than `is_dangerous_filename`. Unicode filenames are permitted. Long 
+    filenames (over 255 chars) are ok on many modern filesystems and only 
+    trigger a warning. Only special characters that outright break windows 
+    will raise an error.
     
     Parameters
     ----------
@@ -95,10 +76,8 @@ def check_filename(filename):
     '''
     if len(filename)>255:
         warnings.warn('FILE NAME MAY BE TOO LONG ON SOME SYSTEMS')
-    if __PYTHON_2__ and type(filename) is unicode:
-        warnings.warn('FILE NAME IS UNICODE')
     if any([c in filename for c in "/?<>\\:*|\"\n\t\b\r"]):
-        raise ValueError('Filename contains character forbidden on windows')
+        raise ValueError('Filename contains character forbidden on MS Windows')
     if any([c in filename for c in "\\/<>:\"'|?*,@#{}'&`!%$\n\t\b\r "]):
         warnings.warn('FILE NAME CONTAINS CHARACTER THAT MAY CAUSE ISSUES IN SOME SOFTWARE')
 

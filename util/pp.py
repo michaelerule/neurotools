@@ -23,7 +23,7 @@ def interpolate_zero(x,y):
 def refine_zero(f,x):# Refine
     y = f(x)
     z = interpolate_zero(x,y)
-    e = np.array((z[0]-1,) + z + (z[-1]+1,)))
+    e = np.array((z[0]-1,) + z + (z[-1]+1,))
     e = (e[1:]+e[:-1])/2
     return tuple(root_scalar(f, bracket=[a,b]).root for a,b in zip(e[:-1], e[1:]))
     

@@ -116,7 +116,7 @@ def nan_mask(mask,nanvalue=False,value=None):
     nanvalue = int(not(not nanvalue))
     if value is None:
         value = [1,0][nanvalue]
-    use = np.float32([[np.NaN,value],[value,np.NaN]])[nanvalue]
+    use = np.float32([[np.nan,value],[value,np.nan]])[nanvalue]
     return use[np.int32(as_mask(mask))]
 
 
@@ -182,7 +182,7 @@ def to_image(x,mask,fill=np.nan,crop=False):
     
     Other Parameters
     ----------------
-    full: float; default np.NaN
+    full: float; default np.nan
         Fill value for regions outside the mask
     crop: bool; default False
         Whether to remove empty rows/cols of the resulting

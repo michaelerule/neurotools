@@ -6,9 +6,9 @@ from __future__ import nested_scopes
 Matlab-related helpers; More in util.hdfmat
 """
 import numpy as np
-import neurotools.util.tools
+from .tools import piper
 
-@neurotools.util.tools.piper
+@piper
 def mi(a):
     a = np.array(a)
     if shape(a)==():

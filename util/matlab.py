@@ -10,10 +10,20 @@ from .tools import piper
 
 @piper
 def mi(a):
-    a = np.array(a)
-    if shape(a)==():
-        a = a[None][0]
-    print(len(a), np.shape(a), a.dtype)
+
+    if hasattr(a,'items') and hasattr(a,'keys') and hasattr(a,'values'):
+        print("Dictionary:")
+        for v in a.values():
+            print("  "+v)
+        return a
+
+    try:
+        a = np.array(a)
+        if np.shape(a)==():
+            a = a[None][0]
+        print("length=%d"%len(a), "shape=%s"%(np.shape(a),),"type=%s"%a.dtype)
+    except:
+        print("Not a numpy array?")
     return a
 
 

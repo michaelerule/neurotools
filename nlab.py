@@ -75,6 +75,7 @@ from neurotools.util.array               import *
 from neurotools.util.time                import *
 from neurotools.util.string              import *
 from neurotools.util.functions           import *
+from neurotools.util.matlab              import mi
 
 from neurotools.linalg.operators         import *
 from neurotools.linalg.matrix            import *

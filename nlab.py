@@ -8,14 +8,12 @@ as commonly used routines from neurotools. Try
     from nlab import *
 
 '''
-
 from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
 from __future__ import nested_scopes
-from __future__ import generators
 from __future__ import unicode_literals
-from __future__ import print_function
+
+import warnings
+warnings.filterwarnings("ignore")
 
 from neurotools.util.system import *
 
@@ -77,6 +75,7 @@ from neurotools.util.array               import *
 from neurotools.util.time                import *
 from neurotools.util.string              import *
 from neurotools.util.functions           import *
+from neurotools.util.matlab              import mi
 
 from neurotools.linalg.operators         import *
 from neurotools.linalg.matrix            import *

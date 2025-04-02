@@ -610,8 +610,8 @@ def padout(data):
     Generates a reflected version of a 1-dimensional signal. 
 
     The original data is placed in the middle, between the 
-    mirrord copies.
-    Use the function "padin" to strip the padding
+    mirrord copies. Use the function "padin" to strip the 
+    padding
     
     Parameters
     ----------

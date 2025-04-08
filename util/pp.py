@@ -32,7 +32,7 @@ def kill_zeros(x,eps=1e-6):
     s = np.abs(x)<eps
     s[1: ] &= s[:-1]
     s[:-1] &= s[1: ]
-    x[s] = np.NaN
+    x[s] = np.nan
     return x
     
 def eigvalplot(f,e,i2f=lambda x:x):

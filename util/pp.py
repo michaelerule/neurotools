@@ -42,3 +42,25 @@ def eigvalplot(f,e,i2f=lambda x:x):
     plot(f,i2f(np.min(R,axis=1)),color='m')
     plot(f,i2f(kill_zeros(np.max(I,axis=1))),color='c')
     plot(f,i2f(kill_zeros(np.min(I,axis=1))),color='c')
+
+def signchanged2D(x):
+    sg = np.sign(x)
+    ssum = (\
+        sg[0:-1,0:-1]+\
+        sg[1:  ,0:-1]+\
+        sg[0:-1,1:  ]+\
+        sg[1:  ,1:  ])/4
+    return np.abs(ssum)<1
+    
+def signchanged3D(x):
+    x = np.sign(x)
+    ssum = (\
+        x[0:-1,0:-1,0:-1]+\
+        x[1:  ,0:-1,0:-1]+\
+        x[0:-1,1:  ,0:-1]+\
+        x[1:  ,1:  ,0:-1]+\
+        x[0:-1,0:-1,1:  ]+\
+        x[1:  ,0:-1,1:  ]+\
+        x[0:-1,1:  ,1:  ]+\
+        x[1:  ,1:  ,1:  ])
+    return np.abs(ssum)<8

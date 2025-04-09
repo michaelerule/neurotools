@@ -427,6 +427,7 @@ def grad(x):
     resulty[1:-1,:]*= 0.5
     return resultx,resulty
 
+
 def quickgrad(x):
     '''
     
@@ -532,14 +533,56 @@ def cut_array_data(data,arrayMap,cutoff=1.8,spacing=0.4):
     
 def mirror2D(C):
     '''
+    Mirror a 2D array (values at the edge are duplicated). 
     
     Parameters
     ----------
+    C: 2D np.ndarray
     
     Returns
     -------
+    np.ndarray: Array with twice the width, hight of C and 
+    containing reflected copies
     '''
     C = np.array(C)
-    C = np.cat([C,C[::-1]])
-    C = np.cat([C,C[:,::-1]],1)
+    C = np.concatenate([C,C[::-1]])
+    C = np.concatenate([C,C[:,::-1]],1)
     return C
+
+
+def zeropadND(C):
+    '''
+    Pads a ND array with zero arrays of the same shape.
+    
+    Parameters
+    ----------
+    C: 2D np.ndarray
+    
+    Returns
+    -------
+    np.ndarray: Array with twice the width, hight of C
+        with new entries set to zero
+    '''
+    C = np.array(C)
+    N = len(C.shape)
+    oldshape = np.int32(C.shape)
+    newshape = oldshape*2
+    newC = np.zeros(newshape,C.dtype)
+    start = oldshape//2
+    stop  = start + oldshape
+    newC[tuple(slice(*indexes) for indexes in zip(start, stop))] = C
+    return newC
+
+
+def padoutND(C):
+    '''
+    Remove padding created by `zeropadND`
+    '''
+    C = np.array(C)
+    if not np.all([d%2==0 for d in C.shape]):
+        raise ValueError("Array C's shape %s is not even"%C.shape)
+    realshape = np.int32(C.shape)//2
+    start = realshape//2
+    stop  = start+realshape
+    return C[tuple(slice(*indexes) for indexes in zip(start, stop))]
+

@@ -520,6 +520,14 @@ def centers(edges):
     if edges.dtype==np.int32: c=maybe_integer(c)
     return c
 
+def centers2d(s):
+    s = np.array(s)
+    ss = np.array([
+        s[1: ,1: ],
+        s[:-1,1: ],
+        s[1: ,:-1],
+        s[:-1,:-1]])
+    return np.mean(ss,0)
 
 def widths_to_centers(widths,startat=0):
     '''

@@ -92,6 +92,7 @@ def toc(doprint=True,prefix=''):
         if doprint: print("havn't called tic yet?")
     return t,None
 
+
 def waitfor(t):
     '''
     Spin-wait for t milliseconds.
@@ -105,7 +106,6 @@ def waitfor(t):
     while current_milli_time()<t:
         pass
     return current_milli_time()
-
 
 
 @tools.piper
@@ -152,12 +152,10 @@ pb   = progress_bar
 en   = tools.piper(enumerate)
 
 
-
-def outputlimiter(callback,ms=1000):
+def ratelimit(callback,ms=1000):
     '''
     Limit output to no more than once per second.
     '''
-    
     wait_til_ms = systime.time()*1000
     
     def output(*a,**k):

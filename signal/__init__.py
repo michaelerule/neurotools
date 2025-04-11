@@ -610,8 +610,8 @@ def padout(data):
     Generates a reflected version of a 1-dimensional signal. 
 
     The original data is placed in the middle, between the 
-    mirrord copies.
-    Use the function "padin" to strip the padding
+    mirrord copies. Use the function "padin" to strip the 
+    padding
     
     Parameters
     ----------
@@ -824,7 +824,7 @@ def get_edges(signal,pad_edges=True):
         return np.array([[],[]])
     if tuple(sorted(np.unique(signal)))==(-2,-1):
         raise ValueError('signal should be bool or int∈{0,1}; (did you use ~ on an int array?)')
-    signal = np.int32(np.bool8(signal))
+    signal = np.int32(signal>0)
     starts = list(np.where(np.diff(np.int32(signal))==1)[0]+1)
     stops  = list(np.where(np.diff(np.int32(signal))==-1)[0]+1)
     if pad_edges:

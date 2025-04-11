@@ -23,7 +23,7 @@ def interpolate_zero(x,y):
 def refine_zero(f,x):# Refine
     y = f(x)
     z = interpolate_zero(x,y)
-    e = np.array((z[0]-1,) + z + (z[-1]+1,)))
+    e = np.array((z[0]-1,) + z + (z[-1]+1,))
     e = (e[1:]+e[:-1])/2
     return tuple(root_scalar(f, bracket=[a,b]).root for a,b in zip(e[:-1], e[1:]))
     
@@ -32,7 +32,7 @@ def kill_zeros(x,eps=1e-6):
     s = np.abs(x)<eps
     s[1: ] &= s[:-1]
     s[:-1] &= s[1: ]
-    x[s] = np.NaN
+    x[s] = np.nan
     return x
     
 def eigvalplot(f,e,i2f=lambda x:x):
@@ -42,3 +42,25 @@ def eigvalplot(f,e,i2f=lambda x:x):
     plot(f,i2f(np.min(R,axis=1)),color='m')
     plot(f,i2f(kill_zeros(np.max(I,axis=1))),color='c')
     plot(f,i2f(kill_zeros(np.min(I,axis=1))),color='c')
+
+def signchanged2D(x):
+    sg = np.sign(x)
+    ssum = (\
+        sg[0:-1,0:-1]+\
+        sg[1:  ,0:-1]+\
+        sg[0:-1,1:  ]+\
+        sg[1:  ,1:  ])/4
+    return np.abs(ssum)<1
+    
+def signchanged3D(x):
+    x = np.sign(x)
+    ssum = (\
+        x[0:-1,0:-1,0:-1]+\
+        x[1:  ,0:-1,0:-1]+\
+        x[0:-1,1:  ,0:-1]+\
+        x[1:  ,1:  ,0:-1]+\
+        x[0:-1,0:-1,1:  ]+\
+        x[1:  ,0:-1,1:  ]+\
+        x[0:-1,1:  ,1:  ]+\
+        x[1:  ,1:  ,1:  ])
+    return np.abs(ssum)<8

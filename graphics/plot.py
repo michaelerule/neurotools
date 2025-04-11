@@ -83,6 +83,21 @@ def simpleraxis(ax=None):
     ax.get_xaxis().tick_bottom()
     ax.get_yaxis().tick_left()
     ax.autoscale(enable=True, axis='x', tight=True)
+
+def simplestaxis(ax=None):
+    '''
+    Parameters
+    ----------
+    ax: maplotlib.Axis; default ``plt.gca()``
+    '''
+    if ax is None: ax=plt.gca()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+    ax.autoscale(enable=True, axis='x', tight=True)
     
 def simplerright(ax=None):
     '''
@@ -1315,6 +1330,7 @@ def nice_legend(*args,**kwargs):
     lg = legend(*args,**defaults)
     lg.get_frame().set_linewidth(0.0)
     return lg
+
 def right_legend(*args,fudge=0.0,**kwargs):
     '''
     Legend outside the plot to the right.
@@ -2290,7 +2306,7 @@ def figurebox(color=(0.6,0.6,0.6)):
     ax2.add_line(line)
     plt.xticks([]); plt.yticks([]); noxyaxes()
 
-def more_xticks(ax=None):
+def morexticks(ax=None):
     '''
     Add more ticks to the x axis
 
@@ -2315,7 +2331,7 @@ def more_xticks(ax=None):
         new_xticks = np.concatenate([new_xticks,[after]])
     ax.set_xticks(new_xticks)
 
-def more_yticks(ax=None):
+def moreyticks(ax=None):
     '''
     Add more ticks to the y axis
 
@@ -2340,6 +2356,10 @@ def more_yticks(ax=None):
     if after>=ymin and after<=ymax:
         new_yticks = np.concatenate([new_yticks,[after]])
     ax.set_yticks(new_yticks)
+
+def moreticks(**kw):
+    morexticks(**kw)
+    moreyticks(**kw)
 
 def border_width(lw=0.4,ax=None):
     '''
@@ -3017,7 +3037,18 @@ def zerovline(color='k',lw=None,**kwargs):
         lw = matplotlib.rcParams['axes.linewidth']
     plt.axvline(0,color=color,lw=lw,**kwargs)
 
-
+def zerolines(**kw):
+    '''
+    Draw vertical and horizontal line at zero matching axis style.
+    
+    Other Parameters
+    ----------------
+    color: matplotlib.color; default 'k'
+    lw: positive float
+        Linewidth, if different from ``axes.linewidth``
+    '''
+    zerohline(**kw)
+    zerovline(**kw)
     
     
 def plot_circular_histogram(

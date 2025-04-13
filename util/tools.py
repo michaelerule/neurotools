@@ -161,12 +161,16 @@ class piper():
     # Left-acting function composition
     # (foo @ bar)(a) → foo(bar(a))
     def _composewith(self,f):
-        @piper
-        def wrapped(*args,**kwargs):
-            return self.operation(
-                f(*args,**kwargs)
-            )
-        return wrapped
+        if callable(f):
+            @piper
+            def wrapped(*args,**kwargs):
+                return self.operation(
+                    f(*args,**kwargs)
+                )
+            return wrapped
+        else:
+            # not a function, maybe application? 
+            return self(f)
     def __and__(self,f):
         return self._composewith(f)
     def __pow__(self,f):

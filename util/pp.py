@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import numpy as np
+import pylab
 from matplotlib.pyplot import plot
 from scipy.optimize import root_scalar
 
@@ -64,3 +65,42 @@ def signchanged3D(x):
         x[0:-1,1:  ,1:  ]+\
         x[1:  ,1:  ,1:  ])
     return np.abs(ssum)<8
+    
+def plot_complex_roots(
+    νν,R,
+    rcolor='m',
+    icolor='c',
+    scatter=False,
+    largest_stable_oscillatory_pole=False,
+    **kw):
+    '''
+    Parameters
+    ----------
+    νν np.ndarray:
+        Shape Nsamples 1D array of sorted frequencies
+    R np.ndarray: 
+        Nroots x Nsamples array of complex roots
+    '''
+    if scatter:
+        kw = dict(lw=0,marker='.',s=4) | kw
+        plutfunction = pylab.scatter
+    else:
+        kw = dict(lw=1) | kw
+        plutfunction = pylab.plot
+    if largest_stable_oscillatory_pole:
+        R[R.real>0]=-np.inf
+        R[np.abs(R.imag)<1e-12]=-np.inf
+        R = R[np.argmax(R.real,axis=0), np.arange(R.shape[1])][None,:]
+    ir = R.imag
+    ir.sort(axis=0)
+    ir = kill_zeros(ir)
+    for r in ir:
+        plutfunction(νν, kill_zeros(r),color=icolor,**kw)
+        if largest_stable_oscillatory_pole:
+            plutfunction(νν,-kill_zeros(r),color=icolor,**kw)
+    rr = R.real
+    rr.sort(axis=0)
+    rr = kill_zeros(rr)
+    for r in rr:
+        plutfunction(νν, kill_zeros(np.real(r)),color=rcolor,**kw)
+

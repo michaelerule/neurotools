@@ -256,9 +256,13 @@ def snake_to_camel(s,delimeters=' _'):
     if len(s)<=1: return s[0].lower()
     return s[0].lower() + s[1:].replace(' ','')
     
-    
-
-    
-    
+def shorten_by_words(l,n=50):
+    s = ''
+    for li in l.split():
+        nexts = s+' '+li
+        if len(nexts)>n:
+            break
+        s = nexts
+    return s
     
 

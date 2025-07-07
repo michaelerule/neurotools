@@ -2747,7 +2747,7 @@ def mock_legend(names,colors=None,s=40,lw=0.6,marker='s',
     
     if not styles is None:
         for name,style in zip(names,styles):
-            scatter(x0,y0,label=name,**style)
+            plt.scatter(x0,y0,label=name,**style)
         restore_limits()
         return
     
@@ -2781,7 +2781,7 @@ def mock_legend(names,colors=None,s=40,lw=0.6,marker='s',
         lw = [lw,]*len(names)
         
     for n,c,s,m,l in zip(names,colors,s,marker,lw):
-        scatter(x0,y0,s=s,color=c,marker=m,label=n,lw=l)
+        plt.scatter(x0,y0,s=s,color=c,marker=m,label=n,lw=l)
     restore_limits()
     
 def xtickpad(pad=0,ax=None,which='both'):

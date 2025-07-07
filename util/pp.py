@@ -28,12 +28,12 @@ def refine_zero(f,x):# Refine
     e = (e[1:]+e[:-1])/2
     return tuple(root_scalar(f, bracket=[a,b]).root for a,b in zip(e[:-1], e[1:]))
     
-def kill_zeros(x,eps=1e-6):
-    x = np.copy(x)
-    s = np.abs(x)<eps
-    s[1: ] &= s[:-1]
-    s[:-1] &= s[1: ]
-    x[s] = np.nan
+def kill_zeros(x,eps=1e-12):
+    x = np.float32(np.copy(x))
+    s = np.abs(x)>=eps
+    s[1: ] |= s[:-1]
+    s[:-1] |= s[1: ]
+    x[~s] = np.nan
     return x
     
 def eigvalplot(f,e,i2f=lambda x:x):
@@ -83,24 +83,24 @@ def plot_complex_roots(
     '''
     if scatter:
         kw = dict(lw=0,marker='.',s=4) | kw
-        plutfunction = pylab.scatter
+        plotfunction = pylab.scatter
     else:
         kw = dict(lw=1) | kw
-        plutfunction = pylab.plot
+        plotfunction = pylab.plot
     if largest_stable_oscillatory_pole:
         R[R.real>0]=-np.inf
         R[np.abs(R.imag)<1e-12]=-np.inf
         R = R[np.argmax(R.real,axis=0), np.arange(R.shape[1])][None,:]
+    
     ir = R.imag
     ir.sort(axis=0)
-    ir = kill_zeros(ir)
     for r in ir:
-        plutfunction(νν, kill_zeros(r),color=icolor,**kw)
+        plotfunction(νν, kill_zeros(r),color=icolor,**kw)
         if largest_stable_oscillatory_pole:
-            plutfunction(νν,-kill_zeros(r),color=icolor,**kw)
+            plotfunction(νν,-kill_zeros(r),color=icolor,**kw)
+    
     rr = R.real
     rr.sort(axis=0)
-    rr = kill_zeros(rr)
     for r in rr:
-        plutfunction(νν, kill_zeros(np.real(r)),color=rcolor,**kw)
+        plotfunction(νν, kill_zeros(np.real(r)),color=rcolor,**kw)
 

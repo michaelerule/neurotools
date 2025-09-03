@@ -286,14 +286,14 @@ def noxlabels():
     Hide x tick labels and x axis label
     '''
     plt.tick_params(axis='x',which='both',labelbottom=False)
-    xlabel('')
+    plt.xlabel('')
 
 def noylabels():
     '''
     Hide y tick labels and y axis label
     '''
     plt.tick_params(axis='y',which='both',labelbottom=False)    
-    ylabel('')
+    plt.ylabel('')
 
 def nolabels():
     '''
@@ -2486,7 +2486,7 @@ def shellmean(x,y,bins=20):
     '''
     if type(bins) is int:
         skip  = len(x)//bins
-        bins  = array(sorted(x))[::skip]
+        bins  = np.array(sorted(x))[::skip]
         bins[-1] = np.max(y)+1e-9
     nbins = len(bins)-1
     means,stds,sems = [],[],[]
@@ -2554,7 +2554,7 @@ def shellplot(x,y,z,SHELLS,
     '''
     Xμ, σ, dμ, Δe = shellmean(z,x,bins=SHELLS)
     Yμ, σ, dμ, Δe = shellmean(z,y,bins=SHELLS)
-    ok = isfinite(Xμ)
+    ok = np.isfinite(Xμ)
     Xμ = Xμ[ok]
     Yμ = Yμ[ok]
     Δe = Δe[ok]

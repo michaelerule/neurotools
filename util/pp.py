@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import numpy as np
+import pylab
 from matplotlib.pyplot import plot
 from scipy.optimize import root_scalar
 
@@ -27,12 +28,12 @@ def refine_zero(f,x):# Refine
     e = (e[1:]+e[:-1])/2
     return tuple(root_scalar(f, bracket=[a,b]).root for a,b in zip(e[:-1], e[1:]))
     
-def kill_zeros(x,eps=1e-6):
-    x = np.copy(x)
-    s = np.abs(x)<eps
-    s[1: ] &= s[:-1]
-    s[:-1] &= s[1: ]
-    x[s] = np.nan
+def kill_zeros(x,eps=1e-12):
+    x = np.float32(np.copy(x))
+    s = np.abs(x)>=eps
+    s[1: ] |= s[:-1]
+    s[:-1] |= s[1: ]
+    x[~s] = np.nan
     return x
     
 def eigvalplot(f,e,i2f=lambda x:x):
@@ -64,3 +65,42 @@ def signchanged3D(x):
         x[0:-1,1:  ,1:  ]+\
         x[1:  ,1:  ,1:  ])
     return np.abs(ssum)<8
+    
+def plot_complex_roots(
+    νν,R,
+    rcolor='m',
+    icolor='c',
+    scatter=False,
+    largest_stable_oscillatory_pole=False,
+    **kw):
+    '''
+    Parameters
+    ----------
+    νν np.ndarray:
+        Shape Nsamples 1D array of sorted frequencies
+    R np.ndarray: 
+        Nroots x Nsamples array of complex roots
+    '''
+    if scatter:
+        kw = dict(lw=0,marker='.',s=4) | kw
+        plotfunction = pylab.scatter
+    else:
+        kw = dict(lw=1) | kw
+        plotfunction = pylab.plot
+    if largest_stable_oscillatory_pole:
+        R[R.real>0]=-np.inf
+        R[np.abs(R.imag)<1e-12]=-np.inf
+        R = R[np.argmax(R.real,axis=0), np.arange(R.shape[1])][None,:]
+    
+    ir = R.imag
+    ir.sort(axis=0)
+    for r in ir:
+        plotfunction(νν, kill_zeros(r),color=icolor,**kw)
+        if largest_stable_oscillatory_pole:
+            plotfunction(νν,-kill_zeros(r),color=icolor,**kw)
+    
+    rr = R.real
+    rr.sort(axis=0)
+    for r in rr:
+        plotfunction(νν, kill_zeros(np.real(r)),color=rcolor,**kw)
+

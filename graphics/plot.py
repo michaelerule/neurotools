@@ -1626,7 +1626,8 @@ def good_colorbar(
     labelsize=None,
     scale=1.0,
     va='c',
-    ha='c'):
+    ha='c',
+    **kwargs):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\\mathrm{\\mu V}^2$'
@@ -1728,11 +1729,12 @@ def good_colorbar(
         plt.text(
             plt.xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
             np.mean(plt.ylim()),
-            title,
+            title,**(dict(
             fontsize=fontsize,
             rotation=90,
             horizontalalignment='left',
-            verticalalignment  ='center')
+            multialignment='center',
+            verticalalignment  ='center')|kwargs))
         cax.yaxis.set_label_position("right")
         cax.yaxis.tick_right()
 

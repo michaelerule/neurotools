@@ -286,14 +286,14 @@ def noxlabels():
     Hide x tick labels and x axis label
     '''
     plt.tick_params(axis='x',which='both',labelbottom=False)
-    xlabel('')
+    plt.xlabel('')
 
 def noylabels():
     '''
     Hide y tick labels and y axis label
     '''
     plt.tick_params(axis='y',which='both',labelbottom=False)    
-    ylabel('')
+    plt.ylabel('')
 
 def nolabels():
     '''
@@ -1626,7 +1626,8 @@ def good_colorbar(
     labelsize=None,
     scale=1.0,
     va='c',
-    ha='c'):
+    ha='c',
+    **kwargs):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\\mathrm{\\mu V}^2$'
@@ -1728,11 +1729,12 @@ def good_colorbar(
         plt.text(
             plt.xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
             np.mean(plt.ylim()),
-            title,
+            title,**(dict(
             fontsize=fontsize,
             rotation=90,
             horizontalalignment='left',
-            verticalalignment  ='center')
+            multialignment='center',
+            verticalalignment  ='center')|kwargs))
         cax.yaxis.set_label_position("right")
         cax.yaxis.tick_right()
 
@@ -2486,7 +2488,7 @@ def shellmean(x,y,bins=20):
     '''
     if type(bins) is int:
         skip  = len(x)//bins
-        bins  = array(sorted(x))[::skip]
+        bins  = np.array(sorted(x))[::skip]
         bins[-1] = np.max(y)+1e-9
     nbins = len(bins)-1
     means,stds,sems = [],[],[]
@@ -2495,10 +2497,10 @@ def shellmean(x,y,bins=20):
         ok = (x>=bins[i])&(x<bins[i+1])
         n  = np.sum(ok)+1
         v  = np.nanvar(y[ok])
-        if not isfinite(v):
+        if not np.isfinite(v):
             v = 0
         m = np.nanmean(y[ok])
-        if not isfinite(m):
+        if not np.isfinite(m):
             m = 0
         if len(y[ok])<1:
             m = NaN
@@ -2538,37 +2540,44 @@ def trendline(x,y,ax=None,color=RUST):
 
 def shellplot(x,y,z,SHELLS,
     label='',
-    vmin=None,vmax=None,ax=None):
+    vmin=None,vmax=None,ax=None,doline=False,**opts):
     '''
     Averages X and Y based on bins of Z
     
     Parameters
     ----------
-    x: 
-    y: 
-    z: 
-    SHELLS: 
+    x (1D np.ndarray): horizontal axis data
+    y (1D np.ndarray): vertical axis data
+    z (1D np.ndarray): time series to use to define groups
+    SHELLS: number of groups to create
     
     Other Parameters
     ----------------
+    label (str): Color bar title
+    vmin (float): color bar minimum
+    vmax (float): color bar maximum
+    ax (axis): Matplotlib axis to plot into
+    doline (bool): Draw linear trend line
+    **opts (dict): Remaining keyword arguments forwarded to `plt.scatter`
     '''
     Xμ, σ, dμ, Δe = shellmean(z,x,bins=SHELLS)
     Yμ, σ, dμ, Δe = shellmean(z,y,bins=SHELLS)
-    ok = isfinite(Xμ)
+    ok = np.isfinite(Xμ)
     Xμ = Xμ[ok]
     Yμ = Yμ[ok]
     Δe = Δe[ok]
-    if ax is None:
-        smallplot()
+    #if ax is None:
+    #    smallplot()
     x = Xμ
     y = Yμ
     ns = len(x)
-    plt.scatter(x,y,c=Δe,lw=0,s=16,vmin=vmin,vmax=vmax)
+    plt.scatter(x,y,c=Δe,lw=0,s=16,vmin=vmin,vmax=vmax,**opts)
     cbar = plt.colorbar()
     simpleaxis()
     #cbar.set_ticks(arange(vmin,,2))
     cbar.ax.set_ylabel(label)
-    trendline(x,y)
+    if doline:
+        trendline(x,y)
     return x,y,Δe
 
 def arrow_between(A,B,size=None):

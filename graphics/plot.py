@@ -1744,7 +1744,7 @@ def good_colorbar(
     plt.sca(oldax) #restore previously active axis
     return cax
 
-def complex_axis(scale):
+def complex_axis(scale,unit=None):
     '''
     Draws a nice complex-plane axis with LaTeX Re, Im labels.
     
@@ -1755,11 +1755,17 @@ def complex_axis(scale):
     plt.xlim(-scale,scale)
     plt.ylim(-scale,scale)
     nicexy()
-    ybartext(0,r'$\Im(z)$','k','w',lw=1,color='k',outline=False)
-    xbartext(0,r'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    if mpl.rcParams['text.usetex']:
+        ybartext(0,r'$\\Im(z)$','k','w',lw=1,color='k',outline=False)
+        xbartext(0,r'$\\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    else:
+        ybartext(0,r'$\Im(z)$','k','w',lw=1,color='k',outline=False)
+        xbartext(0,r'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    # Escaping axis labels not yet implemented
     noaxis()
-    xlabel(u'μV',fontname='DejaVu Sans',fontsize=12)
-    ylabel(u'μV',fontname='DejaVu Sans',fontsize=12)
+    if unit:
+        xlabel(unit,fontname='DejaVu Sans',fontsize=12)
+        ylabel(unit,fontname='DejaVu Sans',fontsize=12)
     xticks(xticks()[0],fontsize=12)
     yticks(yticks()[0],fontsize=12)
     force_aspect()

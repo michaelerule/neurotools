@@ -28,11 +28,10 @@ def adjacency1D(L,circular=True):
     '''
     # Make adjacency matrix
     # [1 0 1 .. 0]
-    A1d = scipy.sparse.np.eye(L,k=-1) + scipy.sparse.np.eye(L,k=1)
+    A1d = scipy.sparse.eye(L,k=-1) + scipy.sparse.eye(L,k=1)
     if circular:
-        A1d += scipy.sparse.np.eye(L,k=L-1) + scipy.sparse.np.eye(L,k=1-L) 
+        A1d += scipy.sparse.eye(L,k=L-1) + scipy.sparse.eye(L,k=1-L) 
     return A1d
-
 
 def laplacian1D_circular(N):
     '''
@@ -52,6 +51,33 @@ def laplacian1D_circular(N):
     '''
     return adjacency1D_circular(N)-2*np.eye(N)
 
+def laplacian1D(N,circular=False,boundary='dirichlet'):
+    '''
+    Laplacian operator on a closed, discrete, one-dimensional domain
+    of length ``N``
+
+    Parameters
+    ----------
+    N: int
+        Size of operator
+    
+    Returns
+    -------
+    L: NxN array
+        Matrix representation of Laplacian operator on a finite, 
+        discrete domain of length N.
+    '''
+    boundary = str(boundary).lower()[0]
+    if circular:
+        return laplacian1D_circular(N)
+    L = -2*np.eye(N)+np.eye(N,k=1)+np.eye(N,k=-1)
+    if boundary =='n':
+        L[0,0] = L[-1,-1] = -1
+    elif boundary =='d':
+        L[0,0] = L[-1,-1] = -2
+    else:
+        raise ValueError('`boundary` must be Neumann or Dirichlet')
+    return L    
     
 def adjacency2D(L,H=None,circular=True):
     '''
@@ -172,27 +198,6 @@ def adjacency2d_rotational(L):
     A2d_cross  = scipy.sparse.kronsum(A1d,A1d).toarray()
     A2d_corner = scipy.sparse.kron(A1d,A1d).toarray()
     return A2d_cross*2/3+A2d_corner*1/3
-
-
-def laplacian1D(N):
-    '''
-    Laplacian operator on a closed, discrete, one-dimensional domain
-    of length ``N``
-
-    Parameters
-    ----------
-    N: int
-        Size of operator
-    
-    Returns
-    -------
-    L: NxN array
-        Matrix representation of Laplacian operator on a finite, 
-        discrete domain of length N.
-    '''
-    L = -2*np.eye(N)+np.eye(N,k=1)+np.eye(N,k=-1)
-    L[0,0] = L[-1,-1] = -1
-    return L
 
 
 def laplacianFT1D(N):

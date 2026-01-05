@@ -1536,6 +1536,12 @@ def unitscale(signal,axis=None):
     signal: np.array
         Array-like real-valued signal
     
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+        Axis over which to take the mean; 
+        forwarded to np.mean axis parameter
+    
     Returns
     -------
     signalL np.array
@@ -1555,7 +1561,7 @@ def unitscale(signal,axis=None):
     return signal
     
     
-def absunitscale(signal,axis=None):
+def absunitscale(signal,axis=None,minor=False):
     '''
     Rescales `signal` so that its maximum absolute value is 1.
 
@@ -1563,6 +1569,14 @@ def absunitscale(signal,axis=None):
     ----------
     signal: np.array
         Array-like real-valued signal
+    
+    Other Parameters
+    ----------------
+    axis: int or tuple, default None
+        Axis over which to take the mean; 
+        forwarded to np.mean axis parameter
+    minor: boolean, defaly False
+        Use the smaller of the positive or negative maxima if true. 
     
     Returns
     -------
@@ -1572,11 +1586,15 @@ def absunitscale(signal,axis=None):
     signal = np.float64(np.array(signal))
     if axis==None:
         # Old behavior
-        signal/= np.nanmax(np.abs(signal))
-        return signal
+        c = (np.minimum if minor else np.maximum)(np.nanmax(signal),np.nanmax(-signal))
+        return signal/c
     # New behavior
     theslice = narray.make_rebroadcast_slice(signal, axis)
-    signal/= np.nanmax(np.abs(signal),axis=axis)[theslice]
+    if minor:
+        c = np.minimum(np.nanmax(signal,axis=axis),np.nanmax(-signal,axis=axis))
+    else:
+        c = np.nanmax(np.abs(signal),axis=axis)
+    signal/=c[theslice]
     return signal
 
 def topercentiles(x):

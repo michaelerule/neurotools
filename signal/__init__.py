@@ -1611,6 +1611,28 @@ def topercentiles(x):
     ranks = order.argsort()
     return ranks/(len(x)-1)*100
 
+def zeromin(x,axis=0,verbose=False,ignore_nan=True):
+    '''
+    Subtract the minimum from a timeseries
+    
+    Parameters
+    ----------
+    x : np.array
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+    
+    Returns
+    -------
+    x: np.array
+    '''
+    x = np.array(x)
+    if np.prod(x.shape)==0:
+        return x
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    return x-(np.nanmin if ignore_nan else np.min)(x,axis=axis)[theslice]
+
 def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     '''
     Remove the mean trend from data
@@ -1994,7 +2016,7 @@ def mintomax(x,prefix=None,doprint=True):
     return mnmx
 
 
-def unit_length(x,axis=0):
+def unitlength(x,axis=0):
     '''
     Interpret given axis of multidimensional array as 
     vectors, and normalize them to unit length.

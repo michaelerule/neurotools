@@ -36,6 +36,12 @@ except:
 ############################################################
 # Shorthand for common axes options
 
+def tightsave(fn):
+    savefig(fn,bbox_inches='tight',pad_inches=0,transparent=True)
+    import subprocess
+    gcf().patch.set_visible(False)
+    subprocess.run(['inkscape', '--pdf-poppler', '-D', '-o', fn, fn])
+
 def simpleaxis(ax=None):
     '''
     Only draw the bottom and left axis lines
@@ -324,6 +330,16 @@ def unitx():
     plt.xlim(0,1)
     nicex()
 
+def sfticklabels(ax=None):
+    '''
+    Enforce ordinary text formatting of x and y axis tick labels. 
+    This may be useful for retaining serif maths in latex mode without
+    typsetting axis label numebrs in math mode. 
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.xaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%g'))
+    ax.yaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%g'))
 
 
 

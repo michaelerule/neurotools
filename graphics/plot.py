@@ -36,6 +36,12 @@ except:
 ############################################################
 # Shorthand for common axes options
 
+def tightsave(fn):
+    savefig(fn,bbox_inches='tight',pad_inches=0,transparent=True)
+    import subprocess
+    gcf().patch.set_visible(False)
+    subprocess.run(['inkscape', '--pdf-poppler', '-D', '-o', fn, fn])
+
 def simpleaxis(ax=None):
     '''
     Only draw the bottom and left axis lines
@@ -324,6 +330,16 @@ def unitx():
     plt.xlim(0,1)
     nicex()
 
+def sfticklabels(ax=None):
+    '''
+    Enforce ordinary text formatting of x and y axis tick labels. 
+    This may be useful for retaining serif maths in latex mode without
+    typsetting axis label numebrs in math mode. 
+    '''
+    if ax is None:
+        ax = plt.gca()
+    ax.xaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%g'))
+    ax.yaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%g'))
 
 
 
@@ -1626,7 +1642,8 @@ def good_colorbar(
     labelsize=None,
     scale=1.0,
     va='c',
-    ha='c'):
+    ha='c',
+    **kwargs):
     '''
     Matplotlib's colorbar function is pretty bad. This is less bad.
     r'$\\mathrm{\\mu V}^2$'
@@ -1728,11 +1745,12 @@ def good_colorbar(
         plt.text(
             plt.xlim()[1]+pixels_to_xunits(labelpad,ax=cax),
             np.mean(plt.ylim()),
-            title,
+            title,**(dict(
             fontsize=fontsize,
             rotation=90,
             horizontalalignment='left',
-            verticalalignment  ='center')
+            multialignment='center',
+            verticalalignment  ='center')|kwargs))
         cax.yaxis.set_label_position("right")
         cax.yaxis.tick_right()
 
@@ -1742,7 +1760,7 @@ def good_colorbar(
     plt.sca(oldax) #restore previously active axis
     return cax
 
-def complex_axis(scale):
+def complex_axis(scale,unit=None):
     '''
     Draws a nice complex-plane axis with LaTeX Re, Im labels.
     
@@ -1753,11 +1771,17 @@ def complex_axis(scale):
     plt.xlim(-scale,scale)
     plt.ylim(-scale,scale)
     nicexy()
-    ybartext(0,r'$\Im(z)$','k','w',lw=1,color='k',outline=False)
-    xbartext(0,r'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    if mpl.rcParams['text.usetex']:
+        ybartext(0,r'$\\Im(z)$','k','w',lw=1,color='k',outline=False)
+        xbartext(0,r'$\\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    else:
+        ybartext(0,r'$\Im(z)$','k','w',lw=1,color='k',outline=False)
+        xbartext(0,r'$\Re(z)$','k','w',lw=1,color='k',outline=False,horizontalalignment='right')
+    # Escaping axis labels not yet implemented
     noaxis()
-    xlabel(u'μV',fontname='DejaVu Sans',fontsize=12)
-    ylabel(u'μV',fontname='DejaVu Sans',fontsize=12)
+    if unit:
+        xlabel(unit,fontname='DejaVu Sans',fontsize=12)
+        ylabel(unit,fontname='DejaVu Sans',fontsize=12)
     xticks(xticks()[0],fontsize=12)
     yticks(yticks()[0],fontsize=12)
     force_aspect()

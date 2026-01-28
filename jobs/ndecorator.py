@@ -7,10 +7,14 @@ Robust decorators are provided by the decorator package
 import neurotools.util
 from collections import defaultdict
 import os, sys
+if sys.version_info[0] == 2:
+    __PYTHON_2__=True
 import inspect, ast, types
 import warnings, traceback, errno
 import pickle, json, base64, zlib
 import numpy as np
+
+
 
 try:
     import decorator
@@ -102,8 +106,7 @@ def sanitize(sig,mode='liberal'):
         else: return tuple(sanitize(s,mode=mode) 
             for s in sig)
     
-    if __PYTHON_2__ and isinstance(sig,(unicode,)):
-        print(__PYTHON_2__)
+    if sys.version_info[0] == 2 and isinstance(sig,(unicode,)):
         return sanitize(str(sig),mode=mode)
     
     if isinstance(sig, (dict,)):

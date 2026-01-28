@@ -19,20 +19,46 @@ from neurotools.util.getfftw    import *
 from neurotools.jobs.ndecorator import memoize
 try:
   from scipy.signal import morlet
+  scipy_signal_morlet = morlet
 except:
-  #print('neurotools.signal.morlet: migrating to pywavelets is TODO')
-  pass
+  import pywt
+  # emulate morlet(M, w=5.0, s=1.0, complete=True)
+  # only supporting these two call patterns:
+  #   scipy_signal_morlet(m,w=w)
+  #   scipy_signal_morlet(N,width,scale)
+  def scipy_signal_morlet(M, w=5.0, s=1.0, complete=True):
+    x = np.linspace(-s * 2 * np.pi, s * 2 * np.pi, M)
+    output = np.exp(1j * w * x)
+    if complete:
+        output -= np.exp(-0.5 * (w**2))
+    output *= np.exp(-0.5 * (x**2)) * np.pi**(-0.25)
+    return output
+
 import warnings
 
-def normalized_morlet(m,w):
+def normalized_morlet(m,w,s=1.0):
     '''
-    See morlet(m,w)
-
-    This applies post-processing such that the sum absolute magnitued of
-    the wavelet is 1
+    See morlet(m,w); This applies post-processing such that the sum absolute 
+    magnitued of the wavelet is 1.
+    
+    Parameters:
+        m (int): Length of the wavelet in samples
+        w (float): Wavelet central frequency ω0
+        s (float, default 1.): Scaling factor, windowed ±s2π
     '''
-    wl = morlet(int(m),w)
+    wl = scipy_signal_morlet(int(m),w,s)
     return wl/sum(abs(wl))
+    
+    
+def normalized_morlet_physical_units(N,w,scale=1.0,Fs=1000):
+    '''
+    Parameters:
+        N (int): Length in samples
+        w (float): Wavelet central frequency ω0 in Hz
+        s (float, default 1.): Scaling factor in seconds
+        Fs (float, default 1000): Sample rate in samples per second
+    '''
+    return normalized_morlet(N,w*scale,(0.5*N/Fs)/scale)
 
 @memoize
 def prepare_wavelet_fft_basis(fa,fb,nfreqs,L,w,Fs=1000):
@@ -61,8 +87,7 @@ def prepare_wavelet_fft_basis(fa,fb,nfreqs,L,w,Fs=1000):
     freqs:
         FFT frequencies
     basis: 
-        Fourier transform of Morlet wavelets for each
-        band.
+        Fourier transform of Morlet wavelets for each band.
     '''    
     freqs = np.linspace(fa,fb,nfreqs)
     M     = np.int32(np.round(2.*1.*w*Fs/freqs))
@@ -74,7 +99,7 @@ def prepare_wavelet_fft_basis(fa,fb,nfreqs,L,w,Fs=1000):
     allwl = []
     fftwl = []
     for i,m in enumerate(M):
-        wl = morlet(m,w=w)
+        wl = scipy_signal_morlet(m,w=w)
         wl = wl/sum(abs(wl))
         N = len(wl)
         if N>L:
@@ -119,18 +144,19 @@ def fft_cwt(data,fa,fb,w=4.0,nfreqs=0.1,Fs=1000):
     result: NCHANNELS × NFREQS × NTIMES np.array
         wavelet transform
     '''    
-    if len(shape(data))==1:
-        data = reshape(data,shape(data)+(1,))
-    N,NCH        = shape(data)
+    data = np.array(data)
+    if len(data.shape)==1:
+        data = data[None,...]
+    N,NCH = data.shape
     if NCH>N:
         print('MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED')
-    padded       = zeros((N*2,NCH),dtype=complex64)
+    padded       = np.zeros((N*2,NCH),dtype='F')
     padded[:N,:] = data
     padded[N:,:] = data[::-1,:]
     fft_data = fft(padded,axis=0)
     freqs,wavelets = prepare_wavelet_fft_basis(fa,fb,nfreqs,N*2,w,Fs)
-    result   = array([ifft(fft_data.T*wl,axis=1)[:,:N] for wl in wavelets])
-    return freqs,transpose(result,(1,0,2))
+    result = np.array([ifft(fft_data.T*wl,axis=1)[:,:N] for wl in wavelets])
+    return freqs,result.transpose(1,0,2)
     
 def geometric_window(c,w):
     '''
@@ -221,7 +247,7 @@ def prepare_wavelet_fft_basis_logspace(fa,fb,nfreq,L,w,Fs=1000):
         wl = normalized_morlet(m,w)
         N = len(wl)
         if N>L:
-            chop_begin = (N-L)/2
+            chop_begin = (N-L)//2
             chop_end   = (N-L)-chop_begin
             wl = wl[chop_begin:-chop_end]
             N = len(wl)
@@ -236,9 +262,8 @@ def prepare_wavelet_fft_basis_logspace(fa,fb,nfreq,L,w,Fs=1000):
         fftwl.append(fft(reordered))
     return freqs,np.array(fftwl)
 
-
 def population_synchrony_spectrum(
-    lfp,fa,fb,w=4.0,nfreqs=0.1,Fs=1000):
+    lfp,fa,fb,w=4.0,nfreqs=1,Fs=1000):
     '''
     Use Morlet wavelets to compute short-timescale synchrony.
 
@@ -253,7 +278,7 @@ def population_synchrony_spectrum(
         Wavelet base frequency; 
         Controls the time-frequency tradeoff
     nfreqs: positive float; default 0.1
-        Frequency sampling nfreqs
+        Frequency sampling resolution
     Fs: positive int; default 1000
         Sample rate
     
@@ -264,12 +289,9 @@ def population_synchrony_spectrum(
     synchrony:
         NCHANNELS × NFREQS × NTIMES np.array
     '''
-    assert 0
-    # this measures synchrony not coherence!
     freqs, transformed = fft_cwt(lfp.T,fa,fb,w,nfreqs,Fs)
-    coherence = abs(mean(transformed,0))/mean(abs(transformed),0)
-    return freqs, coherence
-    
+    synchrony = np.abs(np.mean(transformed,0))/np.mean(np.abs(transformed),0)
+    return freqs, synchrony
     
 def fft_cwt_transposed(
     data,
@@ -324,14 +346,14 @@ def fft_cwt_transposed(
     padded       = np.zeros((NCH,N*2),dtype=np.complex64)
     padded[:,:N] = data
     padded[:,N:] = data[:,::-1]
-
+    
     if fft==numpy.fft.fft:
         fft_data = fft(padded,axis=-1)
     else:
         fft_data = fft(padded,axis=-1,threads=threads)
-
+    
     freqs,wavelets = prepare_wavelet_fft_basis(fa,fb,nfreqs,N*2,w,float(Fs))
-
+    
     if fft==numpy.fft.fft:
         result = np.array([
             ifft(fft_data*wl,axis=1)[:,:N] 
@@ -340,9 +362,8 @@ def fft_cwt_transposed(
         result = np.array([
             ifft(fft_data*wl,axis=1,threads=threads)[:,:N] 
             for wl in wavelets])
-
+    
     return freqs,np.transpose(result,(1,0,2))
-
 
 def fft_cwt_transposed_logspaced(
     data,
@@ -389,10 +410,10 @@ def fft_cwt_transposed_logspaced(
     result: NCHANNELS × NFREQS × NTIMES np.array
         wavelet transform
     '''
-    
+    data = np.array(data)
     if nfreqs is None: nfreqs = int(round(fb-fa))
     if len(np.shape(data))==1:
-        data = np.renp.shape(data,(1,)+np.shape(data))
+        data = data[None,...]
     NCH,N = np.shape(data)
     if NCH>N:
         warn('MORE CHANNELS THAN DATA CHECK FOR TRANSPOSED')
@@ -413,9 +434,6 @@ def fft_cwt_transposed_logspaced(
     else:
         result   = np.array([ifft(fft_data*wl,axis=1,threads=threads)[:,:N] for wl in wavelets])
     return freqs,np.transpose(result,(1,0,2))
-
-
-
 
 def _population_eigencoherence(lfp,fa,fb,w=4.0,nfreqs=0.1,Fs=1000):
     '''
@@ -442,7 +460,6 @@ def _population_eigencoherence(lfp,fa,fb,w=4.0,nfreqs=0.1,Fs=1000):
     '''
     raise NotImplementedError('This function was never implemented')
     
-
 def _mtm_cohere():
     '''
     Multitaper coherence
@@ -458,60 +475,25 @@ def _mtm_cohere():
     '''
     raise NotImplementedError('This function was never implemented')
 
-
-
 ############################################################################
-############################################################################
-if __name__=='__main__':
-    #wavelet power test
-    signal = randn(1000)
-    Fs=1000
-    for freq in arange(5,500,5):
-        ws   = arange(4,30)
-        M    = 2.*1.*ws*Fs/float(freq)
-        clf()
-        x = []
-        bw = []
-        for m,w in zip(M,ws):
-            wl = normalized_morlet(m,w)
-            a,b = fftfreq(len(wl),1./Fs),abs(fft(wl))
-            #plot(a,b)
-            df = a[1]-a[0]
-            bw.append(sum(b)*df)
-            s = convolve(signal,wl,'same')
-            #print(m,w,mean(abs(s)),mean(abs(s)**2))
-            x.append(var(s))
-
-        bw = arr(bw)
-        x = arr(x)
-        plot(x/bw)
-        positivey()
-        print(freq,1/mean(bw/x))
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
 # New routines 2023 03 27 mer
-
 def convenient_morlet(
     N,        # Number of samples
     f0,       # Morlet frequency Hz
     sigma_ms, # Standard deviation in ms
     Fs,
     ):
+    '''
+    Parameters:
+        N          (int): Number of samples
+        f0       (float): Morlet frequency Hz
+        sigma_ms (float): Standard deviation in ms
+        Fs       (float): Sample rate
+    '''
     sigma = sigma_ms * Fs/1000 # Standard deviation in bins
     scale = N/(sigma*4*np.pi)     # Morlet scale parameter
     width = N*f0/2/scale/Fs    # Morlet width parameter
-    wl    = scipy.signal.morlet(N,width,scale)
+    wl    = scipy_signal_morlet(N,width,scale)
     return wl/np.sum(np.abs(wl)**2)**0.5
 
 def get_gentle_morlets_ft(
@@ -524,6 +506,20 @@ def get_gentle_morlets_ft(
     nfreqs   = 100,    # Number of frequency bins (linearly spaced)
     Fs       = 1000,   # Sample rate
     ):
+    '''
+    Parameters:
+        N (int): Number of samples
+        flo      (float, default  2): Low frequency cutoff in Hz
+        f0       (float, default 15): Log-central frequency in Hz
+        fhi      (float, default 45): High frequency cutoff in Hz
+        sigma_lo (float, default 1000/6): Lowest temporal resolution in ms
+        sigma_md (float, default 100   ): Target temporal resoltion at f0
+        nfreqs   (float, default 100   ): № frequency bins (linearly spaced)
+        Fs       (float, default 1000  ): Sample rate
+    Returns:
+        ff  (array): wavelet frequencies
+        wft (array): wavelet basis
+    '''
     ff = np.linspace(flo,fhi,nfreqs)
     # Adjust bandwidth gradually
     k = np.log(sigma_md/sigma_lo) / np.log(f0/flo)
@@ -573,3 +569,30 @@ def gentle_morlet_psd(
     psd = np.roll(psd,-Nr,axis=1)
     psd = psd[:,:N0]
     return ff,psd
+    
+############################################################################
+if __name__=='__main__':
+    #wavelet power test
+    signal = randn(1000)
+    Fs=1000
+    for freq in arange(5,500,5):
+        ws   = arange(4,30)
+        M    = 2.*1.*ws*Fs/float(freq)
+        clf()
+        x = []
+        bw = []
+        for m,w in zip(M,ws):
+            wl = normalized_morlet(m,w)
+            a,b = fftfreq(len(wl),1./Fs),abs(fft(wl))
+            #plot(a,b)
+            df = a[1]-a[0]
+            bw.append(sum(b)*df)
+            s = convolve(signal,wl,'same')
+            #print(m,w,mean(abs(s)),mean(abs(s)**2))
+            x.append(var(s))
+
+        bw = arr(bw)
+        x = arr(x)
+        plot(x/bw)
+        positivey()
+        print(freq,1/mean(bw/x))

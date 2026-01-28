@@ -85,16 +85,21 @@ def population_coherence_matrix(lfp):
 
 def multitaper_coherence(x,y,Fs=1000,BW=5):
     '''
-    multitaper_coherence(x,y,Fs=1000,BW=5)
-    BW is the multitaper bandwidth
-    returns freqs, cohere
+    Parameters:
+        x (1D np.array): signal 1
+        y (1D np.array): signal 2
+        Fs (float, default 1000): Samples per second
+        BW (float, default 5): multitaper bandwidth
+    Returns:
+        freqs (1D np.array)
+        cohere (np.array)
     '''
-    x -= mean(x)
-    y -= mean(y)
+    x -= np.mean(x)
+    y -= np.mean(y)
     method = {'this_method':'multi_taper_csd','BW':BW,'Fs':Fs}
     freqs,cohere = coherence(np.array([x,y]),method)
     N = len(x)
-    freqs = abs(fftfreq(N,1./Fs)[:N/2+1])
+    freqs = abs(fftfreq(N,1.0/Fs)[:N//2+1])
     return freqs, cohere[0,1]
 
 def sliding_multitaper_coherence(x,y,window=500,step=100,Fs=1000,BW=5):
@@ -106,7 +111,7 @@ def sliding_multitaper_coherence(x,y,window=500,step=100,Fs=1000,BW=5):
     N = len(x)
     assert len(y)==N
     allcohere = []
-    for tstart in xrange(0,N-window+1,step):
+    for tstart in range(0,N-window+1,step):
         ff,cohere = multitaper_coherence(x[tstart:tstart+window],y[tstart:tstart+window],Fs,BW)
         allcohere.append(cohere)
     return ff,np.array(allcohere)
@@ -115,14 +120,13 @@ def sliding_multitaper_coherence_parallel(x,y,window=500,step=100,Fs=1000,BW=5):
     '''
     Sliding multitaper coherence between x and y
     Takes multiple samples over time, but estimates each sample using multi-taper
-    See also multitaper_coherence
-    This is a somewhat strange implementation that is only preserved for
-    legacy reasons.
+    See also `multitaper_coherence`.
+    This implementation is a bit strange, but preserved for legacy reasons.
     '''
     N = len(x)
     assert len(y)==N
     allcohere = []
-    problems = [(tstart,(x[tstart:tstart+window],y[tstart:tstart+window],Fs,BW)) for tstart in xrange(0,N-window+1,step)]
+    problems = [(tstart,(x[tstart:tstart+window],y[tstart:tstart+window],Fs,BW)) for tstart in range(0,N-window+1,step)]
     allcohere = squeeze(np.array(parmap(mtmchpar,problems)))
     freqs = abs(fftfreq(window,1./Fs)[:window/2+1])
     return freqs,allcohere
@@ -234,7 +238,7 @@ def multitaper_multitrial_coherence(x,
         # we do this by resampling from trials/tapers
         if test=='bootstrap':
             samples = defaultdict(list)
-            for bi in xrange(NRandomSample):
+            for bi in range(NRandomSample):
                 sampled = np.random.choice(NSample,NSample)
                 dof     = len(np.unique(sampled)) # this correction is not enough, but better than nothing
                 bpsd    = np.mean(psds[:,sampled],axis=0)
@@ -250,8 +254,8 @@ def multitaper_multitrial_coherence(x,
         # trial-shuffling estimate of chance level
         elif test=='shuffle':
             samples = defaultdict(list)
-            for si in xrange(NRandomSample):
-                perms = [np.random.permutation(NSample) for i in xrange(NVar)]
+            for si in range(NRandomSample):
+                perms = [np.random.permutation(NSample) for i in range(NVar)]
                 for i in range(NVar):
                     for j in range(i):
                         pij = squared_first_circular_moment(\

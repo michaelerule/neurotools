@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.graphics.pygame &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -80,11 +80,6 @@
   <h1>Source code for neurotools.graphics.pygame</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Collected utilities for pygame</span>
 
@@ -115,11 +110,11 @@
 <span class="sd">pygame.quit()</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pygame</span> <span class="k">as</span> <span class="nn">pg</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pygame</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pg</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pygame package is missing; it is obsolete so this is not unusual&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pygame graphics will not work&#39;</span><span class="p">)</span>
@@ -127,12 +122,12 @@
 
 <div class="viewcode-block" id="enable_vsync">
 <a class="viewcode-back" href="../../../neurotools.graphics.pygame.html#neurotools.graphics.pygame.enable_vsync">[docs]</a>
-<span class="k">def</span> <span class="nf">enable_vsync</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">enable_vsync</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s1">&#39;darwin&#39;</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ctypes</span>
-        <span class="kn">import</span> <span class="nn">ctypes.util</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">ctypes.util</span>
         <span class="n">ogl</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_library</span><span class="p">(</span><span class="s2">&quot;OpenGL&quot;</span><span class="p">))</span>
         <span class="c1"># set v to 1 to enable vsync, 0 to disable vsync</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -143,7 +138,7 @@
 
 <div class="viewcode-block" id="start">
 <a class="viewcode-back" href="../../../neurotools.graphics.pygame.html#neurotools.graphics.pygame.start">[docs]</a>
-<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;untitled&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;untitled&#39;</span><span class="p">):</span>
     <span class="c1"># Get things going</span>
     <span class="n">pg</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
     <span class="n">pg</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -155,7 +150,7 @@
 
 <div class="viewcode-block" id="draw_array">
 <a class="viewcode-back" href="../../../neurotools.graphics.pygame.html#neurotools.graphics.pygame.draw_array">[docs]</a>
-<span class="k">def</span> <span class="nf">draw_array</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span><span class="n">rgbdata</span><span class="p">,</span><span class="n">doshow</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">draw_array</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span><span class="n">rgbdata</span><span class="p">,</span><span class="n">doshow</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Send array data to a PyGame window.</span>
 <span class="sd">    PyGame is BRG order which is unusual -- reorder it.</span>

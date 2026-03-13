@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.obsolete.gpu.cl.function &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=814157f0" />
 
   
@@ -86,13 +86,13 @@
 <span class="sd">succinct and compact. Also contains generic routines for manipulating Cl </span>
 <span class="sd">source objects.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">xrange</span>
@@ -100,10 +100,10 @@
     <span class="n">xrange</span> <span class="o">=</span> <span class="nb">range</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pyopencl</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyopencl</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="k">def</span> <span class="nf">missing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">missing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please locate and install the pyOpenCL GPU library&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -111,22 +111,22 @@
     <span class="c1"># TODO: shadow missing function with the above, which raises an error?</span>
     <span class="n">pyopencl</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.obsolete.gpu.cl</span> <span class="kn">import</span> <span class="o">*</span>   
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.obsolete.gpu.cl</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>   
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pytools</span> <span class="kn">import</span> <span class="n">memoize</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pytools</span><span class="w"> </span><span class="kn">import</span> <span class="n">memoize</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please install the pytools module&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting fallback to neurotools&#39;</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">neurotools.jobs.ndecorator</span> <span class="kn">import</span> <span class="n">memoize</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.jobs.ndecorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">memoize</span>
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span><span class="n">ceil</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span><span class="p">,</span><span class="n">ceil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span> 
 
 <div class="viewcode-block" id="format">
 <a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.format">[docs]</a>
-<span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is a kernel source auto-formatter. </span>
 <span class="sd">    It mostly just does auto-indent</span>
@@ -160,7 +160,7 @@
     
 <div class="viewcode-block" id="printKernel">
 <a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.printKernel">[docs]</a>
-<span class="k">def</span> <span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">printKernel</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This prints out a kernel source with line numbers</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -174,7 +174,7 @@
     
 <div class="viewcode-block" id="guessGPUType">
 <a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.guessGPUType">[docs]</a>
-<span class="k">def</span> <span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">guessGPUType</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;At the moment, this returns numpy.float32 for Python floats and </span>
 <span class="sd">    numpy.int32 for python integers, and is otherwise undefined&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">==</span><span class="nb">float</span><span class="p">:</span>
@@ -199,7 +199,7 @@
 <div class="viewcode-block" id="kernel">
 <a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.kernel">[docs]</a>
 <span class="nd">@memoize</span>
-<span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kernel</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This is my easy kernel wrapper. This function accepts a header ( the</span>
 <span class="sd">    list of arguments ), a body ( the core of the loop ), and optionally</span>
@@ -226,10 +226,10 @@
 <span class="s2">    #pragma extension cl_khr_local_int32_extended_atomics : enable</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="o">+</span><span class="n">source</span>
     <span class="nd">@memoize</span>
-    <span class="k">def</span> <span class="nf">mykernel</span><span class="p">():</span> <span class="k">return</span> <span class="n">pyopencl</span><span class="o">.</span><span class="n">Program</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mykernel</span><span class="p">():</span> <span class="k">return</span> <span class="n">pyopencl</span><span class="o">.</span><span class="n">Program</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="nd">@memoize</span>
-    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">n_units</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">execkern</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span> <span class="k">return</span> <span class="n">mykernel</span><span class="p">()</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="p">(</span><span class="n">n_units</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">n_units</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">execkern</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span> <span class="k">return</span> <span class="n">mykernel</span><span class="p">()</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="p">(</span><span class="n">n_units</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">execkern</span>
     <span class="k">return</span> <span class="n">init</span></div>
 
@@ -237,7 +237,7 @@
 <div class="viewcode-block" id="elemental">
 <a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.elemental">[docs]</a>
 <span class="nd">@memoize</span>
-<span class="k">def</span> <span class="nf">elemental</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">elemental</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
     <span class="n">code</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">code</span>
     <span class="n">arrays</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; \*([^,* \t]+)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span> 
@@ -250,7 +250,7 @@
 
 <div class="viewcode-block" id="gpumap">
 <a class="viewcode-back" href="../../../../../neurotools.obsolete.gpu.cl.function.html#neurotools.obsolete.gpu.cl.function.gpumap">[docs]</a>
-<span class="k">def</span> <span class="nf">gpumap</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gpumap</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpumap under construction&quot;</span><span class="p">)</span></div>
 
 

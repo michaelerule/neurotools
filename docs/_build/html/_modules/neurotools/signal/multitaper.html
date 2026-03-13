@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.signal.multitaper &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -79,41 +79,33 @@
            <div itemprop="articleBody">
              
   <h1>Source code for neurotools.signal.multitaper</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Routines for multi-taper spectral analysis</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="c1"># Suppress warnings from numpy/spectrum</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">signal</span> <span class="k">as</span> <span class="n">sig</span>
-<span class="kn">from</span> <span class="nn">neurotools.util</span> <span class="kn">import</span> <span class="n">getfftw</span> <span class="k">as</span> <span class="n">fft</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">signal</span> <span class="k">as</span> <span class="n">sig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">getfftw</span> <span class="k">as</span> <span class="n">fft</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.jobs.ndecorator</span> <span class="kn">import</span> <span class="n">memoize</span>
-<span class="kn">from</span> <span class="nn">neurotools.jobs</span>            <span class="kn">import</span> <span class="n">parallel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.jobs.ndecorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">memoize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.jobs</span><span class="w">            </span><span class="kn">import</span> <span class="n">parallel</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">spectrum.mtm</span> <span class="kn">import</span> <span class="n">dpss</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">spectrum.mtm</span><span class="w"> </span><span class="kn">import</span> <span class="n">dpss</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Could not find the `spectrum` module; multitaper unsupported&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">dpss</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please install the spectrum module, e.g.</span><span class="se">\n\t</span><span class="s2">pip install spectrum&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dpss</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please install the spectrum module&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="dpss_cached">
 <a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.dpss_cached">[docs]</a>
 <span class="nd">@memoize</span>
-<span class="k">def</span> <span class="nf">dpss_cached</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="n">half_bandwidth_parameter</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dpss_cached</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="n">half_bandwidth_parameter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get a collection of DPSS tapers. The number of tapers equals the</span>
 <span class="sd">    half bandwidth parameter times two. For legacy reasons the tapers</span>
@@ -143,10 +135,9 @@
     <span class="k">return</span> <span class="n">tapers</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">eigen</span></div>
 
 
-
 <div class="viewcode-block" id="spectrum">
 <a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.spectrum">[docs]</a>
-<span class="k">def</span> <span class="nf">spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">nodc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_negative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">nodc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_negative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -180,10 +171,9 @@
             <span class="k">return</span> <span class="n">freqs</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span><span class="n">psd</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span></div>
 
 
-
 <div class="viewcode-block" id="population_coherence">
 <a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.population_coherence">[docs]</a>
-<span class="k">def</span> <span class="nf">population_coherence</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">population_coherence</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">FS</span><span class="p">,</span>
     <span class="n">lowf</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">highf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -245,10 +235,7 @@
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">coherence</span></div>
 
 
-
-
-
-<span class="k">def</span> <span class="nf">_tapered_cross_specra_helper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_tapered_cross_specra_helper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">i</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">use</span><span class="p">,</span><span class="n">taper</span><span class="p">,</span><span class="n">e</span><span class="p">)</span> <span class="o">=</span> <span class="n">params</span>
@@ -260,10 +247,9 @@
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">pxx</span><span class="p">,</span><span class="n">pyy</span><span class="p">,</span><span class="n">pxy</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">i</span><span class="p">,</span><span class="n">result</span>
 
-
 <div class="viewcode-block" id="population_eigencoherence">
 <a class="viewcode-back" href="../../../neurotools.signal.multitaper.html#neurotools.signal.multitaper.population_eigencoherence">[docs]</a>
-<span class="k">def</span> <span class="nf">population_eigencoherence</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">population_eigencoherence</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">FS</span><span class="p">,</span>
     <span class="n">lowf</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">highf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -335,7 +321,7 @@
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">ecohere</span></div>
 
 
-<span class="k">def</span> <span class="nf">_eigencoherence_helper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_eigencoherence_helper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
     <span class="n">i</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">params</span>
     <span class="k">return</span> <span class="n">i</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> 
 

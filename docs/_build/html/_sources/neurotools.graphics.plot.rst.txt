@@ -1,0 +1,7 @@
+neurotools.graphics.plot module
+===============================
+
+.. automodule:: neurotools.graphics.plot
+   :members:
+   :undoc-members:
+   :show-inheritance:

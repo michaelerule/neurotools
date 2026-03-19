@@ -14,6 +14,7 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import warnings
 from neurotools.graphics.plot   import *
 from neurotools.util.getfftw    import *
 from neurotools.jobs.ndecorator import memoize
@@ -21,7 +22,7 @@ try:
   from scipy.signal import morlet
   scipy_signal_morlet = morlet
 except:
-  import pywt
+  #import pywt
   # emulate morlet(M, w=5.0, s=1.0, complete=True)
   # only supporting these two call patterns:
   #   scipy_signal_morlet(m,w=w)
@@ -34,7 +35,7 @@ except:
     output *= np.exp(-0.5 * (x**2)) * np.pi**(-0.25)
     return output
 
-import warnings
+
 
 def normalized_morlet(m,w,s=1.0):
     '''

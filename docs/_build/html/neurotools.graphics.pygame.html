@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.graphics.pygame module &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=814157f0" />
 
   
@@ -98,6 +98,30 @@
              
   <section id="module-neurotools.graphics.pygame">
 <span id="neurotools-graphics-pygame-module"></span><h1>neurotools.graphics.pygame module<a class="headerlink" href="#module-neurotools.graphics.pygame" title="Link to this heading"></a></h1>
+<p>Collected utilities for pygame</p>
+<p>It is difficult to write pixels directly in python.</p>
+<p>There’s some way to get a framebuffer back from Tk, but it is
+cumberosme.</p>
+<p>The module pygame supports sending pixel buffers,
+which is wrapped for convneinece in this module.</p>
+<p>example usage</p>
+<p>import neurotools.graphics.pygame as npg
+import time
+import numpy as np
+import pygame
+K = 128
+screen = npg.start(K,K,’Image data’)
+dt = 1/20
+wait_til = time.time() + dt
+print(‘Animating..’)
+for i in neurotools.tools.progress_bar(range(100)):</p>
+<blockquote>
+<div><p>t = time.time()
+if t&lt;wait_til: time.sleep(wait_til-t)
+wait_til = t + dt
+npg.draw_array(screen, np.random.rand(K,K,3))</p>
+</div></blockquote>
+<p>pygame.quit()</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.graphics.pygame.enable_vsync">
 <span class="sig-prename descclassname"><span class="pre">neurotools.graphics.pygame.</span></span><span class="sig-name descname"><span class="pre">enable_vsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/graphics/pygame.html#enable_vsync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.graphics.pygame.enable_vsync" title="Link to this definition"></a></dt>

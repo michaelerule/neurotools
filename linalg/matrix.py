@@ -18,7 +18,7 @@ import scipy.linalg
 import numpy
 import numpy.linalg
 
-from scipy.linalg.special_matrices import kron
+from scipy.linalg import kron
 from scipy.linalg import solve_triangular as stri
 
 chol = scipy.linalg.cholesky

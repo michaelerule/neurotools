@@ -18,7 +18,7 @@ import scipy.linalg
 import numpy
 import numpy.linalg
 
-from scipy.linalg import kron
+from numpy import kron
 from scipy.linalg import solve_triangular as stri
 from scipy.linalg import cholesky as chol
 from scipy.linalg.lapack import dtrtri

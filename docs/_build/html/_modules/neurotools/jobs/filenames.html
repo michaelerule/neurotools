@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.jobs.filenames &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -83,39 +83,29 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Functions to validate filenames</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">__PYTHON_2__</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="kn">from</span>   <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.io</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">zlib</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w">   </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zlib</span>
 
 <div class="viewcode-block" id="validate_argument_signature">
 <a class="viewcode-back" href="../../../neurotools.jobs.filenames.html#neurotools.jobs.filenames.validate_argument_signature">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_argument_signature</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_argument_signature</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Determines whether a given argument signature can be used to cache</span>
 <span class="sd">    things to disk. The argument signature must be hashable. It must</span>
@@ -132,7 +122,7 @@
 
 <div class="viewcode-block" id="is_dangerous_filename">
 <a class="viewcode-back" href="../../../neurotools.jobs.filenames.html#neurotools.jobs.filenames.is_dangerous_filename">[docs]</a>
-<span class="k">def</span> <span class="nf">is_dangerous_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_dangerous_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Checks whether a `filename` is safe to use on most modern filesystems.</span>
 <span class="sd">    Filnames must be shorter than 255 characters, and contain no </span>
@@ -152,8 +142,6 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">255</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">__PYTHON_2__</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">is</span> <span class="n">unicode</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">c</span> <span class="ow">in</span> <span class="n">filename</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">/&lt;&gt;:</span><span class="se">\&quot;</span><span class="s2">&#39;|?*,@#</span><span class="si">{}</span><span class="s2">&#39;&amp;`!%$</span><span class="se">\n\t\b\r</span><span class="s2"> &quot;</span><span class="p">]):</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span></div>
@@ -161,20 +149,13 @@
 
 <div class="viewcode-block" id="check_filename">
 <a class="viewcode-back" href="../../../neurotools.jobs.filenames.html#neurotools.jobs.filenames.check_filename">[docs]</a>
-<span class="k">def</span> <span class="nf">check_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Check if a `filename` is safe to use on most filesystems. More lenient</span>
-<span class="sd">    than `is_dangerous_filename`.</span>
-<span class="sd">    </span>
-<span class="sd">    Unicode filenames are permitted (in Python 3), but generate a warning</span>
-<span class="sd">    in Pythoon 2. </span>
-<span class="sd">    </span>
-<span class="sd">    Long filenames (over 255 chars) are ok on many modern filesystems and</span>
-<span class="sd">    only trigger a warning</span>
-<span class="sd">    </span>
-<span class="sd">    Only special characters that outright break windows will raise an error.</span>
-<span class="sd">    </span>
-<span class="sd">    No return value.</span>
+<span class="sd">    than `is_dangerous_filename`. Unicode filenames are permitted. Long </span>
+<span class="sd">    filenames (over 255 chars) are ok on many modern filesystems and only </span>
+<span class="sd">    trigger a warning. Only special characters that outright break windows </span>
+<span class="sd">    will raise an error.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -183,10 +164,8 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">255</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;FILE NAME MAY BE TOO LONG ON SOME SYSTEMS&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">__PYTHON_2__</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">is</span> <span class="n">unicode</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;FILE NAME IS UNICODE&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">c</span> <span class="ow">in</span> <span class="n">filename</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s2">&quot;/?&lt;&gt;</span><span class="se">\\</span><span class="s2">:*|</span><span class="se">\&quot;\n\t\b\r</span><span class="s2">&quot;</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Filename contains character forbidden on windows&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Filename contains character forbidden on MS Windows&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">c</span> <span class="ow">in</span> <span class="n">filename</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">/&lt;&gt;:</span><span class="se">\&quot;</span><span class="s2">&#39;|?*,@#</span><span class="si">{}</span><span class="s2">&#39;&amp;`!%$</span><span class="se">\n\t\b\r</span><span class="s2"> &quot;</span><span class="p">]):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;FILE NAME CONTAINS CHARACTER THAT MAY CAUSE ISSUES IN SOME SOFTWARE&#39;</span><span class="p">)</span></div>
 

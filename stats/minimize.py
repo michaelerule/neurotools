@@ -18,8 +18,8 @@ import warnings
 import traceback
 
 from scipy.linalg import lstsq,pinv
-from numpy.linalg.linalg import cholesky as chol
-from numpy.linalg.linalg import LinAlgError
+from scipy.linalg import cholesky as chol
+from numpy.linalg import LinAlgError
 
 import neurotools.util.functions
 from neurotools.util.functions import sexp,slog

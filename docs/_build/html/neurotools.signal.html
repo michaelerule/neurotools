@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.signal package &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=814157f0" />
 
   
@@ -102,7 +102,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.PeakInfoResult"><code class="docutils literal notranslate"><span class="pre">PeakInfoResult</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.quadratic_peakinfo"><code class="docutils literal notranslate"><span class="pre">quadratic_peakinfo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.unitscale"><code class="docutils literal notranslate"><span class="pre">unitscale()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.absunitscale"><code class="docutils literal notranslate"><span class="pre">absunitscale()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.topercentiles"><code class="docutils literal notranslate"><span class="pre">topercentiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zeromin"><code class="docutils literal notranslate"><span class="pre">zeromin()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zeromean"><code class="docutils literal notranslate"><span class="pre">zeromean()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zeromedian"><code class="docutils literal notranslate"><span class="pre">zeromedian()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.zscore"><code class="docutils literal notranslate"><span class="pre">zscore()</span></code></a></li>
@@ -114,7 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.deltaovermean"><code class="docutils literal notranslate"><span class="pre">deltaovermean()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.span"><code class="docutils literal notranslate"><span class="pre">span()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.mintomax"><code class="docutils literal notranslate"><span class="pre">mintomax()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.unit_length"><code class="docutils literal notranslate"><span class="pre">unit_length()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.unitlength"><code class="docutils literal notranslate"><span class="pre">unitlength()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.spaced_derivative"><code class="docutils literal notranslate"><span class="pre">spaced_derivative()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.upsample"><code class="docutils literal notranslate"><span class="pre">upsample()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#neurotools.signal.nice_interp"><code class="docutils literal notranslate"><span class="pre">nice_interp()</span></code></a></li>
@@ -189,7 +191,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="neurotools.signal.morlet.html">neurotools.signal.morlet module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.scipy_signal_morlet"><code class="docutils literal notranslate"><span class="pre">scipy_signal_morlet()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.normalized_morlet"><code class="docutils literal notranslate"><span class="pre">normalized_morlet()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.normalized_morlet_physical_units"><code class="docutils literal notranslate"><span class="pre">normalized_morlet_physical_units()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.prepare_wavelet_fft_basis"><code class="docutils literal notranslate"><span class="pre">prepare_wavelet_fft_basis()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.fft_cwt"><code class="docutils literal notranslate"><span class="pre">fft_cwt()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="neurotools.signal.morlet.html#neurotools.signal.morlet.geometric_window"><code class="docutils literal notranslate"><span class="pre">geometric_window()</span></code></a></li>
@@ -661,8 +665,8 @@ by default</p></li>
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">padout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#padout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.padout" title="Link to this definition"></a></dt>
 <dd><p>Generates a reflected version of a 1-dimensional signal.</p>
 <p>The original data is placed in the middle, between the
-mirrord copies.
-Use the function “padin” to strip the padding</p>
+mirrord copies. Use the function “padin” to strip the
+padding</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>1d np.array</em>)</p>
@@ -1245,7 +1249,11 @@ Quadratic regression polynomial coefficients
 maximum is 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>signal</strong> (<em>np.array</em>) – Array-like real-valued signal</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.array</em>) – Array-like real-valued signal</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>default None</em>) – Axis over which to take the mean;
+forwarded to np.mean axis parameter</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Rescaled
@@ -1258,9 +1266,51 @@ maximum is 1.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.absunitscale">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">absunitscale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#absunitscale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.absunitscale" title="Link to this definition"></a></dt>
+<dd><p>Rescales <cite>signal</cite> so that its maximum absolute value is 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.array</em>) – Array-like real-valued signal</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>default None</em>) – Axis over which to take the mean;
+forwarded to np.mean axis parameter</p></li>
+<li><p><strong>minor</strong> (<em>boolean</em><em>, </em><em>defaly False</em>) – Use the smaller of the positive or negative maxima if true.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rescaled signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>signalL np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.topercentiles">
 <span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">topercentiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#topercentiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.topercentiles" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neurotools.signal.zeromin">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">zeromin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#zeromin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.zeromin" title="Link to this definition"></a></dt>
+<dd><p>Subtract the minimum from a timeseries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>)</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>default None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>x</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neurotools.signal.zeromean">
@@ -1521,8 +1571,8 @@ Sometimes called “dF/F”</p>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neurotools.signal.unit_length">
-<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">unit_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#unit_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.unit_length" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="neurotools.signal.unitlength">
+<span class="sig-prename descclassname"><span class="pre">neurotools.signal.</span></span><span class="sig-name descname"><span class="pre">unitlength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/neurotools/signal.html#unitlength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neurotools.signal.unitlength" title="Link to this definition"></a></dt>
 <dd><p>Interpret given axis of multidimensional array as
 vectors, and normalize them to unit length.</p>
 <dl class="field-list simple">

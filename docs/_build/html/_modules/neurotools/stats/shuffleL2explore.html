@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.shuffleL2explore &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -81,13 +81,13 @@
   <h1>Source code for neurotools.stats.shuffleL2explore</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Statistical routines for shuffle-based hyothesis testing </span>
 <span class="sd">when using L2 regularized multivariate linear regression</span>
@@ -98,25 +98,25 @@
 <span class="sd">F test. They are very slow. </span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">neurotools.stats</span> <span class="kn">import</span> <span class="n">partition_data_for_crossvalidation</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span>   <span class="kn">import</span> <span class="n">minimize</span>
-<span class="kn">import</span> <span class="nn">jax</span>
-<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jp</span>
-<span class="kn">import</span> <span class="nn">jax.numpy.linalg</span> <span class="k">as</span> <span class="nn">jl</span>
-<span class="kn">from</span>   <span class="nn">jax</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">grad</span>
-<span class="kn">from</span>   <span class="nn">jax</span> <span class="kn">import</span> <span class="n">jacfwd</span><span class="p">,</span> <span class="n">jacrev</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">partition_data_for_crossvalidation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w">   </span><span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jl</span>
+<span class="kn">from</span><span class="w">   </span><span class="nn">jax</span><span class="w"> </span><span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">grad</span>
+<span class="kn">from</span><span class="w">   </span><span class="nn">jax</span><span class="w"> </span><span class="kn">import</span> <span class="n">jacfwd</span><span class="p">,</span> <span class="n">jacrev</span>
 <div class="viewcode-block" id="hess">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.hess">[docs]</a>
-<span class="k">def</span> <span class="nf">hess</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">argnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hess</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">argnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">argnum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jacfwd</span><span class="p">(</span><span class="n">jacrev</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">jacfwd</span><span class="p">(</span><span class="n">jacrev</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">argnum</span><span class="p">),)</span></div>
 
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.time</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">progress_bar</span>
 
 <span class="c1">############################################################</span>
 <span class="c1">############################################################</span>
@@ -126,7 +126,7 @@
 <div class="viewcode-block" id="MSE">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.MSE">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">MSE</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">MSE</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">):</span>
     <span class="n">Σyhat</span>  <span class="o">=</span> <span class="n">W</span><span class="nd">@Σx@W</span><span class="o">.</span><span class="n">T</span>
     <span class="n">Σyyhat</span> <span class="o">=</span> <span class="n">Σyx</span><span class="nd">@W</span><span class="o">.</span><span class="n">T</span>
     <span class="c1"># ŷ = wx</span>
@@ -137,7 +137,7 @@
 <div class="viewcode-block" id="error_covariance">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.error_covariance">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">error_covariance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">error_covariance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">):</span>
     <span class="n">Σyh</span>  <span class="o">=</span> <span class="n">W</span><span class="nd">@Σx@W</span><span class="o">.</span><span class="n">T</span>
     <span class="n">Σyyh</span> <span class="o">=</span> <span class="n">Σyx</span><span class="nd">@W</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">Σy</span> <span class="o">+</span> <span class="n">Σyh</span> <span class="o">-</span> <span class="n">Σyyh</span> <span class="o">-</span> <span class="n">Σyyh</span><span class="o">.</span><span class="n">T</span>
@@ -159,7 +159,7 @@
 <div class="viewcode-block" id="reglstq_moments">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.reglstq_moments">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">reglstq_moments</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reglstq_moments</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
     <span class="n">N</span>   <span class="o">=</span> <span class="n">Σx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">Σx</span> <span class="o">+=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
     <span class="n">W</span> <span class="o">=</span> <span class="n">Σyx</span> <span class="o">@</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">Σx</span><span class="p">)</span>
@@ -169,7 +169,7 @@
 <div class="viewcode-block" id="reglstsq_MSE">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.reglstsq_MSE">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">):</span>
     <span class="n">W</span> <span class="o">=</span> <span class="n">reglstq_moments</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">MSE</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span></div>
 
@@ -181,13 +181,13 @@
 
 <div class="viewcode-block" id="regroup">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.regroup">[docs]</a>
-<span class="k">def</span> <span class="nf">regroup</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">regroup</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="o">*</span><span class="n">partition_data_for_crossvalidation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nfold</span><span class="p">,</span><span class="kc">True</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="ungroup">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.ungroup">[docs]</a>
-<span class="k">def</span> <span class="nf">ungroup</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ungroup</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
     <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">x0</span><span class="p">,</span><span class="n">y0</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">,</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">groups</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">x0</span><span class="p">,</span><span class="n">y0</span></div>
 
@@ -195,7 +195,7 @@
 <div class="viewcode-block" id="scov">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.scov">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">scov</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scov</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="nd">@Y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
@@ -204,7 +204,7 @@
 <div class="viewcode-block" id="xy_moments">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.xy_moments">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">xy_moments</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">xy_moments</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">):</span>
     <span class="n">Σx</span>   <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trX</span><span class="p">)</span>
     <span class="n">Σy</span>   <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">trY</span><span class="p">,</span><span class="n">trY</span><span class="p">)</span>
     <span class="n">Σyx</span>  <span class="o">=</span> <span class="n">scov</span><span class="p">(</span><span class="n">trY</span><span class="p">,</span><span class="n">trX</span><span class="p">)</span>
@@ -214,7 +214,7 @@
 <div class="viewcode-block" id="reglstq_xy">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.reglstq_xy">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">reglstq_xy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reglstq_xy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
     <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span> <span class="o">=</span> <span class="n">xy_moments</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
     <span class="n">N</span>   <span class="o">=</span> <span class="n">Σx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">Σx</span> <span class="o">+=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
@@ -225,7 +225,7 @@
 <div class="viewcode-block" id="group_moments">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_moments">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">group_moments</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_moments</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
     <span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">,</span><span class="n">tsX</span><span class="p">,</span><span class="n">tsY</span> <span class="o">=</span> <span class="n">group</span>
     <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span> <span class="o">=</span> <span class="n">xy_moments</span><span class="p">(</span><span class="n">trX</span><span class="p">,</span><span class="n">trY</span><span class="p">)</span>
     <span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span> <span class="o">=</span> <span class="n">xy_moments</span><span class="p">(</span><span class="n">tsX</span><span class="p">,</span><span class="n">tsY</span><span class="p">)</span>
@@ -239,7 +239,7 @@
 
 <div class="viewcode-block" id="group_mse">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_mse">[docs]</a>
-<span class="k">def</span> <span class="nf">group_mse</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_mse</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
     <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_moments</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
     <span class="n">e2</span> <span class="o">=</span> <span class="p">[</span><span class="n">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span> 
           <span class="k">for</span> <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span> <span class="ow">in</span> <span class="n">Σs</span><span class="p">]</span>
@@ -249,7 +249,7 @@
 <span class="c1">#@jit</span>
 <div class="viewcode-block" id="group_error_covariance">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_error_covariance">[docs]</a>
-<span class="k">def</span> <span class="nf">group_error_covariance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_error_covariance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
     <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">group_moments</span><span class="p">,</span><span class="n">groups</span><span class="p">)]</span>
     <span class="k">for</span> <span class="n">Σx</span><span class="p">,</span><span class="n">Σy</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span> <span class="ow">in</span> <span class="n">Σs</span><span class="p">:</span>
@@ -258,11 +258,11 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
 
 
-<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">cholesky</span> <span class="k">as</span> <span class="n">chol</span>
-<span class="kn">from</span> <span class="nn">scipy.linalg.lapack</span> <span class="kn">import</span> <span class="n">dtrtri</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">cholesky</span> <span class="k">as</span> <span class="n">chol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg.lapack</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtrtri</span>
 <div class="viewcode-block" id="get_whiten">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.get_whiten">[docs]</a>
-<span class="k">def</span> <span class="nf">get_whiten</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_whiten</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
     <span class="c1"># covariance transform</span>
     <span class="c1"># S = ULU&#39;</span>
     <span class="c1"># x = Uq</span>
@@ -274,7 +274,7 @@
 
 <div class="viewcode-block" id="group_R2_matrix">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.group_R2_matrix">[docs]</a>
-<span class="k">def</span> <span class="nf">group_R2_matrix</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_R2_matrix</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">groups</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get matrix-valued R² for L2 regularized </span>
 <span class="sd">    (strength ``rho``)</span>
@@ -299,7 +299,7 @@
     
 <div class="viewcode-block" id="regsweep_r2">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.regsweep_r2">[docs]</a>
-<span class="k">def</span> <span class="nf">regsweep_r2</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">regsweep_r2</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get list of R² for regularization strengths ``rr``.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -324,7 +324,7 @@
 
 <div class="viewcode-block" id="regsweep_MSE">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.regsweep_MSE">[docs]</a>
-<span class="k">def</span> <span class="nf">regsweep_MSE</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">regsweep_MSE</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rr</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([</span><span class="n">group_mse</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">groups</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rr</span><span class="p">])</span></div>
 
     
@@ -335,7 +335,7 @@
   
 <div class="viewcode-block" id="shuffle_variable">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.shuffle_variable">[docs]</a>
-<span class="k">def</span> <span class="nf">shuffle_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">indeces</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shuffle_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">indeces</span><span class="p">):</span>
     <span class="c1"># Shuffle just some columns (``indeces``)</span>
     <span class="c1"># of ``x``</span>
     <span class="n">N</span>  <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -348,7 +348,7 @@
     
 <div class="viewcode-block" id="adaptive_shuffle">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.adaptive_shuffle">[docs]</a>
-<span class="k">def</span> <span class="nf">adaptive_shuffle</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">adaptive_shuffle</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
     <span class="n">y</span><span class="p">,</span>
     <span class="n">regularization_strengths</span><span class="p">,</span>
@@ -425,7 +425,7 @@
 
 <div class="viewcode-block" id="AdaptiveShuffleResult">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.AdaptiveShuffleResult">[docs]</a>
-<span class="k">class</span> <span class="nc">AdaptiveShuffleResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdaptiveShuffleResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">pvalue</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">k</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
@@ -437,7 +437,7 @@
 
 <div class="viewcode-block" id="adaptive_shuffle_pvalue">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.adaptive_shuffle_pvalue">[docs]</a>
-<span class="k">def</span> <span class="nf">adaptive_shuffle_pvalue</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">adaptive_shuffle_pvalue</span><span class="p">(</span>
     <span class="n">sampling_function</span><span class="p">,</span>
     <span class="n">relative_to</span>    <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">alternative</span>    <span class="o">=</span> <span class="s1">&#39;two-sided&#39;</span><span class="p">,</span> <span class="c1"># &#39;two-sided&#39;, &#39;less&#39;, &#39;greater&#39;</span>
@@ -535,7 +535,7 @@
 <div class="viewcode-block" id="joint_reglstsq_MSE">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.joint_reglstsq_MSE">[docs]</a>
 <span class="nd">@jit</span>
-<span class="k">def</span> <span class="nf">joint_reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">joint_reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σs</span><span class="p">):</span>
     <span class="n">N</span>   <span class="o">=</span> <span class="n">Σs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">R</span>   <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span>
     <span class="n">err</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -553,9 +553,9 @@
 
 <div class="viewcode-block" id="best_rho">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.best_rho">[docs]</a>
-<span class="k">def</span> <span class="nf">best_rho</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">best_rho</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
     <span class="nd">@jit</span>
-    <span class="k">def</span> <span class="nf">o</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">o</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">reglstsq_MSE</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Σx</span><span class="p">,</span><span class="n">Σyx</span><span class="p">,</span><span class="n">tΣx</span><span class="p">,</span><span class="n">tΣy</span><span class="p">,</span><span class="n">tΣyx</span><span class="p">)</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">hess</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
@@ -565,7 +565,7 @@
 
 <div class="viewcode-block" id="joint_best_rho_gradient">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.joint_best_rho_gradient">[docs]</a>
-<span class="k">def</span> <span class="nf">joint_best_rho_gradient</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">1e6</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">joint_best_rho_gradient</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">1e6</span><span class="p">):</span>
     <span class="c1"># This routine peforms local gradient search on the </span>
     <span class="c1"># regularization stranenggth, and can *usually*</span>
     <span class="c1"># gets trapped in a local minimum. </span>
@@ -575,7 +575,7 @@
     <span class="n">Σs</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">group_moments</span><span class="p">,</span><span class="n">groups</span><span class="p">)]</span>
     <span class="n">N</span>  <span class="o">=</span> <span class="n">Σs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="nd">@jit</span>
-    <span class="k">def</span> <span class="nf">o</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">o</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
         <span class="c1">#&#39;&#39;&#39;</span>
         <span class="n">R</span>  <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">10.0</span><span class="o">**</span><span class="n">rho</span><span class="p">)</span>
         <span class="n">err</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -600,12 +600,12 @@
 
 
 
-<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">minres</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.random</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">minres</span>
 
 <div class="viewcode-block" id="lfit">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.lfit">[docs]</a>
-<span class="k">def</span> <span class="nf">lfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
     <span class="n">Σx</span>  <span class="o">=</span> <span class="n">X</span><span class="nd">@X</span><span class="o">.</span><span class="n">T</span>
     <span class="n">Σxy</span> <span class="o">=</span> <span class="n">X</span><span class="nd">@Y</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">minres</span><span class="p">(</span><span class="n">Σx</span><span class="p">,</span> <span class="n">Σxy</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span></div>
@@ -613,7 +613,7 @@
 
 <div class="viewcode-block" id="leave_one_out">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.leave_one_out">[docs]</a>
-<span class="k">def</span> <span class="nf">leave_one_out</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">leave_one_out</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Leave-one-out linear regression. </span>
 <span class="sd">    </span>
@@ -658,7 +658,7 @@
 
 <div class="viewcode-block" id="linear_regression_shuffle">
 <a class="viewcode-back" href="../../../neurotools.stats.shuffleL2explore.html#neurotools.stats.shuffleL2explore.linear_regression_shuffle">[docs]</a>
-<span class="k">def</span> <span class="nf">linear_regression_shuffle</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">linear_regression_shuffle</span><span class="p">(</span>
     <span class="n">X</span><span class="p">,</span>
     <span class="n">Y</span><span class="p">,</span> 
     <span class="n">nshuffle</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>

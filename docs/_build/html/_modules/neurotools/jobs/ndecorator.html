@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.jobs.ndecorator &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -78,61 +78,45 @@
            <div itemprop="articleBody">
              
   <h1>Source code for neurotools.jobs.ndecorator</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Robust decorators are provided by the decorator package</span>
 <span class="sd">    http://pythonhosted.org/decorator/documentation.html</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">neurotools.util</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">__PYTHON_2__</span><span class="o">=</span><span class="kc">True</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span><span class="o">,</span><span class="w"> </span><span class="nn">ast</span><span class="o">,</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span><span class="o">,</span><span class="w"> </span><span class="nn">traceback</span><span class="o">,</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">zlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">__PYTHON_2__</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">neurotools.util</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">ast</span><span class="o">,</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">warnings</span><span class="o">,</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">base64</span><span class="o">,</span> <span class="nn">zlib</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">decorator</span>
-    <span class="c1">#from decorator import decorator as robust_decorator</span>
-    <span class="c1">#import decorator.decorator as robust_decorator</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">decorator</span>
     <span class="n">robust_decorator</span> <span class="o">=</span> <span class="n">decorator</span><span class="o">.</span><span class="n">decorator</span>
-    <span class="c1">#print(robust_decorator)</span>
-    <span class="c1">#sys.exit(-3)</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find decorator module; &#39;</span>
-        <span class="s1">&#39;no robust_decorator support&#39;</span><span class="p">)</span>
-    <span class="c1">#robust_decorator = lambda x:x</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This is important; you should not continue!&#39;</span><span class="p">)</span>
-    <span class="c1"># Null version; migth not work</span>
-    <span class="k">def</span> <span class="nf">robust_decorator</span><span class="p">(</span><span class="n">caller</span><span class="p">,</span> <span class="n">_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">robust_decorator</span><span class="p">(</span><span class="n">caller</span><span class="p">,</span> <span class="n">_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_func</span>
-        <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">g</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">g</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">typedecorator</span>
-    <span class="kn">from</span> <span class="nn">typedecorator</span> <span class="kn">import</span> <span class="n">params</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">setup_typecheck</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">typedecorator</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">typedecorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">params</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">setup_typecheck</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not find typedecorator module; &#39;</span>
-        <span class="s1">&#39;advanced decorator functions missing&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notypedecorator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;skimage module not loaded&quot;</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">returns</span> <span class="o">=</span> <span class="n">setup_typecheck</span> <span class="o">=</span> <span class="n">notypedecorator</span>
 
 <div class="viewcode-block" id="listit">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.listit">[docs]</a>
-<span class="k">def</span> <span class="nf">listit</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">listit</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts nested tuple to nested list</span>
 <span class="sd">    </span>
@@ -150,7 +134,7 @@
 
 <div class="viewcode-block" id="tupleit">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.tupleit">[docs]</a>
-<span class="k">def</span> <span class="nf">tupleit</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tupleit</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Recursively convert nested iteable to nested tuple.</span>
 <span class="sd">    </span>
@@ -168,7 +152,7 @@
 
 <div class="viewcode-block" id="sanitize">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.sanitize">[docs]</a>
-<span class="k">def</span> <span class="nf">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;liberal&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sanitize</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;liberal&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Recursively convert an argument signature into a </span>
 <span class="sd">    standard format. </span>
@@ -210,8 +194,7 @@
         <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">sanitize</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span> 
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sig</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="n">__PYTHON_2__</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,(</span><span class="n">unicode</span><span class="p">,)):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">__PYTHON_2__</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,(</span><span class="n">unicode</span><span class="p">,)):</span>
         <span class="k">return</span> <span class="n">sanitize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sig</span><span class="p">),</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,)):</span>
@@ -248,7 +231,7 @@
 
 <div class="viewcode-block" id="summarize_function">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.summarize_function">[docs]</a>
-<span class="k">def</span> <span class="nf">summarize_function</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">summarize_function</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Prints function information, </span>
 <span class="sd">    Used for debugging decorators.</span>
@@ -274,7 +257,7 @@
 
 <div class="viewcode-block" id="argument_signature">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.argument_signature">[docs]</a>
-<span class="k">def</span> <span class="nf">argument_signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">argument_signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert the function arguments and values to a unique </span>
 <span class="sd">    tuple. Throws ValueError if the provided arguments cannot </span>
@@ -381,7 +364,7 @@
 
 <div class="viewcode-block" id="print_signature">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.print_signature">[docs]</a>
-<span class="k">def</span> <span class="nf">print_signature</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_signature</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Formats the argument signature for printing.</span>
 <span class="sd">    </span>
@@ -400,10 +383,8 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="timed">
-<a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.timed">[docs]</a>
 <span class="nd">@robust_decorator</span>
-<span class="k">def</span> <span class="nf">timed</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">timed</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Timer decorator: Modifies a function to reutrn </span>
 <span class="sd">    a tuple of (runtime, result).</span>
@@ -426,14 +407,13 @@
     <span class="n">t0</span>     <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">current_milli_time</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">t1</span>     <span class="o">=</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">current_milli_time</span><span class="p">()</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">),</span> <span class="n">result</span></div>
-
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">),</span> <span class="n">result</span>
 
 <span class="n">__memoization_caches__</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 <div class="viewcode-block" id="clear_memoized">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.clear_memoized">[docs]</a>
-<span class="k">def</span> <span class="nf">clear_memoized</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clear_memoized</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Clear the caches of all memoized functions</span>
 <span class="sd">    </span>
@@ -451,7 +431,7 @@
 
 <div class="viewcode-block" id="memoize">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.memoize">[docs]</a>
-<span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">memoize</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Memoization decorator</span>
 <span class="sd">    </span>
@@ -468,7 +448,7 @@
     <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">info</span>  <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
     <span class="nd">@robust_decorator</span>
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapped</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">sig</span> <span class="o">=</span> <span class="n">argument_signature</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
             <span class="n">time</span><span class="p">,</span><span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -484,7 +464,7 @@
 
 <div class="viewcode-block" id="unwrap">
 <a class="viewcode-back" href="../../../neurotools.jobs.ndecorator.html#neurotools.jobs.ndecorator.unwrap">[docs]</a>
-<span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unwrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Strips decorators from a decorated function, provided that the</span>
 <span class="sd">    decorators were so kind as to set the .__wrapped__ attribute</span>
@@ -513,7 +493,7 @@
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing the memoize decorator&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ok&#39;</span><span class="p">,),</span><span class="o">*</span><span class="n">vargs</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">example_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ok&#39;</span><span class="p">,),</span><span class="o">*</span><span class="n">vargs</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; This docstring should be preserved by the decorator &#39;&#39;&#39;</span>
         <span class="n">e</span><span class="p">,</span><span class="n">f</span> <span class="o">=</span> <span class="n">vargs</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;k&#39;</span> <span class="ow">in</span> <span class="n">kw</span> <span class="k">else</span> <span class="kc">None</span>

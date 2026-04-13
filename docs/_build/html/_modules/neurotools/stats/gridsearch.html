@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.gridsearch &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -84,13 +84,13 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Hill-climbing grid search</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <div class="viewcode-block" id="grid_search">
 <a class="viewcode-back" href="../../../neurotools.stats.gridsearch.html#neurotools.stats.gridsearch.grid_search">[docs]</a>
-<span class="k">def</span> <span class="nf">grid_search</span><span class="p">(</span><span class="n">pargrid</span><span class="p">,</span><span class="n">evaluate</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">grid_search</span><span class="p">(</span><span class="n">pargrid</span><span class="p">,</span><span class="n">evaluate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Grid search hyperparameter optimization    </span>
 <span class="sd">    </span>
@@ -144,7 +144,7 @@
     <span class="n">state0</span><span class="p">,</span> <span class="n">likelihood0</span><span class="p">,</span> <span class="n">info0</span> <span class="o">=</span> <span class="n">result0</span>
 
     <span class="c1"># Tell me which parameters were the best, so far</span>
-    <span class="k">def</span> <span class="nf">current_best</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_best</span><span class="p">():</span>
         <span class="k">nonlocal</span> <span class="n">results</span>
         <span class="n">ll</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">inf</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
         <span class="k">return</span> <span class="n">unravel_index</span><span class="p">(</span><span class="n">argmax</span><span class="p">(</span><span class="n">ll</span><span class="p">),</span><span class="n">results</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ll</span><span class="p">)</span>
@@ -153,7 +153,7 @@
     <span class="n">ingrid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ix</span><span class="p">:</span><span class="nb">all</span><span class="p">([</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">Ni</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">Ni</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span><span class="n">gridshape</span><span class="p">)])</span>
     
     <span class="c1"># Recursive grid search function</span>
-    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">suggested_direction</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">suggested_direction</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">nonlocal</span> <span class="n">results</span>
         <span class="n">index</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="c1"># Do nothing if we&#39;re outside the grid or already evaluated this index</span>

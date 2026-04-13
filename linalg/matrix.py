@@ -18,11 +18,11 @@ import scipy.linalg
 import numpy
 import numpy.linalg
 
-from scipy.linalg.special_matrices import kron
+from numpy import kron
 from scipy.linalg import solve_triangular as stri
-
-chol = scipy.linalg.cholesky
-
+from scipy.linalg import cholesky as chol
+from scipy.linalg.lapack import dtrtri
+ 
 def triu_elements(M,k=0):
     '''
     Similar to Matlab's "diag" function, but for 
@@ -932,9 +932,6 @@ def match_covariance(Q,x,verbose=False,sample_deficient=False):
     return x2
     
     
-    
-from scipy.linalg import cholesky as chol
-from scipy.linalg.lapack import dtrtri
 def get_whitener(S):
     # covariance transform
     # S = ULU'

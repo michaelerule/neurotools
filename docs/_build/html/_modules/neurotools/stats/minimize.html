@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.stats.minimize &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -84,32 +84,32 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Helper functions for minimization and optimization</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
 
-<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">lstsq</span><span class="p">,</span><span class="n">pinv</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg.linalg</span> <span class="kn">import</span> <span class="n">cholesky</span> <span class="k">as</span> <span class="n">chol</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg.linalg</span> <span class="kn">import</span> <span class="n">LinAlgError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">lstsq</span><span class="p">,</span><span class="n">pinv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">cholesky</span> <span class="k">as</span> <span class="n">chol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinAlgError</span>
 
-<span class="kn">import</span> <span class="nn">neurotools.util.functions</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.functions</span> <span class="kn">import</span> <span class="n">sexp</span><span class="p">,</span><span class="n">slog</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.time</span>      <span class="kn">import</span> <span class="n">current_milli_time</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.string</span>    <span class="kn">import</span> <span class="n">v2str_long</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">neurotools.util.functions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">sexp</span><span class="p">,</span><span class="n">slog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.time</span><span class="w">      </span><span class="kn">import</span> <span class="n">current_milli_time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.string</span><span class="w">    </span><span class="kn">import</span> <span class="n">v2str_long</span>
     
 <div class="viewcode-block" id="FailureError">
 <a class="viewcode-back" href="../../../neurotools.stats.minimize.html#neurotools.stats.minimize.FailureError">[docs]</a>
-<span class="k">class</span> <span class="nc">FailureError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FailureError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Re-named `RuntimeError` to distinguish error </span>
 <span class="sd">    conditions arising from failure of optimization</span>
@@ -120,7 +120,7 @@
 
 <div class="viewcode-block" id="minimize_retry">
 <a class="viewcode-back" href="../../../neurotools.stats.minimize.html#neurotools.stats.minimize.minimize_retry">[docs]</a>
-<span class="k">def</span> <span class="nf">minimize_retry</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">initial</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">minimize_retry</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span><span class="n">initial</span><span class="p">,</span><span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                    <span class="n">printerrors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                    <span class="n">failthrough</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -179,7 +179,7 @@
     <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;ngeval&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">ngeval</span>
     <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;last_shown&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">last_shown</span>
 
-    <span class="k">def</span> <span class="nf">progress_update</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">progress_update</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1">#nonlocal best, x0, nfeval, ngeval, last_shown</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">current_milli_time</span><span class="p">()</span> <span class="o">-</span> <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;last_shown&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">300</span><span class="p">):</span> <span class="k">return</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -199,7 +199,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;last_shown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">clear_progress</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_progress</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span> 
             <span class="n">progress_update</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -213,7 +213,7 @@
     <span class="c1">#nonlocals[&#39;ocache&#39;]={}</span>
     <span class="c1">#nonlocals[&#39;jcache&#39;]={}</span>
     <span class="k">if</span> <span class="n">jac</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">wrapped_objective</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_objective</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="c1">#nonlocal best, x0, nfeval, ngeval</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">maxfeval</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;nfeval&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="n">maxfeval</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">FailureError</span><span class="p">(</span><span class="s1">&#39;Maximum # of function evaluations exceeded&#39;</span><span class="p">)</span>
@@ -227,7 +227,7 @@
             <span class="n">progress_update</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">v</span><span class="p">,</span><span class="n">g</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">wrapped_objective</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_objective</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="c1">#nonlocal best, x0, nfeval</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">maxfeval</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;nfeval&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="n">maxfeval</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">FailureError</span><span class="p">(</span><span class="s1">&#39;Maximum # of function evaluations exceeded&#39;</span><span class="p">)</span>
@@ -242,7 +242,7 @@
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">jac</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
         <span class="c1"># Jacobain is function</span>
         <span class="n">original_jac</span> <span class="o">=</span> <span class="n">jac</span>
-        <span class="k">def</span> <span class="nf">wrapped_jacobian</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_jacobian</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="c1">#nonlocal best, x0, nfeval, ngeval</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">maxgeval</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nonlocals</span><span class="p">[</span><span class="s1">&#39;ngeval&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="n">maxgeval</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">FailureError</span><span class="p">(</span><span class="s1">&#39;Maximum # of gradient evaluations exceeded&#39;</span><span class="p">)</span>
@@ -258,7 +258,7 @@
     <span class="c1"># and other unexpected errors are caught but reported, in case they</span>
     <span class="c1"># reflect an exception arising from a user-provided gradient or </span>
     <span class="c1"># objective function.</span>
-    <span class="k">def</span> <span class="nf">try_to_optimize</span><span class="p">(</span><span class="n">method</span><span class="p">,</span><span class="n">validoptions</span><span class="p">,</span><span class="n">jac_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_to_optimize</span><span class="p">(</span><span class="n">method</span><span class="p">,</span><span class="n">validoptions</span><span class="p">,</span><span class="n">jac_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dontuse</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Skipping method </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">method</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

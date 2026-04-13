@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.util.pandas &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -80,31 +80,31 @@
   <h1>Source code for neurotools.util.pandas</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">numpy</span>  <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">from</span> <span class="nn">neurotools.stats.pvalues</span> <span class="kn">import</span> <span class="n">nancorrect</span>
-<span class="kn">from</span> <span class="nn">neurotools.util.tools</span> <span class="kn">import</span> <span class="n">piper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.stats.pvalues</span><span class="w"> </span><span class="kn">import</span> <span class="n">nancorrect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">piper</span>
 
 <span class="c1">#[This page](https://jakevdp.github.io/PythonDataScienceHandbook/02.09-structured-data-numpy.html) is educational.</span>
 
 <div class="viewcode-block" id="get">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.get">[docs]</a>
-<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get all rows with column matching value</span>
 <span class="sd">    (discards the column matched)</span>
@@ -127,7 +127,7 @@
 
 <div class="viewcode-block" id="is_empty_col">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.is_empty_col">[docs]</a>
-<span class="k">def</span> <span class="nf">is_empty_col</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_empty_col</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Check if a value is ``NaN``</span>
 <span class="sd">    </span>
@@ -149,7 +149,7 @@
 
 <div class="viewcode-block" id="from_hierarchical_columns">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.from_hierarchical_columns">[docs]</a>
-<span class="k">def</span> <span class="nf">from_hierarchical_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">delimeter</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">from_hierarchical_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">delimeter</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Flatten hierarchical columns into strings.</span>
 <span class="sd">    Inverse of ``to_hierarchical_columns``.</span>
@@ -176,7 +176,7 @@
 
 
 <span class="nd">@piper</span>
-<span class="k">def</span> <span class="nf">to_hierarchical_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">delimeter</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_hierarchical_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">delimeter</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert a flat set of columns given by strings,</span>
 <span class="sd">    with levels in the hierarchy delimeted by the string</span>
@@ -203,7 +203,7 @@
 
 <div class="viewcode-block" id="to_ndarray">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.to_ndarray">[docs]</a>
-<span class="k">def</span> <span class="nf">to_ndarray</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">flatten_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_ndarray</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">flatten_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert DataFrame to structured np.ndarray.</span>
 <span class="sd">    </span>
@@ -229,7 +229,7 @@
 
 <div class="viewcode-block" id="camelcase_columns">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.camelcase_columns">[docs]</a>
-<span class="k">def</span> <span class="nf">camelcase_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">camelcase_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Switch column names from Python&#39;s </span>
 <span class="sd">    ``underscore_convention`` to the Java/Matlab style</span>
@@ -252,7 +252,7 @@
         <span class="n">df</span> <span class="o">=</span> <span class="n">from_hierarchical_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">pass</span>
-    <span class="kn">from</span> <span class="nn">neurotools.util.string</span> <span class="kn">import</span> <span class="n">snake_to_camel</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.string</span><span class="w"> </span><span class="kn">import</span> <span class="n">snake_to_camel</span>
     <span class="n">newcols</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">snake_to_camel</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)))</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
@@ -262,7 +262,7 @@
 
 <div class="viewcode-block" id="snakecase_columns">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.snakecase_columns">[docs]</a>
-<span class="k">def</span> <span class="nf">snakecase_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">snakecase_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Switch column names from</span>
 <span class="sd">    ``underscoreDelimited_camelCase`` </span>
@@ -277,7 +277,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    :pd.DataFrame</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="kn">from</span> <span class="nn">neurotools.util.string</span> <span class="kn">import</span> <span class="n">camel_to_snake</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">neurotools.util.string</span><span class="w"> </span><span class="kn">import</span> <span class="n">camel_to_snake</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">from_hierarchical_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="n">newcols</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">camel_to_snake</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)))</span>
@@ -288,7 +288,7 @@
 
 <div class="viewcode-block" id="ndarray_from_mat">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.ndarray_from_mat">[docs]</a>
-<span class="k">def</span> <span class="nf">ndarray_from_mat</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ndarray_from_mat</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Load structured ``np.ndarray`` from matfile</span>
 <span class="sd">    </span>
@@ -336,7 +336,7 @@
 
 <div class="viewcode-block" id="read_mat">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.read_mat">[docs]</a>
-<span class="k">def</span> <span class="nf">read_mat</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_mat</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">restore_hierarchical_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -375,7 +375,7 @@
     
 <div class="viewcode-block" id="to_mat">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.to_mat">[docs]</a>
-<span class="k">def</span> <span class="nf">to_mat</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">saveas</span><span class="p">,</span><span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="n">readme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_mat</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">saveas</span><span class="p">,</span><span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="n">readme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Save dataframe as ``.mat`` matfile.</span>
 <span class="sd">    </span>
@@ -421,7 +421,7 @@
     
 <div class="viewcode-block" id="conform">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.conform">[docs]</a>
-<span class="k">def</span> <span class="nf">conform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">conform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Recursively coerce nested iterables into a numpy</span>
 <span class="sd">    array with a uniform shape by padding uneven shapes</span>
@@ -474,14 +474,14 @@
     
 <div class="viewcode-block" id="add_column_from_dict">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.add_column_from_dict">[docs]</a>
-<span class="k">def</span> <span class="nf">add_column_from_dict</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">coldata</span><span class="p">,</span><span class="n">default</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_column_from_dict</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">coldata</span><span class="p">,</span><span class="n">default</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
     <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">coldata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">default</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">df</span></div>
 
 
 <div class="viewcode-block" id="dfhcat">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.dfhcat">[docs]</a>
-<span class="k">def</span> <span class="nf">dfhcat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dfhcat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">args</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">list</span><span class="p">):</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -490,7 +490,7 @@
     
 <div class="viewcode-block" id="dfvcat">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.dfvcat">[docs]</a>
-<span class="k">def</span> <span class="nf">dfvcat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dfvcat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">args</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">list</span><span class="p">):</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -499,7 +499,7 @@
     
 <div class="viewcode-block" id="check_column_signs">
 <a class="viewcode-back" href="../../../neurotools.util.pandas.html#neurotools.util.pandas.check_column_signs">[docs]</a>
-<span class="k">def</span> <span class="nf">check_column_signs</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_column_signs</span><span class="p">(</span>
     <span class="n">df</span><span class="p">,</span>
     <span class="p">):</span>
     <span class="c1"># A bit silly really</span>
@@ -513,7 +513,7 @@
 
 
 <span class="nd">@piper</span>
-<span class="k">def</span> <span class="nf">fdr</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fdr</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;significant&#39;</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;fdr0p05&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nancorrect</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pvalue</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">d</span>
@@ -521,7 +521,7 @@
         <span class="k">return</span> <span class="n">fdr</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 
 <span class="nd">@piper</span>
-<span class="k">def</span> <span class="nf">colprefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">colprefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Curry mode</span>
         <span class="k">return</span> <span class="n">piper</span><span class="p">(</span><span class="k">lambda</span> <span class="n">df2</span><span class="p">:</span><span class="n">colprefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">df2</span><span class="p">))</span>
@@ -538,7 +538,7 @@
         <span class="k">return</span> <span class="n">colprefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">_asdict</span><span class="p">())</span>
 
 <span class="nd">@piper</span>
-<span class="k">def</span> <span class="nf">numeric_columns</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">numeric_columns</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="s1">&#39;biufc&#39;</span><span class="p">]]</span>
 
 

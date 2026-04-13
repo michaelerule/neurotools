@@ -441,35 +441,35 @@ def make_cosine_basis(N,L,min_interval,normalize=True):
 # Argument cleaning: tolerate some sloppiness in return types
 from neurotools.linalg.arguments import scalar,asvector
 
-def numeric_grad(obj,p,delta=np.finfo('float32').eps):
+def numeric_grad(obj,p,*a,delta=np.finfo('float32').eps,**k):
     '''
     Numerically estimate the gradient of an objective function
     '''
     p = np.float64(p).ravel()
     N = len(p)
     g = np.zeros(N)
-    x = scalar(obj(p))
+    x = scalar(obj(p,*a,**k))
     for i in range(N):
         dp     = p.copy()
         dp[i] += delta
-        dx     = scalar(obj(dp))
+        dx     = scalar(obj(dp,*a,**k))
         g[i]   = (dx-x)/delta
     return g
 
 
-def numeric_hess(jac,p,delta=np.finfo('float32').eps):
+def numeric_hess(jac,p,*a,delta=np.finfo('float32').eps,**k):
     '''
     Numerically estimate the hessian given a gradient function
     '''
     p = np.float64(p)
     N = len(p)
     H = np.zeros((N,N))
-    g = asvector(jac(p))
+    g = asvector(jac(p,*a,**k))
     for i in range(N):
         for j in range(N):
             dp     = p.copy()
             dp[i] += delta
-            dg     = asvector(jac(dp))
+            dg     = asvector(jac(dp,*a,**k))
             H[i]   = (dg-g)/delta
     return H
 

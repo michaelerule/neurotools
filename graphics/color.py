@@ -37,6 +37,7 @@ MAUVE      = np.float32(mpl.colors.to_rgb('#b56ab6'))
 MOSS       = np.float32(mpl.colors.to_rgb('#77ae64'))
 OFFWHITE   = BLACK*.1+WHITE*.9
 OFFBLACK   = BLACK*.9+WHITE*.1
+AGUA       = np.float32(np.clip(np.sqrt((TEAL**2+AZURE**2)/2),0,1))
 # Other colors (just OK)
 YELLOW     = np.float32(mpl.colors.to_rgb('#efcd2b'))
 INDIGO     = np.float32(mpl.colors.to_rgb('#606ec3'))

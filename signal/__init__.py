@@ -1536,6 +1536,12 @@ def unitscale(signal,axis=None):
     signal: np.array
         Array-like real-valued signal
     
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+        Axis over which to take the mean; 
+        forwarded to np.mean axis parameter
+    
     Returns
     -------
     signalL np.array
@@ -1553,6 +1559,43 @@ def unitscale(signal,axis=None):
     signal-= np.nanmin(signal,axis=axis)[theslice]
     signal/= np.nanmax(signal,axis=axis)[theslice]
     return signal
+    
+    
+def absunitscale(signal,axis=None,minor=False):
+    '''
+    Rescales `signal` so that its maximum absolute value is 1.
+
+    Parameters
+    ----------
+    signal: np.array
+        Array-like real-valued signal
+    
+    Other Parameters
+    ----------------
+    axis: int or tuple, default None
+        Axis over which to take the mean; 
+        forwarded to np.mean axis parameter
+    minor: boolean, defaly False
+        Use the smaller of the positive or negative maxima if true. 
+    
+    Returns
+    -------
+    signalL np.array
+        Rescaled signal
+    '''
+    signal = np.float64(np.array(signal))
+    if axis==None:
+        # Old behavior
+        c = (np.minimum if minor else np.maximum)(np.nanmax(signal),np.nanmax(-signal))
+        return signal/c
+    # New behavior
+    theslice = narray.make_rebroadcast_slice(signal, axis)
+    if minor:
+        c = np.minimum(np.nanmax(signal,axis=axis),np.nanmax(-signal,axis=axis))
+    else:
+        c = np.nanmax(np.abs(signal),axis=axis)
+    signal/=c[theslice]
+    return signal
 
 def topercentiles(x):
     '''
@@ -1567,6 +1610,28 @@ def topercentiles(x):
     order = x.argsort()
     ranks = order.argsort()
     return ranks/(len(x)-1)*100
+
+def zeromin(x,axis=0,verbose=False,ignore_nan=True):
+    '''
+    Subtract the minimum from a timeseries
+    
+    Parameters
+    ----------
+    x : np.array
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+    
+    Returns
+    -------
+    x: np.array
+    '''
+    x = np.array(x)
+    if np.prod(x.shape)==0:
+        return x
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    return x-(np.nanmin if ignore_nan else np.min)(x,axis=axis)[theslice]
 
 def zeromean(x,axis=0,verbose=False,ignore_nan=True):
     '''
@@ -1951,7 +2016,7 @@ def mintomax(x,prefix=None,doprint=True):
     return mnmx
 
 
-def unit_length(x,axis=0):
+def unitlength(x,axis=0):
     '''
     Interpret given axis of multidimensional array as 
     vectors, and normalize them to unit length.

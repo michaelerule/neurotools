@@ -18,7 +18,7 @@ with warnings.catch_warnings():
 
 import scipy
 from neurotools.stats.pvalues import nancorrect
-from neurotools.util.tools import piper
+from neurotools.util.tools    import piper
 
 #[This page](https://jakevdp.github.io/PythonDataScienceHandbook/02.09-structured-data-numpy.html) is educational.
 

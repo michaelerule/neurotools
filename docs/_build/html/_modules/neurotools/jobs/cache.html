@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>neurotools.jobs.cache &mdash; Neurotools 2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5b801204" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=814157f0" />
 
   
@@ -83,56 +83,56 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Functions related to disk caching (memoization)</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">nested_scopes</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
 <span class="n">__PYTHON_2__</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.io</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">zlib</span>
-<span class="kn">import</span> <span class="nn">hashlib</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">UnpicklingError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnpicklingError</span>
 
 <span class="c1"># TODO: we should use the same pickle library as multiprocessing uses</span>
 <span class="c1"># for better comptability with parallelism and multiprocessing</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">cPickle</span> <span class="kn">import</span> <span class="n">PicklingError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cPickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">PicklingError</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">PicklingError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">PicklingError</span>
 
-<span class="kn">import</span> <span class="nn">neurotools.util.tools</span>
-<span class="kn">import</span> <span class="nn">neurotools.jobs</span>
-<span class="kn">import</span> <span class="nn">neurotools.jobs.ndecorator</span>
-<span class="kn">from</span>   <span class="nn">neurotools.jobs.closure</span>   <span class="kn">import</span> <span class="n">verify_function_closure</span>
-<span class="kn">from</span>   <span class="nn">neurotools.jobs.filenames</span> <span class="kn">import</span> <span class="n">is_dangerous_filename</span>
-<span class="kn">from</span>   <span class="nn">neurotools.jobs.filenames</span> <span class="kn">import</span> <span class="n">check_filename</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">neurotools.util.tools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">neurotools.jobs</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">neurotools.jobs.ndecorator</span>
+<span class="kn">from</span><span class="w">   </span><span class="nn">neurotools.jobs.closure</span><span class="w">   </span><span class="kn">import</span> <span class="n">verify_function_closure</span>
+<span class="kn">from</span><span class="w">   </span><span class="nn">neurotools.jobs.filenames</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_dangerous_filename</span>
+<span class="kn">from</span><span class="w">   </span><span class="nn">neurotools.jobs.filenames</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_filename</span>
 
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <div class="viewcode-block" id="get_source">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.get_source">[docs]</a>
-<span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_source</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extracts and returns the source code of a function </span>
 <span class="sd">    (if it exists). </span>
@@ -160,7 +160,7 @@
 <div class="viewcode-block" id="function_hash_no_subroutines">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.function_hash_no_subroutines">[docs]</a>
 <span class="nd">@neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">memoize</span>
-<span class="k">def</span> <span class="nf">function_hash_no_subroutines</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">function_hash_no_subroutines</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See ``function_hash_with_subroutines``. </span>
 <span class="sd">    This hash value is based on the</span>
@@ -199,7 +199,7 @@
 
 <div class="viewcode-block" id="function_signature">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.function_signature">[docs]</a>
-<span class="k">def</span> <span class="nf">function_signature</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">function_signature</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates string identifying the cache folder for function ``f``.</span>
 
@@ -263,7 +263,7 @@
 
 <div class="viewcode-block" id="signature_to_file_string">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.signature_to_file_string">[docs]</a>
-<span class="k">def</span> <span class="nf">signature_to_file_string</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sig</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">signature_to_file_string</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sig</span><span class="p">,</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;repr&#39;</span><span class="p">,</span>
     <span class="n">compressed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">base64encode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -419,7 +419,7 @@
 
 <div class="viewcode-block" id="file_string_to_signature">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.file_string_to_signature">[docs]</a>
-<span class="k">def</span> <span class="nf">file_string_to_signature</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">file_string_to_signature</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;repr&#39;</span><span class="p">,</span>
     <span class="n">compressed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -529,7 +529,7 @@
     
 <div class="viewcode-block" id="human_encode">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.human_encode">[docs]</a>
-<span class="k">def</span> <span class="nf">human_encode</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">human_encode</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Formats an argument signature for saving as file name</span>
 <span class="sd">    </span>
@@ -557,7 +557,7 @@
 
 <div class="viewcode-block" id="human_decode">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.human_decode">[docs]</a>
-<span class="k">def</span> <span class="nf">human_decode</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">human_decode</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Formats the argument signature for saving as file name</span>
 <span class="sd">    </span>
@@ -581,7 +581,7 @@
 
 <div class="viewcode-block" id="get_cache_path">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.get_cache_path">[docs]</a>
-<span class="k">def</span> <span class="nf">get_cache_path</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cache_path</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Locate the directory path for function ``f`` within the</span>
 <span class="sd">    ``__neurotools_cache__`` path ``cache_root``.</span>
@@ -611,7 +611,7 @@
 
 <div class="viewcode-block" id="locate_cached">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.locate_cached">[docs]</a>
-<span class="k">def</span> <span class="nf">locate_cached</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">locate_cached</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Locate a specific cache entry within ``cache_root`` for</span>
 <span class="sd">    function ``f`` cached with method ``method``, and called</span>
@@ -662,7 +662,7 @@
 
 <div class="viewcode-block" id="validate_for_matfile">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.validate_for_matfile">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_for_matfile</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_for_matfile</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Verify that the nested tuple ``x``, which contains the</span>
 <span class="sd">    arguments to a function call, can be safely stored </span>
@@ -715,11 +715,11 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <div class="viewcode-block" id="validate_for_numpy">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.validate_for_numpy">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_for_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_for_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Check whether an array-like object can safely be stored </span>
 <span class="sd">    in a numpy archive. </span>
@@ -788,7 +788,7 @@
 
 <div class="viewcode-block" id="read_cache_entry">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.read_cache_entry">[docs]</a>
-<span class="k">def</span> <span class="nf">read_cache_entry</span><span class="p">(</span><span class="n">location</span><span class="p">,</span><span class="n">method</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_cache_entry</span><span class="p">(</span><span class="n">location</span><span class="p">,</span><span class="n">method</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;pickle&#39;</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">location</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">openfile</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">openfile</span><span class="p">)</span>
@@ -800,7 +800,7 @@
 
 <div class="viewcode-block" id="disk_cacher">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.disk_cacher">[docs]</a>
-<span class="k">def</span> <span class="nf">disk_cacher</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">disk_cacher</span><span class="p">(</span>
     <span class="n">cache_location</span><span class="p">,</span>
     <span class="n">method</span>     <span class="o">=</span> <span class="s1">&#39;npy&#39;</span><span class="p">,</span>
     <span class="n">write_back</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -881,7 +881,7 @@
     <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">ensure_dir</span><span class="p">(</span><span class="n">cache_location</span><span class="p">)</span>
     <span class="n">neurotools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">ensure_dir</span><span class="p">(</span><span class="n">cache_root</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cached</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        The ``disk_cacher`` function constructs a decorator </span>
 <span class="sd">        ``cached`` that can be used to wrap functions to </span>
@@ -903,7 +903,7 @@
             <span class="n">FileError</span> <span class="o">=</span> <span class="ne">FileNotFoundError</span>
             
         <span class="nd">@neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">robust_decorator</span>
-        <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapped</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            This is a wrapper for memoizing results to disk. </span>
 <span class="sd">            This docstring should be overwritten by the </span>
@@ -1017,7 +1017,7 @@
                     <span class="c1">#    with open(location, &#39;w&#39;): pass</span>
             <span class="k">return</span> <span class="n">result</span>
         
-        <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">purge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            Delete cache entries matching arguments. This is</span>
 <span class="sd">            a destructive operation, execute with care.</span>
@@ -1048,7 +1048,7 @@
                         <span class="k">raise</span>
             <span class="k">pass</span>
         
-        <span class="k">def</span> <span class="nf">lscache</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">lscache</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            List all files associated with cached </span>
 <span class="sd">            invocations of the wrapped function.</span>
@@ -1069,7 +1069,7 @@
             <span class="k">return</span> <span class="n">path</span><span class="p">,</span><span class="n">files</span>
         
         <span class="nd">@neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">robust_decorator</span>
-        <span class="k">def</span> <span class="nf">locate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">locate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            A version of the decorator that simply locates </span>
 <span class="sd">            the cache file. The result of ``locate_cached`` is</span>
@@ -1109,7 +1109,7 @@
 
 <div class="viewcode-block" id="hierarchical_cacher">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.hierarchical_cacher">[docs]</a>
-<span class="k">def</span> <span class="nf">hierarchical_cacher</span><span class="p">(</span><span class="n">fast_to_slow</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hierarchical_cacher</span><span class="p">(</span><span class="n">fast_to_slow</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
         <span class="n">write_back</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1155,7 +1155,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">slow_to_fast</span> <span class="o">=</span> <span class="n">fast_to_slow</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># reverse it</span>
     <span class="n">all_cachers</span>  <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">def</span> <span class="nf">hierarchical</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hierarchical</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="c1"># disable write-back on the slow caches</span>
         <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">slow_to_fast</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">disk_cacher</span><span class="p">(</span><span class="n">location</span><span class="p">,</span>
@@ -1173,7 +1173,7 @@
             <span class="n">verbose</span>                <span class="o">=</span> <span class="n">verbose</span><span class="p">,</span>
             <span class="n">allow_mutable_bindings</span> <span class="o">=</span> <span class="n">allow_mutable_bindings</span><span class="p">,</span>
             <span class="n">cache_identifier</span>       <span class="o">=</span> <span class="n">cache_identifier</span><span class="p">)(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">purge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            Purge each of the constituent cachers</span>
 <span class="sd">            &#39;&#39;&#39;</span>
@@ -1188,7 +1188,7 @@
 
 <div class="viewcode-block" id="scan_cachedir">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.scan_cachedir">[docs]</a>
-<span class="k">def</span> <span class="nf">scan_cachedir</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan_cachedir</span><span class="p">(</span>
     <span class="n">cachedir</span><span class="p">,</span>
     <span class="n">method</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1303,7 +1303,7 @@
     
 <div class="viewcode-block" id="hashit">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.hashit">[docs]</a>
-<span class="k">def</span> <span class="nf">hashit</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hashit</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="nb">bytes</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
@@ -1314,7 +1314,7 @@
 
 <div class="viewcode-block" id="base64hash">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.base64hash">[docs]</a>
-<span class="k">def</span> <span class="nf">base64hash</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">base64hash</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Retrieve a base-64 encoded hash for an object.</span>
 <span class="sd">    This uses the built-in ``encode`` function to convert an object to</span>
@@ -1336,7 +1336,7 @@
 
 <div class="viewcode-block" id="base64hash10bytes">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.base64hash10bytes">[docs]</a>
-<span class="k">def</span> <span class="nf">base64hash10bytes</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">base64hash10bytes</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Retrieve first two bytes of a base-64 encoded has for </span>
 <span class="sd">    an object.</span>
@@ -1357,7 +1357,7 @@
 <div class="viewcode-block" id="function_hash_with_subroutines">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.function_hash_with_subroutines">[docs]</a>
 <span class="nd">@neurotools</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">ndecorator</span><span class="o">.</span><span class="n">memoize</span>
-<span class="k">def</span> <span class="nf">function_hash_with_subroutines</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">function_hash_with_subroutines</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Functions may change if their subroutines change. This </span>
 <span class="sd">    function computes a hash value that is sensitive to </span>
@@ -1437,7 +1437,7 @@
         
 <div class="viewcode-block" id="combine_caches">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.combine_caches">[docs]</a>
-<span class="k">def</span> <span class="nf">combine_caches</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_caches</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Merge all cache folders for function ``f`` </span>
 <span class="sd">    by copying cache files into the current cache folder.</span>
@@ -1473,7 +1473,7 @@
                 
 <div class="viewcode-block" id="exists">
 <a class="viewcode-back" href="../../../neurotools.jobs.cache.html#neurotools.jobs.cache.exists">[docs]</a>
-<span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">exists</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">method</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Check if a cached result for ``f(*args,**kwargs)`` </span>
 <span class="sd">    of type ``method`` exists in cache ``cache_root``.</span>

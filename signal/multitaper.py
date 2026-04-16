@@ -51,7 +51,6 @@ def dpss_cached(length,half_bandwidth_parameter):
         tapers,eigen = dpss(int(length),half_bandwidth_parameter)
     return tapers.T,eigen
 
-
 def spectrum(x,k,Fs=1000.0,nodc=True,return_negative=False):
     '''
     Parameters
@@ -84,7 +83,6 @@ def spectrum(x,k,Fs=1000.0,nodc=True,return_negative=False):
             return freqs,psd
         else:
             return freqs[:N//2],psd[...,:N//2]
-
 
 def population_coherence(
     x,y,FS,
@@ -147,9 +145,6 @@ def population_coherence(
     coherence = pxy/(pxx[:,None,:]*pyy[None,:,:])
     return freqs,coherence
 
-
-
-
 def _tapered_cross_specra_helper(params):
     '''
     '''
@@ -161,7 +156,6 @@ def _tapered_cross_specra_helper(params):
     pxy = np.abs(ftx[:,None,:]*np.conj(fty[None,:,:]))**2*e
     result = (pxx,pyy,pxy)
     return i,result
-
 
 def population_eigencoherence(
     x,y,FS,

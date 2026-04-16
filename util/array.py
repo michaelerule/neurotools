@@ -595,7 +595,13 @@ def allclose_recursive(a,b):
     return all([allclose_recursive(ai,bi) \
                 for (ai,bi) in zip(a,b)])
 
-
+def wrapme(u,axis=-1):
+    '''
+    Copy first element to the end to e.g. close a polygon.
+    '''
+    u = np.array(u)
+    axis %= u.ndim
+    return np.concatenate([u,u[(slice(None),)*axis+(slice(None,1),)]],axis)
 
 
 

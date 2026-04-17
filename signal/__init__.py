@@ -2038,6 +2038,13 @@ def unitlength(x,axis=0):
     theslice = narray.make_rebroadcast_slice(x,axis=axis)
     return x*(np.sum(x**2,axis=axis)**-.5)[theslice]
 
+
+def rms(x,axis=0):
+    '''
+    '''
+    x = np.array(x)
+    return np.mean(x**2,axis=axis)**.5
+
     
 def spaced_derivative(x):
     '''

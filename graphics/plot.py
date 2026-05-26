@@ -1241,31 +1241,23 @@ def ybartext(
         keyword arguments forwarded to 
         ``plot()`` and ``text()``.
     '''
+    from itertools import product
     a,b = plt.ylim()
     plot([x,x],[a,b],**(dict(lw=0.8,color='k')|kwargs))
     plt.ylim(a,b)
     dx,dy = get_ax_pixel()
     # Generate outline by drawing copies in the background
     # There must be a better way?
-    if outline:
-        for ix in arange(-2,3)*dx:
-            for iy in arange(-2,3)*dy:
-                text(ix+x,iy+plt.ylim()[1]-dy*4,t,
-                    rotation=90,
-                    color=c2,
-                    ha='right',
-                    va='top',
-                    fontsize=fontsize)
-    # Add text label
-    text(
-        x,
-        plt.ylim()[1]-dy*2,
-        t,
+    opts = dict(
         rotation=90,
-        color=c1,
-        fontsize=fontsize,
         ha='right',
-        va='top')
+        va='top',
+        fontsize=fontsize)
+    # Add text label
+    if outline:
+        for ix,iy in product(arange(-2,3)*dx,arange(-2,3)*dy):
+            text(ix+x,iy+plt.ylim()[1]-dy*4,t,color=c2,**opts)
+    text(x,plt.ylim()[1]-dy*2,t,color=c1,**opts)
     # Restore y limits
     plt.ylim(a,b)
 

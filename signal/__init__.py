@@ -1559,7 +1559,8 @@ def unitscale(signal,axis=None):
     signal-= np.nanmin(signal,axis=axis)[theslice]
     signal/= np.nanmax(signal,axis=axis)[theslice]
     return signal
-    
+
+uscale = unitscale
     
 def absunitscale(signal,axis=None,minor=False):
     '''
@@ -1713,6 +1714,39 @@ def zscore(
     '''
     x = np.float32(x)
     x = zeromean(x,axis=axis,ignore_nan=ignore_nan)
+    if np.prod(x.shape)==0:
+        return x
+    theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
+    ss = (np.nanstd if ignore_nan else np.std)(x,axis=axis,ddof=ddof)+regularization
+    return x/ss[theslice]
+
+def standardize(
+    x,axis=0,
+    regularization=1e-30,
+    verbose=False,
+    ignore_nan=True,
+    ddof=0
+    ):
+    '''
+    Divides data by its standard deviation, defaults to the first axis.
+    
+    A regularization factor is added to the standard deviation to 
+    prevent numerical instability when the standard deviation is 
+    small. The default refularization is 1e-30.
+    
+    Parameters
+    ----------
+    x:
+        Array-like real-valued signal.
+    axis: 
+        Axis to zscore; default is 0.
+
+    Returns
+    -------
+    x: np.ndarray
+        (x-mean(x))/std(x)
+    '''
+    x = np.float32(x)
     if np.prod(x.shape)==0:
         return x
     theslice = narray.make_rebroadcast_slice(x,axis=axis,verbose=verbose)
@@ -2037,6 +2071,13 @@ def unitlength(x,axis=0):
     x = np.array(x)
     theslice = narray.make_rebroadcast_slice(x,axis=axis)
     return x*(np.sum(x**2,axis=axis)**-.5)[theslice]
+
+
+def rms(x,axis=0):
+    '''
+    '''
+    x = np.array(x)
+    return np.mean(x**2,axis=axis)**.5
 
     
 def spaced_derivative(x):

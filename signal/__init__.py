@@ -242,8 +242,14 @@ def nonnegative_bandpass_filter(data,fa=None,fb=None,
     return np.expm1(filtered)
 
 
-def bandpass_filter(data,fa=None,fb=None,
-    Fs=1000.,order=4,zerophase=True,bandstop=False):
+def bandpass_filter(
+    data,
+    fa=None,
+    fb=None,
+    Fs=1000.,
+    order=4,
+    zerophase=True,
+    bandstop=False):
     '''
     IF fa is None, assumes lowpass with cutoff fb
     IF fb is None, assume highpass with cutoff fa
@@ -270,35 +276,36 @@ def bandpass_filter(data,fa=None,fb=None,
         raise ValueError('Filters over last dimension, which should have len>1')
     padded = np.zeros(data.shape[:-1]+(2*N,),dtype=data.dtype)
     padded[...,N//2  :N//2+N] = data
-    padded[...,     :N//2  ] = data[...,N//2:0    :-1]
-    padded[...,N//2+N:     ] = data[...,-1 :N//2-1:-1]
-    if not fa is None and not fb is None:
+    padded[...,      :N//2  ] = data[...,N//2:0    :-1]
+    padded[...,N//2+N:      ] = data[...,-1 :N//2-1:-1]
+    if not fa is None and not fb is None: 
+        # Either band-pass, or band-stop if bandstop=False
         if bandstop:
             b,a = butter(order,np.array([fa,fb])/(0.5*Fs),btype='bandstop')
         else:
             b,a = butter(order,np.array([fa,fb])/(0.5*Fs),btype='bandpass')
-    elif not fa==None:
-        # high pass
+    elif not fa==None: # high pass
         b,a  = butter(order,fa/(0.5*Fs),btype='high')
         assert not bandstop
-    elif not fb==None:
-        # low pass
+    elif not fb==None: # low pass
         x = fb/(0.5*Fs)-1e-10
         if x>=1:
             raise ValueError('The low-frequency cutoff is larger than the nyquist freqency?')
         b,a  = butter(order,x,btype='low')
         assert not bandstop
-    else: raise Exception('Both fa and fb appear to be None')
-    method = filtfilt if zerophase else lfilter
+    else: 
+        raise Exception('Both fa and fb appear to be None')
+    filtering_method = filtfilt if zerophase else lfilter
+    
     # hide the scipy/numpy compatibility future warning
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=FutureWarning)
-        result = method(b,a,padded)
+        result = filtering_method(b,a,padded)
         return result[...,N//2:N//2+N]
     assert 0
 
 
-def box_filter(data,smoothat,padmode='reflect'):
+def box_filter(x,smoothat,padmode='reflect'):
     '''
     Smooths data by convolving with a size smoothat box
     provide smoothat in units of frames i.e. samples. 
@@ -309,28 +316,27 @@ def box_filter(data,smoothat,padmode='reflect'):
         One-dimensional numpy array of the signal to be filtred
     window : positive int
         Filtering window length in samples
-    mode : string, default 'same'
-        If 'same', the returned signal will have the same time-base and
-        length as the original signal. if 'valid', edges which do not
-        have the full window length will be trimmed
+    padmode : string, default 'reflect'
+        Uses reflected boundary conditions by default.
+        Otherwise, extend first/last sample of `x` when the 
+        window falls outside the signal array ('clamp'). 
     
     Returns
     -------
     np.array :
         One-dimensional filtered signal
     '''
-    data = np.array(data)
-    data = np.float32(data)
-    N = len(data)
-    assert len(data.shape)==1
-    padded = np.zeros(2*N,dtype=data.dtype)
-    padded[N//2:N//2+N]=data
+    x = np.float32(x)
+    N = len(x)
+    assert len(x.shape)==1
+    padded = np.zeros(2*N,dtype=x.dtype)
+    padded[N//2:N//2+N]=x
     if padmode=='reflect':
-        padded[:N//2]=data[N//2:0:-1]
-        padded[N//2+N:]=data[-1:N//2-1:-1]
+        padded[:N//2  ]=x[N//2:0:-1]
+        padded[N//2+N:]=x[-1:N//2-1:-1]
     else:
-        padded[:N//2]=data[0]
-        padded[N//2+N:]=data[-1]
+        padded[:N//2  ]=x[0]
+        padded[N//2+N:]=x[-1]
     smoothed = fftconvolve(padded,np.ones(smoothat)/float(smoothat),'same')
     return smoothed[N//2:N//2+N]
 
@@ -824,6 +830,7 @@ def get_edges(signal,pad_edges=True):
         return np.array([[],[]])
     if tuple(sorted(np.unique(signal)))==(-2,-1):
         raise ValueError('signal should be bool or int∈{0,1}; (did you use ~ on an int array?)')
+    
     signal = np.int32(signal>0)
     starts = list(np.where(np.diff(np.int32(signal))==1)[0]+1)
     stops  = list(np.where(np.diff(np.int32(signal))==-1)[0]+1)

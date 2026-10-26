@@ -269,7 +269,7 @@ def bandpass_filter(
     result: np.array
         Filtered signal. 
     '''
-    if np.product(data.shape)<=0:
+    if np.prod(data.shape)<=0:
         raise ValueError('Singular array! no data to filter')
     N = data.shape[-1]
     if N<=1:

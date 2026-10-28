@@ -186,7 +186,7 @@ def argument_signature(function,*args,**kwargs):
     try:
         named,vargname,kwargname,defaults = \
             inspect.getargspec(function)
-    except DeprecationWarning:
+    except (DeprecationWarning, AttributeError):
         result = inspect.getfullargspec(function)
         named     = result.args
         vargname  = result.varargs

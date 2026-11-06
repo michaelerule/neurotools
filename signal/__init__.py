@@ -1593,7 +1593,7 @@ def unitabsmax(x,axis=None):
         return x/np.nanmax(np.abs(x))
     theslice = narray.make_rebroadcast_slice(x, axis)
     return x/np.nanmax(np.abs(x),axis=axis)[theslice]
-    
+
     
 def absunitscale(signal,axis=None,minor=False):
     '''
@@ -1617,6 +1617,7 @@ def absunitscale(signal,axis=None,minor=False):
     signalL np.array
         Rescaled signal
     '''
+    warnings.warn('Consider unitabsmax() instead',DeprecationWarning,stacklevel=2)
     signal = np.float64(np.array(signal))
     if axis==None:
         # Old behavior

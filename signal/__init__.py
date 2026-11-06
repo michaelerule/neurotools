@@ -1551,23 +1551,49 @@ def unitscale(signal,axis=None):
     
     Returns
     -------
-    signalL np.array
-        Rescaled 
+    signal: np.array
+        Rescaled signal
         `signal-min(signal)/(max(signal)-min(signal))`
     '''
     signal = np.float64(np.array(signal))
     if axis==None:
-        # Old behavior
         signal-= np.nanmin(signal)
         signal/= np.nanmax(signal)
         return signal
-    # New behavior
+
     theslice = narray.make_rebroadcast_slice(signal, axis)
     signal-= np.nanmin(signal,axis=axis)[theslice]
     signal/= np.nanmax(signal,axis=axis)[theslice]
     return signal
-
 uscale = unitscale
+    
+    
+def unitabsmax(x,axis=None):
+    '''
+    Rescales `signal` so that max(|signal|)=1
+
+    Parameters
+    ----------
+    signal: np.array
+        Array-like real-valued signal
+    
+    Other Parameters
+    ----------------
+    axis : int or tuple, default None
+        Axis over which to take the mean; 
+        forwarded to np.mean axis parameter
+    
+    Returns
+    -------
+    signal: np.array
+        Rescaled signal
+    '''
+    x = np.array(x)
+    if axis==None:
+        return x/np.nanmax(np.abs(x))
+    theslice = narray.make_rebroadcast_slice(x, axis)
+    return x/np.nanmax(np.abs(x),axis=axis)[theslice]
+
     
 def absunitscale(signal,axis=None,minor=False):
     '''
@@ -1591,6 +1617,7 @@ def absunitscale(signal,axis=None,minor=False):
     signalL np.array
         Rescaled signal
     '''
+    warnings.warn('Consider unitabsmax() instead',DeprecationWarning,stacklevel=2)
     signal = np.float64(np.array(signal))
     if axis==None:
         # Old behavior

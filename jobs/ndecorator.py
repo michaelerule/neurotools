@@ -19,13 +19,20 @@ import numpy as np
 try:
     import decorator
     robust_decorator = decorator.decorator
-except:
+except ImportError:
+    from functools import wraps
     def robust_decorator(caller, _func=None):
+        def decorator_wrapper(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                return caller(func, *args, **kwargs)
+            return wrapper
         if _func is not None:
-            return _func
-        def g(*args,**kwargs):
-            return _func(*args,**kwargs)
-        return g
+            return decorator_wrapper(_func)
+        return decorator_wrapper
+
+
+
 try:
     import typedecorator
     from typedecorator import params, returns, setup_typecheck

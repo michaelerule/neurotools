@@ -53,6 +53,15 @@ def dpss_cached(length,half_bandwidth_parameter):
 
 def spectrum(x,k,Fs=1000.0,nodc=True,return_negative=False):
     '''
+    Calculates a multitaper-based power spectral density
+    using `k` tapers. 
+    
+    Output units are squared signal units per Hz.
+
+    It returns only positive frequencies, and does not 
+    multiply power by 2 to compensate for dropping negative
+    frequencies (i.e. one-sided power spectrum). 
+    
     Parameters
     ----------
     x : ndarray

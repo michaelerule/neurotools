@@ -106,8 +106,10 @@ def function_hash_no_subroutines(f):
     docstring = inspect.getdoc(f)
     name      = f.__name__
     module    = f.__module__
+    #argspec   = neurotools.jobs.ndecorator.sanitize(
+    #    inspect.getargspec(f))
     argspec   = neurotools.jobs.ndecorator.sanitize(
-        inspect.getargspec(f))
+        inspect.getfullargspec(f)[:4])
     return hash((
         module,name,docstring,source,argspec,subroutines))
 
